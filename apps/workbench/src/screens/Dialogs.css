@@ -1,0 +1,28 @@
+/* B02 资料缺失（66:3950）700 宽、B04 服务恢复（66:4121）660 宽：内边距 24 间距 12；对照卡 120 高；选项行 56 高；状态行 34 高。
+ * B03 识别未运行（66:3999）：警示条 56 高，内边距 10/12。 */
+.sc-dialog { width: 100%; max-height: 100%; overflow: auto; display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-2xl); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-dialog--700 { max-width: 700px; }
+.sc-dialog--660 { max-width: 660px; }
+.sc-dialog-title { font: var(--font-weight-medium) var(--font-size-18)/var(--line-26) var(--font-family-ui); color: var(--text-primary); }
+.sc-dialog-note { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
+.sc-dialog-note--wide { line-height: var(--line-22); }
+.sc-dialog-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.sc-dialog-compare-card { display: flex; flex-direction: column; gap: var(--space-md); min-height: 120px; padding: var(--space-md); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); color: var(--text-primary); }
+.sc-dialog-compare-card.is-selected { background: var(--bg-selected); }
+.sc-dialog-compare-card strong { font: var(--font-weight-medium) var(--font-size-14)/var(--line-22) var(--font-family-ui); }
+.sc-dialog-choice { display: flex; align-items: center; gap: var(--space-md); min-height: 56px; padding: 0 var(--space-md); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); cursor: pointer; }
+.sc-dialog-choice.is-selected { background: var(--bg-selected); }
+.sc-dialog-choice input { width: var(--size-icon-sm); height: var(--size-icon-sm); margin: 0; accent-color: var(--action-primary-bg); }
+.sc-dialog-choice-text { display: flex; flex-direction: column; gap: var(--space-2xs); min-width: 0; }
+.sc-dialog-choice-text strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-dialog-choice-text small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-dialog-status { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-dialog-status > div { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); min-height: 34px; font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-dialog-recovery { display: flex; flex-direction: column; gap: var(--space-2xs); padding: var(--space-10); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-dialog-recovery span { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-dialog-recovery p { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-fallback { display: flex; align-items: center; gap: var(--space-md); min-height: 56px; padding: var(--space-10) var(--space-md); background: var(--status-warning-bg); border: var(--stroke-hairline) solid var(--status-warning-border); border-radius: var(--radius-md); }
+.sc-fallback-mark { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-warning); }
+.sc-fallback-text { display: flex; flex-direction: column; gap: var(--space-2xs); flex: 1 1 auto; min-width: 0; }
+.sc-fallback-text strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-fallback-text span { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }

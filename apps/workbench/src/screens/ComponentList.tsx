@@ -6,6 +6,7 @@ import { EvidencePane } from "../shell/EvidencePane";
 import { Button, EmptyState, InfoRow, SourceTag, Tag } from "../ui";
 import { SplitPane } from "../ui/SplitPane";
 import type { EvidencePane as EvidencePaneModel } from "../workbench/useEvidencePane";
+import { FallbackBanner } from "./Dialogs";
 import "./ComponentList.css";
 
 // W04 构件清单（66:1787）：左卡构件对象（标题行带计数标签，每个对象一张小卡：短编号、来源标签、
@@ -26,6 +27,8 @@ export interface ComponentListProps {
   selectedObjectId: string | null;
   onSelectObject: (id: string | null) => void;
   onOpenInModel: (id: string) => void;
+  // 模型服务未配置凭证时在顶部给一条警示（B03），识别不会运行
+  modelConfigured: boolean;
 }
 
 export function shortCode(index: number): string {
@@ -40,8 +43,9 @@ function objectDescription(object: GeometryObject, unknownCount: number): string
   return `${head}${evidence}${unknown}。`;
 }
 
-export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, selectedObjectId, onSelectObject, onOpenInModel }: ComponentListProps) {
+export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, selectedObjectId, onSelectObject, onOpenInModel, modelConfigured }: ComponentListProps) {
   const [typeFilter, setTypeFilter] = useState("all");
+  const [fallbackDismissed, setFallbackDismissed] = useState(false);
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [hint, setHint] = useState(false);
 
@@ -58,6 +62,8 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
   const entities: readonly Entity[] = snapshot.entities;
 
   return (
+    <>
+    {!modelConfigured && !fallbackDismissed && <FallbackBanner onDismiss={() => setFallbackDismissed(true)} />}
     <SplitPane
       data={(
         <>
@@ -143,5 +149,6 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
         />
       )}
     />
+    </>
   );
 }

@@ -118,15 +118,17 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     if (result.failed.length) setError(describeFailure(result.failed[0]!.reason, "演示项目载入失败"));
   };
 
+  const refreshServerStatus = () => fetch("/api/status")
+    .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
+    .then(setServerStatus)
+    .catch(() => setServerStatus(null));
+
   useEffect(() => {
     void refresh()
       .then(bootstrapDemo)
       .then(showBootstrapResult)
       .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")));
-    void fetch("/api/status")
-      .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
-      .then(setServerStatus)
-      .catch(() => setServerStatus(null));
+    void refreshServerStatus();
   }, []);
 
   const chooseProject = async (projectId: string) => {
@@ -303,7 +305,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     projectRuleRuns, setProjectRuleRuns,
     projectDecisions, setProjectDecisions,
     projectArtifacts, projectCheckRuns, projectDeliveryEvaluations, projectDeliveries,
-    projectArchetypes, changeHistory, serverStatus,
+    projectArchetypes, changeHistory, serverStatus, refreshServerStatus,
     refresh, loadProject, chooseProject, exitToProjectList, createProject, importProject, clearLibrary,
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues,
     geometryRevision, geometrySpec, latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery,

@@ -233,3 +233,17 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 .evidence-marquee__rect { position: absolute; border: var(--stroke-emphasis) solid var(--text-link); background: var(--bg-scrim); pointer-events: none; }
 .assistant-selection-chip { display: inline-flex; align-items: center; gap: var(--space-xs); height: 22px; padding: 0 var(--space-sm); border-radius: var(--radius-full); border: var(--stroke-hairline) solid var(--source-measured-border); background: var(--source-measured-bg); color: var(--source-measured-fg); font: var(--font-weight-medium) var(--font-size-12)/var(--line-16) var(--font-family-ui); }
 .entity-flag { color: var(--text-warning); }
+
+/* ---------- 资格标记与图面限制（QualificationNotice.tsx）：按 v4 的标签形态，警示色调 ---------- */
+.qualification-block { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xs); }
+.qualification-chip { display: inline-flex; align-items: center; height: 22px; padding: 0 var(--space-sm); border-radius: var(--radius-full); border: var(--stroke-hairline) solid var(--status-warning-border); background: var(--status-warning-bg); color: var(--status-warning-fg); font: var(--font-weight-medium) var(--font-size-12)/var(--line-16) var(--font-family-ui); white-space: nowrap; }
+.qualification-chip[aria-expanded="true"] { border-color: var(--status-warning-fg); }
+.qualification-limits { display: flex; flex-direction: column; gap: var(--space-xs); max-width: 460px; padding: var(--space-sm) var(--space-10); background: var(--bg-subtle); border-radius: var(--radius-md); }
+.qualification-limits div { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: var(--space-sm); }
+.qualification-limits dt { font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.qualification-limits dd { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-primary); }
+.drawing-limitation { display: flex; flex-direction: column; gap: var(--space-2xs); padding: var(--space-10) var(--space-md); background: var(--status-warning-bg); border: var(--stroke-hairline) solid var(--status-warning-border); border-radius: var(--radius-md); }
+.drawing-limitation strong { font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--status-warning-fg); }
+.drawing-limitation p { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-primary); }
+/* 三维查看器（GlbViewer.tsx）：容器由页面给高度 */
+.glb-viewer { min-width: 0; min-height: 320px; height: 100%; }
