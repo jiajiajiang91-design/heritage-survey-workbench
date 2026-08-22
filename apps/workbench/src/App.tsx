@@ -48,13 +48,16 @@ import { buildChangeHistory, type ChangeHistoryEntry } from "./change-history";
 import { AssistantClient } from "./assistant/assistant-client";
 import { ChatPanel } from "./assistant/ChatPanel";
 import { runClientOp } from "./assistant/client-op-adapter";
+import { formatCost } from "./model-pricing";
 import { buildWorkspaceSnapshot } from "./assistant/workspace-snapshot";
 
-const stages = [
-  { id: "tasks", label: "任务要求", icon: ClipboardList },
-  { id: "evidence", label: "项目资料" },
-  { id: "measurements", label: "测量与尺寸依据", icon: Ruler },
-  { id: "objects", label: "对象与构件", icon: Boxes },
+// 视图注册表。id 是动作层与测试用的稳定标识，改名只改 label 不动 id。
+// label 与 01_产品/03_界面与交互形态.md 表 2、表 3 逐行一致，由 stage-map.test.ts 锁住。
+export const stages = [
+  { id: "tasks", label: "任务卡", icon: ClipboardList },
+  { id: "evidence", label: "资料清单" },
+  { id: "measurements", label: "实测基准", icon: Ruler },
+  { id: "objects", label: "构件清单", icon: Boxes },
   { id: "conditions", label: "现状记录" },
   { id: "issues", label: "问题队列" },
   { id: "geometry", label: "三维模型" },
@@ -62,9 +65,26 @@ const stages = [
   { id: "drawings", label: "成组图纸" },
   { id: "checks", label: "检查与资格", icon: ShieldCheck },
   { id: "package", label: "代理交付" },
-  { id: "candidates", label: "模型运行与费用", icon: Activity },
+  { id: "candidates", label: "模型运行与用量", icon: Activity },
   { id: "history", label: "修改历史", icon: History },
 ] as const;
+
+// 八个任务阶段，对应用户旅程的八步。左栏按阶段走，不平铺视图。
+// 阶段与视图是一对多：核对构件、记录现状、生成图纸各含两个视图，其余各一个。
+// 视图在数组里的先后就是阶段内的页签顺序，也是下一步的推进顺序。
+export const journeyStages = [
+  { id: "s01", label: "建立任务", views: ["tasks"] },
+  { id: "s02", label: "整理资料", views: ["evidence"] },
+  { id: "s03", label: "核对实测", views: ["measurements"] },
+  { id: "s04", label: "核对构件", views: ["objects", "geometry"] },
+  { id: "s05", label: "记录现状", views: ["conditions", "issues"] },
+  { id: "s06", label: "生成图纸", views: ["sheetStyle", "drawings"] },
+  { id: "s07", label: "检查签发", views: ["checks"] },
+  { id: "s08", label: "交付归档", views: ["package"] },
+] as const;
+
+// 项目级页面。不属于任何一栋建筑，进入后不显示左栏与助手栏，只有一栏内容。
+export const projectPages = ["candidates", "history"] as const;
 export const LENGTH_INPUT_STEP = "any";
 const OBSERVATION_LABELS = {
   visibleCondition: "可见状态", damage: "残损", material: "材料", state: "整体状态",
@@ -80,6 +100,8 @@ export const PRODUCER_LABELS: Record<string, string> = {
 export const ENTITY_ORIGIN_LABELS: Record<string, string> = {
   marquee: "框选新增", recognition: "识别确认", import: "随包导入",
 };
+// 左栏阶段的三态。点的颜色不能是唯一信息，读屏与鼠标悬停都要能拿到同一句话。
+export const STAGE_TONE_LABELS = { current: "当前", done: "已完成", todo: "未开始" } as const;
 export const REVIEW_LABELS: Record<string, string> = {
   unreviewed: "待确认", confirmed: "已确认", rejected: "已驳回", superseded: "已被替代",
 };
@@ -123,6 +145,9 @@ const DRAWING_KIND_LABELS: Record<string, string> = {
   transverseSection: "横剖", longitudinalSection: "纵剖", axonometric: "轴测", detail: "详图",
 };
 type StageId = typeof stages[number]["id"];
+// 十一个工作视图的排序，供上一步下一步用。项目级页面不参与推进。
+const journeyViewOrder = journeyStages.flatMap((stage) => stage.views) as readonly StageId[];
+const projectPageIds = new Set<string>(projectPages);
 
 interface ServerStatus {
   ready: boolean;
@@ -167,6 +192,8 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
   const [projectDeliveries, setProjectDeliveries] = useState<readonly import("@gujian/domain").DeliveryDraft[]>([]);
   const [decisionReasons, setDecisionReasons] = useState<Record<string, string>>({});
   const [activeStage, setActiveStage] = useState<StageId>("evidence");
+  // 从项目级页面退回时回到进去之前那个视图，不要一律弹回默认视图。
+  const [returnView, setReturnView] = useState<StageId>("evidence");
   const [query, setQuery] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [error, setError] = useState<FailureNotice | null>(null);
@@ -218,11 +245,13 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
     setRoundTripReceipt(null);
     setError(null);
     const head = await projectRepository.getProjectHead(projectId);
-    const [runs, rules, decisions, artifacts, checks, deliveryEvaluations, deliveryRecords] = await Promise.all([
+    const [runs, rules, decisions, artifacts, matrices, checks, deliveryEvaluations, deliveryRecords] = await Promise.all([
       projectRepository.getProjectModelRuns(projectId),
       projectRepository.getProjectRuleRuns(projectId),
       projectRepository.getProjectDecisions(projectId),
       projectRepository.getProjectArtifacts(projectId),
+      // 出图要求是任务要求到图纸这一段的中间环节，算影响范围要用
+      projectRepository.getProjectArtifactRequirementMatrices(projectId),
       projectRepository.getProjectCheckRuns(projectId),
       projectRepository.getProjectDeliveryEvaluations(projectId),
       projectRepository.getProjectDeliveries(projectId),
@@ -242,7 +271,19 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
       projectRepository.getProjectAuditEvents(projectId),
       projectRepository.getProjectCommandReceipts(projectId),
     ]);
-    setChangeHistory(buildChangeHistory({ auditEvents, receipts, snapshot: head?.snapshot ?? null }));
+    setChangeHistory(buildChangeHistory({
+      auditEvents,
+      receipts,
+      snapshot: head?.snapshot ?? null,
+      impactInput: head ? {
+        snapshot: head.snapshot,
+        artifacts,
+        requirementMatrices: matrices,
+        checkRuns: checks,
+        deliveryEvaluations,
+        deliveries: deliveryRecords,
+      } : null,
+    }));
   };
 
   // 首次打开装载演示项目（08 演示项目定义 3.3：不生成空白项目）。
@@ -386,6 +427,13 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
       if (created) URL.revokeObjectURL(created);
     };
   }, [activeEvidenceId, selected?.projectId]);
+
+  // 切换视图的唯一入口。左栏、页签、顶栏、待办和助手动作层都走这里。
+  // 进项目级页面前先记下当前工作视图，退回时才知道回哪儿。
+  const goToView = (viewId: StageId) => {
+    if (projectPageIds.has(viewId) && !projectPageIds.has(activeStage)) setReturnView(activeStage);
+    setActiveStage(viewId);
+  };
 
   // 退出当前项目回到列表页。左栏按钮与助手走同一处，行为不分叉。
   const exitToProjectList = () => {
@@ -589,15 +637,16 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
         measured: measurement.metadataStatus === "complete",
       })),
     switchStage: (stageId) => {
-      if (stages.some((stage) => stage.id === stageId)) setActiveStage(stageId as StageId);
+      if (stages.some((stage) => stage.id === stageId)) goToView(stageId as StageId);
     },
     exitProject: () => exitToProjectList(),
     advanceStage: () => {
-      const index = stages.findIndex((stage) => stage.id === activeStage);
-      const next = stages[index + 1];
+      // 推进只在十一个工作视图里走，不会推到项目级页面上去。
+      const index = journeyViewOrder.indexOf(activeStage);
+      const next = index < 0 ? undefined : journeyViewOrder[index + 1];
       if (!next) return null;
-      setActiveStage(next.id);
-      return next.label;
+      setActiveStage(next);
+      return stages.find((stage) => stage.id === next)?.label ?? next;
     },
     jobProgressSummary: () => {
       const lines = [
@@ -1263,6 +1312,20 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
     history: changeHistory.length ? { label: `${changeHistory.length} 次写入`, tone: "done" } : { label: "无记录", tone: "idle" },
   };
 
+  // 项目级页面只占一栏，左栏与助手栏都不出现。
+  const onProjectPage = projectPageIds.has(activeStage);
+  const currentJourney = journeyStages.find((stage) => (stage.views as readonly string[]).includes(activeStage));
+
+  // 阶段三态：当前、已完成、未开始。一个阶段含多个视图时，全部视图完成才算完成。
+  // 不是按序推进：本产品允许资料先到、现状后补，后面的阶段可能已经有数据而前面的还空着。
+  // 因此第三态是未开始而不是未到，判据只看该阶段自己有没有数据。
+  const journeyState = (views: readonly string[]) => {
+    const detail = views.map((view) => stageStates[view as StageId].label).join(" · ");
+    if (views.includes(activeStage)) return { tone: "current" as const, detail };
+    const done = views.every((view) => stageStates[view as StageId].tone === "done");
+    return { tone: done ? "done" as const : "todo" as const, detail };
+  };
+
   // 分隔条拖动：按中栏宽度换算比例，限制在 30% 至 70%
   const startSplitDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -1340,8 +1403,8 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
   );
 
   return (
-    <main className={`app-shell ${assistantCollapsed ? "assistant-collapsed" : ""}`}>
-      <section className="catalog-panel">
+    <main className={`app-shell ${assistantCollapsed ? "assistant-collapsed" : ""} ${selected && onProjectPage ? "single-column" : ""}`}>
+      {!(selected && onProjectPage) && <section className="catalog-panel">
         <header>
           <div className="brand-mark" aria-hidden="true">建</div>
           <h1>古建保护成果工作台</h1>
@@ -1353,20 +1416,22 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
             <h2>{selected.snapshot.buildings[0]?.name}</h2>
             <small>{confirmedTask?.name ?? selected.snapshot.project.name}</small>
             <small>{selected.snapshot.project.locationText ?? "地点尚未记录"}</small>
-            <button className="gj-btn gj-btn--text" type="button" onClick={exitToProjectList}>← 返回项目列表</button>
           </div>
         )}
         {selected && (
           <div>
             <p className="panel-label">任务进度</p>
             <nav className="stage-list" aria-label="任务进度">
-              {stages.map((stage) => {
-                const state = stageStates[stage.id];
+              {journeyStages.map((stage, index) => {
+                const state = journeyState(stage.views);
+                // 点阶段进它的第一个视图。已经在这个阶段里的话保持当前视图不动。
+                const target = state.tone === "current" ? activeStage : stage.views[0] as StageId;
                 return (
-                  <button className={`stage-row ${activeStage === stage.id ? "active" : ""}`} key={stage.id} type="button" onClick={() => setActiveStage(stage.id)}>
+                  <button className={`stage-row ${state.tone === "current" ? "active" : ""}`} key={stage.id} type="button" onClick={() => goToView(target)}>
                     <span className={`stage-state ${state.tone}`} aria-hidden="true" />
-                    <strong>{stage.label}</strong>
-                    <small>{state.label}</small>
+                    <span className="sr-only">{STAGE_TONE_LABELS[state.tone]}</span>
+                    <strong>{`${String(index + 1).padStart(2, "0")} ${stage.label}`}</strong>
+                    <small>{state.detail}</small>
                   </button>
                 );
               })}
@@ -1378,7 +1443,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
             <p className="panel-label">待办 {pendingItems.reduce((sum, item) => sum + item.count, 0)}</p>
             <div className="pending-list">
               {pendingItems.map((item) => (
-                <button key={item.label} type="button" onClick={() => setActiveStage(item.stage)}>
+                <button key={item.label} type="button" onClick={() => goToView(item.stage)}>
                   <strong>{item.label} {item.count}</strong>
                   <small>{item.hint}</small>
                 </button>
@@ -1419,7 +1484,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
         </>}
         </div>
         <footer><span>项目保存在本机</span><button className="gj-btn gj-btn--danger" type="button" onClick={() => void clearLibrary()}><Trash2 size={12} /> 清空本机项目</button></footer>
-      </section>
+      </section>}
       <section className="workspace-shell">
         <div className="topbar">
           {/* 来源可区分（07 界面视觉规范表 3）：四类来源按数据模型统计，实测另算 */}
@@ -1433,22 +1498,39 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
             <span className="basis-tag demo">示例资料 {basisCounts.demo}</span></>}
           </div>
           <div>
-            {selected && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => void downloadProject("json")} aria-label="导出项目记录"><FileJson size={14} /></button>}
-            {selected && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => void downloadProject("zip")} aria-label="导出完整项目包"><PackageOpen size={14} /></button>}
-            <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => setAssistantCollapsed((value) => !value)} aria-label={assistantCollapsed ? "展开助手与来源面板" : "收起助手与来源面板"}>
+            {/* 项目级页面（05 表 3）横跨全部视图，不属于任何阶段，因此放顶栏而不进左栏 */}
+            {selected && <nav className="project-pages" aria-label="项目级页面">
+              <button type="button" onClick={exitToProjectList}>项目列表</button>
+              {projectPages.map((pageId) => (
+                <button className={activeStage === pageId ? "active" : ""} key={pageId} type="button" onClick={() => goToView(pageId)}>
+                  {stages.find((stage) => stage.id === pageId)?.label}
+                </button>
+              ))}
+            </nav>}
+            {selected && !onProjectPage && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => void downloadProject("json")} aria-label="导出项目记录"><FileJson size={14} /></button>}
+            {selected && !onProjectPage && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => void downloadProject("zip")} aria-label="导出完整项目包"><PackageOpen size={14} /></button>}
+            {!(selected && onProjectPage) && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => setAssistantCollapsed((value) => !value)} aria-label={assistantCollapsed ? "展开助手与来源面板" : "收起助手与来源面板"}>
               {assistantCollapsed ? <PanelRightOpen size={15} /> : <PanelRightClose size={15} />}
-            </button>
+            </button>}
           </div>
         </div>
         {selected ? (
           <div className="project-workspace">
-            <nav className="stage-tabs" aria-label="工作区视图">
-              {stages.map((stage) => (
-                <button className={activeStage === stage.id ? "active" : ""} key={stage.id} type="button" onClick={() => setActiveStage(stage.id)}>
-                  {stage.label}
-                </button>
-              ))}
-            </nav>
+            {/* 单视图阶段不出页签行：一个页签的页签行只占地方，不给信息 */}
+            {currentJourney && currentJourney.views.length > 1 && (
+              <nav className="stage-tabs" aria-label="工作区视图">
+                {currentJourney.views.map((viewId) => (
+                  <button className={activeStage === viewId ? "active" : ""} key={viewId} type="button" onClick={() => goToView(viewId as StageId)}>
+                    {stages.find((stage) => stage.id === viewId)?.label}
+                  </button>
+                ))}
+              </nav>
+            )}
+            {onProjectPage && (
+              <nav className="stage-tabs" aria-label="工作区视图">
+                <button type="button" onClick={() => goToView(returnView)}>← 回到{stages.find((stage) => stage.id === returnView)?.label}</button>
+              </nav>
+            )}
             <div className="project-stage-layout">
             <div className="stage-content">
 
@@ -1659,12 +1741,25 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                         <small>{entry.occurredAt.replace("T", " ").slice(0, 19)}</small>
                       </div>
                       <div className="history-what">
-                        {/* 认得出名字就列名字，认不出只说动了几条，不用 id 冒充名字 */}
-                        {entry.subjectsZh.length
-                          ? <span>{entry.subjectsZh.join("、")}</span>
-                          : <span className="gj-note">改动 {entry.writeCount} 条记录</span>}
+                        {/* 写入与影响同一行，写入在左影响在右，形态照 v4 的 P03。
+                            写入集是这次动了什么，影响是因此有什么不能再用，两件事不能混。 */}
+                        <div className="history-detail-row">
+                          {/* 认得出名字就列名字，认不出只说动了几条，不用 id 冒充名字 */}
+                          {entry.subjectsZh.length
+                            ? <span>写入：{entry.subjectsZh.join("、")}</span>
+                            : <span className="gj-note">写入：{entry.writeCount} 条记录</span>}
+                          {entry.impact && (entry.impact.total > 0
+                            ? <span className="history-impact">影响：{entry.impact.groups.map((group) => `${group.kind} ${group.count}`).join("、")}</span>
+                            : <span className="gj-note">无下游受影响</span>)}
+                        </div>
                         {entry.reasonZh && <small>理由：{entry.reasonZh}</small>}
                         {!entry.reasonZh && <small className="gj-note">未记录理由</small>}
+                        {entry.impact?.preserved.length ? (
+                          <small className="gj-note">已交付版本保留：{entry.impact.preserved.map((group) => `${group.kind} ${group.count}`).join("、")}</small>
+                        ) : null}
+                        {entry.impact?.coverageGaps.length ? (
+                          <small className="inline-warning">这次算不全：{entry.impact.coverageGaps.join("；")}</small>
+                        ) : null}
                       </div>
                       <div className="history-who">
                         <small>操作人 {entry.actorId.slice(0, 8)}</small>
@@ -1754,7 +1849,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                   ))}
                   {!selected.snapshot.candidates.length && <div className="panel-empty">助手的识别结果只进入待确认区，需要你确认后才写入项目。</div>}
                 </div>
-                {!!modelCostView.rows.length && <div className="run-ledger"><strong>运行账本与用量</strong>{modelCostView.rows.map((run) => <span key={run.runId}><b>{run.provider} / {run.model}</b><i>{run.status} · attempt {run.attempts}</i><em>{run.totalTokens ?? "—"} tokens · {run.costLabel}</em></span>)}<small>累计 {modelCostView.totalTokens} tokens；没有可靠单价依据，因此不估算费用。</small></div>}
+                {!!modelCostView.rows.length && <div className="run-ledger"><strong>运行账本与用量</strong>{modelCostView.rows.map((run) => <span key={run.runId}><b>{run.provider} / {run.model}</b><i>{run.status} · attempt {run.attempts}</i><em>{run.totalTokens ?? "—"} tokens · {run.costLabel}</em></span>)}<small>累计 {modelCostView.totalTokens} tokens{modelCostView.totalCost ? `，合计 ${formatCost(modelCostView.totalCost)}` : ""}。{modelCostView.priceSourcesZh.length ? `单价出处：${modelCostView.priceSourcesZh.join("；")}。` : "单价表里没有本次用到的模型，未估算费用。"}费用按用量与公开单价算得，仅供参考，以服务商账单为准。</small></div>}
                 </div>
               </section>
             )}
@@ -2094,7 +2189,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
         )}
         {notice && <div className="notice-banner" role="status"><Download size={13} /> {notice}<button type="button" onClick={() => setNotice(null)} aria-label="关闭提示"><X size={13} /></button></div>}
       </section>
-      <aside className={`assistant-shell ${assistantCollapsed ? "collapsed" : ""}`}>
+      {!(selected && onProjectPage) && <aside className={`assistant-shell ${assistantCollapsed ? "collapsed" : ""}`}>
         {assistantCollapsed ? <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => setAssistantCollapsed(false)} aria-label="展开助手与来源面板"><PanelRightOpen size={17} /></button> : <>
         {/* 当前状态条（05 图 1、表 3）：显示正在做什么与进度 */}
         <div className="assistant-status">
@@ -2149,7 +2244,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
         </section>}
         </div>
         </>}
-      </aside>
+      </aside>}
       {showCreate && (
         <div className="modal-backdrop" role="presentation">
           <form className="create-dialog" onSubmit={(event) => void handleCreate(event)}>

@@ -1,69 +1,213 @@
-/* 设计令牌（07 界面视觉规范第 2、3、4 节）
-   组件与页面只引用变量，不写字面色值与字面尺寸。 */
+/* 界面令牌。取自 Figma 文件 JjPzJEu3boS7xFFlERfs3B 的四个变量集合，共 166 个。
+ * 逐条取值与别名指向见 文档/05_验证证据/15_外壳与令牌/令牌取值清单.md。
+ *
+ * 两层结构与 Figma 一致：Primitives 是色阶原料，语义层以 var() 指向 Primitives，
+ * 不把别名摊平成字面色值。改一处色阶，所有引用它的语义令牌跟着变。
+ *
+ * 命名规则：Figma 变量名的斜杠换成连字符。三个集合都有 size 段，按用途加前缀：
+ * Geometry 的 size 保持 size，Typography 的 size 成 font-size、style 成 font-weight。
+ *
+ * 不要在这里加 Figma 里没有的令牌。取不到出处的值列进缺口清单，不就近取档。
+ */
 
 :root {
-  /* 表 1 基础色 */
-  --bg-page: #F5F6F8;
-  --bg-panel: #FFFFFF;
-  --bg-subtle: #F9FAFB;
-  --text-primary: #101828;
-  --text-secondary: #667085;
-  --text-muted: #98A2B3;
-  --border: #E4E7EC;
-  --border-strong: #D0D5DD;
 
-  /* 表 2 语义色，每项含浅底 */
-  --accent: #2563EB;
-  --accent-soft: #EFF4FF;
-  /* 主按钮悬停加深 8%、按下加深 12%（第 5.1 节） */
-  --accent-hover: #1D4FD8;
-  --accent-active: #1A45C0;
-  --on-accent: #FFFFFF;
-  --success: #067647;
-  --success-soft: #ECFDF3;
-  --warning: #B54708;
-  --warning-soft: #FFFAEB;
-  --danger: #B42318;
-  --danger-soft: #FEF3F2;
+  /* Primitives（39）：色阶原料。只被语义层引用，页面样式不直接用 */
+  --amber-100: #fef3c7;
+  --amber-50: #fffbeb;
+  --amber-600: #d97706;
+  --amber-700: #b45309;
 
-  /* 表 3 来源标记色 */
-  --src-measured: #067647;
-  --src-model: #7A5AF8;
-  --src-rule: #0E7090;
-  --src-human: #101828;
-  --src-demo: #98A2B3;
+  --blue-100: #dbeafe;
+  --blue-50: #eff6ff;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
 
-  /* 第 3 节字阶 */
-  --font-sans: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
-  --font-mono: Consolas, "SFMono-Regular", monospace;
-  --text-title: 600 18px/26px var(--font-sans);
-  --text-section: 600 15px/22px var(--font-sans);
-  --text-body: 400 14px/22px var(--font-sans);
-  --text-note: 400 13px/20px var(--font-sans);
-  --text-label: 500 12px/16px var(--font-sans);
-  --text-numeric: 400 13px/20px var(--font-mono);
+  --green-100: #dcfce7;
+  --green-50: #f0fdf4;
+  --green-600: #16a34a;
+  --green-700: #15803d;
 
-  /* 第 4 节间距，只取 4 的倍数六档 */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-6: 24px;
-  --space-8: 32px;
+  --neutral-0: #ffffff;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-25: #fcfcfc;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-50: #fafafa;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  --neutral-950: #0a0a0a;
 
-  /* 第 4 节形态规格 */
-  --radius-panel: 10px;
-  --radius-control: 7px;
-  --radius-pill: 999px;
-  --overlay-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --overlay-black-08: #00000014;
 
-  /* 第 6 节布局尺寸 */
-  --topbar-height: 56px;
-  --left-column: 240px;
-  --left-item-height: 36px;
-  --center-min: 640px;
-  --right-column: 380px;
-  --control-height: 36px;
-  --row-height: 44px;
-  --header-row-height: 40px;
+  --red-100: #fee2e2;
+  --red-50: #fef2f2;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+
+  --teal-100: #ccfbf1;
+  --teal-50: #f0fdfa;
+  --teal-600: #0d9488;
+  --teal-700: #0f766e;
+
+  --violet-100: #ede9fe;
+  --violet-50: #f5f3ff;
+  --violet-600: #7c3aed;
+  --violet-700: #6d28d9;
+
+  /* Semantic Color（62）：语义色。页面样式只用这一层 */
+  --action-danger-bg: var(--red-600);  /* #dc2626 */
+  --action-danger-fg: var(--neutral-0);  /* #ffffff */
+  --action-danger-hover-bg: var(--red-700);  /* #b91c1c */
+  --action-disabled-bg: var(--neutral-100);  /* #f5f5f5 */
+  --action-disabled-fg: var(--neutral-400);  /* #a3a3a3 */
+  --action-ghost-hover-bg: var(--neutral-100);  /* #f5f5f5 */
+  --action-primary-bg: var(--neutral-950);  /* #0a0a0a */
+  --action-primary-fg: var(--neutral-0);  /* #ffffff */
+  --action-primary-hover-bg: var(--neutral-800);  /* #262626 */
+  --action-secondary-bg: var(--neutral-0);  /* #ffffff */
+  --action-secondary-fg: var(--neutral-900);  /* #171717 */
+  --action-secondary-hover-bg: var(--neutral-100);  /* #f5f5f5 */
+
+  --bg-canvas: var(--neutral-50);  /* #fafafa */
+  --bg-hover: var(--neutral-100);  /* #f5f5f5 */
+  --bg-inverse: var(--neutral-950);  /* #0a0a0a */
+  --bg-scrim: var(--overlay-black-08);  /* #00000014 */
+  --bg-selected: var(--blue-50);  /* #eff6ff */
+  --bg-subtle: var(--neutral-100);  /* #f5f5f5 */
+  --bg-surface: var(--neutral-0);  /* #ffffff */
+
+  --border-default: var(--neutral-300);  /* #d4d4d4 */
+  --border-focus: var(--neutral-900);  /* #171717 */
+  --border-strong: var(--neutral-400);  /* #a3a3a3 */
+  --border-subtle: var(--neutral-200);  /* #e5e5e5 */
+
+  --icon-inverse: var(--neutral-0);  /* #ffffff */
+  --icon-primary: var(--neutral-800);  /* #262626 */
+  --icon-secondary: var(--neutral-500);  /* #737373 */
+
+  --source-ai-bg: var(--teal-50);  /* #f0fdfa */
+  --source-ai-border: var(--teal-100);  /* #ccfbf1 */
+  --source-ai-fg: var(--teal-700);  /* #0f766e */
+  --source-demo-bg: var(--neutral-100);  /* #f5f5f5 */
+  --source-demo-border: var(--neutral-200);  /* #e5e5e5 */
+  --source-demo-fg: var(--neutral-600);  /* #525252 */
+  --source-estimate-bg: var(--amber-50);  /* #fffbeb */
+  --source-estimate-border: var(--amber-100);  /* #fef3c7 */
+  --source-estimate-fg: var(--amber-700);  /* #b45309 */
+  --source-human-bg: var(--green-50);  /* #f0fdf4 */
+  --source-human-border: var(--green-100);  /* #dcfce7 */
+  --source-human-fg: var(--green-700);  /* #15803d */
+  --source-measured-bg: var(--blue-50);  /* #eff6ff */
+  --source-measured-border: var(--blue-100);  /* #dbeafe */
+  --source-measured-fg: var(--blue-700);  /* #1d4ed8 */
+  --source-rule-bg: var(--violet-50);  /* #f5f3ff */
+  --source-rule-border: var(--violet-100);  /* #ede9fe */
+  --source-rule-fg: var(--violet-700);  /* #6d28d9 */
+
+  --status-danger-bg: var(--red-50);  /* #fef2f2 */
+  --status-danger-border: var(--red-100);  /* #fee2e2 */
+  --status-danger-fg: var(--red-700);  /* #b91c1c */
+  --status-success-bg: var(--green-50);  /* #f0fdf4 */
+  --status-success-border: var(--green-100);  /* #dcfce7 */
+  --status-success-fg: var(--green-700);  /* #15803d */
+  --status-warning-bg: var(--amber-50);  /* #fffbeb */
+  --status-warning-border: var(--amber-100);  /* #fef3c7 */
+  --status-warning-fg: var(--amber-700);  /* #b45309 */
+
+  --text-danger: var(--red-700);  /* #b91c1c */
+  --text-disabled: var(--neutral-400);  /* #a3a3a3 */
+  --text-inverse: var(--neutral-0);  /* #ffffff */
+  --text-link: var(--blue-700);  /* #1d4ed8 */
+  --text-primary: var(--neutral-900);  /* #171717 */
+  --text-secondary: var(--neutral-600);  /* #525252 */
+  --text-success: var(--green-700);  /* #15803d */
+  --text-tertiary: var(--neutral-500);  /* #737373 */
+  --text-warning: var(--amber-700);  /* #b45309 */
+
+  /* Geometry（37）：版面尺寸、间距、圆角、描边与控件尺寸。
+   * layout 段九条里五条量自画板，四条按裁决推导，原型上没有对应画面。
+   * 推导值在规范 v2.0 里同样要标明，不能看起来像量出来的。 */
+  --layout-assistant-panel: 380px;  /* 实测：十九屏右侧助手栏宽度 */
+  --layout-breakpoint-lg: 1280px;  /* 推导：不小于此宽度三栏全开 */
+  --layout-breakpoint-md: 1024px;  /* 推导：此宽度以下左栏收为图标条 */
+  --layout-center-1440: 820px;  /* 实测：1440 画板下中栏宽度，等于 1440 减 240 减 380 */
+  --layout-center-min: 640px;  /* 推导：裁决记录第一节第 5 条定的中栏最小宽 */
+  --layout-left-rail: 240px;  /* 实测：十九屏左栏宽度 */
+  --layout-page-content-max: 1120px;  /* 实测：项目级页面内容最大宽，页边距 160 由 1440 减 1120 折半 */
+  --layout-rail-collapsed: 44px;  /* 推导：助手栏收起后的条宽 */
+  --layout-rail-icon: 56px;  /* 推导：左栏收为图标条时的宽度，与顶栏同值属巧合 */  /* 推导：左栏收起后的图标条宽度 */
+  --layout-topbar-height: 56px;  /* 实测：十九屏顶栏高度 */
+
+  --radius-full: 999px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-xl: 16px;
+
+  --size-control-lg: 40px;
+  --size-control-md: 36px;
+  --size-control-sm: 32px;
+  --size-icon-lg: 24px;
+  --size-icon-md: 20px;
+  --size-icon-sm: 16px;
+
+  /* space-10 不随 t 恤尺码阶梯命名，以示它是 2026-08-22 按实际用法后补的：
+   * 十九屏里 124 处内边距用 10，档位表原来只有 8 与 12。 */
+  --space-10: 10px;
+  --space-2xl: 24px;
+  --space-2xs: 4px;
+  --space-3xl: 32px;
+  --space-4xl: 40px;
+  --space-5xl: 48px;
+  --space-6xl: 64px;
+  --space-lg: 16px;
+  --space-md: 12px;
+  --space-none: 0px;
+  --space-sm: 8px;
+  --space-xl: 20px;
+  --space-xs: 6px;
+
+  --stroke-emphasis: 2px;
+  --stroke-hairline: 1px;
+
+  /* Typography（28）：字体、字号、行高、字重与字距 */
+  --font-family-meta: "Geist", system-ui, sans-serif;
+  --font-family-ui: "Noto Sans SC", system-ui, sans-serif;
+
+  --line-16: 16px;
+  --line-18: 18px;
+  --line-20: 20px;
+  --line-22: 22px;
+  --line-24: 24px;
+  --line-26: 26px;
+  --line-28: 28px;
+  --line-30: 30px;
+  --line-32: 32px;
+  --line-38: 38px;
+  --line-40: 40px;
+
+  --font-size-12: 12px;
+  --font-size-13: 13px;
+  --font-size-14: 14px;
+  --font-size-16: 16px;
+  --font-size-18: 18px;
+  --font-size-20: 20px;
+  --font-size-22: 22px;
+  --font-size-24: 24px;
+  --font-size-28: 28px;
+  --font-size-32: 32px;
+
+  --font-weight-bold: 700;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+
+  --tracking-default: 0px;
+  --tracking-tight: -0.3px;
 }

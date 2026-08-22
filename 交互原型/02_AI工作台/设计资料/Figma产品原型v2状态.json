@@ -1,0 +1,88 @@
+{
+  "runId": "heritage-product-prototype-v2-2026-08-21",
+  "fileKey": "JjPzJEu3boS7xFFlERfs3B",
+  "fileUrl": "https://www.figma.com/design/JjPzJEu3boS7xFFlERfs3B",
+  "fileName": "古建保护成果工作台 · 产品原型 v2",
+  "status": "archived",
+  "supersededBy": "Figma产品原型v3状态.json",
+  "visualReference": "integrations-page.zip",
+  "pages": {
+    "00 封面": "0:1",
+    "01 基础规范": "4:2",
+    "02 组件": "4:3",
+    "03 用户流程": "4:4",
+    "99 产品原型 v2 归档": "4:5",
+    "05 覆盖与检查": "4:6"
+  },
+  "foundations": {
+    "variableCollections": 4,
+    "variables": 138,
+    "textStyles": 10,
+    "effectStyles": 2
+  },
+  "components": {
+    "Button": {"id": "12:75", "variants": 12},
+    "Tag": {"id": "12:76", "variants": 7},
+    "Stage Nav Item": {"id": "12:77", "variants": 4},
+    "Input": {"id": "12:78", "variants": 4},
+    "Card": {"id": "12:79", "variants": 3},
+    "Evidence Item": {"id": "13:138", "variants": 3},
+    "Assistant Message": {"id": "13:139", "variants": 4},
+    "Progress": {"id": "13:140", "variants": 4},
+    "Evidence Chain": {"id": "13:141", "variants": 4},
+    "Dialog": {"id": "13:142", "variants": 2}
+  },
+  "screens": {
+    "S01": "16:2",
+    "S02": "16:68",
+    "S03": "16:137",
+    "S04": "16:235",
+    "S05": "18:64",
+    "S06": "18:148",
+    "S07": "18:231",
+    "S08": "18:307",
+    "S09": "19:174",
+    "S10": "19:282",
+    "S11": "19:352",
+    "S12": "19:434",
+    "S13": "20:261",
+    "S14": "20:341",
+    "S15": "20:422",
+    "S16": "20:509",
+    "S17": "21:261",
+    "S18": "21:352",
+    "S19": "21:427",
+    "S20": "21:510",
+    "S21": "22:261",
+    "S22": "22:380",
+    "S23": "22:471",
+    "S24": "22:549",
+    "S25": "23:261",
+    "S26": "23:288",
+    "S27": "23:370",
+    "S28": "23:450"
+  },
+  "prototype": {
+    "mainScreens": 24,
+    "branchScreens": 4,
+    "hotspots": 186,
+    "flowStartingPoints": [
+      {"name": "完整演示链路", "nodeId": "16:2"},
+      {"name": "首次使用分支", "nodeId": "23:261"}
+    ]
+  },
+  "validation": {
+    "figmaStructure": "passed",
+    "componentVariants": "passed",
+    "variableAliases": "passed",
+    "prototypeDestinations": "passed",
+    "visualReview": "passed",
+    "repositoryTypecheck": "passed",
+    "repositoryTests": "passed",
+    "demoMatrix": "passed"
+  },
+  "codeConnect": {
+    "status": "deferred",
+    "reason": "现有 React 原型对应早期界面，待前端按本文件重构后建立映射。"
+  }
+}

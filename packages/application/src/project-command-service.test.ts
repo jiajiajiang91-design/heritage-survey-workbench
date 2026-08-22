@@ -294,4 +294,98 @@ describe("ProjectCommandService", () => {
     expect(stored?.producer.producerType).toBe("human");
     expect(stored?.evidenceRefs).toEqual(["evidence:site-photo-1"]);
   });
+
+  // 规则核对一律作废未解决问题是本产品最不该有的行为：跑一次核对就把上一轮
+  // 没人处理过的问题标成已被替代并盖上解决时间。几何作业为记一条输入闭合检查
+  // 也发这条命令，三个演示项目共 13 条真实问题因此在问题队列与交付阻断里同时消失。
+  it("规则核对只作废本轮重新提出的问题，没提的保持未解决", async () => {
+    const { repository, service } = setup();
+    const created = await service.execute(createProjectCommand());
+
+    const ruleRun = (id: string, revisionId: string, issueRefs: string[], at: string) => ({
+      id,
+      projectId: ids.project,
+      inputRevisionId: revisionId,
+      ruleSetVersion: "heritage-baseline/1.0",
+      status: "completed",
+      producer: { producerType: "rule", ruleRunId: id },
+      results: [{
+        ruleId: "evidence-closure",
+        outcome: issueRefs.length ? "issue" : "passed",
+        inputRefs: [ids.building],
+        issueRefs,
+        message: "资料闭合核对",
+      }],
+      startedAt: at,
+      completedAt: at,
+    });
+
+    const issue = (id: string, runId: string, issueType: string, subjectRefs: string[], at: string) => ({
+      id,
+      projectId: ids.project,
+      issueType,
+      subjectRefs,
+      description: "本项目没有任何现场实测记录",
+      sourceRef: runId,
+      status: "open",
+      impactRefs: [],
+      blocksProxyOutcome: false,
+      blocksFormalEligibility: true,
+      producer: { producerType: "rule", ruleRunId: runId },
+      createdAt: at,
+      resolvedAt: null,
+    });
+
+    const runOne = "00000000-0000-4000-8000-0000000000c1";
+    const issueOne = "00000000-0000-4000-8000-0000000000d1";
+    const first = await service.execute({
+      commandType: "CommitRuleEvaluation",
+      commandId: "00000000-0000-4000-8000-0000000000e1",
+      projectId: ids.project,
+      actorId: ids.actor,
+      expectedRevisionId: created.revisionId,
+      issuedAt: "2026-08-11T00:02:00Z",
+      payload: {
+        ruleRun: ruleRun(runOne, created.revisionId, [issueOne], "2026-08-11T00:02:00Z"),
+        issues: [issue(issueOne, runOne, "missingEvidence", [ids.building], "2026-08-11T00:02:00Z")],
+      },
+    });
+    expect((repository.head?.snapshot as ProjectSnapshot).issues.filter((item) => item.status === "open")).toHaveLength(1);
+
+    // 第二次核对是几何输入闭合，一条问题都没提，上一轮那条必须还在
+    const runTwo = "00000000-0000-4000-8000-0000000000c2";
+    const second = await service.execute({
+      commandType: "CommitRuleEvaluation",
+      commandId: "00000000-0000-4000-8000-0000000000e2",
+      projectId: ids.project,
+      actorId: ids.actor,
+      expectedRevisionId: first.revisionId,
+      issuedAt: "2026-08-11T00:03:00Z",
+      payload: { ruleRun: ruleRun(runTwo, first.revisionId, [], "2026-08-11T00:03:00Z"), issues: [] },
+    });
+    const afterEmpty = (repository.head?.snapshot as ProjectSnapshot).issues;
+    expect(afterEmpty).toHaveLength(1);
+    expect(afterEmpty[0]?.status).toBe("open");
+    expect(afterEmpty[0]?.resolvedAt).toBeNull();
+
+    // 第三次重新提出同一类同一对象的问题，旧的才让位给新的
+    const runThree = "00000000-0000-4000-8000-0000000000c3";
+    const issueThree = "00000000-0000-4000-8000-0000000000d3";
+    await service.execute({
+      commandType: "CommitRuleEvaluation",
+      commandId: "00000000-0000-4000-8000-0000000000e3",
+      projectId: ids.project,
+      actorId: ids.actor,
+      expectedRevisionId: second.revisionId,
+      issuedAt: "2026-08-11T00:04:00Z",
+      payload: {
+        ruleRun: ruleRun(runThree, second.revisionId, [issueThree], "2026-08-11T00:04:00Z"),
+        issues: [issue(issueThree, runThree, "missingEvidence", [ids.building], "2026-08-11T00:04:00Z")],
+      },
+    });
+    const afterReraise = (repository.head?.snapshot as ProjectSnapshot).issues;
+    expect(afterReraise).toHaveLength(2);
+    expect(afterReraise.find((item) => item.id === issueOne)?.status).toBe("superseded");
+    expect(afterReraise.find((item) => item.id === issueThree)?.status).toBe("open");
+  });
 });

@@ -3,6 +3,8 @@ import "fake-indexeddb/auto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+// 第一个导入：dist 落后于源码就在这里停下，不要产出按旧代码算出来的包
+import "./assert-dist-current.mjs";
 import { ProjectCommandService } from "../packages/application/dist/index.js";
 import { createWorkbenchServer } from "../apps/server/dist/index.js";
 import {

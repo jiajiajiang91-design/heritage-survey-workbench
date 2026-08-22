@@ -1,3 +1,4 @@
+import { computeImpact, type ImpactGraphInput, type ImpactResult } from "@gujian/application";
 import type { ProjectSnapshot } from "@gujian/domain";
 
 // 修改历史（界面文档表 3）。项目里发生过的每一次写入，按时间倒序。
@@ -21,6 +22,12 @@ export interface ChangeHistoryEntry {
   readonly reasonZh: string | null;
   /** 这次改了几条记录。对象名认不出来时至少能说清动了几条 */
   readonly writeCount: number;
+  /**
+   * 这次写入让哪些下游失效。与写入集是两件事，不合成一个字段：
+   * 写入集是这条命令自己动了什么，影响范围是因此不能再用的下游。
+   * 算不出影响时为 null，与影响为空区分开。
+   */
+  readonly impact: ImpactResult | null;
 }
 
 // 命令类型到中文动作名。缺一条就显示原始类型，不猜也不隐藏：
@@ -62,6 +69,8 @@ interface Sources {
   }[];
   readonly receipts: readonly { commandId: string; commandType: string; changedRefs?: readonly string[] }[];
   readonly snapshot: Pick<ProjectSnapshot, "entities" | "exclusionRecords" | "facts" | "evidences"> | null;
+  /** 算影响要的完整记录。缺省时每条的 impact 为 null，不是空影响 */
+  readonly impactInput?: ImpactGraphInput | null;
 }
 
 /** 一次写入改到的对象，尽量说出名字；说不出就不说，不用 id 冒充名字 */
@@ -112,6 +121,7 @@ export function buildChangeHistory(sources: Sources): ChangeHistoryEntry[] {
         subjectsZh: describeSubjects(refs, sources.snapshot),
         reasonZh: findReason(refs, sources.snapshot),
         writeCount: refs.length,
+        impact: sources.impactInput ? computeImpact(sources.impactInput, refs) : null,
       };
     })
     .sort((first, second) => (first.occurredAt < second.occurredAt ? 1 : first.occurredAt > second.occurredAt ? -1 : 0));

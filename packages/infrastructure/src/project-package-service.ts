@@ -1,4 +1,4 @@
-import { ProjectCommandService } from "@gujian/application";
+import { CommandReceiptRecordSchema, ProjectCommandService } from "@gujian/application";
 import {
   AuditEventSchema,
   AssetRecordSchema,
@@ -42,6 +42,8 @@ const ProjectDataSchema = z.object({
   auditHeadHash: Sha256Schema,
   snapshot: ProjectSnapshotSchema,
   auditEvents: z.array(AuditEventSchema).max(100_000),
+  // 命令回执随包走，动作名才不会在导入后丢掉。旧包没有这一项，缺省为空
+  commandReceipts: z.array(CommandReceiptRecordSchema).max(100_000).default([]),
   modelRuns: z.array(ModelRunSchema).max(100_000).default([]),
   ruleRuns: z.array(RuleRunSchema).max(100_000).default([]),
   decisions: z.array(DecisionSchema).max(100_000).default([]),
@@ -110,6 +112,7 @@ export class ProjectPackageService {
   async #buildProjectData(projectId: string, includeBinary: boolean): Promise<ProjectData> {
     const closure = await this.#repository.exportProjectClosure(projectId);
     const assets = await this.#repository.getProjectAssets(projectId);
+    const commandReceipts = await this.#repository.getProjectCommandReceipts(projectId);
     const modelRuns = await this.#repository.getProjectModelRuns(projectId);
     const ruleRuns = await this.#repository.getProjectRuleRuns(projectId);
     const decisions = await this.#repository.getProjectDecisions(projectId);
@@ -133,6 +136,9 @@ export class ProjectPackageService {
       auditHeadHash: closure.auditEvents.at(-1)?.eventHash,
       snapshot: closure.head.snapshot,
       auditEvents: closure.auditEvents,
+      // 只带与包内审计事件对得上的回执，导入侧按同一条件校验
+      commandReceipts: commandReceipts.filter((receipt) =>
+        closure.auditEvents.some((event) => event.commandId === receipt.commandId)),
       modelRuns,
       ruleRuns,
       decisions,
@@ -283,6 +289,7 @@ export class ProjectPackageService {
         sourceRevisionId: data.sourceRevision.id,
         sourceAuditHeadHash: data.auditHeadHash,
         sourceAuditEvents: data.auditEvents,
+        sourceCommandReceipts: data.commandReceipts,
         assets: assetRecords,
         modelRuns: data.modelRuns,
         ruleRuns: data.ruleRuns,

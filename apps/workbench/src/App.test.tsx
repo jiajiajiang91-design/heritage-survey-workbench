@@ -24,7 +24,10 @@ describe("App", () => {
     expect(await screen.findByRole("heading", { name: "山门" })).toBeInTheDocument();
     expect(screen.getByText("山门保护记录")).toBeInTheDocument();
 
-    // 左栏任务进度与中栏视图标签是两套导航，测试指定中栏标签
+    // 导航分两层：左栏是八个任务阶段，中栏页签只在阶段含多个视图时出现。
+    // 问题队列属记录现状阶段的第二个视图，因此先进阶段再点页签。
+    const stageNav = screen.getByRole("navigation", { name: "任务进度" });
+    fireEvent.click(within(stageNav).getByRole("button", { name: /记录现状/ }));
     const viewTabs = screen.getByRole("navigation", { name: "工作区视图" });
     fireEvent.click(within(viewTabs).getByRole("button", { name: "问题队列" }));
     expect(await screen.findByText("问题队列与必要人工节点")).toBeInTheDocument();
@@ -37,7 +40,8 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "确认任务要求，开始整理资料" }));
     expect(await screen.findByText("任务要求已确认")).toBeInTheDocument();
 
-    fireEvent.click(within(viewTabs).getByRole("button", { name: "代理交付" }));
+    // 交付归档只有一个视图，没有页签行，从左栏阶段直接进。
+    fireEvent.click(within(stageNav).getByRole("button", { name: /交付归档/ }));
     expect(screen.getByRole("button", { name: "检验导出与恢复" })).toBeInTheDocument();
   });
 

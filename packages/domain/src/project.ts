@@ -252,6 +252,10 @@ export const IssueSchema = z.object({
   }
 });
 
+// 依赖边。2026-08-22 单元 07 起改为按记录已有的引用字段推导，不再存这张表：
+// 存一份边只是 geometryRevisionId 一类权威字段的副本，两者一旦不同步，
+// 算出来的影响范围就是错的且看不出来。推导实现见 packages/application/src/impact-service.ts。
+// 字段保留是为了不动快照版本号与三个演示包，数组恒为空，由测试锁住。
 export const DependencyEdgeSchema = z.object({
   id: UuidSchema,
   fromRef: NonEmptyRefSchema,

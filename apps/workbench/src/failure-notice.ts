@@ -27,8 +27,8 @@ const EXACT: Record<string, FailureRule> = {
     nextStepZh: "在本机服务的环境配置中填入凭证后重试。凭证不进入浏览器。",
   },
   KIMI_TIMEOUT: {
-    summaryZh: "模型服务响应超时，本次识别没有产出结果。",
-    nextStepZh: "缩小识别范围后重试，或稍后再运行。",
+    summaryZh: "模型服务在 3 分钟内没有返回，本次识别没有产出结果。",
+    nextStepZh: "先直接重试；仍然超时再减少一次提交的图片数量，或稍后再运行。",
   },
   KIMI_RETRY_EXHAUSTED: {
     summaryZh: "模型服务连续多次没有返回可用结果，已停止重试。",

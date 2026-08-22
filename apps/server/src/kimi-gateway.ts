@@ -31,7 +31,12 @@ export class KimiGateway {
     this.#apiKey = input.apiKey ?? process.env.KIMI_API_KEY ?? "";
     this.#baseUrl = (input.baseUrl ?? process.env.KIMI_BASE_URL ?? "https://api.moonshot.ai/v1").replace(/\/$/, "");
     this.#model = input.model ?? process.env.KIMI_MODEL ?? "kimi-k2.6";
-    this.#timeoutMs = input.timeoutMs ?? Number(process.env.KIMI_TIMEOUT_MS ?? 45_000);
+    // 单次请求上限。原为 45 秒，多图识别过不去：2026-08-20 的实测里四张图的
+    // 一次构件识别就卡在 45 秒上判超时，而模型本身认得出来，只是慢。
+    // 取值依据是实测耗时：单图识别 18 秒、图纸尺寸转写 33 秒、高分辨率重跑 27 秒，
+    // 按每张图约 11 秒外推，180 秒够十张图，比观察到的最长成功调用留了五倍余量。
+    // 重试上限 2 次，最坏等待 6 分钟；界面是长任务形态，带进度与取消，不会卡死操作。
+    this.#timeoutMs = input.timeoutMs ?? Number(process.env.KIMI_TIMEOUT_MS ?? 180_000);
     this.#maxAttempts = input.maxAttempts ?? Number(process.env.KIMI_MAX_ATTEMPTS ?? 2);
     const configuredOutputTokens = input.maxOutputTokens ?? process.env.KIMI_MAX_OUTPUT_TOKENS;
     this.#maxOutputTokens = configuredOutputTokens === undefined || configuredOutputTokens === ""

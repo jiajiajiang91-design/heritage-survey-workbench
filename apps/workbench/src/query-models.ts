@@ -1,4 +1,5 @@
 import type { ProjectHead } from "@gujian/application";
+import { estimateRunCost, formatCost, type ModelRunCost } from "./model-pricing";
 import type {
   ArtifactRecord,
   CheckRun,
@@ -62,13 +63,20 @@ export interface ModelRunCostRow {
   readonly promptTokens: number | null;
   readonly completionTokens: number | null;
   readonly totalTokens: number | null;
-  readonly costLabel: "费用待核算";
+  readonly cachedTokens: number | null;
+  /** 算得出就是金额，算不出写明为什么算不出 */
+  readonly costLabel: string;
+  readonly cost: ModelRunCost | null;
 }
 
 export interface ModelRunCostView {
   readonly rows: readonly ModelRunCostRow[];
   readonly totalTokens: number;
-  readonly hasPriceBasis: false;
+  readonly hasPriceBasis: boolean;
+  /** 有单价的那些运行的费用合计。一条都算不出时为 null */
+  readonly totalCost: ModelRunCost | null;
+  /** 单价出处，界面上要标出来 */
+  readonly priceSourcesZh: readonly string[];
 }
 
 export interface HumanInterventionView {
@@ -148,21 +156,42 @@ export function buildArtifactSetView(input: ReadModelInput): ArtifactSetView {
 }
 
 export function buildModelRunCostView(modelRuns: readonly ModelRun[]): ModelRunCostView {
-  const rows = [...modelRuns].reverse().map((run) => ({
-    runId: run.id,
-    provider: run.provider,
-    model: run.model,
-    status: run.status,
-    attempts: Math.max(...run.events.map((event) => event.attempt), 1),
-    promptTokens: run.usage?.promptTokens ?? null,
-    completionTokens: run.usage?.completionTokens ?? null,
-    totalTokens: run.usage?.totalTokens ?? null,
-    costLabel: "费用待核算" as const,
-  }));
+  const rows = [...modelRuns].reverse().map((run) => {
+    const cost = estimateRunCost({
+      provider: run.provider,
+      model: run.model,
+      promptTokens: run.usage?.promptTokens ?? null,
+      completionTokens: run.usage?.completionTokens ?? null,
+      cachedTokens: run.usage?.cachedTokens ?? null,
+    });
+    return {
+      runId: run.id,
+      provider: run.provider,
+      model: run.model,
+      status: run.status,
+      attempts: Math.max(...run.events.map((event) => event.attempt), 1),
+      promptTokens: run.usage?.promptTokens ?? null,
+      completionTokens: run.usage?.completionTokens ?? null,
+      totalTokens: run.usage?.totalTokens ?? null,
+      cachedTokens: run.usage?.cachedTokens ?? null,
+      cost,
+      // 算不出的两种情形要分开说：没有这个模型的单价，和这次运行没留下用量
+      costLabel: cost
+        ? formatCost(cost)
+        : run.usage
+          ? `无 ${run.model} 的单价`
+          : "本次运行未记录用量",
+    };
+  });
+  const priced = rows.map((row) => row.cost).filter((cost): cost is ModelRunCost => cost !== null);
   return {
     rows,
     totalTokens: rows.reduce((total, row) => total + (row.totalTokens ?? 0), 0),
-    hasPriceBasis: false,
+    hasPriceBasis: priced.length > 0,
+    totalCost: priced.length
+      ? { currency: priced[0]!.currency, amount: priced.reduce((sum, cost) => sum + cost.amount, 0), sourceZh: priced[0]!.sourceZh }
+      : null,
+    priceSourcesZh: [...new Set(priced.map((cost) => cost.sourceZh))],
   };
 }
 

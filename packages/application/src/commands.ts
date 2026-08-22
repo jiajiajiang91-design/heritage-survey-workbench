@@ -107,6 +107,20 @@ export const ReplaceTaskDefinitionCommandSchema = CommandHeaderSchema.extend({
   }).strict(),
 }).strict();
 
+// 命令回执的可搬运形态。回执本身是应用层接口，跨机搬运需要一份取值约束。
+// commandType 在这里只约束成有界字符串：命令联合类型在本文件末尾才成形，
+// 在此处引用会形成循环。取值必须是已知命令名这一条，由服务层的闭包校验来挡，
+// 与模型运行、规则运行等其他随包记录的校验方式一致。
+export const CommandReceiptRecordSchema = z.object({
+  commandId: UuidSchema,
+  commandType: z.string().min(1).max(80),
+  projectId: UuidSchema,
+  revisionId: UuidSchema,
+  auditEventId: UuidSchema,
+  committedAt: IsoDateTimeSchema,
+  changedRefs: z.array(z.string().min(1).max(200)).max(10_000).optional(),
+}).strict();
+
 export const ImportProjectSnapshotCommandSchema = CommandHeaderSchema.extend({
   commandType: z.literal("ImportProjectSnapshot"),
   expectedRevisionId: z.null(),
@@ -115,6 +129,8 @@ export const ImportProjectSnapshotCommandSchema = CommandHeaderSchema.extend({
     sourceRevisionId: UuidSchema,
     sourceAuditHeadHash: Sha256Schema,
     sourceAuditEvents: z.array(AuditEventSchema).max(100_000),
+    // 随包导入的历史命令回执。动作名只存在回执里，旧包没有这一项，缺省为空
+    sourceCommandReceipts: z.array(CommandReceiptRecordSchema).max(100_000).default([]),
     assets: z.array(AssetRecordSchema).max(1_000),
     modelRuns: z.array(ModelRunSchema).max(100_000),
     ruleRuns: z.array(RuleRunSchema).max(100_000),
