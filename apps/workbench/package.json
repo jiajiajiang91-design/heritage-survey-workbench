@@ -11,6 +11,8 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/noto-sans-sc": "5.3.0",
     "@gujian/application": "workspace:*",
     "@gujian/domain": "workspace:*",
     "@gujian/infrastructure": "workspace:*",

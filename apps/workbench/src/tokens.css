@@ -178,8 +178,8 @@
   --stroke-hairline: 1px;
 
   /* Typography（28）：字体、字号、行高、字重与字距 */
-  --font-family-meta: "Geist", system-ui, sans-serif;
-  --font-family-ui: "Noto Sans SC", system-ui, sans-serif;
+  --font-family-meta: "Geist Variable", "Geist", system-ui, sans-serif;
+  --font-family-ui: "Noto Sans SC Variable", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
 
   --line-16: 16px;
   --line-18: 18px;
