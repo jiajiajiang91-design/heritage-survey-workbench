@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { journeyStages, projectPages, stages } from "./App";
+import { journeyStages, projectPages, stages } from "./view-registry";
 
 // 左栏的八阶段、中栏的页签行和顶栏的三个项目级页面，取值都必须与
 // 01_产品/03_界面与交互形态.md 的表 2 表 3 对得上。

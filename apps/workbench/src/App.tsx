@@ -1,1329 +1,124 @@
 import {
-  Activity, Archive, Bot, Boxes, Building2, ChevronRight, CircleStop, ClipboardList,
-  Download, FileJson, FolderKanban, Images, Link2, PackageOpen, PanelRightClose,
-  PanelRightOpen, Play, Plus, Ruler, Search, ShieldCheck, Trash2, Upload, X, FileCheck2, History,
+  Bot, Building2, CircleStop, Download, FileCheck2, FileJson, Images, Link2, PackageOpen, PanelRightClose,
+  PanelRightOpen, Play, Plus, Ruler, Search, ShieldCheck, Trash2, Upload, X,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import type {
-  FormEvent, ReactNode,
-  KeyboardEvent as ReactKeyboardEvent,
-  PointerEvent as ReactPointerEvent,
-} from "react";
-import type { ProjectHead, ProjectSummary } from "@gujian/application";
-import type { ArtifactRecord, Decision, ModelRun, RuleRun } from "@gujian/domain";
+import { useRef, useState } from "react";
+import type { FormEvent, ReactNode, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from "react";
+import { compareWithMeasuredFacts, deriveArchetypeExpectations } from "@gujian/infrastructure";
 
-import type { ModelRunProgress } from "./model-run-client";
-import type { CadJobProgress } from "@gujian/infrastructure";
-import { EvidenceMarquee, type NormalizedRect } from "./EvidenceMarquee";
+import { ChatPanel } from "./assistant/ChatPanel";
+import { EvidenceMarquee } from "./EvidenceMarquee";
 import { GlbViewer } from "./GlbViewer";
 import {
-  bootstrapDemoProjects, cadJobs, createLocalProject, deliveries, drawingJobs, evidenceIngestion,
-  listLocalProjects, localActorId, modelRuns, projectPackages, projectRepository,
-  projectCommands, workflow,
-} from "./workbench";
-import { buildArtifactMatrix } from "@gujian/infrastructure";
-import { describeFailure, inputError, type FailureNotice } from "./failure-notice";
-import { LongTask, useDelayedIndicator } from "./LongTask";
-import type { DemoLoadResult } from "./demo-library-loader";
+  DATA_STATUS_LABELS, DRAWING_KIND_LABELS, ENTITY_ORIGIN_LABELS, EVIDENCE_TYPE_LABELS, ISSUE_TYPE_LABELS,
+  LIFT_RATIO_SET_LABELS, OBSERVATION_LABELS, PARSE_STATUS_LABELS, PRODUCER_LABELS, REVIEW_LABELS, cadPhaseLabel,
+} from "./labels";
+import { LongTask } from "./LongTask";
+import { formatCost } from "./model-pricing";
 import { DrawingLimitationNote, QualificationChip } from "./QualificationNotice";
 import { describeBlocker } from "./qualification";
-import { commitGeometryFacts } from "./geometry-fact-service";
-import { commitDocumentedDimensionChain } from "./document-dimension-service";
-import { geometryPrerequisites } from "@gujian/infrastructure";
-import {
-  buildArtifactSetView,
-  buildHumanInterventionView,
-  buildModelRunCostView,
-  buildProjectDashboardSummary,
-  buildProvenanceGraphView,
-} from "./query-models";
-import {
-  compareWithMeasuredFacts, conceptLabel, deriveArchetypeExpectations, resolveVocabulary,
-  IndexedDbProjectRepository, ProjectPackageService, openWorkbenchDatabase,
-} from "@gujian/infrastructure";
-import { ArchetypeSpecSchema, type ArchetypeSpec } from "@gujian/domain";
+import { STAGE_TONE_LABELS, journeyStages, projectPages, stages, type StageId } from "./view-registry";
+import { useDrawingPreviews, useGeometryBlob } from "./workbench/useAssetUrls";
+import { readTaskSetupForm } from "./workbench/useRecordWrites";
+import { useWorkbench, type WorkbenchOptions } from "./workbench/useWorkbench";
 
-import { AssistantExecutors, type ModificationProposal } from "./assistant/action-executors";
-import { buildChangeHistory, type ChangeHistoryEntry } from "./change-history";
-import { AssistantClient } from "./assistant/assistant-client";
-import { ChatPanel } from "./assistant/ChatPanel";
-import { runClientOp } from "./assistant/client-op-adapter";
-import { formatCost } from "./model-pricing";
-import { buildWorkspaceSnapshot } from "./assistant/workspace-snapshot";
-
-// 视图注册表。id 是动作层与测试用的稳定标识，改名只改 label 不动 id。
-// label 与 01_产品/03_界面与交互形态.md 表 2、表 3 逐行一致，由 stage-map.test.ts 锁住。
-export const stages = [
-  { id: "tasks", label: "任务卡", icon: ClipboardList },
-  { id: "evidence", label: "资料清单" },
-  { id: "measurements", label: "实测基准", icon: Ruler },
-  { id: "objects", label: "构件清单", icon: Boxes },
-  { id: "conditions", label: "现状记录" },
-  { id: "issues", label: "问题队列" },
-  { id: "geometry", label: "三维模型" },
-  { id: "sheetStyle", label: "图纸样式" },
-  { id: "drawings", label: "成组图纸" },
-  { id: "checks", label: "检查与资格", icon: ShieldCheck },
-  { id: "package", label: "代理交付" },
-  { id: "candidates", label: "模型运行与用量", icon: Activity },
-  { id: "history", label: "修改历史", icon: History },
-] as const;
-
-// 八个任务阶段，对应用户旅程的八步。左栏按阶段走，不平铺视图。
-// 阶段与视图是一对多：核对构件、记录现状、生成图纸各含两个视图，其余各一个。
-// 视图在数组里的先后就是阶段内的页签顺序，也是下一步的推进顺序。
-export const journeyStages = [
-  { id: "s01", label: "建立任务", views: ["tasks"] },
-  { id: "s02", label: "整理资料", views: ["evidence"] },
-  { id: "s03", label: "核对实测", views: ["measurements"] },
-  { id: "s04", label: "核对构件", views: ["objects", "geometry"] },
-  { id: "s05", label: "记录现状", views: ["conditions", "issues"] },
-  { id: "s06", label: "生成图纸", views: ["sheetStyle", "drawings"] },
-  { id: "s07", label: "检查签发", views: ["checks"] },
-  { id: "s08", label: "交付归档", views: ["package"] },
-] as const;
-
-// 项目级页面。不属于任何一栋建筑，进入后不显示左栏与助手栏，只有一栏内容。
-export const projectPages = ["candidates", "history"] as const;
+// 注册表与标签表已搬到 view-registry.ts 与 labels.ts，这里再导出给既有引用。
+export { journeyStages, projectPages, stages } from "./view-registry";
+export {
+  DATA_STATUS_LABELS, ENTITY_ORIGIN_LABELS, EVIDENCE_TYPE_LABELS, PARSE_STATUS_LABELS, PRODUCER_LABELS, REVIEW_LABELS,
+} from "./labels";
+export { STAGE_TONE_LABELS } from "./view-registry";
 export const LENGTH_INPUT_STEP = "any";
-const OBSERVATION_LABELS = {
-  visibleCondition: "可见状态", damage: "残损", material: "材料", state: "整体状态",
-} as const;
-// 界面只出现日常语言：来源、状态一律用中文，不显示英文枚举值。
-// 三张表的键必须与领域 schema 的取值一一对应，缺键会让英文原值漏到界面，
-// 由 label-coverage.test.ts 锁住。
-export const PRODUCER_LABELS: Record<string, string> = {
-  model: "AI 识别", human: "人工确认", rule: "自动核对", demo: "示例资料",
-};
-// 记录级构件的来源。框选新增与识别确认写的是同一类记录，来源必须分得开：
-// 一个是人在图上圈出来的，一个是模型认出来再由人确认的。
-export const ENTITY_ORIGIN_LABELS: Record<string, string> = {
-  marquee: "框选新增", recognition: "识别确认", import: "随包导入",
-};
-// 左栏阶段的三态。点的颜色不能是唯一信息，读屏与鼠标悬停都要能拿到同一句话。
-export const STAGE_TONE_LABELS = { current: "当前", done: "已完成", todo: "未开始" } as const;
-export const REVIEW_LABELS: Record<string, string> = {
-  unreviewed: "待确认", confirmed: "已确认", rejected: "已驳回", superseded: "已被替代",
-};
-// 存疑是本产品最需要显性表达的状态，缺它等于把不确定当成可用
-export const DATA_STATUS_LABELS: Record<string, string> = {
-  available: "可用", uncertain: "存疑", missing: "缺失", stale: "已过期",
-};
-// 恢复检验用的独立数据库，与本机项目库分开，用完即删
-const ROUNDTRIP_VERIFY_DB = "gujian-roundtrip-verify";
-// 作业阶段的中文说法。界面不显示 queued、running 一类原值。
-const JOB_PHASE_LABELS: Record<string, string> = {
-  queued: "排队中", running: "运行中", succeeded: "已完成", failed: "已失败",
-  cancelled: "已取消", late: "结果已作废",
-};
-// 取消是用户主动的结果，与作业失败要分开处理。
-function isCancelled(reason: unknown): boolean {
-  return reason instanceof Error && /_CANCELLED$/.test(reason.message);
-}
 
-function cadPhaseLabel(phase: string | undefined | null): string {
-  return phase ? JOB_PHASE_LABELS[phase] ?? "运行中" : "排队中";
-}
+export type AppProps = WorkbenchOptions;
 
-export const PARSE_STATUS_LABELS: Record<string, string> = {
-  parsed: "已读取文字内容", failed: "无法自动读取", metadataOnly: "仅登记，未读取内容", pending: "待读取",
-};
-export const EVIDENCE_TYPE_LABELS: Record<string, string> = {
-  photo: "照片", document: "文档", drawing: "图纸", measurementRecord: "测量记录",
-  audio: "录音", video: "视频", pointCloud: "点云", other: "其他",
-};
-const ISSUE_TYPE_LABELS: Record<string, string> = {
-  missingEvidence: "缺资料", professionalUncertainty: "需专业判断",
-  ruleConflict: "数据对不上", highRisk: "高风险",
-};
-const LIFT_RATIO_SET_LABELS: Record<string, string> = {
-  "qing-gongcheng-zuofa": "清工程做法举架系数",
-  "liang-drawings": "梁思成图纸举架系数",
-};
-const DRAWING_KIND_LABELS: Record<string, string> = {
-  floorPlan: "平面", roofPlan: "屋顶平面", elevation: "立面",
-  transverseSection: "横剖", longitudinalSection: "纵剖", axonometric: "轴测", detail: "详图",
-};
-type StageId = typeof stages[number]["id"];
-// 十一个工作视图的排序，供上一步下一步用。项目级页面不参与推进。
-const journeyViewOrder = journeyStages.flatMap((stage) => stage.views) as readonly StageId[];
-const projectPageIds = new Set<string>(projectPages);
+export function App({ bootstrapDemo }: AppProps = {}) {
+  const wb = useWorkbench(bootstrapDemo ? { bootstrapDemo } : {});
+  const { notices, session, nav, evidence, jobs, writes, assistant } = wb;
+  const { error, notice, setError, setNotice } = notices;
+  const {
+    selected, filtered, query, setQuery, projectRuleRuns, projectDecisions, projectArchetypes,
+    changeHistory, serverStatus, exitToProjectList, clearLibrary,
+    parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues, geometryRevision, geometrySpec,
+    latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery, geometryGate, dashboard, artifactSetView,
+    modelCostView, humanInterventions, deliveryBlockers, archetypeDifferences, typeLabel, evidenceTitle, factFieldLabel,
+    basisCounts, measuredRecordCount, blockerReasons,
+  } = session;
+  const {
+    activeStage, setActiveStage, returnView, goToView, setSelectedGeometryEntityId,
+    selectedGeometryEntity, assistantCollapsed, setAssistantCollapsed, onProjectPage, currentJourney, journeyState,
+    pendingItems,
+  } = nav;
+  const { activeEvidenceId, setActiveEvidenceId, evidencePreview, imageSelection, setImageSelection, downloadEvidence } = evidence;
+  const {
+    modelProgress, cadProgress, drawingProgress, exportProgress, cadCancelling, drawingCancelling,
+    modelRunning, geometryRunning, drawingRunning, showGeometryTask, showDrawingTask, showExportTask,
+    generateDemoGeometry, cancelGeometry, generateDrawings, cancelDrawings, downloadProject, cancelExport,
+    runModel, transcribeDrawings, cancelModel,
+  } = jobs;
+  const {
+    roundTripReceipt, confirmGeometryFacts, createProxyDelivery, recordBlockedDelivery, downloadArtifact,
+    registerArchetype, uploadEvidenceFiles, confirmTranscribedDimensions, confirmRecognizedComponents,
+    submitTaskSetup, decideCandidate, decideIssueOption, recordObservation, confirmDocumentedDimensionChain,
+    verifyEmptyLibraryRoundTrip,
+  } = writes;
+  const {
+    assistantChatClient, pendingProposal, buildAssistantSnapshot, handleAssistantClientOp, adoptProposal,
+    rejectProposal, currentStatusText, provenance, chatSelection,
+  } = assistant;
+  const geometryBlob = useGeometryBlob(geometryRevision);
+  const drawingPreviewUrls = useDrawingPreviews(drawingArtifacts);
 
-interface ServerStatus {
-  ready: boolean;
-  model: string;
-  modelConfigured: boolean;
-}
-
-interface RoundTripReceipt {
-  jsonSha256: string;
-  jsonBytes: number;
-  jsonEvidenceCount: number;
-  jsonMissingAssetCount: number;
-  zipSha256: string;
-  zipBytes: number;
-  projectId: string;
-  sourceRevisionId: string;
-  importedRevisionId: string;
-  evidenceCount: number;
-  ruleRunCount: number;
-  decisionCount: number;
-  geometryRevisionCount: number;
-  artifactCount: number;
-  checkRunCount: number;
-  deliveryCount: number;
-}
-
-export interface AppProps {
-  // 首次打开的演示项目装载。默认走真实装载，测试注入空实现，
-  // 测试进程里就不存在无法等待的后台写入与网络请求。
-  bootstrapDemo?: () => Promise<DemoLoadResult | null>;
-}
-
-export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
-  const [projects, setProjects] = useState<readonly ProjectSummary[]>([]);
-  const [selected, setSelected] = useState<ProjectHead | null>(null);
-  const [projectModelRuns, setProjectModelRuns] = useState<readonly ModelRun[]>([]);
-  const [projectRuleRuns, setProjectRuleRuns] = useState<readonly RuleRun[]>([]);
-  const [projectDecisions, setProjectDecisions] = useState<readonly Decision[]>([]);
-  const [projectArtifacts, setProjectArtifacts] = useState<readonly ArtifactRecord[]>([]);
-  const [projectCheckRuns, setProjectCheckRuns] = useState<readonly import("@gujian/domain").CheckRun[]>([]);
-  const [projectDeliveryEvaluations, setProjectDeliveryEvaluations] = useState<readonly import("@gujian/domain").DeliveryEvaluation[]>([]);
-  const [projectDeliveries, setProjectDeliveries] = useState<readonly import("@gujian/domain").DeliveryDraft[]>([]);
-  const [decisionReasons, setDecisionReasons] = useState<Record<string, string>>({});
-  const [activeStage, setActiveStage] = useState<StageId>("evidence");
-  // 从项目级页面退回时回到进去之前那个视图，不要一律弹回默认视图。
-  const [returnView, setReturnView] = useState<StageId>("evidence");
-  const [query, setQuery] = useState("");
+  // 以下是页面自己的状态：对话框开合、表单草稿、文件输入与分隔条。
   const [showCreate, setShowCreate] = useState(false);
-  const [error, setError] = useState<FailureNotice | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
-  const [modelProgress, setModelProgress] = useState<ModelRunProgress | null>(null);
-  const [cadProgress, setCadProgress] = useState<CadJobProgress | null>(null);
-  const [drawingProgress, setDrawingProgress] = useState<string | null>(null);
-  const [cadCancelling, setCadCancelling] = useState(false);
-  // 从点击到作业首个事件之间有一段准备工作（规则留痕、构件规格组装、建立会话）。
-  // 这段时间也属于用户在等，必须同样进入加载态，否则按钮还能再点，会重复提交。
-  const [geometryStarting, setGeometryStarting] = useState(false);
-  // 取消意图记在界面这一侧。取消请求发出后作业流会先断，客户端拿到的是
-  // 连接错误而不是取消事件，只靠错误内容判断会把取消显示成失败。
-  const cadCancelRequested = useRef(false);
-  const drawingCancelRequested = useRef(false);
-  const [drawingCancelling, setDrawingCancelling] = useState(false);
-  const [exportProgress, setExportProgress] = useState<{ phase: string; cancelling: boolean } | null>(null);
-  const exportCancelled = useRef(false);
-  const [geometryBlob, setGeometryBlob] = useState<Blob | null>(null);
-  const [selectedGeometryEntityId, setSelectedGeometryEntityId] = useState<string | null>(null);
-  const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
-  const [roundTripReceipt, setRoundTripReceipt] = useState<RoundTripReceipt | null>(null);
-  const [assistantCollapsed, setAssistantCollapsed] = useState(false);
-  const [pendingProposal, setPendingProposal] = useState<ModificationProposal | null>(null);
-  const [projectArchetypes, setProjectArchetypes] = useState<readonly ArchetypeSpec[]>([]);
-  const assistantChatClient = useMemo(() => new AssistantClient(), []);
-  const vocabulary = useMemo(() => resolveVocabulary(), []);
-  const typeLabel = (componentType: string, conceptRef?: string) =>
-    conceptLabel(vocabulary, conceptRef ?? componentType) ?? componentType;
-  const assistantExecutors = useMemo(
-    () => new AssistantExecutors({ commands: projectCommands, workflow, actorId: localActorId }),
-    [],
-  );
-  const [changeHistory, setChangeHistory] = useState<readonly ChangeHistoryEntry[]>([]);
-  const [drawingPreviewUrls, setDrawingPreviewUrls] = useState<readonly { id: string; kind: "svg" | "pdf"; label: string; url: string }[]>([]);
-  // 证据半区（05 界面与交互形态 §三）：中栏右半区显示选中资料原件，数据与证据并置
-  const [activeEvidenceId, setActiveEvidenceId] = useState<string | null>(null);
-  const [evidencePreview, setEvidencePreview] = useState<{ evidenceId: string; url: string; mimeType: string; fileName: string } | null>(null);
-  // 证据图片上的框选。换资料就清掉：位置只对它所属的那张图有意义。
-  const [imageSelection, setImageSelection] = useState<{ evidenceId: string; rectNormalized: NormalizedRect } | null>(null);
+  const [decisionReasons, setDecisionReasons] = useState<Record<string, string>>({});
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   // 数据与证据双半区默认各占一半，分隔条可拖动，比例限制在 30% 至 70%（07 第 6 节）
   const [dataPaneRatio, setDataPaneRatio] = useState(50);
   const splitRef = useRef<HTMLDivElement | null>(null);
   const importInput = useRef<HTMLInputElement>(null);
   const evidenceInput = useRef<HTMLInputElement>(null);
 
-  const refresh = async () => setProjects(await listLocalProjects());
-  const loadProject = async (projectId: string) => {
-    setRoundTripReceipt(null);
-    setError(null);
-    const head = await projectRepository.getProjectHead(projectId);
-    const [runs, rules, decisions, artifacts, matrices, checks, deliveryEvaluations, deliveryRecords] = await Promise.all([
-      projectRepository.getProjectModelRuns(projectId),
-      projectRepository.getProjectRuleRuns(projectId),
-      projectRepository.getProjectDecisions(projectId),
-      projectRepository.getProjectArtifacts(projectId),
-      // 出图要求是任务要求到图纸这一段的中间环节，算影响范围要用
-      projectRepository.getProjectArtifactRequirementMatrices(projectId),
-      projectRepository.getProjectCheckRuns(projectId),
-      projectRepository.getProjectDeliveryEvaluations(projectId),
-      projectRepository.getProjectDeliveries(projectId),
-    ]);
-    setSelected(head);
-    setProjectModelRuns(runs);
-    setProjectRuleRuns(rules);
-    setProjectDecisions(decisions);
-    setProjectArtifacts(artifacts);
-    setProjectCheckRuns(checks);
-    setProjectDeliveryEvaluations(deliveryEvaluations);
-    setProjectDeliveries(deliveryRecords);
-    setProjectArchetypes(await projectRepository.getProjectArchetypeSpecs(projectId));
-    // 修改历史每次读项目时一并算好。审计事件与回执是只增的，量随操作数增长，
-    // 不随快照大小增长，因此不做分页。
-    const [auditEvents, receipts] = await Promise.all([
-      projectRepository.getProjectAuditEvents(projectId),
-      projectRepository.getProjectCommandReceipts(projectId),
-    ]);
-    setChangeHistory(buildChangeHistory({
-      auditEvents,
-      receipts,
-      snapshot: head?.snapshot ?? null,
-      impactInput: head ? {
-        snapshot: head.snapshot,
-        artifacts,
-        requirementMatrices: matrices,
-        checkRuns: checks,
-        deliveryEvaluations,
-        deliveries: deliveryRecords,
-      } : null,
-    }));
-  };
-
-  // 首次打开装载演示项目（08 演示项目定义 3.3：不生成空白项目）。
-  // 装载策略由组合根注入，组件只负责把结果显示出来。
-  const showBootstrapResult = async (result: DemoLoadResult | null) => {
-    if (!result) return;
-    if (result.loaded.length) {
-      await refresh();
-      setNotice(`已载入 ${result.loaded.length} 个演示项目。演示数据标为示例来源，不能作为真实成果。`);
-    }
-    if (result.failed.length) setError(describeFailure(result.failed[0]!.reason, "演示项目载入失败"));
-  };
-
-  useEffect(() => {
-    void refresh()
-      .then(bootstrapDemo)
-      .then(showBootstrapResult)
-      .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")));
-    void fetch("/api/status")
-      .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
-      .then(setServerStatus)
-      .catch(() => setServerStatus(null));
-  }, []);
-
-  const filtered = useMemo(
-    () => projects.filter((project) => `${project.name}${project.buildingName}`.toLowerCase().includes(query.toLowerCase())),
-    [projects, query],
-  );
-  const parsedEvidenceCount = selected?.snapshot.parseRecords.filter((record) => record.status === "parsed" && record.extractedText?.trim()).length ?? 0;
-  // 可读图的资料：图纸类且文件在本机。是不是图像格式由运行侧按资料本体判定，
-  // 界面不重复一份格式清单。
-  const readableDrawingEvidenceIds = selected?.snapshot.evidences
-    .filter((item) => item.evidenceType === "drawing" && item.dataStatus === "available")
-    .map((item) => item.id) ?? [];
-  const modelRunning = modelProgress && !["succeeded", "failed", "cancelled"].includes(modelProgress.phase);
-  // 三个长任务的运行判定与指示器门槛（07 表 7）：短于 300 ms 不显示指示器
-  const geometryRunning = geometryStarting
-    || Boolean(cadProgress && !["succeeded", "failed", "cancelled"].includes(cadProgress.phase));
-  const drawingRunning = Boolean(drawingProgress && !["succeeded", "failed", "cancelled"].includes(drawingProgress));
-  const exportRunning = Boolean(exportProgress);
-  const showGeometryTask = useDelayedIndicator(geometryRunning);
-  const showDrawingTask = useDelayedIndicator(drawingRunning);
-  const showExportTask = useDelayedIndicator(exportRunning);
-  const confirmedTask = selected?.snapshot.taskDefinitions.find((task) => task.confirmedAt !== null) ?? null;
-  const openIssues = selected?.snapshot.issues.filter((issue) => issue.status === "open") ?? [];
-  const geometryRevision = selected?.snapshot.geometryRevisions.at(-1) ?? null;
-  // 已有版本时取其绑定的 spec；否则取项目包导入的最新 spec（existingGeometrySpec 首次生成路径）
-  const geometrySpec = selected
-    ? (geometryRevision
-      ? selected.snapshot.geometrySpecs.find((item) => item.id === geometryRevision.geometrySpecId) ?? null
-      : selected.snapshot.geometrySpecs.at(-1) ?? null)
-    : null;
-  const selectedGeometryEntity = geometrySpec?.objects.find((item) => item.id === selectedGeometryEntityId) ?? null;
-  const latestCheckRun = projectCheckRuns
-    .filter((item) => item.geometryRevisionId === geometryRevision?.id)
-    .sort((left, right) => left.completedAt.localeCompare(right.completedAt))
-    .at(-1) ?? null;
-  const latestCheckedArtifactIds = new Set(latestCheckRun?.artifactRefs ?? []);
-  const drawingArtifacts = projectArtifacts.filter((item) => item.geometryRevisionId === geometryRevision?.id && latestCheckedArtifactIds.has(item.id));
-  const latestDeliveryEvaluationIds = new Set(projectDeliveryEvaluations
-    .filter((item) => item.geometryRevisionId === geometryRevision?.id && latestCheckRun && item.checkRunRefs.includes(latestCheckRun.id))
-    .map((item) => item.id));
-  const latestDelivery = projectDeliveries
-    .filter((item) => item.geometryRevisionId === geometryRevision?.id && latestDeliveryEvaluationIds.has(item.evaluationId))
-    .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
-    .at(-1) ?? null;
-  const latestBlockedDelivery = projectDeliveryEvaluations
-    .filter((item) => item.outcome === "blocked")
-    .sort((left, right) => left.evaluatedAt.localeCompare(right.evaluatedAt))
-    .at(-1) ?? null;
-  // 项目自带 GeometrySpec 时走 existingGeometrySpec 重绑路径，不要求逐构件事实
-  const geometryGate = selected
-    ? (selected.snapshot.geometrySpecs.length ? { ready: true, missing: [] as string[] } : geometryPrerequisites(selected))
-    : null;
-  const readModelInput = selected ? {
-    head: selected,
-    modelRuns: projectModelRuns,
-    ruleRuns: projectRuleRuns,
-    decisions: projectDecisions,
-    artifacts: projectArtifacts,
-    checks: projectCheckRuns,
-    evaluations: projectDeliveryEvaluations,
-    deliveries: projectDeliveries,
-  } : null;
-  const dashboard = readModelInput ? buildProjectDashboardSummary(readModelInput) : null;
-  const artifactSetView = readModelInput ? buildArtifactSetView(readModelInput) : null;
-  const modelCostView = buildModelRunCostView(projectModelRuns);
-  const humanInterventions = readModelInput ? buildHumanInterventionView(readModelInput) : null;
-  const provenance = readModelInput ? buildProvenanceGraphView(readModelInput, selectedGeometryEntity) : null;
-
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      if (!geometryRevision) return setGeometryBlob(null);
-      const glb = geometryRevision.assets.find((asset) => asset.kind === "glb");
-      if (!glb) return setGeometryBlob(null);
-      const stored = await projectRepository.getAsset(glb.assetId);
-      if (!cancelled) setGeometryBlob(stored.content);
-    };
-    void load().catch(() => setGeometryBlob(null));
-    return () => { cancelled = true; };
-  }, [geometryRevision?.id]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const urls: string[] = [];
-    const load = async () => {
-      const previewArtifacts = drawingArtifacts.filter((artifact): artifact is ArtifactRecord & { kind: "svg" | "pdf" } => artifact.kind === "svg" || artifact.kind === "pdf");
-      const resolved = await Promise.all(previewArtifacts.slice(0, 6).map(async (artifact) => {
-        const stored = await projectRepository.getAsset(artifact.assetId);
-        const url = URL.createObjectURL(stored.content);
-        urls.push(url);
-        return { id: artifact.id, kind: artifact.kind, label: artifact.fileName, url };
-      }));
-      if (!cancelled) setDrawingPreviewUrls(resolved);
-    };
-    void load().catch(() => setDrawingPreviewUrls([]));
-    return () => {
-      cancelled = true;
-      urls.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [drawingArtifacts.map((artifact) => artifact.id).join("|")]);
-
-  // 选中资料后读取原件生成预览地址；切换或卸载时释放
-  useEffect(() => {
-    setImageSelection(null);
-    if (!activeEvidenceId) { setEvidencePreview(null); return; }
-    let cancelled = false;
-    let created: string | null = null;
-    const evidence = selected?.snapshot.evidences.find((item) => item.id === activeEvidenceId);
-    const load = async () => {
-      if (!evidence) return;
-      const stored = await projectRepository.getAsset(evidence.assetId);
-      if (cancelled) return;
-      created = URL.createObjectURL(stored.content);
-      setEvidencePreview({ evidenceId: evidence.id, url: created, mimeType: stored.record.mimeType, fileName: stored.record.fileName });
-    };
-    void load().catch(() => setEvidencePreview(null));
-    return () => {
-      cancelled = true;
-      if (created) URL.revokeObjectURL(created);
-    };
-  }, [activeEvidenceId, selected?.projectId]);
-
-  // 切换视图的唯一入口。左栏、页签、顶栏、待办和助手动作层都走这里。
-  // 进项目级页面前先记下当前工作视图，退回时才知道回哪儿。
-  const goToView = (viewId: StageId) => {
-    if (projectPageIds.has(viewId) && !projectPageIds.has(activeStage)) setReturnView(activeStage);
-    setActiveStage(viewId);
-  };
-
-  // 退出当前项目回到列表页。左栏按钮与助手走同一处，行为不分叉。
-  const exitToProjectList = () => {
-    setSelected(null);
-    setActiveEvidenceId(null);
-  };
-
-  const chooseProject = async (projectId: string) => {
-    setError(null);
-    setModelProgress(null);
-    setActiveEvidenceId(null);
-    await loadProject(projectId);
-  };
-
-  const generateDemoGeometry = async () => {
-    if (!selected) return;
-    setError(null);
-    setCadProgress(null);
-    setCadCancelling(false);
-    setGeometryStarting(true);
-    cadCancelRequested.current = false;
-    try {
-      const outcome = await cadJobs.startGeometry(
-        selected,
-        localActorId(),
-        setCadProgress,
-        geometrySpec ? { mode: "existingGeometrySpec", geometrySpecId: geometrySpec.id } : { mode: "derivedFromFacts" },
-      );
-      setSelected(outcome.head);
-      await refresh();
-      setNotice("三维模型已生成。成果尚未经专业复核签发，不能用于正式交付");
-    } catch (reason) {
-      setCadProgress(null);
-      // 用户主动取消不是失败，不进失败提示。
-      if (cadCancelRequested.current || isCancelled(reason)) setNotice("三维模型生成已取消，本机数据保持在生成前的状态");
-      else setError(describeFailure(reason, "几何作业失败"));
-    } finally {
-      setGeometryStarting(false);
-      setCadCancelling(false);
-    }
-  };
-
-  const confirmGeometryFacts = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!selected) return;
-    const data = new FormData(event.currentTarget);
-    try {
-      const head = await commitGeometryFacts({
-        head: selected, actorId: localActorId(), repository: projectRepository, commands: projectCommands,
-        values: {
-          components: JSON.parse(String(data.get("geometryComponents") ?? "[]")),
-          interfaces: JSON.parse(String(data.get("geometryInterfaces") ?? "[]")),
-        },
-      });
-      setSelected(head); await refresh(); setNotice("控制尺寸已作为人工确认事实写入；来源仍指向当前项目资料");
-    } catch (reason) { setError(describeFailure(reason, "控制尺寸确认失败")); }
-  };
-
-  const generateDrawings = async () => {
-    if (!selected || !geometryRevision || !geometrySpec) return;
-    setError(null); setDrawingProgress("queued"); setDrawingCancelling(false);
-    drawingCancelRequested.current = false;
-    try {
-      const matrix = buildArtifactMatrix(selected, geometryRevision, geometrySpec);
-      const outcome = await drawingJobs.generate(selected, localActorId(), geometryRevision, matrix, setDrawingProgress);
-      setSelected(outcome.head); await loadProject(selected.projectId); await refresh(); setNotice("成组图纸已生成，各图与同一版三维模型一致");
-    } catch (reason) {
-      setDrawingProgress(null);
-      if (drawingCancelRequested.current || isCancelled(reason)) setNotice("图纸生成已取消，本机数据保持在生成前的状态");
-      else setError(describeFailure(reason, "图纸作业失败"));
-    } finally {
-      setDrawingCancelling(false);
-    }
-  };
-
-  const cancelGeometry = async () => {
-    cadCancelRequested.current = true;
-    setCadCancelling(true);
-    try { await cadJobs.cancel(); } catch { /* 取消失败时作业仍会自然结束 */ }
-  };
-
-  const cancelDrawings = async () => {
-    drawingCancelRequested.current = true;
-    setDrawingCancelling(true);
-    try { await drawingJobs.cancel(); } catch { /* 同上 */ }
-  };
-
-  const createProxyDelivery = async () => {
-    if (!selected || !geometryRevision || !latestCheckRun || !drawingArtifacts.length) return;
-    setError(null);
-    try {
-      const outcome = await deliveries.createProxyDraft(selected, localActorId(), geometryRevision, drawingArtifacts, latestCheckRun);
-      setSelected(outcome.head); await loadProject(selected.projectId); await refresh(); setNotice("交付草案已建立。尚未签发，不能用于正式交付或施工");
-    } catch (reason) { setError(describeFailure(reason, "代理交付草案建立失败")); }
-  };
-
-  const recordBlockedDelivery = async () => {
-    if (!selected) return;
-    setError(null);
-    try {
-      await deliveries.recordBlockedEvaluation(selected, localActorId());
-      await loadProject(selected.projectId);
-      await refresh();
-      setNotice("已记录本次无法正式交付的原因。系统没有生成空成果，也没有用默认数据补齐");
-    } catch (reason) { setError(describeFailure(reason, "记录失败")); }
-  };
-
-  const downloadArtifact = async (artifact: ArtifactRecord) => {
-    const asset = await projectRepository.getAsset(artifact.assetId);
-    const url = URL.createObjectURL(asset.content);
-    const anchor = document.createElement("a"); anchor.href = url; anchor.download = artifact.fileName; anchor.click();
-    URL.revokeObjectURL(url);
-  };
-
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
     const data = new FormData(event.currentTarget);
-    try {
-      const head = await createLocalProject({
-        name: String(data.get("name") ?? "").trim(),
-        buildingName: String(data.get("buildingName") ?? "").trim(),
-        locationText: String(data.get("locationText") ?? "").trim(),
-      });
-      await refresh();
-      const evaluated = await workflow.evaluate(head, localActorId());
-      setSelected(evaluated);
-      setProjectModelRuns([]);
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(head.projectId));
-      setProjectDecisions([]);
-      setProjectArtifacts([]); setProjectCheckRuns([]); setProjectDeliveryEvaluations([]); setProjectDeliveries([]);
-      setActiveStage("evidence");
-      setShowCreate(false);
-    } catch (reason) {
-      setError(describeFailure(reason, "项目创建失败"));
-    }
+    const created = await wb.createProject({
+      name: String(data.get("name") ?? "").trim(),
+      buildingName: String(data.get("buildingName") ?? "").trim(),
+      locationText: String(data.get("locationText") ?? "").trim(),
+    });
+    if (created) setShowCreate(false);
   };
-
-  // 导出是本机流程，没有服务端作业可以终止，因此按阶段推进并在每个阶段
-  // 之间检查取消标志。取消后不落文件，界面回到导出前的状态。
-  const downloadProject = async (type: "json" | "zip") => {
-    if (!selected || exportProgress) return;
-    setError(null);
-    exportCancelled.current = false;
-    setExportProgress({ phase: "组装项目记录", cancelling: false });
-    try {
-      const bytes = type === "json"
-        ? await projectPackages.exportJson(selected.projectId)
-        : await projectPackages.exportZip(selected.projectId);
-      if (exportCancelled.current) { setNotice("导出已取消，未产生文件"); return; }
-      setExportProgress({ phase: "写出文件", cancelling: false });
-      const blob = new Blob([bytes as BlobPart], { type: type === "json" ? "application/json" : "application/zip" });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${selected.snapshot.project.name}.${type === "json" ? "project.json" : "gujian.zip"}`;
-      anchor.click();
-      URL.revokeObjectURL(url);
-      setNotice(`已导出 ${type.toUpperCase()} 项目包`);
-    } catch (reason) {
-      setExportProgress(null);
-      setError(describeFailure(reason, "项目包导出失败"));
-      return;
-    } finally {
-      setExportProgress(null);
-    }
-  };
-
-  const cancelExport = () => {
-    exportCancelled.current = true;
-    setExportProgress((current) => current ? { ...current, cancelling: true } : current);
-  };
-
-  const buildAssistantSnapshot = () => buildWorkspaceSnapshot({
-    projectId: selected?.projectId ?? null,
-    currentStage: activeStage,
-    openIssueCount: openIssues.length,
-    entityCount: (geometrySpec?.objects.length ?? 0) + (selected?.snapshot.entities.length ?? 0),
-    geometryRevisionCount: selected?.snapshot.geometryRevisions.length ?? 0,
-    artifactCount: projectArtifacts.length,
-    deliveryCount: projectDeliveries.length,
-    serverModelConfigured: serverStatus?.modelConfigured ?? false,
-    unparsedEvidenceCount: Math.max(0, (selected?.snapshot.evidences.length ?? 0) - parsedEvidenceCount),
-    hasImageSelection: imageSelection !== null,
-  });
-
-  const handleAssistantClientOp = async (input: { clientOp: string; actionName: string; args: unknown }) => {
-    const outcome = await runClientOp({
-    executors: assistantExecutors,
-    getHead: () => selected,
-    getOpenDockItems: () => openIssues.length,
-    knownRefs: () => [
-      ...(geometrySpec?.objects.flatMap((object) => [object.stableKey, object.displayNameZh]) ?? []),
-      ...(selected?.snapshot.entities.map((entity) => entity.name) ?? []),
-    ],
-    measurements: () => (selected?.snapshot.measurements ?? [])
-      .filter((measurement) => measurement.quantity.normalizedUnit === "mm")
-      .map((measurement) => ({
-        part: measurement.subjectRef,
-        valueMm: Number(measurement.quantity.normalizedValue),
-        measured: measurement.metadataStatus === "complete",
-      })),
-    switchStage: (stageId) => {
-      if (stages.some((stage) => stage.id === stageId)) goToView(stageId as StageId);
-    },
-    exitProject: () => exitToProjectList(),
-    advanceStage: () => {
-      // 推进只在十一个工作视图里走，不会推到项目级页面上去。
-      const index = journeyViewOrder.indexOf(activeStage);
-      const next = index < 0 ? undefined : journeyViewOrder[index + 1];
-      if (!next) return null;
-      setActiveStage(next);
-      return stages.find((stage) => stage.id === next)?.label ?? next;
-    },
-    jobProgressSummary: () => {
-      const lines = [
-        modelProgress && "助手正在识别资料",
-        cadProgress && "正在生成三维模型",
-        drawingProgress && `图纸作业：${drawingProgress}`,
-      ].filter(Boolean);
-      return lines.length ? lines.join("；") : "当前没有进行中的作业";
-    },
-    startGeometryJob: async () => { await generateDemoGeometry(); },
-    startDrawingJob: async () => { await generateDrawings(); },
-    startModelJob: async () => { await runModel(); },
-    exportPackage: async (format) => { await downloadProject(format === "json" ? "json" : "zip"); },
-    runDataCheck: async () => {
-      if (!selected) return;
-      await assistantExecutors.runDataCheck(selected);
-      await loadProject(selected.projectId);
-    },
-    presentProposal: setPendingProposal,
-    }, input);
-    // 写入型动作把项目重新读一遍。执行体只写库不碰组件状态，不重读的话
-    // 助手回报已新增而构件表纹丝不动，要退出项目再进来才看得到。
-    if (outcome.mutated && selected) await loadProject(selected.projectId);
-    return outcome;
-  };
-
-  const registerArchetype = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!selected) return;
-    const data = new FormData(event.currentTarget);
-    const splitDims = (name: string) => String(data.get(name) ?? "").split(/[，,\s]+/).filter(Boolean);
-    try {
-      const commandId = crypto.randomUUID();
-      const archetypeSpec = ArchetypeSpecSchema.parse({
-        id: crypto.randomUUID(),
-        projectId: selected.projectId,
-        buildingRef: selected.snapshot.buildings[0]!.id,
-        baseParams: { D: String(data.get("baseD") ?? "300") },
-        bayDimensions: [
-          { direction: "x", valuesMm: splitDims("bayX") },
-          { direction: "y", valuesMm: splitDims("bayY") },
-        ],
-        liftRatioSetRef: String(data.get("liftRatioSetRef") || "qing-gongcheng-zuofa"),
-        stepCount: Number(data.get("stepCount")),
-        pillarNet: String(data.get("pillarNet") ?? "").trim(),
-        fangNet: String(data.get("fangNet") ?? "").trim() || null,
-        sourceDeclaration: String(data.get("sourceDeclaration") ?? "").trim() || "形制判断，来源未注明",
-        producer: { producerType: "human", actorId: localActorId(), actionRef: { commandId } },
-        createdAt: new Date().toISOString(),
-      });
-      await projectCommands.execute({
-        commandType: "CommitArchetypeSpec", commandId, projectId: selected.projectId, actorId: localActorId(),
-        expectedRevisionId: selected.revisionId, issuedAt: archetypeSpec.createdAt,
-        payload: { archetypeSpec },
-      });
-      // 应然值派生留痕：派生结果作为规则运行记录（producer=rule），含计算值、容差与出处
-      const afterSpec = await projectRepository.getProjectHead(selected.projectId);
-      const derivation = deriveArchetypeExpectations(archetypeSpec);
-      const ruleRunId = crypto.randomUUID();
-      const derivedAt = new Date().toISOString();
-      await projectCommands.execute({
-        commandType: "CommitRuleEvaluation", commandId: crypto.randomUUID(), projectId: selected.projectId,
-        actorId: localActorId(), expectedRevisionId: afterSpec!.revisionId, issuedAt: derivedAt,
-        payload: {
-          ruleRun: {
-            id: ruleRunId, projectId: selected.projectId, inputRevisionId: afterSpec!.revisionId,
-            ruleSetVersion: derivation.ruleSetVersion, status: "completed",
-            producer: { producerType: "rule", ruleRunId },
-            results: derivation.expected.map((item) => ({
-              ruleId: `archetype-expected-${item.dimension}`,
-              outcome: "passed" as const,
-              inputRefs: [archetypeSpec.id],
-              issueRefs: [],
-              message: item.status === "computed"
-                ? `应然 ${item.dimension} ${item.valueMm} mm（不覆盖实测，不作正式标注依据）`
-                : `应然 ${item.dimension} 按实计，无实测记录时保持未知`,
-              ...(item.valueMm !== null ? { computedValueText: `${item.valueMm} mm` } : {}),
-              ...(item.toleranceText ? { toleranceText: item.toleranceText } : {}),
-              sourceText: item.sourceText,
-            })),
-            startedAt: derivedAt, completedAt: derivedAt,
-          },
-          issues: [],
-        },
-      });
-      await loadProject(selected.projectId);
-      setNotice("形制模板已登记，应然值派生完成并入规则运行记录");
-    } catch (reason) {
-      setError(describeFailure(reason, "形制模板登记失败"));
-    }
-  };
-
-  const adoptProposal = async () => {
-    if (!selected || !pendingProposal) return;
-    try {
-      await assistantExecutors.commitConfirmedModification(selected, pendingProposal);
-      setPendingProposal(null);
-      await loadProject(selected.projectId);
-      setNotice("修改建议已确认生效");
-    } catch (reason) {
-      setError(describeFailure(reason, "修改建议生效失败"));
-    }
-  };
-
   const importProject = async (file: File) => {
-    setError(null);
-    try {
-      const projectId = await projectPackages.import(new Uint8Array(await file.arrayBuffer()), file.name, localActorId());
-      await refresh();
-      await loadProject(projectId);
-      setActiveStage("evidence");
-      setNotice("项目包已校验并导入本地库");
-    } catch (reason) {
-      setError(describeFailure(reason, "项目包导入失败"));
-    } finally {
-      if (importInput.current) importInput.current.value = "";
-    }
+    await wb.importProject(file);
+    if (importInput.current) importInput.current.value = "";
   };
-
-  const clearLibrary = async () => {
-    if (!window.confirm("清空本地项目库？请先导出需要保留的项目包。")) return;
-    await projectRepository.clearAllData();
-    setSelected(null);
-    setProjectModelRuns([]);
-    setProjectRuleRuns([]);
-    setProjectDecisions([]);
-    setProjectArtifacts([]); setProjectCheckRuns([]); setProjectDeliveries([]);
-    await refresh();
-    setNotice("本机项目已清空");
+  const uploadFromInput = async (files: readonly File[]) => {
+    await uploadEvidenceFiles(files);
+    if (evidenceInput.current) evidenceInput.current.value = "";
   };
-
-  const verifyEmptyLibraryRoundTrip = async () => {
-    if (!selected) return;
-    setError(null);
-    setRoundTripReceipt(null);
-    let verifyDatabase: IDBDatabase | null = null;
-    const expected = {
-      projectId: selected.projectId,
-      revisionId: selected.revisionId,
-      evidenceIds: selected.snapshot.evidences.map((item) => item.id).sort(),
-      assetIds: selected.snapshot.evidences.map((item) => item.assetId).sort(),
-      geometryRevisionIds: selected.snapshot.geometryRevisions.map((item) => item.id).sort(),
-      artifactIds: projectArtifacts.map((item) => item.id).sort(),
-      checkRunIds: projectCheckRuns.map((item) => item.id).sort(),
-      deliveryIds: projectDeliveries.map((item) => item.id).sort(),
-    };
-    try {
-      const [jsonBytes, zipBytes] = await Promise.all([
-        projectPackages.exportJson(selected.projectId),
-        projectPackages.exportZip(selected.projectId),
-      ]);
-      const sha256 = async (bytes: Uint8Array) => {
-        const input = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
-        return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", input)))
-          .map((value) => value.toString(16).padStart(2, "0"))
-          .join("");
-      };
-      const [jsonSha256, zipSha256] = await Promise.all([sha256(jsonBytes), sha256(zipBytes)]);
-      // JSON is validated without mutating the source library. Only the ZIP
-      // path performs the destructive empty-library round trip.
-      const parsedJson = projectPackages.parseWithContents(jsonBytes, "roundtrip.project.json");
-      const jsonData = parsedJson.data;
-      const jsonMissingAssetCount = jsonData.assets.filter((asset) => asset.contentStatus === "missing").length;
-      if (
-        jsonData.snapshot.project.id !== expected.projectId
-        || jsonData.sourceRevision.id !== expected.revisionId
-        || jsonData.snapshot.evidences.length !== expected.evidenceIds.length
-        || jsonMissingAssetCount !== jsonData.assets.length
-        || parsedJson.contents.size !== 0
-      ) {
-        throw new Error("JSON_ROUNDTRIP_IDENTITY_MISMATCH");
-      }
-
-      const parsedZip = projectPackages.parseWithContents(zipBytes, "roundtrip.gujian.zip");
-      if (
-        parsedZip.data.snapshot.project.id !== expected.projectId
-        // 标为可用的资料必须带回原件；登记时就没有原件的资料不该凭空多出内容。
-        || parsedZip.contents.size !== parsedZip.data.assets.filter((asset) => asset.contentStatus === "available").length
-      ) {
-        throw new Error("ZIP_ROUNDTRIP_ASSET_CONTENT_MISSING");
-      }
-
-      // 恢复检验在独立数据库进行，本机项目库全程只读，不受影响
-      verifyDatabase = await openWorkbenchDatabase(ROUNDTRIP_VERIFY_DB);
-      const verifyRepository = new IndexedDbProjectRepository(verifyDatabase);
-      const verifyPackages = new ProjectPackageService(verifyRepository);
-      const importedProjectId = await verifyPackages.import(zipBytes, "roundtrip.gujian.zip", localActorId());
-      const importedHead = await verifyRepository.getProjectHead(importedProjectId);
-      if (!importedHead) throw new Error("ROUNDTRIP_PROJECT_MISSING");
-      const importedEvidenceIds = importedHead.snapshot.evidences.map((item) => item.id).sort();
-      const importedAssetIds = importedHead.snapshot.evidences.map((item) => item.assetId).sort();
-      const importedArtifacts = await verifyRepository.getProjectArtifacts(importedProjectId);
-      const importedChecks = await verifyRepository.getProjectCheckRuns(importedProjectId);
-      const importedDeliveries = await verifyRepository.getProjectDeliveries(importedProjectId);
-      if (
-        importedHead.projectId !== expected.projectId
-        || !importedHead.snapshot.adoptedRecordRefs.some((ref) => ref.startsWith("revision:"))
-        || JSON.stringify(importedEvidenceIds) !== JSON.stringify(expected.evidenceIds)
-        || JSON.stringify(importedAssetIds) !== JSON.stringify(expected.assetIds)
-        || JSON.stringify(importedHead.snapshot.geometryRevisions.map((item) => item.id).sort()) !== JSON.stringify(expected.geometryRevisionIds)
-        || JSON.stringify(importedArtifacts.map((item) => item.id).sort()) !== JSON.stringify(expected.artifactIds)
-        || JSON.stringify(importedChecks.map((item) => item.id).sort()) !== JSON.stringify(expected.checkRunIds)
-        || JSON.stringify(importedDeliveries.map((item) => item.id).sort()) !== JSON.stringify(expected.deliveryIds)
-      ) {
-        throw new Error("ROUNDTRIP_IDENTITY_MISMATCH");
-      }
-      const [rules, decisions] = await Promise.all([
-        verifyRepository.getProjectRuleRuns(importedProjectId),
-        verifyRepository.getProjectDecisions(importedProjectId),
-      ]);
-      const importedAssets = await verifyRepository.getProjectAssets(importedProjectId);
-      const expectedAvailableAssetIds = new Set(
-        (await projectRepository.getProjectAssets(selected.projectId))
-          .filter(({ record }) => record.contentStatus === "available").map(({ record }) => record.id),
-      );
-      const assetStateWrong = importedAssets.some(({ record, content }) => expectedAvailableAssetIds.has(record.id)
-        ? record.contentStatus !== "available" || content === null
-        : record.contentStatus !== "missing");
-      if (assetStateWrong) throw new Error("ZIP_ROUNDTRIP_ASSET_CONTENT_MISSING");
-      setRoundTripReceipt({
-        jsonSha256,
-        jsonBytes: jsonBytes.byteLength,
-        jsonEvidenceCount: jsonData.snapshot.evidences.length,
-        jsonMissingAssetCount,
-        zipSha256,
-        zipBytes: zipBytes.byteLength,
-        projectId: importedProjectId,
-        sourceRevisionId: expected.revisionId,
-        importedRevisionId: importedHead.revisionId,
-        evidenceCount: importedHead.snapshot.evidences.length,
-        ruleRunCount: rules.length,
-        decisionCount: decisions.length,
-        geometryRevisionCount: importedHead.snapshot.geometryRevisions.length,
-        artifactCount: importedArtifacts.length,
-        checkRunCount: importedChecks.length,
-        deliveryCount: importedDeliveries.length,
-      });
-      setNotice("检验通过：导出的项目在独立环境中完整恢复，本机项目未改动");
-    } catch (reason) {
-      setError(describeFailure(reason, "导出与恢复检验未通过"));
-    } finally {
-      // 验证库用完即删，失败路径同样清理，不留残库
-      verifyDatabase?.close();
-      await new Promise<void>((resolve) => {
-        const request = indexedDB.deleteDatabase(ROUNDTRIP_VERIFY_DB);
-        request.onsuccess = () => resolve();
-        request.onerror = () => resolve();
-        request.onblocked = () => resolve();
-      });
-    }
-  };
-
-  const uploadEvidenceFiles = async (files: readonly File[]) => {
-    if (!selected) return;
-    setError(null);
-    try {
-      let current = selected;
-      for (const file of files) {
-        const updated = await evidenceIngestion.ingest(current, localActorId(), file);
-        current = await workflow.evaluate(updated, localActorId());
-      }
-      setSelected(current);
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(current.projectId));
-      await refresh();
-      setNotice(files.length === 1
-        ? `资料“${files[0]!.name}”已保存并建立来源关系`
-        : `${files.length} 份原始资料已保存并逐份建立来源关系`);
-    } catch (reason) {
-      setError(describeFailure(reason, "资料上传失败"));
-    } finally {
-      if (evidenceInput.current) evidenceInput.current.value = "";
-    }
-  };
-
-  const downloadEvidence = async (assetId: string) => {
-    const asset = await projectRepository.getAsset(assetId);
-    const url = URL.createObjectURL(asset.content);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = asset.record.fileName;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // 重新识别：有图像资料就认构件，没有就退回资料要点整理。
-  // 前者产出带图上位置的构件，框选修正才能按位置对应到构件。
-  const runModel = async () => {
-    if (!selected) return;
-    setError(null);
-    setModelProgress(null);
-    try {
-      const imageIds = readableDrawingEvidenceIds;
-      const outcome = imageIds.length
-        ? await modelRuns.runComponentRecognition(selected, localActorId(), imageIds, setModelProgress)
-        : await modelRuns.runEvidenceSummary(selected, localActorId(), setModelProgress);
-      const evaluated = await workflow.evaluate(outcome.head, localActorId());
-      setSelected(evaluated);
-      setProjectModelRuns(await projectRepository.getProjectModelRuns(selected.projectId));
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId));
-      setActiveStage("candidates");
-      setNotice(outcome.candidate ? "助手已给出识别结果，请在待确认区逐条核对" : "本次识别没有产生可用结果");
-      await refresh();
-    } catch (reason) {
-      setError(describeFailure(reason, "模型运行失败"));
-    }
-  };
-
-  // 图纸尺寸转写：读出图上已标注的尺寸进待确认区。
-  // 只对图像类资料可用，人工确认后才写入尺寸事实。
-  const transcribeDrawings = async () => {
-    if (!selected) return;
-    const drawingIds = readableDrawingEvidenceIds;
-    if (!drawingIds.length) {
-      setError(inputError("本项目没有可读取的图纸资料。先上传 JPEG、PNG 或 WebP 格式的实测图。"));
-      return;
-    }
-    setError(null);
-    setModelProgress(null);
-    try {
-      const outcome = await modelRuns.runMeasurementTranscription(selected, localActorId(), drawingIds, setModelProgress);
-      const evaluated = await workflow.evaluate(outcome.head, localActorId());
-      setSelected(evaluated);
-      setProjectModelRuns(await projectRepository.getProjectModelRuns(selected.projectId));
-      setActiveStage("candidates");
-      const count = outcome.candidate?.structured?.kind === "measurementTranscription"
-        ? outcome.candidate.structured.dimensions.length
-        : 0;
-      setNotice(count
-        ? `从图纸读出 ${count} 条尺寸，请在待确认区逐条核对后再写入项目`
-        : "本次读取没有得到可用尺寸");
-      await refresh();
-    } catch (reason) {
-      setError(describeFailure(reason, "图纸尺寸读取失败"));
-    }
-  };
-
-  // 确认后把读准的尺寸写成事实。来源标为实测转录并注明取自哪份资料，
-  // producer 为 human：数值出自模型，采信与否是人的决定。
-  const confirmTranscribedDimensions = async (candidate: ProjectHead["snapshot"]["candidates"][number]) => {
-    if (!selected || candidate.structured?.kind !== "measurementTranscription") return;
-    const rows = candidate.structured.dimensions.filter((item) => item.certainty === "certain" && item.valueMm);
-    if (!rows.length) {
-      setError(inputError("这条结果里没有可直接写入的尺寸。读不准的条目需要先人工核实原图。"));
-      return;
-    }
-    setError(null);
-    try {
-      const at = new Date().toISOString();
-      await projectCommands.execute({
-        commandType: "CommitFacts",
-        commandId: crypto.randomUUID(),
-        projectId: selected.projectId,
-        actorId: localActorId(),
-        expectedRevisionId: selected.revisionId,
-        issuedAt: at,
-        payload: {
-          facts: rows.map((row, index) => ({
-            id: crypto.randomUUID(),
-            subjectRef: selected.snapshot.buildings[0]?.id ?? selected.projectId,
-            field: `documentedDimension.transcribed${index + 1}`,
-            value: {
-              name: row.partZh ?? "未定名尺寸",
-              value: Number(row.valueMm),
-              unit: "mm",
-              methodZh: `转写自${evidenceTitle(row.evidenceRef)}${row.locationZh ? ` ${row.locationZh}` : ""}标注 ${row.valueText}`,
-            },
-            producer: { producerType: "human" as const, actorId: localActorId() },
-            evidenceRefs: [row.evidenceRef],
-            reviewStatus: "confirmed" as const,
-            dataStatus: "available" as const,
-          })),
-        },
-      });
-      await loadProject(selected.projectId);
-      await refresh();
-      setNotice(`已写入 ${rows.length} 条尺寸，来源标为实测转录`);
-    } catch (reason) {
-      setError(describeFailure(reason, "尺寸写入失败"));
-    }
-  };
-
-  // 识别出的构件确认后写成构件记录。只写模型标为确定的那些：标了不确定的
-  // 由人逐条核实，不由模型替人决定哪条能进项目。这与尺寸转写同一条口径。
-  const confirmRecognizedComponents = async (candidate: ProjectHead["snapshot"]["candidates"][number]) => {
-    if (!selected || candidate.structured?.kind !== "componentRecognition") return;
-    const rows = candidate.structured.components.filter((item) => item.certainty === "certain");
-    if (!rows.length) {
-      setError(inputError("这条结果里没有标为确定的构件。标了不确定的需要先人工核实原图。"));
-      return;
-    }
-    setError(null);
-    try {
-      const outcome = await assistantExecutors.commitRecognizedComponents(selected, rows.map((row) => ({
-        nameZh: row.nameZh,
-        categoryZh: row.categoryZh,
-        evidenceRef: row.evidenceRef,
-        region: row.region,
-      })));
-      if (outcome.kind === "rejected") {
-        setError(inputError(outcome.reasonZh ?? "构件写入未执行"));
-        return;
-      }
-      await loadProject(selected.projectId);
-      await refresh();
-      setNotice(outcome.messageZh ?? `已写入 ${rows.length} 个构件记录`);
-    } catch (reason) {
-      setError(describeFailure(reason, "构件写入失败"));
-    }
-  };
-
-  const confirmTaskSetup = async (event: FormEvent<HTMLFormElement>) => {
+  const submitTaskForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!selected) return;
-    const data = new FormData(event.currentTarget);
-    const split = (value: FormDataEntryValue | null) => String(value ?? "").split(/[，,\n]/).map((item) => item.trim()).filter(Boolean);
-    try {
-      const updated = await workflow.confirmTaskSetup(selected, localActorId(), {
-        taskName: String(data.get("taskName") ?? "").trim(),
-        scope: split(data.get("scope")),
-        regulationRefs: split(data.get("regulations")),
-        deliverables: split(data.get("deliverables")),
-        artifactRequirements: {
-          titleZh: String(data.get("drawingTitle") ?? "").trim(),
-          revisionLabel: String(data.get("drawingRevision") ?? "").trim(),
-          geometryTargetRoles: split(data.get("geometryTargetRoles")),
-          sheets: JSON.parse(String(data.get("drawingSheets") ?? "[]")),
-          views: JSON.parse(String(data.get("drawingViews") ?? "[]")),
-        },
-      });
-      setSelected(updated);
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId));
-      await refresh();
-      setNotice("任务范围、规范和责任角色已一次确认");
-    } catch (reason) {
-      setError(describeFailure(reason, "任务设置失败"));
-    }
+    await submitTaskSetup(readTaskSetupForm(new FormData(event.currentTarget)));
   };
-
-  const replaceTaskSetup = async (event: FormEvent<HTMLFormElement>) => {
+  const submitObservation = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!selected || !confirmedTask) return;
-    const data = new FormData(event.currentTarget);
-    const split = (value: FormDataEntryValue | null) => String(value ?? "").split(/[，\n]/).map((item) => item.trim()).filter(Boolean);
-    try {
-      const updated = await workflow.replaceTaskDefinition(selected, localActorId(), {
-        taskName: String(data.get("taskName") ?? "").trim(),
-        scope: split(data.get("scope")),
-        regulationRefs: split(data.get("regulations")),
-        deliverables: split(data.get("deliverables")),
-        artifactRequirements: {
-          titleZh: String(data.get("drawingTitle") ?? "").trim(),
-          revisionLabel: String(data.get("drawingRevision") ?? "").trim(),
-          geometryTargetRoles: split(data.get("geometryTargetRoles")),
-          sheets: JSON.parse(String(data.get("drawingSheets") ?? "[]")),
-          views: JSON.parse(String(data.get("drawingViews") ?? "[]")),
-        },
-      });
-      setSelected(updated);
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId));
-      await refresh();
-      setNotice("任务成果要求已建立新版本；旧任务定义保留在审计链中。");
-    } catch (reason) { setError(describeFailure(reason, "任务成果要求更新失败")); }
-  };
-
-  const decideCandidate = async (issueId: string, candidateId: string, outcome: "accepted" | "rejected") => {
-    if (!selected) return;
-    const typedReason = decisionReasons[issueId]?.trim() ?? "";
-    if (outcome === "rejected" && !typedReason) {
-      setError(inputError("驳回候选时需要填写理由"));
-      return;
-    }
-    try {
-      const updated = await workflow.decideCandidate(selected, localActorId(), {
-        candidateId,
-        issueId,
-        outcome,
-        reason: outcome === "accepted"
-          ? "接受为已核对的模型候选；不转为现场实测或正式事实。"
-          : typedReason,
-      });
-      setSelected(updated);
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId));
-      setProjectDecisions(await projectRepository.getProjectDecisions(selected.projectId));
-      setDecisionReasons((current) => ({ ...current, [issueId]: "" }));
-      await refresh();
-      setNotice(outcome === "accepted" ? "候选已接受，仍保持模型来源" : "候选已驳回并记录理由");
-    } catch (reason) {
-      setError(describeFailure(reason, "候选处理失败"));
-    }
-  };
-
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const decideIssueOption = async (issueId: string, outcome: "accepted" | "rejected") => {
-    if (!selected) return;
-    const selectedOptionId = selectedOptions[issueId] ?? null;
-    const typedReason = decisionReasons[issueId]?.trim() ?? "";
-    if (outcome === "accepted" && !selectedOptionId) {
-      setError(inputError("请先选择一个方案再确认"));
-      return;
-    }
-    if (outcome === "rejected" && !typedReason) {
-      setError(inputError("暂不选择时需要填写理由"));
-      return;
-    }
-    try {
-      const updated = await workflow.decideIssueOption(selected, localActorId(), {
-        issueId, outcome, selectedOptionId, reason: typedReason || null,
-      });
-      setSelected(updated);
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId));
-      setProjectDecisions(await projectRepository.getProjectDecisions(selected.projectId));
-      setDecisionReasons((current) => ({ ...current, [issueId]: "" }));
-      setNotice(outcome === "accepted" ? "方案已选定并记录出处，问题关闭" : "已记录暂不选择的理由");
-    } catch (reason) {
-      setError(describeFailure(reason, "方案决定失败"));
-    }
-  };
-
-  // 现状记录（05 表 2）：人工判断必须绑定资料，无证据不允许记录
-  const recordObservation = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!selected) return;
     const form = event.currentTarget;
     const data = new FormData(form);
-    const evidenceRef = String(data.get("evidenceRef") ?? "").trim();
-    if (!evidenceRef) { setError(inputError("现状记录必须指向一份项目资料")); return; }
-    const commandId = crypto.randomUUID();
-    try {
-      await projectCommands.execute({
-        commandType: "CommitObservations",
-        commandId, projectId: selected.projectId, actorId: localActorId(),
-        expectedRevisionId: selected.revisionId, issuedAt: new Date().toISOString(),
-        payload: { observations: [{
-          id: crypto.randomUUID(),
-          subjectRef: String(data.get("subjectRef") ?? "").trim() || selected.snapshot.buildings[0]!.id,
-          observationType: String(data.get("observationType") ?? "visibleCondition") as "visibleCondition" | "material" | "damage" | "state",
-          text: String(data.get("text") ?? "").trim(),
-          producer: { producerType: "human", actorId: localActorId(), actionRef: { commandId } },
-          evidenceRefs: [evidenceRef],
-          dataStatus: "available",
-        }] },
-      });
-      const head = await projectRepository.getProjectHead(selected.projectId);
-      if (head) setSelected(await workflow.evaluate(head, localActorId()));
-      form.reset();
-      setNotice("现状记录已写入当前版本，来源指向所选资料");
-    } catch (reason) {
-      setError(describeFailure(reason, "现状记录写入失败"));
-    }
+    const ok = await recordObservation({
+      observationType: String(data.get("observationType") ?? "visibleCondition"),
+      subjectRef: String(data.get("subjectRef") ?? ""),
+      evidenceRef: String(data.get("evidenceRef") ?? ""),
+      text: String(data.get("text") ?? ""),
+    });
+    if (ok) form.reset();
   };
-
-  const confirmDocumentedDimensionChain = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!selected) return;
-    const data = new FormData(event.currentTarget);
-    const segmentWidthsMm = String(data.get("segmentWidthsMm") ?? "")
-      .split(/[，,\s]+/).map(Number).filter((value) => Number.isFinite(value));
-    try {
-      const committed = await commitDocumentedDimensionChain({
-        head: selected, actorId: localActorId(), repository: projectRepository, commands: projectCommands,
-        totalWidthMm: Number(data.get("totalWidthMm")), segmentWidthsMm,
-        measurementMetadataComplete: data.get("measurementMetadataComplete") === "on",
-        evidenceRefs: selected.snapshot.evidences.map((item) => item.id),
-      });
-      const evaluated = await workflow.evaluate(committed, localActorId());
-      setSelected(evaluated);
-      setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId));
-      await refresh();
-      setNotice("文档尺寸链已转写，规则已自动核对差值和测量元数据");
-    } catch (reason) {
-      setError(describeFailure(reason, "尺寸链转写失败"));
-    }
+  const clearReason = (issueId: string) => setDecisionReasons((current) => ({ ...current, [issueId]: "" }));
+  const decideCandidateFromForm = async (issueId: string, candidateId: string, outcome: "accepted" | "rejected") => {
+    if (await decideCandidate(issueId, candidateId, outcome, decisionReasons[issueId] ?? "")) clearReason(issueId);
   };
-
-  // 应然与实测超容差的差异即现状记录候选（架构 v1.4 §5.7）
-  const archetypeDifferences = (() => {
-    const archetype = projectArchetypes.at(-1);
-    if (!archetype || !selected) return [];
-    return compareWithMeasuredFacts(deriveArchetypeExpectations(archetype), selected.snapshot.facts)
-      .filter((item) => item.withinTolerance === false);
-  })();
-
-  // 引用一律显示资料名称，不显示内部编号。
-  // 找不到对应资料时如实说明，不能用泛称掩盖引用失效。
-  const evidenceTitle = (ref: string) => {
-    const evidence = selected?.snapshot.evidences.find((item) => item.id === ref || ref.endsWith(item.id));
-    return evidence?.title ?? "引用的资料缺失";
-  };
-  // 字段名转成测绘人员熟悉的说法
-  const factFieldLabel = (field: string) => {
-    const named: Record<string, string> = {
-      "documentedDimension.totalWidthMm": "资料记载总尺寸",
-      "documentedDimension.segmentWidthsMm": "资料记载分段尺寸",
-      "documentedDimension.measurementMetadataComplete": "测量记录完整性",
-      "roofFrame.totalDepthMm": "通进深",
-      "roofFrame.stepCount": "步架数",
-    };
-    if (named[field]) return named[field];
-    const measured = field.match(/^archetype\.measured\.(.+)$/);
-    if (measured) return `${measured[1]}（实测）`;
-    return field;
-  };
-
-  // 数据来源构成（07 界面视觉规范表 3）：四类来源按数据模型的 producerType 统计。
-  // 数据模型没有"实测"这一类来源，实测另按测量记录统计，不能拿人工确认顶替。
-  const basisCounts = (() => {
-    const counts = { model: 0, human: 0, rule: 0, demo: 0 };
-    const add = (producerType: string) => {
-      const type = producerType as keyof typeof counts;
-      if (type in counts) counts[type] += 1;
-    };
-    for (const fact of selected?.snapshot.facts ?? []) add(fact.producer.producerType);
-    // 构件也是数据，它的来源要计入。只统计事实会让纯几何项目
-    // 五类来源全显示为零，看上去像没有任何来源信息。
-    for (const object of geometrySpec?.objects ?? []) add(object.producer.producerType);
-    return counts;
-  })();
-
-  // 实测记录：只算测量人、时间、方法齐全的记录，这是系统内唯一有现场实测支撑的口径
-  const measuredRecordCount = (selected?.snapshot.measurements ?? [])
-    .filter((item) => item.metadataStatus === "complete").length;
-
-  // 阻断原因用中文说法显示。多个内部码可能翻成同一句话，去重后再列。
-  const blockerReasons = [...new Set((dashboard?.blockerCodes ?? []).map(describeBlocker))];
-
-  // 当前状态条（05 表 3）：说明系统正在做什么与进度，不用静态文案顶替
-  const currentStatusText = (() => {
-    if (!selected) return "选中项目后，可在这里对助手下达操作指令。";
-    if (modelRunning && modelProgress) return "助手正在识别资料，稍后给出结果";
-    if (cadProgress && !["succeeded", "failed", "cancelled"].includes(cadProgress.phase)) return "正在生成三维模型";
-    const openCount = dashboard?.openIssueCount ?? 0;
-    if (openCount > 0) return `有 ${openCount} 项等你处理，其余部分照常推进`;
-    return `当前在${stages.find((item) => item.id === activeStage)?.label ?? "工作区"}，没有需要你处理的事项`;
-  })();
-
-  // 待办（05 图 1 左栏）：按原因分条列出，不合并成一个数字
-  const pendingItems = (() => {
-    const open = selected?.snapshot.issues.filter((issue) => issue.status === "open") ?? [];
-    const groups: { label: string; count: number; hint: string; stage: StageId }[] = [
-      { label: "存疑构件", count: open.filter((i) => i.issueType === "professionalUncertainty").length, hint: "非唯一专业选择，需要人工判断", stage: "issues" },
-      { label: "缺现场事实", count: open.filter((i) => i.issueType === "missingEvidence").length, hint: "补资料或补录后规则自动复检", stage: "evidence" },
-      { label: "规则冲突", count: open.filter((i) => i.issueType === "ruleConflict").length, hint: "尺寸链或规则核对不通过", stage: "issues" },
-    ];
-    return groups.filter((item) => item.count > 0);
-  })();
-
-  // 任务进度状态（05 图 1 左栏）：只按当前项目已有数据判断，不预设完成度
-  const stageStates: Record<StageId, { label: string; tone: "done" | "active" | "idle" }> = {
-    tasks: confirmedTask ? { label: "已确认", tone: "done" } : { label: "待确认", tone: "active" },
-    evidence: selected?.snapshot.evidences.length ? { label: `${selected.snapshot.evidences.length} 份`, tone: "done" } : { label: "无资料", tone: "idle" },
-    measurements: selected?.snapshot.facts.length ? { label: `${selected.snapshot.facts.length} 项事实`, tone: "done" } : { label: "无事实", tone: "idle" },
-    objects: geometrySpec?.objects.length ? { label: `${geometrySpec.objects.length} 个对象`, tone: "done" } : { label: "无对象", tone: "idle" },
-    conditions: selected?.snapshot.observations.length ? { label: `${selected.snapshot.observations.length} 条记录`, tone: "done" } : { label: "无记录", tone: "idle" },
-    issues: dashboard?.openIssueCount ? { label: `${dashboard.openIssueCount} 项待办`, tone: "active" } : { label: "无待办", tone: "done" },
-    geometry: geometryRevision ? { label: "已生成", tone: "done" } : { label: "未生成", tone: "idle" },
-    sheetStyle: confirmedTask?.artifactRequirements
-      ? { label: `${confirmedTask.artifactRequirements.sheets.length} 张图幅`, tone: "done" }
-      : { label: "未设置", tone: "idle" },
-    drawings: drawingArtifacts.length ? { label: `${drawingArtifacts.length} 项产物`, tone: "done" } : { label: "未生成", tone: "idle" },
-    checks: latestCheckRun ? { label: "已检查", tone: "done" } : { label: "未检查", tone: "idle" },
-    package: latestDelivery ? { label: "已建草案", tone: "done" } : { label: "未建立", tone: "idle" },
-    candidates: projectModelRuns.length ? { label: `${projectModelRuns.length} 次运行`, tone: "done" } : { label: "未运行", tone: "idle" },
-    history: changeHistory.length ? { label: `${changeHistory.length} 次写入`, tone: "done" } : { label: "无记录", tone: "idle" },
-  };
-
-  // 项目级页面只占一栏，左栏与助手栏都不出现。
-  const onProjectPage = projectPageIds.has(activeStage);
-  const currentJourney = journeyStages.find((stage) => (stage.views as readonly string[]).includes(activeStage));
-
-  // 阶段三态：当前、已完成、未开始。一个阶段含多个视图时，全部视图完成才算完成。
-  // 不是按序推进：本产品允许资料先到、现状后补，后面的阶段可能已经有数据而前面的还空着。
-  // 因此第三态是未开始而不是未到，判据只看该阶段自己有没有数据。
-  const journeyState = (views: readonly string[]) => {
-    const detail = views.map((view) => stageStates[view as StageId].label).join(" · ");
-    if (views.includes(activeStage)) return { tone: "current" as const, detail };
-    const done = views.every((view) => stageStates[view as StageId].tone === "done");
-    return { tone: done ? "done" as const : "todo" as const, detail };
+  const decideIssueOptionFromForm = async (issueId: string, outcome: "accepted" | "rejected") => {
+    if (await decideIssueOption(issueId, outcome, selectedOptions[issueId] ?? null, decisionReasons[issueId] ?? "")) clearReason(issueId);
   };
 
   // 分隔条拖动：按中栏宽度换算比例，限制在 30% 至 70%
@@ -1469,7 +264,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
         </label>
         <div className="project-list" aria-label="项目列表">
           {filtered.map((project) => (
-            <button className="gj-card project-card" key={project.projectId} type="button" onClick={() => void chooseProject(project.projectId)}>
+            <button className="gj-card project-card" key={project.projectId} type="button" onClick={() => void wb.chooseProject(project.projectId)}>
               
               <strong>{project.name}</strong>
               <small>{project.buildingName}</small>
@@ -1563,7 +358,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                     </button>
                   )}
                   <button className="gj-btn gj-btn--primary" type="button" onClick={() => evidenceInput.current?.click()}><Upload size={14} /> 上传原始资料</button>
-                  <input ref={evidenceInput} className="sr-only" type="file" multiple onChange={(event) => { const files = Array.from(event.target.files ?? []); if (files.length) void uploadEvidenceFiles(files); }} />
+                  <input ref={evidenceInput} className="sr-only" type="file" multiple onChange={(event) => { const files = Array.from(event.target.files ?? []); if (files.length) void uploadFromInput(files); }} />
                 </header>
                 {renderSplit(<>
                     <div className="evidence-list">
@@ -1701,7 +496,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                     {archetypeDifferences.length > 0 && (
                       <div className="inline-warning">有 {archetypeDifferences.length} 项实测尺寸超出按形制推算的允许偏差，建议记入现状：{archetypeDifferences.map((item) => item.dimension).join("、")}。</div>
                     )}
-                    <form className="task-setup" onSubmit={(event) => void recordObservation(event)}>
+                    <form className="task-setup" onSubmit={(event) => void submitObservation(event)}>
                       <div><span className="node-label">人工节点</span><h4>记录一条现状判断</h4><p>只记录当前资料上可见的内容。不可见部位记为待复查，不写推断结论。</p></div>
                       <label>判断类型
                         <select name="observationType" defaultValue="visibleCondition">
@@ -1869,7 +664,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                 </div>
                 {humanInterventions && <div className="human-node-summary"><article><strong>{humanInterventions.missingFieldFacts.length}</strong><span>现场事实缺失</span></article><article><strong>{humanInterventions.professionalChoices.length}</strong><span>非唯一专业选择</span></article><article><strong>{humanInterventions.groupedReviewRefs.length}</strong><span>成组审核 / 交付</span></article><small>规则确定项自动执行，不增加逐项确认。</small></div>}
                 {!confirmedTask ? (
-                  <form className="task-setup" onSubmit={(event) => void confirmTaskSetup(event)}>
+                  <form className="task-setup" onSubmit={(event) => void submitTaskForm(event)}>
                     <div><span className="node-label">人工节点</span><h4>确认任务要求</h4><p>成果范围、适用规范和责任人只在任务开始时确认一次。之后能自动判断的检查会直接执行，不再逐项打扰你。</p></div>
                     <label>任务名称<input name="taskName" required defaultValue="资料整理与成果核对" /></label>
                     <label>任务范围（每行一项）<textarea name="scope" required defaultValue={"整理原始资料\n核对构件\n处理资料缺失\n导出成果"} /></label>
@@ -1887,7 +682,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                     <div className="task-summary"><span className="node-label complete">任务要求已确认</span><strong>{confirmedTask.name}</strong><small>{confirmedTask.scope.join(" · ")}</small></div>
                     <details className="task-setup">
                       <summary>更新当前版本的成果要求</summary>
-                      <form onSubmit={(event) => void replaceTaskSetup(event)}>
+                      <form onSubmit={(event) => void submitTaskForm(event)}>
                         <label>任务名称<input name="taskName" required defaultValue={confirmedTask.name} /></label>
                         <label>任务范围<textarea name="scope" required defaultValue={confirmedTask.scope.join("\n")} /></label>
                         <label>适用规范<textarea name="regulations" defaultValue={confirmedTask.regulationRefs.join("\n")} /></label>
@@ -1926,8 +721,8 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                             ))}
                             <label>理由或备注<textarea value={decisionReasons[issue.id] ?? ""} onChange={(event) => setDecisionReasons((current) => ({ ...current, [issue.id]: event.target.value }))} placeholder="选定时可选填；暂不选择时必填" /></label>
                             <div>
-                              <button type="button" className="accept-decision" onClick={() => void decideIssueOption(issue.id, "accepted")}>选定该方案</button>
-                              <button type="button" className="reject-decision" onClick={() => void decideIssueOption(issue.id, "rejected")}>暂不选择</button>
+                              <button type="button" className="accept-decision" onClick={() => void decideIssueOptionFromForm(issue.id, "accepted")}>选定该方案</button>
+                              <button type="button" className="reject-decision" onClick={() => void decideIssueOptionFromForm(issue.id, "rejected")}>暂不选择</button>
                             </div>
                           </div>
                         ) : canDecide ? (
@@ -1935,8 +730,8 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
                             <p>这是非唯一的专业取舍，需要一次人工决定。接受只改变候选核对状态，不改变数据来源。</p>
                             <label>驳回理由<textarea value={decisionReasons[issue.id] ?? ""} onChange={(event) => setDecisionReasons((current) => ({ ...current, [issue.id]: event.target.value }))} placeholder="仅在驳回时必填" /></label>
                             <div>
-                              <button type="button" className="accept-decision" onClick={() => void decideCandidate(issue.id, candidate.id, "accepted")}>接受为已核对候选</button>
-                              <button type="button" className="reject-decision" onClick={() => void decideCandidate(issue.id, candidate.id, "rejected")}>驳回候选</button>
+                              <button type="button" className="accept-decision" onClick={() => void decideCandidateFromForm(issue.id, candidate.id, "accepted")}>接受为已核对候选</button>
+                              <button type="button" className="reject-decision" onClick={() => void decideCandidateFromForm(issue.id, candidate.id, "rejected")}>驳回候选</button>
                             </div>
                           </div>
                         ) : (
@@ -2131,7 +926,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
               <section className="evidence-board package-board">
                 <header className="board-heading"><div><h3>代理成果交付与项目包</h3></div><button className="gj-btn gj-btn--primary" type="button" disabled={!geometryRevision || !latestCheckRun || !drawingArtifacts.length || Boolean(latestDelivery)} onClick={() => void createProxyDelivery()}><PackageOpen size={14} /> 建立代理交付草案</button></header>
                 <div className="pane-body">
-                {latestDelivery ? <div className="delivery-status"><QualificationChip /><strong>交付草案已建立</strong><p>{latestDelivery.restrictions.join(" · ")}</p></div> : deliveries.blockers(selected).length ? <div className="delivery-blockers"><strong>暂时不能正式交付</strong>{deliveries.blockers(selected).map((item) => <p key={item}>{item}</p>)}<button type="button" disabled={Boolean(latestBlockedDelivery)} onClick={() => void recordBlockedDelivery()}>{latestBlockedDelivery ? "已记录原因" : "记录无法交付的原因"}</button></div> : null}
+                {latestDelivery ? <div className="delivery-status"><QualificationChip /><strong>交付草案已建立</strong><p>{latestDelivery.restrictions.join(" · ")}</p></div> : deliveryBlockers.length ? <div className="delivery-blockers"><strong>暂时不能正式交付</strong>{deliveryBlockers.map((item) => <p key={item}>{item}</p>)}<button type="button" disabled={Boolean(latestBlockedDelivery)} onClick={() => void recordBlockedDelivery()}>{latestBlockedDelivery ? "已记录原因" : "记录无法交付的原因"}</button></div> : null}
                 {showExportTask && (
                   <LongTask labelZh={`正在导出项目包：${exportProgress?.phase ?? ""}`} onCancel={cancelExport} cancelling={exportProgress?.cancelling ?? false} />
                 )}
@@ -2202,13 +997,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
             client={assistantChatClient}
             buildSnapshot={buildAssistantSnapshot}
             onClientOp={handleAssistantClientOp}
-            selection={imageSelection
-              ? {
-                evidenceId: imageSelection.evidenceId,
-                evidenceTitle: selected.snapshot.evidences.find((item) => item.id === imageSelection.evidenceId)?.title ?? "资料原件",
-                rectNormalized: imageSelection.rectNormalized,
-              }
-              : null}
+            selection={chatSelection}
             onClearSelection={() => setImageSelection(null)}
           />
         )}
@@ -2220,7 +1009,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
             {pendingProposal.warnings.map((warning) => <p className="inline-warning" key={warning}>{warning}</p>)}
             <div className="proposal-actions">
               <button className="gj-btn gj-btn--primary" type="button" onClick={() => void adoptProposal()}>采纳生效</button>
-              <button className="gj-btn gj-btn--secondary" type="button" onClick={() => { setPendingProposal(null); setNotice("修改建议已拒绝，未生效"); }}>拒绝</button>
+              <button className="gj-btn gj-btn--secondary" type="button" onClick={rejectProposal}>拒绝</button>
             </div>
           </div>
         )}
@@ -2229,7 +1018,7 @@ export function App({ bootstrapDemo = bootstrapDemoProjects }: AppProps = {}) {
             <span className={`run-state ${modelProgress.phase}`}>{modelProgress.phase}</span>
             <strong>助手正在识别</strong>
             <p>{modelProgress.streamedText || "正在建立受控运行……"}</p>
-            {modelRunning && <button className="gj-btn gj-btn--secondary" type="button" onClick={() => void modelRuns.cancel()}><CircleStop size={14} /> 停止识别</button>}
+            {modelRunning && <button className="gj-btn gj-btn--secondary" type="button" onClick={cancelModel}><CircleStop size={14} /> 停止识别</button>}
           </div>
         ) : (
           <>
