@@ -1,0 +1,20 @@
+/* P01 项目列表（66:1562）：页内边距 40/160、间距 24；卡片 552 宽两列，封面 220、信息区 16 内边距 */
+.sc-projects-tools { display: flex; align-items: center; gap: var(--space-sm); }
+.sc-projects-search input { min-height: var(--size-control-md); width: 220px; padding: 0 var(--space-md); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-surface); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
+.sc-projects-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-md); }
+.sc-projects-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); }
+.sc-project { display: flex; flex-direction: column; background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); overflow: hidden; min-width: 0; }
+.sc-project-cover { display: flex; align-items: center; justify-content: center; height: 220px; background: var(--bg-subtle); color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); text-align: center; padding: var(--space-lg); overflow: hidden; }
+.sc-project-cover img { width: 100%; height: 100%; object-fit: cover; }
+.sc-project-info { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-lg); }
+.sc-project-name { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); min-height: 28px; }
+.sc-project-name h3 { font: var(--font-weight-medium) var(--font-size-18)/var(--line-26) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
+.sc-project-sub { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); overflow-wrap: anywhere; }
+.sc-project-counts { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+/* 新建卡（66:1595）：虚线边，居中，加号 30/38 */
+.sc-project--new { align-items: center; justify-content: center; gap: var(--space-md); padding: var(--space-lg); border-style: dashed; min-height: 388px; text-align: center; cursor: pointer; }
+.sc-project--new:hover { background: var(--bg-hover); }
+.sc-project-plus { font: var(--font-weight-regular) 30px/var(--line-38) var(--font-family-ui); color: var(--text-tertiary); }
+.sc-project--new strong { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); }
+.sc-project--new span:last-child { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
+.sc-projects-foot { display: flex; align-items: center; gap: var(--space-md); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-tertiary); }

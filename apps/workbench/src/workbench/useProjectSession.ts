@@ -15,7 +15,8 @@ import {
   buildArtifactSetView, buildHumanInterventionView, buildModelRunCostView, buildProjectDashboardSummary,
 } from "../query-models";
 import {
-  createLocalProject, deliveries, listLocalProjects, localActorId, projectPackages, projectRepository, workflow,
+  createLocalProject, deliveries, listLocalProjects, listProjectCards, localActorId, projectPackages, projectRepository, workflow,
+  type ProjectCard,
 } from "../workbench";
 import type { Notices } from "./useNotices";
 
@@ -41,6 +42,7 @@ interface SessionDeps {
 export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const { setError, setNotice } = notices;
   const [projects, setProjects] = useState<readonly ProjectSummary[]>([]);
+  const [projectCards, setProjectCards] = useState<readonly ProjectCard[]>([]);
   const [selected, setSelected] = useState<ProjectHead | null>(null);
   const [projectModelRuns, setProjectModelRuns] = useState<readonly ModelRun[]>([]);
   const [projectRuleRuns, setProjectRuleRuns] = useState<readonly RuleRun[]>([]);
@@ -55,7 +57,11 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const [query, setQuery] = useState("");
   const vocabulary = useMemo(() => resolveVocabulary(), []);
 
-  const refresh = async () => setProjects(await listLocalProjects());
+  // 列表页要的计数随摘要一起读；卡片数据读不出来不影响列表本身
+  const refresh = async () => {
+    setProjects(await listLocalProjects());
+    setProjectCards(await listProjectCards().catch(() => []));
+  };
 
   const loadProject = async (projectId: string) => {
     setError(null);
@@ -291,7 +297,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const blockerReasons = [...new Set((dashboard?.blockerCodes ?? []).map(describeBlocker))];
 
   return {
-    projects, filtered, query, setQuery,
+    projects, projectCards, filtered, query, setQuery,
     selected, setSelected,
     projectModelRuns, setProjectModelRuns,
     projectRuleRuns, setProjectRuleRuns,

@@ -105,7 +105,8 @@ export interface ProjectCard {
   readonly artifactCount: number;
   readonly pendingCount: number;
   readonly checkedArtifactCount: number;
-  readonly coverAssetId: string | null;
+  // 有可用照片时给封面用的对象地址；没有照片时为 null，卡片改显示资料构成
+  readonly coverUrl: string | null;
 }
 
 export async function listProjectCards(): Promise<readonly ProjectCard[]> {
@@ -124,6 +125,9 @@ export async function listProjectCards(): Promise<readonly ProjectCard[]> {
       .filter((run) => run.results.every((result) => result.outcome === "passed"))
       .flatMap((run) => run.artifactRefs));
     const photo = snapshot?.evidences.find((item) => item.evidenceType === "photo" && item.dataStatus === "available") ?? null;
+    const coverUrl = photo
+      ? await projectRepository.getAsset(photo.assetId).then((asset) => asset.content ? URL.createObjectURL(asset.content) : null).catch(() => null)
+      : null;
     return {
       projectId: summary.projectId,
       name: summary.name,
@@ -142,7 +146,7 @@ export async function listProjectCards(): Promise<readonly ProjectCard[]> {
       pendingCount: (snapshot?.issues.filter((item) => item.status === "open").length ?? 0)
         + (snapshot?.candidates.filter((item) => item.reviewStatus === "unreviewed").length ?? 0),
       checkedArtifactCount: artifacts.filter((item) => checkedIds.has(item.id)).length,
-      coverAssetId: photo?.assetId ?? null,
+      coverUrl,
     };
   }));
 }

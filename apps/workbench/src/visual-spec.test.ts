@@ -28,7 +28,6 @@ const STYLE_FILES = cssFiles(SOURCE_ROOT).map((name) => [name, read(name)] as co
 
 const TOKENS = read("tokens.css");
 const COMPONENTS = read("components.css");
-const PAGES = read("styles.css");
 const evidence = (name: string) =>
   readFileSync(join(SOURCE_ROOT, "..", "..", "..", "文档", "05_验证证据", "15_外壳与令牌", name), "utf8");
 const TOKEN_LIST = evidence("令牌取值清单.md");
@@ -203,8 +202,9 @@ describe("界面视觉规范自检（07 第 8 节）", () => {
     const md = tokenValue("--layout-breakpoint-md");
     expect(lg, "缺 --layout-breakpoint-lg").toBeGreaterThan(0);
     expect(md, "缺 --layout-breakpoint-md").toBeGreaterThan(0);
-    expect(PAGES, `断点应为 max-width: ${lg - 1}px`).toContain(`@media (max-width: ${lg - 1}px)`);
-    expect(PAGES, `断点应为 max-width: ${md - 1}px`).toContain(`@media (max-width: ${md - 1}px)`);
+    const allCss = STYLE_FILES.map(([, css]) => css).join("\n");
+    expect(allCss, `断点应为 max-width: ${lg - 1}px`).toContain(`@media (max-width: ${lg - 1}px)`);
+    expect(allCss, `断点应为 max-width: ${md - 1}px`).toContain(`@media (max-width: ${md - 1}px)`);
   });
 
   it("v4 没有阴影，实现里也不留投影与模糊", () => {
@@ -221,8 +221,9 @@ describe("界面视觉规范自检（07 第 8 节）", () => {
 
   it("布局按第 6 节取值，焦点样式不移除", () => {
     // 三栏改走 layout 段令牌，旧的 --left-column 等随旧令牌一并退场
+    const allCss = STYLE_FILES.map(([, css]) => css).join("\n");
     for (const token of ["--layout-left-rail", "--layout-center-min", "--layout-assistant-panel"]) {
-      expect(PAGES, `三栏未引用 ${token}`).toContain(`var(${token})`);
+      expect(allCss, `三栏未引用 ${token}`).toContain(`var(${token})`);
     }
     // 焦点环改走令牌后这里不再写死 2px，改为断言引用了强调描边令牌，
     // 取值仍锁在令牌那一侧：--stroke-emphasis 必须是 2px。基础重置在组件样式里。

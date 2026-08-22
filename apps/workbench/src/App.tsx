@@ -1,12 +1,8 @@
-import {
-  Bot, Building2, CircleStop, Download, FileCheck2, FileJson, Images, Link2, PackageOpen, PanelRightClose,
-  PanelRightOpen, Play, Plus, Ruler, Search, ShieldCheck, Trash2, Upload, X,
-} from "lucide-react";
+import { FileCheck2, FileJson, Images, PackageOpen, Play, Ruler, ShieldCheck, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import type { FormEvent, ReactNode, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from "react";
 import { compareWithMeasuredFacts, deriveArchetypeExpectations } from "@gujian/infrastructure";
 
-import { ChatPanel } from "./assistant/ChatPanel";
 import { EvidenceMarquee } from "./EvidenceMarquee";
 import { GlbViewer } from "./GlbViewer";
 import {
@@ -17,7 +13,13 @@ import { LongTask } from "./LongTask";
 import { formatCost } from "./model-pricing";
 import { DrawingLimitationNote, QualificationChip } from "./QualificationNotice";
 import { describeBlocker } from "./qualification";
-import { STAGE_TONE_LABELS, journeyStages, projectPages, stages, type StageId } from "./view-registry";
+import { ProjectList } from "./screens/ProjectList";
+import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShell";
+import { AssistantPanel } from "./shell/AssistantPanel";
+import { StageRail } from "./shell/StageRail";
+import { Topbar } from "./shell/Topbar";
+import { Button, Dialog, Field } from "./ui";
+import { projectPages, stages, type StageId } from "./view-registry";
 import { useDrawingPreviews, useGeometryBlob } from "./workbench/useAssetUrls";
 import { readTaskSetupForm } from "./workbench/useRecordWrites";
 import { useWorkbench, type WorkbenchOptions } from "./workbench/useWorkbench";
@@ -197,138 +199,186 @@ export function App({ bootstrapDemo }: AppProps = {}) {
     </div>
   );
 
-  return (
-    <main className={`app-shell ${assistantCollapsed ? "assistant-collapsed" : ""} ${selected && onProjectPage ? "single-column" : ""}`}>
-      {!(selected && onProjectPage) && <section className="catalog-panel">
-        <header>
-          <div className="brand-mark" aria-hidden="true">建</div>
-          <h1>古建保护成果工作台</h1>
-        </header>
-        <div className="left-body">
-        {selected && (
-          <div className="active-project">
-            <p className="panel-label">项目</p>
-            <h2>{selected.snapshot.buildings[0]?.name}</h2>
-            <small>{confirmedTask?.name ?? selected.snapshot.project.name}</small>
-            <small>{selected.snapshot.project.locationText ?? "地点尚未记录"}</small>
-          </div>
-        )}
-        {selected && (
-          <div>
-            <p className="panel-label">任务进度</p>
-            <nav className="stage-list" aria-label="任务进度">
-              {journeyStages.map((stage, index) => {
-                const state = journeyState(stage.views);
-                // 点阶段进它的第一个视图。已经在这个阶段里的话保持当前视图不动。
-                const target = state.tone === "current" ? activeStage : stage.views[0] as StageId;
-                return (
-                  <button className={`stage-row ${state.tone === "current" ? "active" : ""}`} key={stage.id} type="button" onClick={() => goToView(target)}>
-                    <span className={`stage-state ${state.tone}`} aria-hidden="true" />
-                    <span className="sr-only">{STAGE_TONE_LABELS[state.tone]}</span>
-                    <strong>{`${String(index + 1).padStart(2, "0")} ${stage.label}`}</strong>
-                    <small>{state.detail}</small>
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-        )}
-        {selected && pendingItems.length > 0 && (
-          <div>
-            <p className="panel-label">待办 {pendingItems.reduce((sum, item) => sum + item.count, 0)}</p>
-            <div className="pending-list">
-              {pendingItems.map((item) => (
-                <button key={item.label} type="button" onClick={() => goToView(item.stage)}>
-                  <strong>{item.label} {item.count}</strong>
-                  <small>{item.hint}</small>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        {selected && dashboard && <div className="stage-qualification"><ShieldCheck size={13} /><span>{dashboard.qualificationLabel}</span></div>}
-        {!selected && <>
-        <button className="gj-btn gj-btn--primary" type="button" onClick={() => setShowCreate(true)}><Plus size={15} /> 新建项目</button>
-        <button className="gj-btn gj-btn--secondary" type="button" onClick={() => importInput.current?.click()}><Upload size={14} /> 导入 JSON / ZIP</button>
-        <input
-          ref={importInput}
-          className="sr-only"
-          type="file"
-          accept=".json,.zip,application/json,application/zip"
-          onChange={(event) => { const file = event.target.files?.[0]; if (file) void importProject(file); }}
-        />
-        <label className="search-field">
-          <Search size={15} />
-          <span className="sr-only">搜索项目</span>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索项目或建筑" />
-        </label>
-        <div className="project-list" aria-label="项目列表">
-          {filtered.map((project) => (
-            <button className="gj-card project-card" key={project.projectId} type="button" onClick={() => void wb.chooseProject(project.projectId)}>
-              
-              <strong>{project.name}</strong>
-              <small>{project.buildingName}</small>
-              <div className="project-card-status">
-                <span>{project.status === "active" ? "进行中" : "已归档"}</span>
-                <time>{project.updatedAt.slice(0, 10)}</time>
-              </div>
-            </button>
-          ))}
-          {!filtered.length && <p className="empty-list">还没有项目。先建立一份可追溯的项目档案。</p>}
-        </div>
-        </>}
-        </div>
-        <footer><span>项目保存在本机</span><button className="gj-btn gj-btn--danger" type="button" onClick={() => void clearLibrary()}><Trash2 size={12} /> 清空本机项目</button></footer>
-      </section>}
-      <section className="workspace-shell">
-        <div className="topbar">
-          {/* 来源可区分（07 界面视觉规范表 3）：四类来源按数据模型统计，实测另算 */}
-          <div>
-            <span className="status-dot" />
-            <span className="muted">{serverStatus?.modelConfigured ? "在线识别已连接" : "等待服务端密钥"}</span>
-            {selected && <><span className="basis-tag measured" title="有测量人、时间与方法记录的现场实测">实测记录 {measuredRecordCount}</span>
-            <span className="basis-tag human">人工确认 {basisCounts.human}</span>
-            <span className="basis-tag inferred">AI 识别 {basisCounts.model}</span>
-            <span className="basis-tag ruled">自动核对 {basisCounts.rule}</span>
-            <span className="basis-tag demo">示例资料 {basisCounts.demo}</span></>}
-          </div>
-          <div>
-            {/* 项目级页面（05 表 3）横跨全部视图，不属于任何阶段，因此放顶栏而不进左栏 */}
-            {selected && <nav className="project-pages" aria-label="项目级页面">
-              <button type="button" onClick={exitToProjectList}>项目列表</button>
-              {projectPages.map((pageId) => (
-                <button className={activeStage === pageId ? "active" : ""} key={pageId} type="button" onClick={() => goToView(pageId)}>
-                  {stages.find((stage) => stage.id === pageId)?.label}
-                </button>
-              ))}
-            </nav>}
-            {selected && !onProjectPage && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => void downloadProject("json")} aria-label="导出项目记录"><FileJson size={14} /></button>}
-            {selected && !onProjectPage && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => void downloadProject("zip")} aria-label="导出完整项目包"><PackageOpen size={14} /></button>}
-            {!(selected && onProjectPage) && <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => setAssistantCollapsed((value) => !value)} aria-label={assistantCollapsed ? "展开助手与来源面板" : "收起助手与来源面板"}>
-              {assistantCollapsed ? <PanelRightOpen size={15} /> : <PanelRightClose size={15} />}
-            </button>}
-          </div>
-        </div>
-        {selected ? (
-          <div className="project-workspace">
-            {/* 单视图阶段不出页签行：一个页签的页签行只占地方，不给信息 */}
-            {currentJourney && currentJourney.views.length > 1 && (
-              <nav className="stage-tabs" aria-label="工作区视图">
-                {currentJourney.views.map((viewId) => (
-                  <button className={activeStage === viewId ? "active" : ""} key={viewId} type="button" onClick={() => goToView(viewId as StageId)}>
-                    {stages.find((stage) => stage.id === viewId)?.label}
-                  </button>
-                ))}
-              </nav>
-            )}
-            {onProjectPage && (
-              <nav className="stage-tabs" aria-label="工作区视图">
-                <button type="button" onClick={() => goToView(returnView)}>← 回到{stages.find((stage) => stage.id === returnView)?.label}</button>
-              </nav>
-            )}
-            <div className="project-stage-layout">
-            <div className="stage-content">
+  const pages = projectPages.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id, active: activeStage === id }));
+  const breadcrumb = selected
+    ? [selected.snapshot.project.name, [selected.snapshot.buildings[0]?.name, confirmedTask?.artifactRequirements?.views[0] ? `1:${confirmedTask.artifactRequirements.views[0].scaleDenominator}` : null].filter(Boolean).join(" ")].join(" / ")
+    : null;
+  const single = !selected || onProjectPage;
+  const currentTabs = currentJourney
+    ? { items: currentJourney.views.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage, onSelect: (id: string) => goToView(id as StageId) }
+    : null;
+  const pageTitle = stages.find((stage) => stage.id === activeStage)?.label ?? "";
 
+  return (
+    <>
+    <AppShell
+      single={single}
+      assistantCollapsed={assistantCollapsed}
+      topbar={(
+        <Topbar
+          breadcrumb={breadcrumb}
+          pages={selected ? pages : []}
+          projectListActive={!selected}
+          onProjectList={exitToProjectList}
+          onSelectPage={(id) => goToView(id as StageId)}
+          assistantToggle={selected && !onProjectPage ? { collapsed: assistantCollapsed, onToggle: () => setAssistantCollapsed((value) => !value) } : null}
+        />
+      )}
+      rail={selected && (
+        <StageRail
+          projectName={selected.snapshot.project.name}
+          buildingName={selected.snapshot.buildings[0]?.name ?? ""}
+          activeStage={activeStage}
+          journeyState={journeyState}
+          pendingItems={pendingItems}
+          qualificationLabel={dashboard?.qualificationLabel ?? null}
+          onGoTo={goToView}
+        />
+      )}
+      center={!selected ? (
+        <ProjectList
+          cards={session.projectCards}
+          query={query}
+          onQuery={setQuery}
+          onOpen={(id) => void wb.chooseProject(id)}
+          onCreate={() => setShowCreate(true)}
+          onImport={importProject}
+          onClear={() => void clearLibrary()}
+        />
+      ) : onProjectPage ? (
+        <ProjectPageFrame title={pageTitle} back={{ label: stages.find((stage) => stage.id === returnView)?.label ?? "", onBack: () => goToView(returnView) }}>
+            {activeStage === "history" && (
+              <section className="evidence-board">
+                <header className="board-heading">
+                  <div><h3>修改历史</h3></div>
+                  <span className="board-count">{changeHistory.length} 次写入</span>
+                </header>
+                {renderSplit(<>
+                <div className="history-list">
+                  {changeHistory.map((entry) => (
+                    <article className="history-row" key={entry.id}>
+                      <div className="history-when">
+                        <strong>{entry.actionZh}</strong>
+                        <small>{entry.occurredAt.replace("T", " ").slice(0, 19)}</small>
+                      </div>
+                      <div className="history-what">
+                        {/* 写入与影响同一行，写入在左影响在右，形态照 v4 的 P03。
+                            写入集是这次动了什么，影响是因此有什么不能再用，两件事不能混。 */}
+                        <div className="history-detail-row">
+                          {/* 认得出名字就列名字，认不出只说动了几条，不用 id 冒充名字 */}
+                          {entry.subjectsZh.length
+                            ? <span>写入：{entry.subjectsZh.join("、")}</span>
+                            : <span className="gj-note">写入：{entry.writeCount} 条记录</span>}
+                          {entry.impact && (entry.impact.total > 0
+                            ? <span className="history-impact">影响：{entry.impact.groups.map((group) => `${group.kind} ${group.count}`).join("、")}</span>
+                            : <span className="gj-note">无下游受影响</span>)}
+                        </div>
+                        {entry.reasonZh && <small>理由：{entry.reasonZh}</small>}
+                        {!entry.reasonZh && <small className="gj-note">未记录理由</small>}
+                        {entry.impact?.preserved.length ? (
+                          <small className="gj-note">已交付版本保留：{entry.impact.preserved.map((group) => `${group.kind} ${group.count}`).join("、")}</small>
+                        ) : null}
+                        {entry.impact?.coverageGaps.length ? (
+                          <small className="inline-warning">这次算不全：{entry.impact.coverageGaps.join("；")}</small>
+                        ) : null}
+                      </div>
+                      <div className="history-who">
+                        <small>操作人 {entry.actorId.slice(0, 8)}</small>
+                        {entry.outcome !== "committed" && <small className="inline-warning">{entry.outcome}</small>}
+                      </div>
+                    </article>
+                  ))}
+                  {!changeHistory.length && <div className="panel-empty">这个项目还没有写入记录。每一次写入都会留在这里，含时间、操作人、改了什么和为什么。</div>}
+                </div>
+                </>, "选择左侧记录查看对应资料。")}
+              </section>
+            )}
+
+            {activeStage === "candidates" && (
+              <section className="evidence-board candidate-board">
+                <header className="board-heading">
+                  <div><h3>AI 候选与真实运行记录</h3></div>
+                  <button className="gj-btn gj-btn--primary" type="button" disabled={!parsedEvidenceCount || Boolean(modelRunning) || !serverStatus?.modelConfigured} onClick={() => void runModel()}>
+                    <Play size={14} /> {modelRunning ? "运行中" : "生成资料候选"}
+                  </button>
+                </header>
+                <div className="pane-body">
+                {/* 这句必须与实际行为一致。构件识别要把图片本身送出去，原来那句
+                    只把文字发出去、原文件不上传，在构件识别接入后就不成立了。 */}
+                <div className="transmission-note"><ShieldCheck size={15} /><span>{readableDrawingEvidenceIds.length
+                  ? "本项目有图像资料，识别时会把这些图片发给助手。其余原文件保存在本机，不发送。"
+                  : "只把本项目已识别出的文字发给助手核对。照片、图纸等原文件保存在本机，不会上传。"}</span></div>
+                {!serverStatus?.modelConfigured && <p className="inline-warning">服务端尚未配置 KIMI_API_KEY，真实运行按钮已锁定。</p>}
+                {!parsedEvidenceCount && <p className="inline-warning">先上传一份可解析的 UTF-8 文本或 JSON 资料。</p>}
+                <div className="candidate-list">
+                  {selected.snapshot.candidates.map((candidate) => (
+                    <article className="candidate-card" key={candidate.id}>
+                      <div className="candidate-meta"><span className="producer-badge model">模型</span><span>{REVIEW_LABELS[candidate.reviewStatus] ?? candidate.reviewStatus}</span></div>
+                      <h4>{candidate.structured?.summary ?? "模型返回了未结构化候选"}</h4>
+                      {candidate.structured?.kind === "evidenceSummary" && !!candidate.structured.findings.length
+                        && <div><strong>资料发现</strong><ul>{candidate.structured.findings.map((item) => <li key={item}>{item}</li>)}</ul></div>}
+                      {/* 图纸尺寸转写：读准的与读不准的分开列，读不准的由人工判断，不由模型替人决定 */}
+                      {candidate.structured?.kind === "measurementTranscription" && (["certain", "uncertain"] as const).map((certainty) => {
+                        const rows = candidate.structured?.kind === "measurementTranscription"
+                          ? candidate.structured.dimensions.filter((item) => item.certainty === certainty)
+                          : [];
+                        if (!rows.length) return null;
+                        return (
+                          <div key={certainty}>
+                            <strong>{certainty === "certain" ? `读出的尺寸 ${rows.length} 条` : `需要你确认的 ${rows.length} 条`}</strong>
+                            <ul>{rows.map((row) => (
+                              <li key={`${row.evidenceRef}:${row.valueText}:${row.locationZh ?? ""}`}>
+                                {row.partZh ?? "部位待确认"} {row.valueText}
+                                {row.valueMm ? `（${row.valueMm} mm）` : ""}
+                                <small>{evidenceTitle(row.evidenceRef)}{row.locationZh ? ` · ${row.locationZh}` : ""}{row.noteZh ? ` · ${row.noteZh}` : ""}</small>
+                              </li>
+                            ))}</ul>
+                          </div>
+                        );
+                      })}
+                      {/* 构件识别：确定的与不确定的分开列。不确定的连疑点一起显示，
+                          由人核实原图，不进这一批写入。 */}
+                      {candidate.structured?.kind === "componentRecognition" && (["certain", "uncertain"] as const).map((certainty) => {
+                        const rows = candidate.structured?.kind === "componentRecognition"
+                          ? candidate.structured.components.filter((item) => item.certainty === certainty)
+                          : [];
+                        if (!rows.length) return null;
+                        return (
+                          <div key={certainty}>
+                            <strong>{certainty === "certain" ? `认出的构件 ${rows.length} 个` : `需要你核实的 ${rows.length} 个`}</strong>
+                            <ul>{rows.map((row, index) => (
+                              <li key={`${row.evidenceRef}:${row.nameZh}:${index}`}>
+                                {row.nameZh}{row.categoryZh ? ` · ${row.categoryZh}` : " · 类别待确认"}
+                                <small>{evidenceTitle(row.evidenceRef)} 上 {(row.region.x * 100).toFixed(1)}%、{(row.region.y * 100).toFixed(1)}% 起，宽 {(row.region.width * 100).toFixed(1)}%、高 {(row.region.height * 100).toFixed(1)}%{row.noteZh ? ` · ${row.noteZh}` : ""}</small>
+                              </li>
+                            ))}</ul>
+                          </div>
+                        );
+                      })}
+                      {!!candidate.structured?.missingInformation.length && <div><strong>缺失信息</strong><ul>{candidate.structured.missingInformation.map((item) => <li key={item}>{item}</li>)}</ul></div>}
+                      {candidate.structured?.kind === "componentRecognition" && candidate.reviewStatus === "unreviewed" && (
+                        <button className="gj-btn" type="button" onClick={() => void confirmRecognizedComponents(candidate)}>
+                          确认认出的构件并写入项目
+                        </button>
+                      )}
+                      {candidate.structured?.kind === "measurementTranscription" && candidate.reviewStatus === "unreviewed" && (
+                        <button className="gj-btn" type="button" onClick={() => void confirmTranscribedDimensions(candidate)}>
+                          确认读准的尺寸并写入项目
+                        </button>
+                      )}
+                    </article>
+                  ))}
+                  {!selected.snapshot.candidates.length && <div className="panel-empty">助手的识别结果只进入待确认区，需要你确认后才写入项目。</div>}
+                </div>
+                {!!modelCostView.rows.length && <div className="run-ledger"><strong>运行账本与用量</strong>{modelCostView.rows.map((run) => <span key={run.runId}><b>{run.provider} / {run.model}</b><i>{run.status} · attempt {run.attempts}</i><em>{run.totalTokens ?? "—"} tokens · {run.costLabel}</em></span>)}<small>累计 {modelCostView.totalTokens} tokens{modelCostView.totalCost ? `，合计 ${formatCost(modelCostView.totalCost)}` : ""}。{modelCostView.priceSourcesZh.length ? `单价出处：${modelCostView.priceSourcesZh.join("；")}。` : "单价表里没有本次用到的模型，未估算费用。"}费用按用量与公开单价算得，仅供参考，以服务商账单为准。</small></div>}
+                </div>
+              </section>
+            )}
+
+
+        </ProjectPageFrame>
+      ) : (
+        <CenterFrame title={pageTitle} tabs={currentTabs} fill>
             {activeStage === "tasks" && (
               <section className="evidence-board task-overview-board">
                 <header className="board-heading"><div><h3>任务要求与成果目录</h3></div><button className="gj-btn gj-btn--text" type="button" onClick={() => setActiveStage("issues")}>在问题流程中更新</button></header>
@@ -518,134 +568,6 @@ export function App({ bootstrapDemo }: AppProps = {}) {
                     </form>
 
                 </>, "选择资料查看对应部位照片。")}
-              </section>
-            )}
-
-            {activeStage === "history" && (
-              <section className="evidence-board">
-                <header className="board-heading">
-                  <div><h3>修改历史</h3></div>
-                  <span className="board-count">{changeHistory.length} 次写入</span>
-                </header>
-                {renderSplit(<>
-                <div className="history-list">
-                  {changeHistory.map((entry) => (
-                    <article className="history-row" key={entry.id}>
-                      <div className="history-when">
-                        <strong>{entry.actionZh}</strong>
-                        <small>{entry.occurredAt.replace("T", " ").slice(0, 19)}</small>
-                      </div>
-                      <div className="history-what">
-                        {/* 写入与影响同一行，写入在左影响在右，形态照 v4 的 P03。
-                            写入集是这次动了什么，影响是因此有什么不能再用，两件事不能混。 */}
-                        <div className="history-detail-row">
-                          {/* 认得出名字就列名字，认不出只说动了几条，不用 id 冒充名字 */}
-                          {entry.subjectsZh.length
-                            ? <span>写入：{entry.subjectsZh.join("、")}</span>
-                            : <span className="gj-note">写入：{entry.writeCount} 条记录</span>}
-                          {entry.impact && (entry.impact.total > 0
-                            ? <span className="history-impact">影响：{entry.impact.groups.map((group) => `${group.kind} ${group.count}`).join("、")}</span>
-                            : <span className="gj-note">无下游受影响</span>)}
-                        </div>
-                        {entry.reasonZh && <small>理由：{entry.reasonZh}</small>}
-                        {!entry.reasonZh && <small className="gj-note">未记录理由</small>}
-                        {entry.impact?.preserved.length ? (
-                          <small className="gj-note">已交付版本保留：{entry.impact.preserved.map((group) => `${group.kind} ${group.count}`).join("、")}</small>
-                        ) : null}
-                        {entry.impact?.coverageGaps.length ? (
-                          <small className="inline-warning">这次算不全：{entry.impact.coverageGaps.join("；")}</small>
-                        ) : null}
-                      </div>
-                      <div className="history-who">
-                        <small>操作人 {entry.actorId.slice(0, 8)}</small>
-                        {entry.outcome !== "committed" && <small className="inline-warning">{entry.outcome}</small>}
-                      </div>
-                    </article>
-                  ))}
-                  {!changeHistory.length && <div className="panel-empty">这个项目还没有写入记录。每一次写入都会留在这里，含时间、操作人、改了什么和为什么。</div>}
-                </div>
-                </>, "选择左侧记录查看对应资料。")}
-              </section>
-            )}
-
-            {activeStage === "candidates" && (
-              <section className="evidence-board candidate-board">
-                <header className="board-heading">
-                  <div><h3>AI 候选与真实运行记录</h3></div>
-                  <button className="gj-btn gj-btn--primary" type="button" disabled={!parsedEvidenceCount || Boolean(modelRunning) || !serverStatus?.modelConfigured} onClick={() => void runModel()}>
-                    <Play size={14} /> {modelRunning ? "运行中" : "生成资料候选"}
-                  </button>
-                </header>
-                <div className="pane-body">
-                {/* 这句必须与实际行为一致。构件识别要把图片本身送出去，原来那句
-                    只把文字发出去、原文件不上传，在构件识别接入后就不成立了。 */}
-                <div className="transmission-note"><ShieldCheck size={15} /><span>{readableDrawingEvidenceIds.length
-                  ? "本项目有图像资料，识别时会把这些图片发给助手。其余原文件保存在本机，不发送。"
-                  : "只把本项目已识别出的文字发给助手核对。照片、图纸等原文件保存在本机，不会上传。"}</span></div>
-                {!serverStatus?.modelConfigured && <p className="inline-warning">服务端尚未配置 KIMI_API_KEY，真实运行按钮已锁定。</p>}
-                {!parsedEvidenceCount && <p className="inline-warning">先上传一份可解析的 UTF-8 文本或 JSON 资料。</p>}
-                <div className="candidate-list">
-                  {selected.snapshot.candidates.map((candidate) => (
-                    <article className="candidate-card" key={candidate.id}>
-                      <div className="candidate-meta"><span className="producer-badge model">模型</span><span>{REVIEW_LABELS[candidate.reviewStatus] ?? candidate.reviewStatus}</span></div>
-                      <h4>{candidate.structured?.summary ?? "模型返回了未结构化候选"}</h4>
-                      {candidate.structured?.kind === "evidenceSummary" && !!candidate.structured.findings.length
-                        && <div><strong>资料发现</strong><ul>{candidate.structured.findings.map((item) => <li key={item}>{item}</li>)}</ul></div>}
-                      {/* 图纸尺寸转写：读准的与读不准的分开列，读不准的由人工判断，不由模型替人决定 */}
-                      {candidate.structured?.kind === "measurementTranscription" && (["certain", "uncertain"] as const).map((certainty) => {
-                        const rows = candidate.structured?.kind === "measurementTranscription"
-                          ? candidate.structured.dimensions.filter((item) => item.certainty === certainty)
-                          : [];
-                        if (!rows.length) return null;
-                        return (
-                          <div key={certainty}>
-                            <strong>{certainty === "certain" ? `读出的尺寸 ${rows.length} 条` : `需要你确认的 ${rows.length} 条`}</strong>
-                            <ul>{rows.map((row) => (
-                              <li key={`${row.evidenceRef}:${row.valueText}:${row.locationZh ?? ""}`}>
-                                {row.partZh ?? "部位待确认"} {row.valueText}
-                                {row.valueMm ? `（${row.valueMm} mm）` : ""}
-                                <small>{evidenceTitle(row.evidenceRef)}{row.locationZh ? ` · ${row.locationZh}` : ""}{row.noteZh ? ` · ${row.noteZh}` : ""}</small>
-                              </li>
-                            ))}</ul>
-                          </div>
-                        );
-                      })}
-                      {/* 构件识别：确定的与不确定的分开列。不确定的连疑点一起显示，
-                          由人核实原图，不进这一批写入。 */}
-                      {candidate.structured?.kind === "componentRecognition" && (["certain", "uncertain"] as const).map((certainty) => {
-                        const rows = candidate.structured?.kind === "componentRecognition"
-                          ? candidate.structured.components.filter((item) => item.certainty === certainty)
-                          : [];
-                        if (!rows.length) return null;
-                        return (
-                          <div key={certainty}>
-                            <strong>{certainty === "certain" ? `认出的构件 ${rows.length} 个` : `需要你核实的 ${rows.length} 个`}</strong>
-                            <ul>{rows.map((row, index) => (
-                              <li key={`${row.evidenceRef}:${row.nameZh}:${index}`}>
-                                {row.nameZh}{row.categoryZh ? ` · ${row.categoryZh}` : " · 类别待确认"}
-                                <small>{evidenceTitle(row.evidenceRef)} 上 {(row.region.x * 100).toFixed(1)}%、{(row.region.y * 100).toFixed(1)}% 起，宽 {(row.region.width * 100).toFixed(1)}%、高 {(row.region.height * 100).toFixed(1)}%{row.noteZh ? ` · ${row.noteZh}` : ""}</small>
-                              </li>
-                            ))}</ul>
-                          </div>
-                        );
-                      })}
-                      {!!candidate.structured?.missingInformation.length && <div><strong>缺失信息</strong><ul>{candidate.structured.missingInformation.map((item) => <li key={item}>{item}</li>)}</ul></div>}
-                      {candidate.structured?.kind === "componentRecognition" && candidate.reviewStatus === "unreviewed" && (
-                        <button className="gj-btn" type="button" onClick={() => void confirmRecognizedComponents(candidate)}>
-                          确认认出的构件并写入项目
-                        </button>
-                      )}
-                      {candidate.structured?.kind === "measurementTranscription" && candidate.reviewStatus === "unreviewed" && (
-                        <button className="gj-btn" type="button" onClick={() => void confirmTranscribedDimensions(candidate)}>
-                          确认读准的尺寸并写入项目
-                        </button>
-                      )}
-                    </article>
-                  ))}
-                  {!selected.snapshot.candidates.length && <div className="panel-empty">助手的识别结果只进入待确认区，需要你确认后才写入项目。</div>}
-                </div>
-                {!!modelCostView.rows.length && <div className="run-ledger"><strong>运行账本与用量</strong>{modelCostView.rows.map((run) => <span key={run.runId}><b>{run.provider} / {run.model}</b><i>{run.status} · attempt {run.attempts}</i><em>{run.totalTokens ?? "—"} tokens · {run.costLabel}</em></span>)}<small>累计 {modelCostView.totalTokens} tokens{modelCostView.totalCost ? `，合计 ${formatCost(modelCostView.totalCost)}` : ""}。{modelCostView.priceSourcesZh.length ? `单价出处：${modelCostView.priceSourcesZh.join("；")}。` : "单价表里没有本次用到的模型，未估算费用。"}费用按用量与公开单价算得，仅供参考，以服务商账单为准。</small></div>}
-                </div>
               </section>
             )}
 
@@ -961,93 +883,36 @@ export function App({ bootstrapDemo }: AppProps = {}) {
                 </div>
               </section>
             )}
-            </div>
-            </div>
-          </div>
-        ) : (
-          <div className="empty-workspace">
-            <div className="trace-spine" aria-hidden="true"><span /><span /><span /><span /></div>
-            <div className="empty-copy">
-              
-              <h2>从一份原始资料开始</h2>
-              <p>新建项目后，资料、模型候选、人工决定和导出包会在同一条证据链中显示。</p>
-              <button className="gj-btn gj-btn--primary" type="button" onClick={() => setShowCreate(true)}><Plus size={16} /> 建立项目档案</button>
-            </div>
-          </div>
-        )}
-        {error && (
-          <div className="error-banner" role="alert">
-            <span>{error.summaryZh}</span>
-            {error.nextStepZh && <em>{error.nextStepZh}</em>}
-            <button type="button" onClick={() => setError(null)} aria-label="关闭提示"><X size={13} /></button>
-          </div>
-        )}
-        {notice && <div className="notice-banner" role="status"><Download size={13} /> {notice}<button type="button" onClick={() => setNotice(null)} aria-label="关闭提示"><X size={13} /></button></div>}
-      </section>
-      {!(selected && onProjectPage) && <aside className={`assistant-shell ${assistantCollapsed ? "collapsed" : ""}`}>
-        {assistantCollapsed ? <button className="gj-btn gj-btn--secondary gj-btn--icon" type="button" onClick={() => setAssistantCollapsed(false)} aria-label="展开助手与来源面板"><PanelRightOpen size={17} /></button> : <>
-        {/* 当前状态条（05 图 1、表 3）：显示正在做什么与进度 */}
-        <div className="assistant-status">
-          <div className="assistant-title"><Bot size={17} /><strong>助手与来源</strong><button type="button" onClick={() => setAssistantCollapsed(true)} aria-label="收起助手与来源面板"><PanelRightClose size={15} /></button></div>
-          <p>{currentStatusText}</p>
-        </div>
-        <div className="assistant-body">
-        {selected && (
-          <ChatPanel
-            client={assistantChatClient}
-            buildSnapshot={buildAssistantSnapshot}
-            onClientOp={handleAssistantClientOp}
-            selection={chatSelection}
-            onClearSelection={() => setImageSelection(null)}
-          />
-        )}
-        {pendingProposal && (
-          <div className="assistant-pending-confirm">
-            <strong>修改建议待确认</strong>
-            <p>{pendingProposal.subjectName} 的 {pendingProposal.field}：{pendingProposal.oldValueText} → {pendingProposal.newValueText}</p>
-            <small>{pendingProposal.rationaleZh}</small>
-            {pendingProposal.warnings.map((warning) => <p className="inline-warning" key={warning}>{warning}</p>)}
-            <div className="proposal-actions">
-              <button className="gj-btn gj-btn--primary" type="button" onClick={() => void adoptProposal()}>采纳生效</button>
-              <button className="gj-btn gj-btn--secondary" type="button" onClick={rejectProposal}>拒绝</button>
-            </div>
-          </div>
-        )}
-        {modelProgress ? (
-          <div className="live-run">
-            <span className={`run-state ${modelProgress.phase}`}>{modelProgress.phase}</span>
-            <strong>助手正在识别</strong>
-            <p>{modelProgress.streamedText || "正在建立受控运行……"}</p>
-            {modelRunning && <button className="gj-btn gj-btn--secondary" type="button" onClick={cancelModel}><CircleStop size={14} /> 停止识别</button>}
-          </div>
-        ) : (
-          <>
-            <div className="assistant-event"><span />助手的识别结果先进入待确认区，确认后才写入项目</div>
-            <div className="assistant-event"><span />资料原件保存在本机，不会上传</div>
-          </>
-        )}
-        {provenance && <section className="provenance-track" aria-label="来源关系">
-          <header><Link2 size={14} /><strong>{selectedGeometryEntity ? "所选构件的来源" : "本项目的来源"}</strong></header>
-          <div>{provenance.nodes.map((node) => <article className={node.status} key={node.key}><i /><span><strong>{node.label}</strong><small>{node.count ? `${node.count} 项已关联` : "尚无"}</small></span></article>)}</div>
-          <footer>{provenance.unknownCount} 项待确认 · {provenance.formalBlockerCount} 项影响正式交付</footer>
-        </section>}
-        </div>
-        </>}
-      </aside>}
-      {showCreate && (
-        <div className="modal-backdrop" role="presentation">
-          <form className="create-dialog" onSubmit={(event) => void handleCreate(event)}>
-            <button className="gj-btn gj-btn--text gj-btn--icon" type="button" onClick={() => setShowCreate(false)} aria-label="关闭"><X size={17} /></button>
-            <Building2 size={20} />
-            
-            <h2>建立项目档案</h2>
-            <label>项目名称<input name="name" required maxLength={200} placeholder="例如：城隍庙山门保护记录" /></label>
-            <label>建筑名称<input name="buildingName" required maxLength={200} placeholder="例如：山门" /></label>
-            <label>地点<input name="locationText" maxLength={500} placeholder="可暂时留空" /></label>
-            <button className="gj-btn gj-btn--primary" type="submit">创建并进入项目</button>
-          </form>
-        </div>
+        </CenterFrame>
       )}
-    </main>
+      assistant={(
+        <AssistantPanel
+          hasProject={selected !== null}
+          activeStage={activeStage}
+          assistant={assistant}
+          jobs={jobs}
+          evidence={evidence}
+          collapsed={assistantCollapsed}
+          onExpand={() => setAssistantCollapsed(false)}
+          selectedEntityName={selectedGeometryEntity?.displayNameZh ?? null}
+          modelConfigured={serverStatus?.modelConfigured ?? false}
+        />
+      )}
+      banners={<Banners error={error} notice={notice} onDismissError={() => setError(null)} onDismissNotice={() => setNotice(null)} />}
+    />
+    {showCreate && (
+      <Dialog title="建立项目档案" onClose={() => setShowCreate(false)}>
+        <form className="gj-stack" onSubmit={(event) => void handleCreate(event)}>
+          <Field label="项目名称" required><input name="name" required maxLength={200} placeholder="例如：城隍庙山门保护记录" /></Field>
+          <Field label="建筑名称" required><input name="buildingName" required maxLength={200} placeholder="例如：山门" /></Field>
+          <Field label="地点"><input name="locationText" maxLength={500} placeholder="可暂时留空" /></Field>
+          <div className="gj-dialog-actions">
+            <Button onClick={() => setShowCreate(false)}>取消</Button>
+            <Button variant="primary" type="submit">创建并进入项目</Button>
+          </div>
+        </form>
+      </Dialog>
+    )}
+    </>
   );
 }
