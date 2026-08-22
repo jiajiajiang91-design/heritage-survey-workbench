@@ -7,8 +7,8 @@ const MIN_RATIO = 30;
 const MAX_RATIO = 70;
 const clamp = (ratio: number) => Math.min(MAX_RATIO, Math.max(MIN_RATIO, ratio));
 
-export function SplitPane({ data, aside, asideLabel = "证据区" }: { data: ReactNode; aside: ReactNode; asideLabel?: string }) {
-  const [ratio, setRatio] = useState(50);
+export function SplitPane({ data, aside, asideLabel = "证据区", initialRatio = 50 }: { data: ReactNode; aside: ReactNode; asideLabel?: string; initialRatio?: number }) {
+  const [ratio, setRatio] = useState(clamp(initialRatio));
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const startDrag = (event: ReactPointerEvent<HTMLDivElement>) => {

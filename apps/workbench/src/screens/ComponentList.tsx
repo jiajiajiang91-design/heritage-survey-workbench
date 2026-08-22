@@ -1,0 +1,147 @@
+import { useMemo, useState } from "react";
+import type { ProjectHead } from "@gujian/application";
+
+import { ENTITY_ORIGIN_LABELS, PRODUCER_LABELS } from "../labels";
+import { EvidencePane } from "../shell/EvidencePane";
+import { Button, EmptyState, InfoRow, SourceTag, Tag } from "../ui";
+import { SplitPane } from "../ui/SplitPane";
+import type { EvidencePane as EvidencePaneModel } from "../workbench/useEvidencePane";
+import "./ComponentList.css";
+
+// W04 构件清单（66:1787）：左卡构件对象（标题行带计数标签，每个对象一张小卡：短编号、来源标签、
+// 名称 · 词表首选名），右卡照片证据（图 278、编号与名称 14/22、说明 13/22、稳定键信息行、底部操作）。
+// 短编号按项目内序号生成（裁决记录第三节第 9 条），稳定键留在详情里可查。
+type Snapshot = ProjectHead["snapshot"];
+type GeometryObject = Snapshot["geometrySpecs"][number]["objects"][number];
+type Entity = Snapshot["entities"][number];
+
+const PAGE_SIZE = 60;
+
+export interface ComponentListProps {
+  snapshot: Snapshot;
+  objects: readonly GeometryObject[];
+  unknowns: readonly { id: string; description: string; blocksFormalEligibility: boolean }[];
+  pane: EvidencePaneModel;
+  typeLabel: (componentType: string, conceptRef?: string) => string;
+  selectedObjectId: string | null;
+  onSelectObject: (id: string | null) => void;
+  onOpenInModel: (id: string) => void;
+}
+
+export function shortCode(index: number): string {
+  return `C-${String(index + 1).padStart(3, "0")}`;
+}
+
+function objectDescription(object: GeometryObject, unknownCount: number): string {
+  const source = object.producer.producerType;
+  const head = source === "rule" ? "由形制规则推算" : source === "demo" ? "来自示例资料" : source === "model" ? "由 AI 识别产生" : source === "human" ? "经人工确认" : PRODUCER_LABELS[source] ?? source;
+  const evidence = object.evidenceRefs.length ? `，引用 ${object.evidenceRefs.length} 项证据` : "，未引用项目资料";
+  const unknown = unknownCount ? `，${unknownCount} 项待确认` : "";
+  return `${head}${evidence}${unknown}。`;
+}
+
+export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, selectedObjectId, onSelectObject, onOpenInModel }: ComponentListProps) {
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [limit, setLimit] = useState(PAGE_SIZE);
+  const [hint, setHint] = useState(false);
+
+  const typeCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const object of objects) counts.set(object.componentType, (counts.get(object.componentType) ?? 0) + 1);
+    return [...counts.entries()].sort((left, right) => right[1] - left[1]);
+  }, [objects]);
+  const indexed = useMemo(() => objects.map((object, index) => ({ object, code: shortCode(index) })), [objects]);
+  const visible = (typeFilter === "all" ? indexed : indexed.filter((item) => item.object.componentType === typeFilter));
+  const shown = visible.slice(0, limit);
+  const selected = indexed.find((item) => item.object.id === selectedObjectId) ?? null;
+  const selectedUnknowns = selected ? unknowns.filter((item) => selected.object.unknownRefs.includes(item.id)) : [];
+  const entities: readonly Entity[] = snapshot.entities;
+
+  return (
+    <SplitPane
+      data={(
+        <>
+          <div className="gj-pane-head">
+            <span className="gj-pane-title">构件对象</span>
+            <Tag>{objects.length} 个对象{entities.length ? ` · ${entities.length} 条构件记录` : ""}</Tag>
+          </div>
+          {typeCounts.length > 1 && (
+            <select className="sc-components-filter" aria-label="按构件类型筛选" value={typeFilter} onChange={(event) => { setTypeFilter(event.target.value); setLimit(PAGE_SIZE); }}>
+              <option value="all">全部类型（{objects.length}）</option>
+              {typeCounts.map(([type, count]) => <option key={type} value={type}>{typeLabel(type)}（{count}）</option>)}
+            </select>
+          )}
+          {objects.length === 0 && entities.length === 0 && (
+            <EmptyState>还没有构件。构件只能来自本项目的资料，或本项目已核对过的三维模型。</EmptyState>
+          )}
+          <div className="gj-pane-list">
+            {shown.map(({ object, code }) => (
+              <button type="button" className="gj-list-card" key={object.id} aria-current={object.id === selectedObjectId ? "true" : undefined} onClick={() => onSelectObject(object.id)}>
+                <div className="gj-list-card-head">
+                  <span className="gj-list-card-title">{code}</span>
+                  <SourceTag producerType={object.producer.producerType} />
+                </div>
+                <span className="gj-list-card-sub">{object.displayNameZh} · 词表 {typeLabel(object.componentType, object.conceptRef)}{object.unknownRefs.length ? ` · ${object.unknownRefs.length} 项待确认` : ""}</span>
+              </button>
+            ))}
+            {visible.length > shown.length && (
+              <Button onClick={() => setLimit((current) => current + PAGE_SIZE)}>显示更多（还有 {visible.length - shown.length} 个）</Button>
+            )}
+            {/* 记录级构件与几何对象并列显示，不是二选一：框选新增与识别确认写的是记录级构件。
+                排除与遮挡都要在行上看得出来，排除不删记录只标出来。 */}
+            {entities.map((entity) => {
+              const excluded = snapshot.exclusionRecords.some((record) => record.originRef === entity.id);
+              return (
+                <div className="gj-list-card" key={entity.id}>
+                  <div className="gj-list-card-head">
+                    <span className="gj-list-card-title">{entity.name}</span>
+                    <span className="gj-row">
+                      {excluded && <Tag tone="danger">已排除</Tag>}
+                      {entity.visibility && <Tag tone="warning">不可见 · {entity.visibility.needsReshoot ? "需补拍" : "无需补拍"}</Tag>}
+                      <Tag>{ENTITY_ORIGIN_LABELS[entity.origin ?? "import"]}</Tag>
+                    </span>
+                  </div>
+                  <span className="gj-list-card-sub">{entity.entityType} · {entity.locationText ?? "未记位置"}</span>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+      aside={(
+        <EvidencePane
+          evidences={snapshot.evidences}
+          pane={pane}
+          title="照片证据"
+          emptyHint="选择资料查看构件对应的照片。"
+          caption={selected ? (
+            <div className="sc-components-caption">
+              <strong>{selected.code} · {selected.object.displayNameZh}</strong>
+              <p>{objectDescription(selected.object, selectedUnknowns.length)}{pane.activeEvidenceId ? "" : " 照片原件未随包提供或未选择，无法回溯到图像位置。"}</p>
+            </div>
+          ) : null}
+          detail={(
+            <>
+              {selected && (
+                <div className="gj-card gj-card--compact">
+                  <InfoRow label="稳定键" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
+                  <InfoRow label="构件类型" value={`${typeLabel(selected.object.componentType, selected.object.conceptRef)}（${selected.object.componentType}）`} />
+                  {selectedUnknowns.map((unknown) => (
+                    <InfoRow key={unknown.id} label="待确认" value={unknown.description} trailing={<Tag tone={unknown.blocksFormalEligibility ? "danger" : "warning"}>{unknown.blocksFormalEligibility ? "影响正式交付" : "不影响正式交付"}</Tag>} />
+                  ))}
+                </div>
+              )}
+              {!selected && objects.length > 0 && <p className="gj-pane-desc">点击左侧构件，查看稳定键、证据引用和待确认项。</p>}
+              {hint && <p className="gj-alert gj-alert--info">在上方照片上拖出一个框，再在右侧助手里说要改什么，例如：这里漏了一个雀替。</p>}
+              <span className="gj-spacer" />
+              <div className="gj-actions">
+                <Button onClick={() => setHint(true)} disabled={!pane.evidencePreview}>框选修正</Button>
+                <Button variant="primary" disabled={!selected} onClick={() => { if (selected) onOpenInModel(selected.object.id); }}>在模型中查看</Button>
+              </div>
+            </>
+          )}
+        />
+      )}
+    />
+  );
+}

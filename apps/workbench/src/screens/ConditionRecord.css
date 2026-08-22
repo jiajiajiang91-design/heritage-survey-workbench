@@ -1,0 +1,13 @@
+/* W05 现状记录（66:1938）：左卡 448 照片 420 高，右卡 328 信息行卡 64 高；卡内边距 12 */
+.sc-condition { display: flex; flex: 1 1 auto; min-height: 0; }
+.sc-condition .gj-split-data, .sc-condition .gj-split-aside { padding: var(--space-md); }
+.sc-condition-photo { border-radius: var(--radius-md); overflow: hidden; background: var(--bg-subtle); max-height: 420px; }
+.sc-condition-photo--empty { display: flex; align-items: center; justify-content: center; min-height: 240px; padding: var(--space-lg); color: var(--text-tertiary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); text-align: center; }
+.sc-condition-text { display: flex; flex-direction: column; gap: var(--space-xs); }
+.sc-condition-text textarea { width: 100%; min-height: 66px; padding: var(--space-sm) var(--space-md); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-primary); font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); resize: vertical; }
+.sc-condition-select, .sc-condition-input { width: 100%; min-height: var(--size-control-sm); padding: 0 var(--space-sm); border: var(--stroke-hairline) solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--bg-surface); color: var(--text-primary); font: var(--font-weight-medium) var(--font-size-14)/var(--line-20) var(--font-family-ui); }
+.sc-condition-source { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-sm); padding: var(--space-10); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-condition-source strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
+.sc-condition-source span { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-condition-toggle { align-self: flex-start; font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-link); }
+.sc-condition-existing { display: flex; flex-direction: column; gap: var(--space-sm); }

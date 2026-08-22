@@ -13,8 +13,11 @@ import { LongTask } from "./LongTask";
 import { formatCost } from "./model-pricing";
 import { DrawingLimitationNote, QualificationChip } from "./QualificationNotice";
 import { describeBlocker } from "./qualification";
+import { ComponentList } from "./screens/ComponentList";
+import { ConditionRecord } from "./screens/ConditionRecord";
 import { EvidenceList } from "./screens/EvidenceList";
 import { MeasurementBaseline } from "./screens/MeasurementBaseline";
+import { ModelView } from "./screens/ModelView";
 import { ProjectList } from "./screens/ProjectList";
 import { TaskCard } from "./screens/TaskCard";
 import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShell";
@@ -419,87 +422,27 @@ export function App({ bootstrapDemo }: AppProps = {}) {
             )}
 
             {activeStage === "objects" && (
-              <section className="evidence-board">
-                <header className="board-heading"><div><h3>对象、构件与稳定标识</h3></div><span className="board-count">{geometrySpec?.objects.length ?? 0} 个对象{selected.snapshot.entities.length ? ` · ${selected.snapshot.entities.length} 条构件记录` : ""}</span></header>
-                {renderSplit(<>
-                <div className="object-table">
-                  {(geometrySpec?.objects ?? []).map((object) => <button type="button" key={object.id} onClick={() => { setSelectedGeometryEntityId(object.id); setActiveStage("geometry"); }}><span>{object.displayNameZh}</span><small>{typeLabel(object.componentType, object.conceptRef)}</small><small>{PRODUCER_LABELS[object.producer.producerType]}</small><strong>{object.unknownRefs.length ? `${object.unknownRefs.length} 项待确认` : "来源已记录"}</strong></button>)}
-                  {/* 记录级构件与几何对象并列显示，不是二选一。框选新增与识别确认写的是
-                      记录级构件，项目一旦生成了几何就再也看不到它们，助手回报已新增而界面
-                      毫无变化。两者来源不同，用标记分开，不合并计数。 */}
-                  {selected.snapshot.entities.map((entity) => {
-                    // 排除与遮挡都要在行上看得出来。用户说了去掉或看不见，
-                    // 界面毫无变化就等于没执行。排除不删记录，只标出来。
-                    const excluded = selected.snapshot.exclusionRecords.some((record) => record.originRef === entity.id);
-                    return (
-                      <article key={entity.id}>
-                        <strong>{entity.name}</strong>
-                        <span>{entity.entityType}</span>
-                        <small>{ENTITY_ORIGIN_LABELS[entity.origin ?? "import"]}</small>
-                        {excluded && <small className="entity-flag">已排除</small>}
-                        {entity.visibility && <small className="entity-flag">不可见 · {entity.visibility.needsReshoot ? "需补拍" : "无需补拍"}</small>}
-                        <small>{entity.locationText ?? "未记位置"}</small>
-                      </article>
-                    );
-                  })}
-                  {!geometrySpec?.objects.length && !selected.snapshot.entities.length && <div className="panel-empty">还没有构件。构件只能来自本项目的资料，或本项目已核对过的三维模型。</div>}
-                </div>
-
-                </>, "选择资料查看构件对应的照片。")}
-              </section>
+              <ComponentList
+                snapshot={selected.snapshot}
+                objects={geometrySpec?.objects ?? []}
+                unknowns={geometrySpec?.unknowns ?? []}
+                pane={evidence}
+                typeLabel={typeLabel}
+                selectedObjectId={nav.selectedGeometryEntityId}
+                onSelectObject={setSelectedGeometryEntityId}
+                onOpenInModel={nav.openGeometryObject}
+              />
             )}
 
             {activeStage === "conditions" && (
-              <section className="evidence-board">
-                <header className="board-heading"><div><h3>空间关系、构造连接与可见残损</h3></div><span className="board-count">{selected.snapshot.observations.length} 条记录</span></header>
-                {renderSplit(<>
-                    <div className="record-table">
-                      {selected.snapshot.relations.map((relation) => (
-                        <article key={relation.id}>
-                          <span className={`producer-badge ${relation.producer.producerType}`}>{PRODUCER_LABELS[relation.producer.producerType]}</span>
-                          <strong>{relation.relationType}</strong>
-                          <small>{relation.fromRef} 至 {relation.toRef}</small>
-                          <small>{relation.evidenceRefs.map(evidenceTitle).join("、") || "未指明资料"}</small>
-                        </article>
-                      ))}
-                      {selected.snapshot.observations.map((observation) => (
-                        <article key={observation.id}>
-                          <span className={`producer-badge ${observation.producer.producerType}`}>{PRODUCER_LABELS[observation.producer.producerType]}</span>
-                          <strong>{OBSERVATION_LABELS[observation.observationType]}</strong>
-                          <small>{observation.text}</small>
-                          <small>{observation.evidenceRefs.map(evidenceTitle).join("、")}</small>
-                        </article>
-                      ))}
-                      {!selected.snapshot.relations.length && !selected.snapshot.observations.length && (
-                        <div className="panel-empty">还没有现状记录。构件之间的关系由助手识别、再由人工确认；残损情况需要对照资料逐条记录，不能凭推断填写。</div>
-                      )}
-                    </div>
-                    {archetypeDifferences.length > 0 && (
-                      <div className="inline-warning">有 {archetypeDifferences.length} 项实测尺寸超出按形制推算的允许偏差，建议记入现状：{archetypeDifferences.map((item) => item.dimension).join("、")}。</div>
-                    )}
-                    <form className="task-setup" onSubmit={(event) => void submitObservation(event)}>
-                      <div><span className="node-label">人工节点</span><h4>记录一条现状判断</h4><p>只记录当前资料上可见的内容。不可见部位记为待复查，不写推断结论。</p></div>
-                      <label>判断类型
-                        <select name="observationType" defaultValue="visibleCondition">
-                          <option value="visibleCondition">可见状态</option>
-                          <option value="damage">残损</option>
-                          <option value="material">材料</option>
-                          <option value="state">整体状态</option>
-                        </select>
-                      </label>
-                      <label>对象（留空即整栋建筑）<input name="subjectRef" placeholder="构件稳定标识或对象 id" /></label>
-                      <label>依据资料
-                        <select name="evidenceRef" required defaultValue={activeEvidenceId ?? ""}>
-                          <option value="" disabled>选择一份资料</option>
-                          {selected.snapshot.evidences.map((evidence) => <option key={evidence.id} value={evidence.id}>{evidence.title}</option>)}
-                        </select>
-                      </label>
-                      <label>判断内容<textarea name="text" required placeholder="例如：西侧檐柱柱脚可见糟朽，范围约柱高下部三分之一" /></label>
-                      <button className="gj-btn gj-btn--primary" type="submit" disabled={!selected.snapshot.evidences.length}>记录并绑定来源</button>
-                    </form>
-
-                </>, "选择资料查看对应部位照片。")}
-              </section>
+              <ConditionRecord
+                snapshot={selected.snapshot}
+                pane={evidence}
+                archetypeDifferences={archetypeDifferences}
+                evidenceTitle={evidenceTitle}
+                onRecord={recordObservation}
+                onEnterIssues={() => goToView("issues")}
+              />
             )}
 
             {activeStage === "issues" && (
@@ -625,60 +568,18 @@ export function App({ bootstrapDemo }: AppProps = {}) {
             )}
 
             {activeStage === "geometry" && (
-              <section className="evidence-board geometry-board">
-                <header className="board-heading">
-                  <div><h3>项目驱动三维模型</h3></div>
-                  <button className="gj-btn gj-btn--primary gj-btn--loadable" type="button" aria-busy={geometryRunning} disabled={!geometryGate?.ready || geometryRunning} onClick={() => void generateDemoGeometry()}>
-                    <Play size={14} /> {geometryRevision ? "生成新代理版本" : "生成代理几何"}
-                  </button>
-                </header>
-                <div className="pane-body">
-                {showGeometryTask && (
-                  <LongTask labelZh={`正在生成三维模型：${cadPhaseLabel(cadProgress?.phase)}`} onCancel={() => void cancelGeometry()} cancelling={cadCancelling} />
-                )}
-                <div className="transmission-note"><ShieldCheck size={15} /><span>生成三维只使用本项目已确认的构件数据，不读取项目以外的文件。</span></div>
-                {!geometryGate?.ready && (
-                  <div className="geometry-gate">
-                    <strong>建立代理几何前，需从当前项目资料逐构件确认几何事实</strong>
-                    <p>每个构件和界面必须定位到当前项目具体证据；不得用百分比、固定厚度或其他项目数据补齐。当前缺失：{geometryGate?.missing.join("、")}</p>
-                    {!!selected.snapshot.evidences.length && (
-                      <form className="geometry-fact-form" onSubmit={(event) => void confirmGeometryFacts(event)}>
-                        <label>构件数据<textarea name="geometryComponents" required placeholder="逐个构件填写：名称、类型、尺寸、依据的资料，以及尚未确认的部分" /></label>
-                        <label>界面事实 JSON<textarea name="geometryInterfaces" required placeholder="仅填写图纸或调查资料可证明的承托、接触、包含或搭接关系；无证据可留空 []" /></label>
-                        <p>当前项目证据 ID：{selected.snapshot.evidences.map((item) => `${item.title}=${item.id}`).join("；")}</p>
-                        <button className="gj-btn gj-btn--primary" type="submit">写入逐构件证据事实</button>
-                      </form>
-                    )}
-                  </div>
-                )}
-                {geometryRevision && geometryBlob ? (
-                  <div className="geometry-workspace">
-                    <GlbViewer blob={geometryBlob} onSelect={setSelectedGeometryEntityId} />
-                    <aside className="geometry-inspector">
-                      <QualificationChip />
-                      <h4>{selectedGeometryEntity?.displayNameZh ?? "选择模型构件查看来源"}</h4>
-                      {selectedGeometryEntity ? <>
-                        <dl>
-                          <div><dt>稳定键</dt><dd>{selectedGeometryEntity.stableKey}</dd></div>
-                          <div><dt>构件类型</dt><dd>{typeLabel(selectedGeometryEntity.componentType, selectedGeometryEntity.conceptRef)}（{selectedGeometryEntity.componentType}）</dd></div>
-                          <div><dt>来源</dt><dd>{PRODUCER_LABELS[selectedGeometryEntity.producer.producerType]}</dd></div>
-                          <div><dt>证据</dt><dd>{selectedGeometryEntity.evidenceRefs.length} 项</dd></div>
-                        </dl>
-                        {selectedGeometryEntity.unknownRefs.map((id) => {
-                          const unknown = geometrySpec?.unknowns.find((item) => item.id === id);
-                          return unknown ? <div className="unknown-card" key={id}><p>{unknown.description}</p><small>{unknown.blocksFormalEligibility ? "影响正式交付" : "不影响正式交付"}</small></div> : null;
-                        })}
-                      </> : <p>点击模型中的构件，查看稳定 ID、证据引用、未知项和资格影响。</p>}
-                      <hr />
-                      <small>共 {geometrySpec?.objects.length ?? 0} 个构件</small>
-                      <small>{geometrySpec?.objects.length ?? 0} 个实体 · {geometrySpec?.interfaces.length ?? 0} 个界面 · {geometrySpec?.unknowns.length ?? 0} 个未知项</small>
-                    </aside>
-                  </div>
-                ) : (
-                  <div className="panel-empty">还没有三维模型。生成后可在这里查看构件并核对来源。</div>
-                )}
-                </div>
-              </section>
+              <ModelView
+                snapshot={selected.snapshot}
+                geometryRevision={geometryRevision}
+                geometrySpec={geometrySpec}
+                geometryBlob={geometryBlob}
+                geometryGate={geometryGate}
+                jobs={jobs}
+                typeLabel={typeLabel}
+                selectedObjectId={nav.selectedGeometryEntityId}
+                onSelectObject={setSelectedGeometryEntityId}
+                onConfirmGeometryFacts={confirmGeometryFacts}
+              />
             )}
 
             {activeStage === "sheetStyle" && (
