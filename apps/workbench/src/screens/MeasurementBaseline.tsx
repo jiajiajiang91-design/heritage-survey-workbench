@@ -4,7 +4,7 @@ import type { ProjectHead } from "@gujian/application";
 import type { ArchetypeSpec } from "@gujian/domain";
 import { compareWithMeasuredFacts, deriveArchetypeExpectations } from "@gujian/infrastructure";
 
-import { DATA_STATUS_LABELS, LIFT_RATIO_SET_LABELS, REVIEW_LABELS } from "../labels";
+import { DATA_STATUS_LABELS, LIFT_RATIO_SET_LABELS, REVIEW_LABELS, factFieldLabel, isFactFieldCode } from "../labels";
 import { EvidencePane } from "../shell/EvidencePane";
 import { Button, DataStatusTag, EmptyState, Field, InfoRow, SourceTag, Tag } from "../ui";
 import { SplitPane } from "../ui/SplitPane";
@@ -22,7 +22,6 @@ export interface MeasurementBaselineProps {
   pane: EvidencePaneModel;
   archetypes: readonly ArchetypeSpec[];
   evidenceTitle: (ref: string) => string;
-  factFieldLabel: (field: string) => string;
   onRegisterArchetype: (event: FormEvent<HTMLFormElement>) => Promise<void>;
   onConfirmDimensionChain: (event: FormEvent<HTMLFormElement>) => Promise<void>;
 }
@@ -86,7 +85,7 @@ function DimensionChainForm({ onSubmit }: { onSubmit: (event: FormEvent<HTMLForm
   );
 }
 
-export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle, factFieldLabel, onRegisterArchetype, onConfirmDimensionChain }: MeasurementBaselineProps) {
+export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle, onRegisterArchetype, onConfirmDimensionChain }: MeasurementBaselineProps) {
   const [form, setForm] = useState<"none" | "archetype" | "chain">("none");
   const archetype = archetypes.at(-1) ?? null;
   const derivation = archetype ? deriveArchetypeExpectations(archetype) : null;
@@ -100,7 +99,7 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
 
   const rowOfFact = (fact: Fact) => (
     <div className="sc-measure-row" key={fact.id} title={factMethod(fact.value) ?? undefined}>
-      <span className="sc-measure-name">{factFieldLabel(fact.field)}</span>
+      <span className={`sc-measure-name${isFactFieldCode(fact.field) ? " gj-numeric" : ""}`}>{factFieldLabel(fact.field)}</span>
       <span className="sc-measure-value">{factValueText(fact.value)}</span>
       <span className="sc-measure-tags">
         <SourceTag producerType={fact.producer.producerType} />

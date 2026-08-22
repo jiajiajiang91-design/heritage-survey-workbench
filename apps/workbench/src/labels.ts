@@ -72,3 +72,33 @@ export function cadPhaseLabel(phase: string | undefined | null): string {
 export const RESPONSIBILITY_ROLE_LABELS: Record<string, string> = {
   projectLead: "项目负责人", surveyor: "测绘人", professionalReviewer: "复核人", archiveRecipient: "档案接收方",
 };
+
+// 事实字段的中文名。字段标识来自演示包定义与动作层（documentedDimension.*、archetype.measured.*），
+// 不是领域 schema 的枚举，所以这里只覆盖已知词汇；对不上的字段原样显示为标识（Geist），不另造词。
+export const FACT_FIELD_LABELS: Record<string, string> = {
+  moduleBaseZh: "模数基参", bayCount: "开间数", bayWidthMm: "开间尺寸", bayDepthMm: "进深尺寸",
+  columnAxesXMm: "柱轴横向坐标", columnAxesYMm: "柱轴纵向坐标", purlinCount: "檩数", floorCount: "层数",
+  bracketSetZh: "斗拱", columnMaterialZh: "柱材", frontPorchZh: "前廊", roofFormZh: "屋顶形式", structureSystemZh: "结构体系",
+  "roofFrame.totalDepthMm": "通进深", "roofFrame.stepCount": "步架数",
+  "documentedDimension.totalWidthMm": "资料记载总尺寸", "documentedDimension.segmentWidthsMm": "资料记载分段尺寸",
+  "documentedDimension.measurementMetadataComplete": "测量记录完整性",
+  "documentedDimension.overallWidthMm": "总宽", "documentedDimension.overallDepthMm": "总深",
+  "documentedDimension.eaveHeightMm": "檐口高", "documentedDimension.ridgeHeightMm": "屋脊高", "documentedDimension.ridgeElevationMm": "屋脊标高",
+  "documentedDimension.centralBayWidthMm": "中间开间宽", "documentedDimension.sideBayWidthMm": "边开间宽", "documentedDimension.totalFrontWidthMm": "正面总宽",
+  "documentedDimension.alleywayWidthMm": "巷道宽", "documentedDimension.coveredAlleywayWidthMm": "有盖巷道宽", "documentedDimension.coveredWalkDepthMm": "檐廊进深",
+  "documentedDimension.assumedColumnHeightMm": "假定柱高",
+  "documentedDimension.scaledEaveElevationMm": "檐口标高（图上量取）", "documentedDimension.scaledFloorAboveGradeMm": "首层高出地坪（图上量取）",
+  "documentedDimension.scaledSecondFloorElevationMm": "二层楼面标高（图上量取）",
+};
+
+export function factFieldLabel(field: string): string {
+  if (FACT_FIELD_LABELS[field]) return FACT_FIELD_LABELS[field];
+  const lift = field.match(/^liftRatio(\d+)$/);
+  if (lift) return `举架系数 ${lift[1]}`;
+  const measured = field.match(/^archetype\.measured\.(.+)$/);
+  if (measured) return `${FACT_FIELD_LABELS[measured[1]!] ?? measured[1]}（实测）`;
+  return field;
+}
+
+// 字段没有中文名时按标识显示，界面用 Geist 排
+export const isFactFieldCode = (field: string): boolean => factFieldLabel(field) === field;

@@ -25,7 +25,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
     projectArchetypes, changeHistory, serverStatus,
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues, geometryRevision, geometrySpec,
     latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery, geometryGate, dashboard, artifactSetView,
-    modelCostView, humanInterventions, deliveryBlockers, archetypeDifferences, typeLabel, evidenceTitle, factFieldLabel,
+    modelCostView, humanInterventions, deliveryBlockers, archetypeDifferences, typeLabel, evidenceTitle,
     measuredRecordCount, blockerReasons,
   } = session;
   const {
@@ -78,7 +78,6 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 pane={evidence}
                 archetypes={projectArchetypes}
                 evidenceTitle={evidenceTitle}
-                factFieldLabel={factFieldLabel}
                 onRegisterArchetype={registerArchetype}
                 onConfirmDimensionChain={confirmDocumentedDimensionChain}
               />
@@ -221,7 +220,7 @@ export function ProjectPage({ wb, selected }: { wb: Workbench; selected: Project
     projectArchetypes, changeHistory, serverStatus,
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues, geometryRevision, geometrySpec,
     latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery, geometryGate, dashboard, artifactSetView,
-    modelCostView, humanInterventions, deliveryBlockers, archetypeDifferences, typeLabel, evidenceTitle, factFieldLabel,
+    modelCostView, humanInterventions, deliveryBlockers, archetypeDifferences, typeLabel, evidenceTitle,
     measuredRecordCount, blockerReasons,
   } = session;
   const {

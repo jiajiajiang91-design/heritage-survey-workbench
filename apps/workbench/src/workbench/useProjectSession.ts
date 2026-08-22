@@ -262,19 +262,6 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   };
 
   // 字段名转成测绘人员熟悉的说法
-  const factFieldLabel = (field: string) => {
-    const named: Record<string, string> = {
-      "documentedDimension.totalWidthMm": "资料记载总尺寸",
-      "documentedDimension.segmentWidthsMm": "资料记载分段尺寸",
-      "documentedDimension.measurementMetadataComplete": "测量记录完整性",
-      "roofFrame.totalDepthMm": "通进深",
-      "roofFrame.stepCount": "步架数",
-    };
-    if (named[field]) return named[field];
-    const measured = field.match(/^archetype\.measured\.(.+)$/);
-    if (measured) return `${measured[1]}（实测）`;
-    return field;
-  };
 
   // 数据来源构成（07 界面视觉规范表 3）：四类来源按数据模型的 producerType 统计。
   // 数据模型没有"实测"这一类来源，实测另按测量记录统计，不能拿人工确认顶替。
@@ -310,7 +297,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues,
     geometryRevision, geometrySpec, latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery,
     geometryGate, dashboard, artifactSetView, modelCostView, humanInterventions, deliveryBlockers,
-    archetypeDifferences, typeLabel, evidenceTitle, factFieldLabel, basisCounts, measuredRecordCount, blockerReasons,
+    archetypeDifferences, typeLabel, evidenceTitle, basisCounts, measuredRecordCount, blockerReasons,
   };
 }
 

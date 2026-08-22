@@ -105,9 +105,15 @@ describe("剩余字面值与缺口清单对得上（实施单元 06 第二组）
     expect(mismatches, "字面 px 数量与缺口清单对不上，新增了未记录的字面值就会在这里失败").toEqual([]);
   });
 
-  it("缺口清单把每处都归到了四类处置之一", () => {
-    for (const kind of ["甲 · 没有令牌族的效果值", "乙 · 版面尺寸，非间距", "丙 · font 简写", "丁 · 间距类但取值脱档"]) {
-      expect(GAP_LIST, `缺口清单缺分类 ${kind}`).toContain(kind);
+  // 单元 08 收口后清单进入终态：不再分甲乙丙丁四类，改为逐文件写明每处的出处。
+  // 有字面值的文件都要在第二节出现，删光的文件不写。
+  it("缺口清单第二节逐文件写了每处字面值的出处", () => {
+    const section = GAP_LIST.slice(GAP_LIST.indexOf("## 二、逐条"), GAP_LIST.indexOf("## 三、校验方式"));
+    const count = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "").match(/(?<![\w.-])\d+(?:\.\d+)?px/g)?.length ?? 0;
+    for (const [name, css] of STYLE_FILES) {
+      if (count(css) === 0) continue;
+      const stem = name.replace(/^screens\//, "").replace(/\.css$/, "");
+      expect(section, `缺口清单第二节没写 ${name}`).toContain(stem);
     }
   });
 });

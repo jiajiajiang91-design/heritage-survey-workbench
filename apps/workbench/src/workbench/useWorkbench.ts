@@ -27,8 +27,12 @@ export function useWorkbench({ bootstrapDemo = bootstrapDemoProjects }: Workbenc
   const assistant = useAssistantBridge({ session, nav, jobs, evidence, writes, notices });
 
   // 跨 hook 的组合动作放在门面里，各 hook 之间不互相引用。
+  // 从列表进项目：上一个项目的几何选中项清掉；停在项目级页面（运行与用量、修改历史）时回到资料清单，
+  // 不让新项目一进来就落在修改历史上。
   const chooseProject = async (projectId: string) => {
     jobs.resetModelProgress();
+    nav.setSelectedGeometryEntityId(null);
+    if (nav.onProjectPage) nav.setActiveStage("evidence");
     await session.chooseProject(projectId);
   };
 
