@@ -1,11 +1,11 @@
 import {
-  DataStatusSchema, DrawingViewKindSchema, EvidenceSchema, IssueSchema, ParseRecordSchema, ProducerRefSchema,
+  ArtifactKindSchema, DataStatusSchema, DrawingViewKindSchema, EvidenceSchema, IssueSchema, ParseRecordSchema, ProducerRefSchema,
   ResponsibilitySchema, ReviewStatusSchema,
 } from "@gujian/domain";
 import { describe, expect, it } from "vitest";
 
 import {
-  DATA_STATUS_LABELS, DRAWING_KIND_LABELS, EVIDENCE_TYPE_LABELS, ISSUE_TYPE_LABELS, PARSE_STATUS_LABELS, PRODUCER_LABELS,
+  ARTIFACT_KIND_LABELS, DATA_STATUS_LABELS, DRAWING_KIND_LABELS, EVIDENCE_TYPE_LABELS, ISSUE_TYPE_LABELS, PARSE_STATUS_LABELS, PRODUCER_LABELS,
   RESPONSIBILITY_ROLE_LABELS, REVIEW_LABELS,
 } from "./labels";
 
@@ -44,6 +44,10 @@ describe("界面标签覆盖领域取值", () => {
     expect(Object.keys(DRAWING_KIND_LABELS).sort()).toEqual([...DrawingViewKindSchema.options].sort());
   });
 
+  it("成果种类标签与 ArtifactKind 一一对应", () => {
+    expect(Object.keys(ARTIFACT_KIND_LABELS).sort()).toEqual([...ArtifactKindSchema.options].sort());
+  });
+
   it("责任角色标签与 Responsibility.role 一一对应", () => {
     const options = ResponsibilitySchema.shape.role.options as readonly string[];
     expect(Object.keys(RESPONSIBILITY_ROLE_LABELS).sort()).toEqual([...options].sort());
@@ -57,7 +61,7 @@ describe("界面标签覆盖领域取值", () => {
   // 漏了键，界面会把 measurementRecord 这种驼峰原值直接显示出来。
   // 缩写（AI）允许，连续小写字母串一律视为漏译。
   it("标签里不出现枚举原值", () => {
-    const maps = [PRODUCER_LABELS, REVIEW_LABELS, DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS, PARSE_STATUS_LABELS, ISSUE_TYPE_LABELS, DRAWING_KIND_LABELS, RESPONSIBILITY_ROLE_LABELS];
+    const maps = [PRODUCER_LABELS, REVIEW_LABELS, DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS, PARSE_STATUS_LABELS, ISSUE_TYPE_LABELS, DRAWING_KIND_LABELS, RESPONSIBILITY_ROLE_LABELS, ARTIFACT_KIND_LABELS];
     for (const map of maps) {
       for (const [key, label] of Object.entries(map)) {
         expect(label, key).not.toBe(key);

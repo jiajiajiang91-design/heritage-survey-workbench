@@ -155,7 +155,7 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
           value={input}
           placeholder={selection
             ? "说要在框选位置改什么，例如：这里漏了一个雀替，和右边那个对称的"
-            : "对助手说要做什么，例如：把 P48 的长度改成 620，或：生成图纸"}
+            : "输入问题或处理要求，例如：生成图纸"}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {

@@ -49,6 +49,15 @@ export const DRAWING_KIND_LABELS: Record<string, string> = {
   transverseSection: "横剖", longitudinalSection: "纵剖", axonometric: "轴测", detail: "详图",
 };
 
+// 成果种类（domain ArtifactKindSchema 十七值）。交付清单与成果列表不显示 drawingIr 一类原值。
+export const ARTIFACT_KIND_LABELS: Record<string, string> = {
+  ifc: "IFC 模型", glb: "三维模型", brepBundle: "实体几何包", geometryManifest: "几何清单",
+  geometrySourceMap: "几何来源映射", geometryReport: "几何构建记录", geometryPreview: "几何预览",
+  drawingIr: "图纸中间数据", viewGeometry: "视图几何", dxf: "成组图纸 DXF", svg: "图面预览 SVG",
+  pdf: "成组图纸 PDF", png: "图面预览 PNG", drawingSourceMap: "图纸来源映射",
+  checkReport: "检查记录", licenseManifest: "许可清单", deliveryManifest: "交付清单",
+};
+
 // 作业阶段的中文说法。界面不显示 queued、running 一类原值。
 export const JOB_PHASE_LABELS: Record<string, string> = {
   queued: "排队中", running: "运行中", succeeded: "已完成", failed: "已失败",

@@ -215,7 +215,7 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 .gj-split-divider { cursor: col-resize; position: relative; }
 .gj-split-divider::before { content: ""; position: absolute; top: var(--space-lg); bottom: var(--space-lg); left: 50%; width: var(--stroke-hairline); background: transparent; }
 .gj-split-divider:hover::before, .gj-split-divider:focus-visible::before { width: var(--stroke-emphasis); background: var(--border-strong); }
-.gj-pane-title { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); }
+.gj-pane-title { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .gj-pane-desc { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
 .gj-pane-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
 .gj-pane-list { display: flex; flex-direction: column; gap: var(--space-md); }

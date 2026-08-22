@@ -32,16 +32,17 @@ export function useWorkbench({ bootstrapDemo = bootstrapDemoProjects }: Workbenc
     await session.chooseProject(projectId);
   };
 
+  // 新建或导入后进入建立任务（W01）：先确认对象、范围与成果要求，再整理资料（实施单元 08 偏离清单）。
   const createProject = async (values: CreateProjectValues): Promise<boolean> => {
     const head = await session.createProject(values);
     if (!head) return false;
-    nav.setActiveStage("evidence");
+    nav.setActiveStage("tasks");
     return true;
   };
 
   const importProject = async (file: File): Promise<boolean> => {
     const ok = await session.importProject(file);
-    if (ok) nav.setActiveStage("evidence");
+    if (ok) nav.setActiveStage("tasks");
     return ok;
   };
 

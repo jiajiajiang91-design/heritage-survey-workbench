@@ -3,7 +3,7 @@ import type { ProjectHead } from "@gujian/application";
 
 import { DRAWING_KIND_LABELS } from "../labels";
 import { Button, EmptyState, Tag } from "../ui";
-import type { DrawingPreview } from "../workbench/useAssetUrls";
+import { previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
 import "./SheetStyle.css";
 
 // W08 图纸样式（66:2896）：左卡出图设置（六行标签 132 宽加取值，下边线），右卡图面预览（头 36、图 476、说明 12/20）。
@@ -68,7 +68,7 @@ export function SheetStyle({ task, previews, canGenerate, generating, onGenerate
       </section>
       <section className="sc-sheet-preview">
         <div className="sc-sheet-preview-head">
-          <span className="gj-pane-title">{preview ? preview.label.replace(/\.(svg|pdf)$/i, "") : "图面预览"}</span>
+          <span className="gj-pane-title">图面预览{preview ? ` · ${previewLabel(preview)}` : ""}</span>
           <span className="gj-spacer" />
           {previewView && <Tag tone="accent">1:{previewView.scaleDenominator}</Tag>}
         </div>
@@ -82,7 +82,7 @@ export function SheetStyle({ task, previews, canGenerate, generating, onGenerate
         {previews.length > 1 && (
           <div className="sc-sheet-switch" role="tablist" aria-label="切换预览图">
             {previews.map((item, index) => (
-              <button key={item.id} type="button" role="tab" aria-current={index === previewIndex ? "true" : undefined} onClick={() => setPreviewIndex(index)}>{item.label.replace(/\.(svg|pdf)$/i, "")}</button>
+              <button key={item.id} type="button" role="tab" aria-current={index === previewIndex ? "true" : undefined} onClick={() => setPreviewIndex(index)}>{previewLabel(item)}</button>
             ))}
           </div>
         )}

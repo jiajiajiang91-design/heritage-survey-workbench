@@ -42,6 +42,23 @@ export type JourneyStage = typeof journeyStages[number];
 export const journeyViewOrder = journeyStages.flatMap((stage) => stage.views) as readonly StageId[];
 export const projectPageIds = new Set<string>(projectPages);
 
+// 各视图页头下的一句说明（v4 Page description），说的是这一屏核对什么，不写数据
+export const STAGE_DESCRIPTIONS: Record<StageId, string> = {
+  tasks: "确认对象、范围、成果要求和资料前提。",
+  evidence: "按来源和可用状态核对每份资料；缺失的资料照样登记，不隐藏。",
+  measurements: "核对尺寸事实与基准；存疑与实测分开记，不另造词。",
+  objects: "核对识别对象、构件层级和照片关联。",
+  geometry: "实体、界面与未知项全部由本项目资料与形制规则生成。",
+  conditions: "只记录当前资料上可见的内容。不可见部位记为待复查，不写推断结论。",
+  issues: "问题由规则层核对自动产出，只能由人工决定关闭。",
+  sheetStyle: "图种、图幅和版面来自任务要求；图上每条线都由当前三维模型剖切或投影得到，不另外描画。",
+  drawings: "按任务要求出图，DXF、PDF 与预览图同源。",
+  checks: "自动检查通过不等于专业复核通过；成果状态以资格为准。",
+  package: "交付包含成果、检查记录、来源说明与限制条件；未签发的代理成果不能用于正式交付。",
+  candidates: "按用量与公开单价算费用。",
+  history: "每一次写入都留在这里，含时间、操作人、动作和改了什么。",
+};
+
 export const isStageId = (value: string): value is StageId => stages.some((stage) => stage.id === value);
 export const stageLabel = (id: string): string => stages.find((stage) => stage.id === id)?.label ?? id;
 

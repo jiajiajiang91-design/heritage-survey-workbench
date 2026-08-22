@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   derivePendingItems, deriveStageStates, journeyStages, journeyTone, journeyViewOrder, projectPageIds, stageLabel,
@@ -12,7 +12,18 @@ export function useWorkspaceNav(session: ProjectSession) {
   // 从项目级页面退回时回到进去之前那个视图，不要一律弹回默认视图。
   const [returnView, setReturnView] = useState<StageId>("evidence");
   const [selectedGeometryEntityId, setSelectedGeometryEntityId] = useState<string | null>(null);
-  const [assistantCollapsed, setAssistantCollapsed] = useState(false);
+  // 窄于 1280 时助手栏默认收起，改为顶栏图标唤起（裁决记录第一节第 5 条）；用户展开后浮在中栏上
+  const narrowQuery = "(max-width: 1279px)";
+  // jsdom 没有 matchMedia，测试环境按宽屏处理
+  const matchNarrow = () => typeof window !== "undefined" && typeof window.matchMedia === "function" ? window.matchMedia(narrowQuery) : null;
+  const [assistantCollapsed, setAssistantCollapsed] = useState(() => matchNarrow()?.matches ?? false);
+  useEffect(() => {
+    const media = matchNarrow();
+    if (!media) return;
+    const onChange = (event: MediaQueryListEvent) => setAssistantCollapsed(event.matches);
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
 
   // 切换视图的唯一入口。左栏、页签、顶栏、待办和助手动作层都走这里。
   // 进项目级页面前先记下当前工作视图，退回时才知道回哪儿。

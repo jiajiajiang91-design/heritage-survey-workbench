@@ -8,7 +8,7 @@ import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShe
 import { AssistantPanel } from "./shell/AssistantPanel";
 import { StageRail } from "./shell/StageRail";
 import { Topbar } from "./shell/Topbar";
-import { projectPages, stages, type StageId } from "./view-registry";
+import { STAGE_DESCRIPTIONS, projectPages, stages, type StageId } from "./view-registry";
 import { useWorkbench, type WorkbenchOptions } from "./workbench/useWorkbench";
 
 // 组合根：状态与命令处理在 workbench/ 的 hook 里，页面在 screens/ 里，这里只按当前视图选屏。
@@ -80,7 +80,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
       ) : onProjectPage ? (
         <ProjectPage wb={wb} selected={selected} />
       ) : (
-        <CenterFrame title={pageTitle} tabs={currentTabs} fill>
+        <CenterFrame title={pageTitle} description={STAGE_DESCRIPTIONS[activeStage]} tabs={currentTabs} fill>
           <WorkspaceView wb={wb} selected={selected} />
         </CenterFrame>
       )}

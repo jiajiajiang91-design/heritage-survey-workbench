@@ -28,6 +28,12 @@ export interface DrawingPreview {
   url: string;
 }
 
+// 预览页签名：单张图幅用图幅号，合并的整套 PDF 显示为“全套 PDF”，不露文件名后缀
+export function previewLabel(item: { label: string; kind: string }): string {
+  const stem = item.label.replace(/\.(svg|pdf)$/i, "");
+  return item.kind === "pdf" && /^drawings$/i.test(stem) ? "全套 PDF" : stem;
+}
+
 // 图纸预览地址。只取前六张，对象 URL 在依赖变化或卸载时统一撤销，
 // 图纸样式与成组图纸两个视图共用同一份，不各自再建一套。
 export function useDrawingPreviews(drawingArtifacts: readonly ArtifactRecord[]): readonly DrawingPreview[] {

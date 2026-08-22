@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ArtifactRecord, CheckRun, DeliveryDraft, DeliveryEvaluation } from "@gujian/domain";
 
-import { RESPONSIBILITY_ROLE_LABELS } from "../labels";
+import { ARTIFACT_KIND_LABELS, RESPONSIBILITY_ROLE_LABELS } from "../labels";
 import { LongTask } from "../LongTask";
 import { Button, EmptyState, Tag } from "../ui";
 import type { RoundTripReceipt } from "../workbench/useRecordWrites";
@@ -34,11 +34,6 @@ export interface ProxyDeliveryProps {
   onVerifyRoundTrip: () => void;
   onDownload: (artifact: ArtifactRecord) => void;
 }
-
-const KIND_ZH: Record<string, string> = {
-  dxf: "成组图纸 DXF", pdf: "成组图纸 PDF", svg: "图面预览 SVG", glb: "三维模型", ifc: "IFC 模型",
-  viewGeometry: "视图几何", manifest: "交付清单", json: "记录", report: "检查报告",
-};
 
 function sizeLabel(bytes: number): string {
   if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
@@ -78,7 +73,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
                   <span>{artifact.fileName}</span>
                   <Tag tone="warning">未获资格</Tag>
                 </div>
-                <small>{KIND_ZH[artifact.kind] ?? artifact.kind} · {sizeLabel(artifact.byteLength)}</small>
+                <small>{ARTIFACT_KIND_LABELS[artifact.kind] ?? artifact.kind} · {sizeLabel(artifact.byteLength)}</small>
               </button>
             ))}
           </div>
@@ -125,14 +120,13 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
           </div>
         )}
         <span className="gj-spacer" />
-        <div className="gj-actions">
+        {/* 草案卡只有 276 宽，操作按钮竖排等宽：主操作在上，导出与检验在下 */}
+        <div className="sc-delivery-actions">
           {!latestDelivery && <Button variant="primary" disabled={!canCreate} onClick={onCreate}>建立代理交付草案</Button>}
           {latestDelivery && <Button variant="primary" loadable busy={exporting} disabled={exporting} onClick={() => onExport("zip")}>导出代理 ZIP</Button>}
           {latestDelivery && <Button onClick={() => setShowRestrictions((value) => !value)} aria-expanded={showRestrictions}>{showRestrictions ? "收起限制条款" : "查看限制条款"}</Button>}
-        </div>
-        <div className="gj-actions">
-          <Button compact loadable busy={exporting} disabled={exporting} onClick={() => onExport("json")}>导出 JSON 记录</Button>
-          <Button compact onClick={onVerifyRoundTrip}>检验导出与恢复</Button>
+          <Button loadable busy={exporting} disabled={exporting} onClick={() => onExport("json")}>导出 JSON 记录</Button>
+          <Button onClick={onVerifyRoundTrip}>检验导出与恢复</Button>
         </div>
         <p className="gj-note">导出后可在一个独立环境里恢复并逐项核对资料、记录与成果。检验不改动本机项目，结束后自动清理。{latestCheckRun ? "" : " 尚未检查的成果不进交付草案。"}</p>
       </section>

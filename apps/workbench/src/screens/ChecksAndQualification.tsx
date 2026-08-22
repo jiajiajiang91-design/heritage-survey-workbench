@@ -3,7 +3,7 @@ import type { ArtifactRecord, CheckRun } from "@gujian/domain";
 
 import { QUALIFICATION_LIMITS, describeBlocker } from "../qualification";
 import { Button, EmptyState, Tag } from "../ui";
-import type { DrawingPreview } from "../workbench/useAssetUrls";
+import { previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
 import "./ChecksAndQualification.css";
 
 // W09 检查与资格（66:2949）：左卡正式图（头 36 加状态标签、图 480、题注 12/20、底部操作），
@@ -56,7 +56,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
     <div className="sc-checks">
       <section className="sc-checks-drawing">
         <div className="sc-checks-head">
-          <span className="gj-pane-title">{preview ? preview.label.replace(/\.(svg|pdf)$/i, "") : "正式图"}</span>
+          <span className="gj-pane-title">图纸成果{preview ? ` · ${previewLabel(preview)}` : ""}</span>
           <span className="gj-spacer" />
           {latestCheckRun && <Tag tone="warning">已生成未获资格</Tag>}
         </div>
@@ -70,7 +70,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
         {previews.length > 1 && (
           <div className="sc-checks-switch" role="tablist" aria-label="切换图面">
             {previews.map((item, position) => (
-              <button key={item.id} type="button" role="tab" aria-current={position === index ? "true" : undefined} onClick={() => setIndex(position)}>{item.label.replace(/\.(svg|pdf)$/i, "")}</button>
+              <button key={item.id} type="button" role="tab" aria-current={position === index ? "true" : undefined} onClick={() => setIndex(position)}>{previewLabel(item)}</button>
             ))}
           </div>
         )}

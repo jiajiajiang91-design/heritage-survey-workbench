@@ -25,9 +25,9 @@ describe("App", () => {
     expect(screen.getByText("山门保护记录")).toBeInTheDocument();
 
     // 导航分两层：左栏是八个任务阶段，中栏页签行按 v4 形式始终显示。
-    // 任务确认表单在建立任务阶段的任务卡上（实施单元 08 起），先进该阶段。
+    // 新建后直接进入建立任务阶段，任务确认表单就在任务卡上（实施单元 08 起）。
     const stageNav = screen.getByRole("navigation", { name: "任务进度" });
-    fireEvent.click(within(stageNav).getByRole("button", { name: /建立任务/ }));
+    expect(within(stageNav).getByRole("button", { name: /建立任务/ })).toHaveAttribute("aria-current", "step");
     expect(await screen.findByText("确认任务要求")).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("成果目录（每行一项）"), { target: { value: "平面图" } });
     fireEvent.change(screen.getByLabelText("图纸标题"), { target: { value: "山门代理成果图" } });

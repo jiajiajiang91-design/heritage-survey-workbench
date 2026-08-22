@@ -25,8 +25,13 @@ export function useEvidencePane(session: ProjectSession) {
   // 证据图片上的框选。换资料就清掉：位置只对它所属的那张图有意义。
   const [imageSelection, setImageSelection] = useState<ImageSelection | null>(null);
 
-  // 换项目或退出项目时清掉选中资料，上一项目的资料 id 对新项目没有意义
-  useEffect(() => { setActiveEvidenceId(null); }, [selected?.projectId]);
+  // 换项目时默认选中第一份能显示的资料（照片优先），证据半区不空着；退出项目时清掉
+  useEffect(() => {
+    const evidences = selected?.snapshot.evidences ?? [];
+    const available = evidences.filter((item) => item.dataStatus === "available");
+    const first = available.find((item) => item.evidenceType === "photo") ?? available.find((item) => item.evidenceType === "drawing") ?? available[0] ?? null;
+    setActiveEvidenceId(first?.id ?? null);
+  }, [selected?.projectId]);
 
   // 选中资料后读取原件生成预览地址；切换或卸载时释放
   useEffect(() => {
