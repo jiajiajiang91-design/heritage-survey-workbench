@@ -1,0 +1,113 @@
+{
+  "fonts": {
+    "noto": true,
+    "geist": true,
+    "loaded": [
+      "Noto Sans SC Variable",
+      "Geist Variable"
+    ]
+  },
+  "pageTitle": {
+    "fontSize": "22px",
+    "lineHeight": "30px",
+    "fontWeight": "500",
+    "color": "rgb(23, 23, 23)"
+  },
+  "pageDesc": null,
+  "tabActive": {
+    "height": "32px",
+    "borderRadius": "8px",
+    "backgroundColor": "rgb(239, 246, 255)",
+    "fontSize": "13px"
+  },
+  "tabRow": {
+    "height": "32px"
+  },
+  "paneTitle": {
+    "fontSize": "16px",
+    "lineHeight": "24px",
+    "fontWeight": "500"
+  },
+  "listCardTitle": {
+    "fontSize": "13px",
+    "lineHeight": "20px",
+    "fontWeight": "500"
+  },
+  "listCardSub": {
+    "fontSize": "12px",
+    "lineHeight": "18px",
+    "color": "rgb(82, 82, 82)"
+  },
+  "tag": {
+    "fontSize": "12px",
+    "lineHeight": "16px",
+    "height": "22px",
+    "borderRadius": "999px"
+  },
+  "card": {
+    "borderRadius": "8px",
+    "borderWidth": "1px",
+    "borderColor": "rgb(212, 212, 212)",
+    "boxShadow": "none",
+    "backgroundColor": "rgb(239, 246, 255)"
+  },
+  "primaryBtn": {
+    "height": "36px",
+    "borderRadius": "8px",
+    "backgroundColor": "rgb(10, 10, 10)",
+    "color": "rgb(255, 255, 255)",
+    "fontSize": "13px",
+    "paddingLeft": "24px"
+  },
+  "secondaryBtn": {
+    "height": "36px",
+    "borderRadius": "8px",
+    "backgroundColor": "rgb(255, 255, 255)",
+    "borderColor": "rgb(212, 212, 212)",
+    "color": "rgb(23, 23, 23)"
+  },
+  "rail": {
+    "width": "240px",
+    "backgroundColor": "rgb(245, 245, 245)"
+  },
+  "stageRow": {
+    "height": "36px",
+    "fontSize": "13px"
+  },
+  "stageCurrent": {
+    "backgroundColor": "rgb(239, 246, 255)",
+    "borderRadius": "8px"
+  },
+  "topbar": {
+    "height": "56px",
+    "borderBottomWidth": "1px"
+  },
+  "center": {
+    "width": "820px",
+    "paddingLeft": "16px"
+  },
+  "assistant": {
+    "width": "380px",
+    "borderLeftWidth": "1px"
+  },
+  "assistantHead": {
+    "height": "56px",
+    "fontSize": "13px"
+  },
+  "chatInput": {
+    "height": "46px",
+    "minHeight": "46px",
+    "borderRadius": "8px"
+  },
+  "numeric": {
+    "fontFamily": "\"Geist Variable\", Geist, system-ui, sans-serif"
+  },
+  "stableKey": {
+    "fontSize": "13px"
+  },
+  "body": {
+    "fontFamily": "\"Noto Sans SC Variable\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+    "backgroundColor": "rgb(250, 250, 250)",
+    "color": "rgb(23, 23, 23)"
+  }
+}

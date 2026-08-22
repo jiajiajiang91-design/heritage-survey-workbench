@@ -1,0 +1,335 @@
+{
+  "fonts": {
+    "noto": true,
+    "geist": false,
+    "loaded": [
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable",
+      "Noto Sans SC Variable"
+    ]
+  },
+  "projects": [
+    {
+      "name": "高都玉皇庙主殿现状记录进行中",
+      "views": [
+        {
+          "code": "W01",
+          "title": "任务卡",
+          "chars": 459,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W02",
+          "title": "资料清单",
+          "chars": 496,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W03",
+          "title": "实测基准",
+          "chars": 577,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W04",
+          "title": "构件清单",
+          "chars": 2154,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W06",
+          "title": "三维模型",
+          "chars": 267,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W05",
+          "title": "现状记录",
+          "chars": 283,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W07",
+          "title": "问题队列",
+          "chars": 853,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W08",
+          "title": "图纸样式",
+          "chars": 319,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W08b",
+          "title": "成组图纸",
+          "chars": 408,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W09",
+          "title": "检查与资格",
+          "chars": 435,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W10",
+          "title": "代理交付",
+          "chars": 874,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "模型运行与用量",
+          "chars": 325,
+          "bad": []
+        },
+        {
+          "code": "修改历史",
+          "chars": 1677,
+          "bad": []
+        }
+      ]
+    },
+    {
+      "name": "Dai Loy 赌馆博物馆测绘归档进行中",
+      "views": [
+        {
+          "code": "W01",
+          "title": "任务卡",
+          "chars": 417,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W02",
+          "title": "资料清单",
+          "chars": 571,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W03",
+          "title": "实测基准",
+          "chars": 607,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W04",
+          "title": "构件清单",
+          "chars": 2648,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W06",
+          "title": "三维模型",
+          "chars": 226,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W05",
+          "title": "现状记录",
+          "chars": 297,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W07",
+          "title": "问题队列",
+          "chars": 1439,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W08",
+          "title": "图纸样式",
+          "chars": 339,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W08b",
+          "title": "成组图纸",
+          "chars": 407,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W09",
+          "title": "检查与资格",
+          "chars": 469,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W10",
+          "title": "代理交付",
+          "chars": 996,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "模型运行与用量",
+          "chars": 333,
+          "bad": []
+        },
+        {
+          "code": "修改历史",
+          "chars": 1897,
+          "bad": []
+        }
+      ]
+    },
+    {
+      "name": "团队构造样板演示进行中",
+      "views": [
+        {
+          "code": "W01",
+          "title": "任务卡",
+          "chars": 485,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W02",
+          "title": "资料清单",
+          "chars": 342,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W03",
+          "title": "实测基准",
+          "chars": 1771,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W04",
+          "title": "构件清单",
+          "chars": 2248,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W06",
+          "title": "三维模型",
+          "chars": 361,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W05",
+          "title": "现状记录",
+          "chars": 240,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W07",
+          "title": "问题队列",
+          "chars": 565,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W08",
+          "title": "图纸样式",
+          "chars": 373,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W08b",
+          "title": "成组图纸",
+          "chars": 409,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W09",
+          "title": "检查与资格",
+          "chars": 478,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "W10",
+          "title": "代理交付",
+          "chars": 1057,
+          "bad": [],
+          "empty": false
+        },
+        {
+          "code": "模型运行与用量",
+          "chars": 323,
+          "bad": []
+        },
+        {
+          "code": "修改历史",
+          "chars": 1335,
+          "bad": []
+        }
+      ]
+    }
+  ],
+  "consoleErrors": [],
+  "styles": {
+    "pageTitle": null,
+    "pageDesc": null,
+    "tabActive": null,
+    "paneTitle": {
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "fontWeight": "500"
+    },
+    "tag": {
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "height": "22px",
+      "borderRadius": "999px"
+    },
+    "card": null,
+    "primaryBtn": {
+      "height": "36px",
+      "borderRadius": "8px",
+      "backgroundColor": "rgb(10, 10, 10)",
+      "color": "rgb(255, 255, 255)",
+      "fontSize": "13px",
+      "paddingLeft": "24px"
+    },
+    "rail": null,
+    "stageRow": null,
+    "topbar": {
+      "height": "56px"
+    },
+    "assistant": null,
+    "body": {
+      "fontFamily": "\"Noto Sans SC Variable\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "numeric": null
+  }
+}
