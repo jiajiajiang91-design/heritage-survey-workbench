@@ -57,7 +57,7 @@
     "backgroundColor": "rgb(10, 10, 10)",
     "color": "rgb(255, 255, 255)",
     "fontSize": "13px",
-    "paddingLeft": "24px"
+    "paddingLeft": "16px"
   },
   "secondaryBtn": {
     "height": "36px",

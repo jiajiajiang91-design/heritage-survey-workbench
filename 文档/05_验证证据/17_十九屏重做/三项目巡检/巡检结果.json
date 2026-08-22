@@ -32,28 +32,28 @@
         {
           "code": "W02",
           "title": "资料清单",
-          "chars": 496,
+          "chars": 401,
           "bad": [],
           "empty": false
         },
         {
           "code": "W03",
           "title": "实测基准",
-          "chars": 577,
+          "chars": 436,
           "bad": [],
           "empty": false
         },
         {
           "code": "W04",
           "title": "构件清单",
-          "chars": 2154,
+          "chars": 2063,
           "bad": [],
           "empty": false
         },
         {
           "code": "W06",
           "title": "三维模型",
-          "chars": 267,
+          "chars": 245,
           "bad": [],
           "empty": false
         },
@@ -74,7 +74,7 @@
         {
           "code": "W08",
           "title": "图纸样式",
-          "chars": 319,
+          "chars": 321,
           "bad": [],
           "empty": false
         },
@@ -88,25 +88,25 @@
         {
           "code": "W09",
           "title": "检查与资格",
-          "chars": 435,
+          "chars": 402,
           "bad": [],
           "empty": false
         },
         {
           "code": "W10",
           "title": "代理交付",
-          "chars": 874,
+          "chars": 866,
           "bad": [],
           "empty": false
         },
         {
           "code": "模型运行与用量",
-          "chars": 325,
+          "chars": 307,
           "bad": []
         },
         {
           "code": "修改历史",
-          "chars": 1677,
+          "chars": 1657,
           "bad": []
         }
       ]
@@ -124,28 +124,28 @@
         {
           "code": "W02",
           "title": "资料清单",
-          "chars": 571,
+          "chars": 440,
           "bad": [],
           "empty": false
         },
         {
           "code": "W03",
           "title": "实测基准",
-          "chars": 607,
+          "chars": 428,
           "bad": [],
           "empty": false
         },
         {
           "code": "W04",
           "title": "构件清单",
-          "chars": 2648,
+          "chars": 2521,
           "bad": [],
           "empty": false
         },
         {
           "code": "W06",
           "title": "三维模型",
-          "chars": 226,
+          "chars": 204,
           "bad": [],
           "empty": false
         },
@@ -166,7 +166,7 @@
         {
           "code": "W08",
           "title": "图纸样式",
-          "chars": 339,
+          "chars": 349,
           "bad": [],
           "empty": false
         },
@@ -180,25 +180,25 @@
         {
           "code": "W09",
           "title": "检查与资格",
-          "chars": 469,
+          "chars": 425,
           "bad": [],
           "empty": false
         },
         {
           "code": "W10",
           "title": "代理交付",
-          "chars": 996,
+          "chars": 988,
           "bad": [],
           "empty": false
         },
         {
           "code": "模型运行与用量",
-          "chars": 333,
+          "chars": 305,
           "bad": []
         },
         {
           "code": "修改历史",
-          "chars": 1897,
+          "chars": 1867,
           "bad": []
         }
       ]
@@ -216,28 +216,28 @@
         {
           "code": "W02",
           "title": "资料清单",
-          "chars": 342,
+          "chars": 298,
           "bad": [],
           "empty": false
         },
         {
           "code": "W03",
           "title": "实测基准",
-          "chars": 1771,
+          "chars": 1551,
           "bad": [],
           "empty": false
         },
         {
           "code": "W04",
           "title": "构件清单",
-          "chars": 2248,
+          "chars": 2208,
           "bad": [],
           "empty": false
         },
         {
           "code": "W06",
           "title": "三维模型",
-          "chars": 361,
+          "chars": 339,
           "bad": [],
           "empty": false
         },
@@ -258,7 +258,7 @@
         {
           "code": "W08",
           "title": "图纸样式",
-          "chars": 373,
+          "chars": 405,
           "bad": [],
           "empty": false
         },
@@ -272,25 +272,25 @@
         {
           "code": "W09",
           "title": "检查与资格",
-          "chars": 478,
+          "chars": 455,
           "bad": [],
           "empty": false
         },
         {
           "code": "W10",
           "title": "代理交付",
-          "chars": 1057,
+          "chars": 1049,
           "bad": [],
           "empty": false
         },
         {
           "code": "模型运行与用量",
-          "chars": 323,
+          "chars": 307,
           "bad": []
         },
         {
           "code": "修改历史",
-          "chars": 1335,
+          "chars": 1317,
           "bad": []
         }
       ]
@@ -319,7 +319,7 @@
       "backgroundColor": "rgb(10, 10, 10)",
       "color": "rgb(255, 255, 255)",
       "fontSize": "13px",
-      "paddingLeft": "24px"
+      "paddingLeft": "16px"
     },
     "rail": null,
     "stageRow": null,
