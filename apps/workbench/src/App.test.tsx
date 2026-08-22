@@ -24,13 +24,11 @@ describe("App", () => {
     expect(await screen.findByRole("heading", { name: "山门" })).toBeInTheDocument();
     expect(screen.getByText("山门保护记录")).toBeInTheDocument();
 
-    // 导航分两层：左栏是八个任务阶段，中栏页签只在阶段含多个视图时出现。
-    // 问题队列属记录现状阶段的第二个视图，因此先进阶段再点页签。
+    // 导航分两层：左栏是八个任务阶段，中栏页签行按 v4 形式始终显示。
+    // 任务确认表单在建立任务阶段的任务卡上（实施单元 08 起），先进该阶段。
     const stageNav = screen.getByRole("navigation", { name: "任务进度" });
-    fireEvent.click(within(stageNav).getByRole("button", { name: /记录现状/ }));
-    const viewTabs = screen.getByRole("navigation", { name: "工作区视图" });
-    fireEvent.click(within(viewTabs).getByRole("button", { name: "问题队列" }));
-    expect(await screen.findByText("问题队列与必要人工节点")).toBeInTheDocument();
+    fireEvent.click(within(stageNav).getByRole("button", { name: /建立任务/ }));
+    expect(await screen.findByText("确认任务要求")).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("成果目录（每行一项）"), { target: { value: "平面图" } });
     fireEvent.change(screen.getByLabelText("图纸标题"), { target: { value: "山门代理成果图" } });
     fireEvent.change(screen.getByLabelText("修订标记"), { target: { value: "P1" } });
@@ -38,7 +36,14 @@ describe("App", () => {
     fireEvent.change(screen.getByLabelText("图幅设置"), { target: { value: '[{"key":"sheet","drawingNumber":"P-01","displayLabelZh":"平面","pageMm":[420,297]}]' } });
     fireEvent.change(screen.getByLabelText("视图设置"), { target: { value: '[{"key":"plan","displayLabelZh":"平面","drawingRef":"平-01","kind":"floorPlan","scaleDenominator":50,"sheetKey":"sheet","viewportRectMm":[20,20,380,250],"direction":[0,0,1],"right":[1,0,0],"up":[0,1,0],"targetStableKeys":[],"sourceEvidenceRefs":[]}]' } });
     fireEvent.click(screen.getByRole("button", { name: "确认任务要求，开始整理资料" }));
-    expect(await screen.findByText("任务要求已确认")).toBeInTheDocument();
+    expect(await screen.findByText("启动检查")).toBeInTheDocument();
+    expect(await screen.findByText("任务范围、规范和责任角色已一次确认")).toBeInTheDocument();
+
+    // 确认后记录现状阶段出页签行，问题队列是第二个视图
+    fireEvent.click(within(stageNav).getByRole("button", { name: /记录现状/ }));
+    const viewTabs = screen.getByRole("navigation", { name: "工作区视图" });
+    fireEvent.click(within(viewTabs).getByRole("button", { name: "问题队列" }));
+    expect(await screen.findByText("问题队列与必要人工节点")).toBeInTheDocument();
 
     // 交付归档只有一个视图，没有页签行，从左栏阶段直接进。
     fireEvent.click(within(stageNav).getByRole("button", { name: /交付归档/ }));

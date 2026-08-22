@@ -121,22 +121,14 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 .ws-provenance-row[data-status="missing"] strong { color: var(--text-tertiary); font-weight: var(--font-weight-regular); }
 .ws-assistant-collapsed { display: flex; flex-direction: column; align-items: center; padding: var(--space-sm) 0; border-left: var(--stroke-hairline) solid var(--border-subtle); background: var(--bg-surface); }
 
-/* ---------- 证据半区（数据与证据并置，05 表 2） ---------- */
-.ws-evidence { display: flex; flex-direction: column; gap: var(--space-md); min-height: 0; height: 100%; padding-left: var(--space-md); }
-.ws-evidence-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
-.ws-evidence-head strong { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); }
-.ws-evidence-head small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ws-evidence-switch { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
-.ws-evidence-switch button { display: inline-flex; align-items: center; height: var(--size-control-sm); padding: 0 var(--space-md); border-radius: var(--radius-md); font: var(--font-weight-medium) var(--font-size-12)/var(--line-16) var(--font-family-ui); color: var(--text-secondary); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ws-evidence-switch button:hover { background: var(--bg-hover); }
-.ws-evidence-switch button[aria-current="true"] { background: var(--bg-selected); color: var(--text-primary); }
-.ws-evidence-body { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: var(--space-md); }
-.ws-evidence-body object { width: 100%; height: 100%; min-height: 360px; border: var(--stroke-hairline) solid var(--border-subtle); border-radius: var(--radius-md); }
-.ws-evidence-figure { border-radius: var(--radius-md); overflow: hidden; border: var(--stroke-hairline) solid var(--border-subtle); }
+/* ---------- 证据半区（v4 Evidence pane 66:1698）：图 238 高圆角 8，题注 13/20 加 12/18，信息行卡 ---------- */
+.ws-evidence-select { max-width: 50%; min-height: var(--size-control-sm); padding: 0 var(--space-sm); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); }
+.ws-evidence-figure { border-radius: var(--radius-md); overflow: hidden; background: var(--bg-subtle); }
+.ws-evidence-object { width: 100%; height: 238px; border: var(--stroke-hairline) solid var(--border-subtle); border-radius: var(--radius-md); }
 .ws-evidence-caption { display: flex; flex-direction: column; gap: var(--space-2xs); }
-.ws-evidence-caption strong { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
-.ws-evidence-caption p { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); overflow-wrap: anywhere; }
-.ws-evidence-placeholder { display: flex; align-items: center; justify-content: center; min-height: 200px; background: var(--bg-subtle); border-radius: var(--radius-md); color: var(--text-tertiary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); text-align: center; padding: var(--space-lg); }
+.ws-evidence-caption strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
+.ws-evidence-caption p { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); overflow-wrap: anywhere; }
+.ws-evidence-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-sm); min-height: 238px; background: var(--bg-subtle); border-radius: var(--radius-md); color: var(--text-tertiary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); text-align: center; padding: var(--space-lg); }
 
 /* ---------- 失败提示与通知（07 第 5.6 节）：固定在中栏底部 ---------- */
 .ws-banners { position: fixed; left: 50%; bottom: var(--space-2xl); transform: translateX(-50%); display: flex; flex-direction: column; gap: var(--space-sm); z-index: 30; max-width: min(640px, calc(100vw - var(--space-5xl))); }

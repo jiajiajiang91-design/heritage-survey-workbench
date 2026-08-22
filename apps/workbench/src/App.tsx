@@ -13,7 +13,10 @@ import { LongTask } from "./LongTask";
 import { formatCost } from "./model-pricing";
 import { DrawingLimitationNote, QualificationChip } from "./QualificationNotice";
 import { describeBlocker } from "./qualification";
+import { EvidenceList } from "./screens/EvidenceList";
+import { MeasurementBaseline } from "./screens/MeasurementBaseline";
 import { ProjectList } from "./screens/ProjectList";
+import { TaskCard } from "./screens/TaskCard";
 import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShell";
 import { AssistantPanel } from "./shell/AssistantPanel";
 import { StageRail } from "./shell/StageRail";
@@ -380,111 +383,39 @@ export function App({ bootstrapDemo }: AppProps = {}) {
       ) : (
         <CenterFrame title={pageTitle} tabs={currentTabs} fill>
             {activeStage === "tasks" && (
-              <section className="evidence-board task-overview-board">
-                <header className="board-heading"><div><h3>任务要求与成果目录</h3></div><button className="gj-btn gj-btn--text" type="button" onClick={() => setActiveStage("issues")}>在问题流程中更新</button></header>
-                <div className="pane-body">
-                {confirmedTask ? <>
-                  <div className="summary-grid">
-                    <article><span>任务</span><strong>{confirmedTask.name}</strong><small>{confirmedTask.scope.join(" · ")}</small></article>
-                    <article><span>成果要求</span><strong>{confirmedTask.artifactRequirements?.views.length ?? 0} 个视图</strong><small>{confirmedTask.artifactRequirements?.sheets.length ?? 0} 张图纸 · 修订 {confirmedTask.artifactRequirements?.revisionLabel ?? "未定"}</small></article>
-                    <article><span>规范依据</span><strong>{confirmedTask.regulationRefs.length} 项</strong><small>{confirmedTask.regulationRefs.join(" · ") || "尚未登记"}</small></article>
-                  </div>
-                  <div className="requirements-table" role="table" aria-label="成果目录">
-                    {confirmedTask.artifactRequirements?.views.map((view) => <div role="row" key={view.key}><span>{view.drawingRef}</span><strong>{view.displayLabelZh}</strong><span>1:{view.scaleDenominator}</span><span>{view.sheetKey}</span></div>)}
-                  </div>
-                </> : <div className="panel-empty">尚未确认任务要求。系统会在问题队列中保留一次必要人工节点，不会用默认图种或版式补齐。</div>}
-                </div>
-              </section>
+              <TaskCard
+                snapshot={selected.snapshot}
+                confirmedTask={confirmedTask}
+                objectCount={geometrySpec?.objects.length ?? 0}
+                objectProducerCounts={(geometrySpec?.objects ?? []).reduce<Record<string, number>>((acc, object) => { acc[object.producer.producerType] = (acc[object.producer.producerType] ?? 0) + 1; return acc; }, {})}
+                measuredRecordCount={measuredRecordCount}
+                qualificationLabel={dashboard?.qualificationLabel ?? null}
+                onSubmitTask={submitTaskSetup}
+                onEnterEvidence={() => goToView("evidence")}
+              />
             )}
 
             {activeStage === "evidence" && (
-              <section className="evidence-board">
-                <header className="board-heading">
-                  <div><h3>原始资料与解析记录</h3></div>
-                  {/* 读图提取尺寸：结果进待确认区，人工核对后才写入项目 */}
-                  {!!readableDrawingEvidenceIds.length && (
-                    <button className="gj-btn" type="button" disabled={Boolean(modelRunning)} onClick={() => void transcribeDrawings()}>
-                      <Ruler size={14} /> 从图纸读尺寸
-                    </button>
-                  )}
-                  <button className="gj-btn gj-btn--primary" type="button" onClick={() => evidenceInput.current?.click()}><Upload size={14} /> 上传原始资料</button>
-                  <input ref={evidenceInput} className="sr-only" type="file" multiple onChange={(event) => { const files = Array.from(event.target.files ?? []); if (files.length) void uploadFromInput(files); }} />
-                </header>
-                {renderSplit(<>
-                    <div className="evidence-list">
-                      {selected.snapshot.evidences.map((evidence) => {
-                        const parse = selected.snapshot.parseRecords.find((record) => record.evidenceId === evidence.id);
-                        return (
-                          <article className={`evidence-card ${activeEvidenceId === evidence.id ? "active" : ""}`} key={evidence.id}
-                            onClick={() => setActiveEvidenceId(evidence.id)}>
-                            <span className="evidence-type">{EVIDENCE_TYPE_LABELS[evidence.evidenceType] ?? evidence.evidenceType}</span>
-                            <div><strong>{evidence.title}</strong><small>{parse ? PARSE_STATUS_LABELS[parse.status] ?? "尚未读取" : "尚未读取"}</small></div>
-                            <span className={`data-status ${evidence.dataStatus}`}>{DATA_STATUS_LABELS[evidence.dataStatus] ?? evidence.dataStatus}</span>
-                            <button className="gj-btn gj-btn--text" type="button" onClick={(event) => { event.stopPropagation(); void downloadEvidence(evidence.assetId); }}>原文件</button>
-                          </article>
-                        );
-                      })}
-                      {!selected.snapshot.evidences.length && (
-                        <div className="evidence-empty"><div className="trace-spine" aria-hidden="true"><span /><span /><span /><span /></div><p>上传任务书、照片、测量记录或已有图纸。文件本体、证据记录和解析结果会一起进入项目版本。</p></div>
-                      )}
-                    </div>
-
-                </>, "选择左侧资料查看原件。")}
-              </section>
+              <EvidenceList
+                snapshot={selected.snapshot}
+                pane={evidence}
+                readableDrawingCount={readableDrawingEvidenceIds.length}
+                modelRunning={modelRunning}
+                onUpload={uploadEvidenceFiles}
+                onTranscribe={() => void transcribeDrawings()}
+              />
             )}
 
             {activeStage === "measurements" && (
-              <section className="evidence-board">
-                <header className="board-heading"><div><h3>测量记录、事实与缺失影响</h3></div><span className="board-count">{selected.snapshot.measurements.length + selected.snapshot.facts.length} 条记录</span></header>
-                {renderSplit(<>
-                {projectArchetypes.length ? (() => {
-                  const archetype = projectArchetypes[projectArchetypes.length - 1]!;
-                  const derivation = deriveArchetypeExpectations(archetype);
-                  const comparisons = compareWithMeasuredFacts(derivation, selected.snapshot.facts);
-                  return (
-                    <div className="archetype-comparison">
-                      <h4>按形制推算的尺寸与实测对照</h4>
-                      <p>采用{LIFT_RATIO_SET_LABELS[derivation.ruleSetId] ?? derivation.ruleSetId}，柱位 {derivation.layout.pillarCount} 处，枋连接 {derivation.layout.fangCount} 处。推算值只作核对参考，实测记录始终优先，也不能作为图纸标注依据。</p>
-                      <div className="record-table">
-                        {comparisons.map((item) => (
-                          <article key={item.dimension}>
-                            <strong>{item.dimension}</strong>
-                            <span>推算 {item.valueMm !== null ? `${item.valueMm} mm` : "按实际测量"}{item.toleranceText ? `，允许偏差 ${item.toleranceText}` : ""}</span>
-                            <span>实测 {item.measuredMm !== null ? `${item.measuredMm} mm` : "尚无实测记录"}</span>
-                            <small>{item.deltaMm !== null ? `相差 ${item.deltaMm} mm${item.withinTolerance === null ? "" : item.withinTolerance ? "，在允许偏差内" : "，超出允许偏差，建议记入现状"}` : "缺实测，无法比较"}</small>
-                            <small>{item.sourceText}</small>
-                          </article>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })() : (
-                  <form className="task-setup archetype-form" onSubmit={(event) => void registerArchetype(event)}>
-                    <div><span className="node-label">人工节点</span><h4>登记形制，用于核对实测</h4><p>填写开间、进深和举架做法后，系统按形制推算各处尺寸，供你与实测比对。实测记录始终优先，差异较大的项会提示记入现状。</p></div>
-                    <label>逐间面阔 mm（逗号分隔）<input name="bayX" required placeholder="例如 4800" /></label>
-                    <label>逐间进深 mm（逗号分隔）<input name="bayY" required placeholder="例如 1800,1800" /></label>
-                    <label>步架数<input name="stepCount" type="number" min="1" max="20" required placeholder="七檩填 3" /></label>
-                    <label>斗口或材宽 mm<input name="baseD" type="number" min="1" step="any" required placeholder="例如 380" /></label>
-                    <label>举架做法
-                      <select name="liftRatioSetRef" defaultValue="qing-gongcheng-zuofa">
-                        <option value="qing-gongcheng-zuofa">清工程做法举架系数</option>
-                        <option value="liang-drawings">梁思成图纸举架系数</option>
-                      </select>
-                    </label>
-                    <label>柱位（列/行，逗号分隔）<input name="pillarNet" required placeholder="例如 0/0,0/1,1/0,1/1" /></label>
-                    <label>枋连接的两根柱（可选）<input name="fangNet" placeholder="例如 0/0#1/0,0/1#1/1" /></label>
-                    <label>形制判断依据<input name="sourceDeclaration" required placeholder="例如 现场踏勘并对照同期实例" /></label>
-                    <button className="gj-btn gj-btn--primary" type="submit">登记并推算尺寸</button>
-                  </form>
-                )}
-                <div className="record-table">
-                  {selected.snapshot.measurements.map((measurement) => <article key={measurement.id}><span className={`producer-badge ${measurement.producer.producerType}`}>{PRODUCER_LABELS[measurement.producer.producerType]}</span><strong>{measurement.quantity.originalText} {measurement.quantity.originalUnit}</strong><small>{measurement.metadataStatus === "complete" ? "已记录测量人、时间和方法" : "缺测量人、时间或方法"}</small><small>{evidenceTitle(measurement.originalEvidenceRef)}</small></article>)}
-                  {selected.snapshot.facts.map((fact) => <article key={fact.id}><span className={`producer-badge ${fact.producer.producerType}`}>{PRODUCER_LABELS[fact.producer.producerType]}</span><strong>{factFieldLabel(fact.field)}</strong><small>{REVIEW_LABELS[fact.reviewStatus] ?? fact.reviewStatus} · {DATA_STATUS_LABELS[fact.dataStatus] ?? fact.dataStatus}</small><small>{fact.evidenceRefs.map(evidenceTitle).join("、") || "未指明资料"}</small></article>)}
-                  {!selected.snapshot.measurements.length && !selected.snapshot.facts.length && <div className="panel-empty">还没有可用的尺寸。尺寸缺失时，依赖它的成果不会生成，系统也不会用默认值补齐。</div>}
-                </div>
-
-                </>, "选择资料查看手写草图或测量记录原件。")}
-              </section>
+              <MeasurementBaseline
+                snapshot={selected.snapshot}
+                pane={evidence}
+                archetypes={projectArchetypes}
+                evidenceTitle={evidenceTitle}
+                factFieldLabel={factFieldLabel}
+                onRegisterArchetype={registerArchetype}
+                onConfirmDimensionChain={confirmDocumentedDimensionChain}
+              />
             )}
 
             {activeStage === "objects" && (

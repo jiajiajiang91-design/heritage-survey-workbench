@@ -209,12 +209,16 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 .gj-dialog-title { font: var(--font-weight-medium) var(--font-size-18)/var(--line-26) var(--font-family-ui); color: var(--text-primary); }
 .gj-dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-sm); }
 
-/* ---------- 分栏：数据区与证据区，分隔条可拖（07 第 6.4 节） ---------- */
-.gj-split { display: grid; grid-template-columns: var(--split-ratio, 50%) var(--space-sm) minmax(0, 1fr); min-height: 0; height: 100%; }
-.gj-split-data, .gj-split-aside { min-width: 0; min-height: 0; overflow: auto; }
+/* ---------- 分栏：数据区与证据区两张卡并排（v4 Data evidence split 66:1670），间距 12，分隔条可拖（07 第 6.4 节） ---------- */
+.gj-split { display: grid; grid-template-columns: calc(var(--split-ratio, 50%) - var(--space-xs)) var(--space-md) minmax(0, 1fr); min-height: 0; height: 100%; flex: 1 1 auto; }
+.gj-split-data, .gj-split-aside { display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; min-height: 0; overflow: auto; padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
 .gj-split-divider { cursor: col-resize; position: relative; }
-.gj-split-divider::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: var(--stroke-hairline); background: var(--border-subtle); }
+.gj-split-divider::before { content: ""; position: absolute; top: var(--space-lg); bottom: var(--space-lg); left: 50%; width: var(--stroke-hairline); background: transparent; }
 .gj-split-divider:hover::before, .gj-split-divider:focus-visible::before { width: var(--stroke-emphasis); background: var(--border-strong); }
+.gj-pane-title { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); }
+.gj-pane-desc { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
+.gj-pane-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+.gj-pane-list { display: flex; flex-direction: column; gap: var(--space-md); }
 
 /* ---------- 横向操作区：按钮 8 间距右对齐（07 第 5.1 节） ---------- */
 .gj-actions { display: flex; justify-content: flex-end; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
