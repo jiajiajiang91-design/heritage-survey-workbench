@@ -1,0 +1,18 @@
+/* W07 问题队列（66:2841）：问题卡 92 高内边距 12 间距 8，标题行 24；详情说明 13/22；资料链行 32 高 */
+.sc-issue { display: flex; flex-direction: column; gap: var(--space-sm); min-height: 92px; padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); text-align: left; cursor: pointer; }
+.sc-issue:hover { background: var(--bg-hover); }
+.sc-issue[aria-current="true"] { background: var(--bg-selected); }
+.sc-issue-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); min-height: var(--size-icon-lg); }
+.sc-issue-title { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
+.sc-issue-summary { font: var(--font-weight-regular) var(--font-size-12)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sc-issue-body { font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
+.sc-issue-lines { display: flex; flex-direction: column; font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); color: var(--text-primary); }
+.sc-issue-chain { display: flex; flex-direction: column; }
+.sc-issue-chain span { display: flex; align-items: center; min-height: var(--size-control-sm); border-bottom: var(--stroke-hairline) solid var(--border-subtle); font: var(--font-weight-regular) var(--font-size-12)/var(--line-20) var(--font-family-ui); color: var(--text-primary); white-space: pre-wrap; }
+.sc-issue-decision { display: flex; flex-direction: column; gap: var(--space-sm); }
+.sc-issue-option { display: flex; align-items: flex-start; gap: var(--space-sm); padding: var(--space-sm); border: var(--stroke-hairline) solid var(--border-subtle); border-radius: var(--radius-md); cursor: pointer; }
+.sc-issue-option:has(input:checked) { background: var(--bg-selected); }
+.sc-issue-option input { margin: var(--space-2xs) 0 0; }
+.sc-issue-option span { display: flex; flex-direction: column; gap: var(--space-2xs); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-issue-option strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-issue-option em { font-style: normal; color: var(--text-tertiary); }

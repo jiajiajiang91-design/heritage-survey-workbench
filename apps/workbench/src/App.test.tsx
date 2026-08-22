@@ -43,7 +43,7 @@ describe("App", () => {
     fireEvent.click(within(stageNav).getByRole("button", { name: /记录现状/ }));
     const viewTabs = screen.getByRole("navigation", { name: "工作区视图" });
     fireEvent.click(within(viewTabs).getByRole("button", { name: "问题队列" }));
-    expect(await screen.findByText("问题队列与必要人工节点")).toBeInTheDocument();
+    expect(await screen.findByText("待处理问题")).toBeInTheDocument();
 
     // 交付归档只有一个视图，没有页签行，从左栏阶段直接进。
     fireEvent.click(within(stageNav).getByRole("button", { name: /交付归档/ }));
