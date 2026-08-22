@@ -1,5 +1,5 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, readdirSync } from "node:fs";
+import { join, relative } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
@@ -8,6 +8,23 @@ import { describe, expect, it } from "vitest";
 
 const SOURCE_ROOT = import.meta.dirname;
 const read = (name: string) => readFileSync(join(SOURCE_ROOT, name), "utf8");
+
+// 扫描 src 下全部样式文件（令牌文件除外）。单元 08 起页面样式按屏分文件，
+// 只读两份固定文件会让新文件里的字面值漏检。
+function cssFiles(directory: string): string[] {
+  const collected: string[] = [];
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const full = join(directory, entry.name);
+    if (entry.isDirectory()) {
+      if (entry.name === "test") continue;
+      collected.push(...cssFiles(full));
+    } else if (entry.name.endsWith(".css") && entry.name !== "tokens.css") {
+      collected.push(relative(SOURCE_ROOT, full).split("\\").join("/"));
+    }
+  }
+  return collected.sort();
+}
+const STYLE_FILES = cssFiles(SOURCE_ROOT).map((name) => [name, read(name)] as const);
 
 const TOKENS = read("tokens.css");
 const COMPONENTS = read("components.css");
@@ -59,7 +76,7 @@ describe("令牌引用只取档位内的值（实施单元 06 第二组）", () 
   for (const [label, prefix] of [["间距", "--space-"], ["圆角", "--radius-"], ["描边", "--stroke-"],
     ["字号", "--font-size-"], ["行高", "--line-"], ["字重", "--font-weight-"]] as const) {
     it(`${label}只引用已声明的令牌`, () => {
-      for (const [name, css] of [["components.css", COMPONENTS], ["styles.css", PAGES]] as const) {
+      for (const [name, css] of STYLE_FILES) {
         const unknown = referenced(css, prefix).filter((token) => !declared.has(token));
         expect(unknown, `${name} 引用了未声明的${label}令牌`).toEqual([]);
       }
@@ -70,14 +87,23 @@ describe("令牌引用只取档位内的值（实施单元 06 第二组）", () 
 // 剩余的字面值必须条条有交代。数量对不上说明有人新写了字面值，
 // 或者删了字面值没同步清单，两种都要查出来。
 describe("剩余字面值与缺口清单对得上（实施单元 06 第二组）", () => {
-  it("两份样式里的字面 px 数量与清单记的数量相等", () => {
+  // 按文件逐行对账。清单里每个样式文件一行，写作“| `文件名` | 数量 |”；
+  // 新文件从 0 起，旧文件只减不增，删光的文件从清单里整行删除。
+  it("每份样式里的字面 px 数量与清单记的数量逐文件相等", () => {
     // 注释里提到的尺寸不算实现里的字面值，先剥掉注释再数
     const count = (css: string) =>
       css.replace(/\/\*[\s\S]*?\*\//g, "").match(/(?<![\w.-])\d+(?:\.\d+)?px/g)?.length ?? 0;
-    const actual = count(PAGES) + count(COMPONENTS);
-    const recorded = Number(/当前值 (\d+)/.exec(GAP_LIST)?.[1]);
-    expect(recorded, "缺口清单要写明当前值").toBeGreaterThan(0);
-    expect(actual, "字面 px 数量与缺口清单对不上，新增了未记录的字面值就会在这里失败").toBe(recorded);
+    const recorded = new Map([...GAP_LIST.matchAll(/^\| `([^`]+\.css)` \| (\d+) \|/gm)].map((m) => [m[1]!, Number(m[2])]));
+    expect(recorded.size, "缺口清单要按文件写明当前值").toBeGreaterThan(0);
+    const actual = new Map(STYLE_FILES.map(([name, css]) => [name, count(css)]));
+    const mismatches: string[] = [];
+    for (const [name, value] of actual) {
+      const expected = recorded.get(name);
+      if (expected === undefined) { if (value > 0) mismatches.push(`${name} 有 ${value} 处字面 px 但清单没有这一行`); continue; }
+      if (expected !== value) mismatches.push(`${name} 实际 ${value} 处，清单记 ${expected} 处`);
+    }
+    for (const name of recorded.keys()) if (!actual.has(name)) mismatches.push(`清单里的 ${name} 已不存在`);
+    expect(mismatches, "字面 px 数量与缺口清单对不上，新增了未记录的字面值就会在这里失败").toEqual([]);
   });
 
   it("缺口清单把每处都归到了四类处置之一", () => {
@@ -116,21 +142,21 @@ describe("界面视觉规范自检（07 第 8 节）", () => {
       "--text-title", "--text-section", "--text-body", "--text-note", "--text-numeric", "--text-label",
       "--font-sans", "--font-mono",
     ];
-    for (const [name, css] of [["components.css", COMPONENTS], ["styles.css", PAGES], ["tokens.css", TOKENS]] as const) {
+    for (const [name, css] of [...STYLE_FILES, ["tokens.css", TOKENS] as const]) {
       const found = retired.filter((token) => css.includes(`var(${token})`) || css.includes(`  ${token}:`));
       expect(found, `${name} 里还有已退场的 v1.0 令牌`).toEqual([]);
     }
   });
 
   it("页面与组件样式不写字面色值", () => {
-    for (const [name, css] of [["components.css", COMPONENTS], ["styles.css", PAGES]] as const) {
+    for (const [name, css] of STYLE_FILES) {
       const literals = [...new Set([...css.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map((match) => match[0]))];
       expect(literals, `${name} 出现规范外色值，应改用第 2 节令牌`).toEqual([]);
     }
   });
 
   it("不使用 12px 以下字号", () => {
-    for (const [name, css] of [["components.css", COMPONENTS], ["styles.css", PAGES]] as const) {
+    for (const [name, css] of STYLE_FILES) {
       const sizes = [...css.matchAll(/font(?:-size)?:[^;{}]*?\b(\d+)px/g)].map((match) => Number(match[1]));
       const tooSmall = [...new Set(sizes.filter((size) => size < 12))];
       expect(tooSmall, `${name} 出现 12px 以下字号`).toEqual([]);
@@ -162,8 +188,7 @@ describe("界面视觉规范自检（07 第 8 节）", () => {
       expect(COMPONENTS, `来源标记未引用 ${token}`).toContain(token);
     }
     // 形状已取消，旧的斜线底纹与圆点不许留在实现里
-    expect(COMPONENTS).not.toContain("repeating-linear-gradient");
-    expect(PAGES).not.toContain("repeating-linear-gradient");
+    for (const [, css] of STYLE_FILES) expect(css).not.toContain("repeating-linear-gradient");
   });
 
   it("窄屏断点与版面令牌对得上", () => {
@@ -183,7 +208,7 @@ describe("界面视觉规范自检（07 第 8 节）", () => {
   });
 
   it("v4 没有阴影，实现里也不留投影与模糊", () => {
-    for (const [name, css] of [["components.css", COMPONENTS], ["styles.css", PAGES]] as const) {
+    for (const [name, css] of STYLE_FILES) {
       expect(css, `${name} 出现 backdrop-filter，v4 的浮层是平的`).not.toContain("backdrop-filter");
       // 先取出值再判，不靠正则里的否定前瞻：\s* 会回溯到空格处让前瞻落空。
       // 内阴影与 0 0 0 起手的焦点环属描边性质，保留；有偏移量的投影一律不留。
@@ -200,8 +225,8 @@ describe("界面视觉规范自检（07 第 8 节）", () => {
       expect(PAGES, `三栏未引用 ${token}`).toContain(`var(${token})`);
     }
     // 焦点环改走令牌后这里不再写死 2px，改为断言引用了强调描边令牌，
-    // 取值仍锁在令牌那一侧：--stroke-emphasis 必须是 2px。
-    expect(PAGES).toMatch(/:focus-visible[^{]*\{[^}]*outline:\s*var\(--stroke-emphasis\) solid/);
+    // 取值仍锁在令牌那一侧：--stroke-emphasis 必须是 2px。基础重置在组件样式里。
+    expect(COMPONENTS).toMatch(/:focus-visible[^{]*\{[^}]*outline:\s*var\(--stroke-emphasis\) solid/);
     expect(TOKENS).toMatch(/--stroke-emphasis:\s*2px/);
   });
 
@@ -212,9 +237,9 @@ describe("界面视觉规范自检（07 第 8 节）", () => {
     // 第二档：区域内 24 px 指示器加一行说明
     expect(COMPONENTS).toContain(".gj-loading");
     expect(COMPONENTS).toMatch(/\.gj-loading::before[\s\S]*?width: 24px/);
-    // 第三档：进度条高 4 px、圆角 2 px，含不确定态
+    // 第三档：进度条高 4 px、全圆角（v4 助手面板进度条 36:25），含不确定态
     expect(COMPONENTS).toMatch(/\.gj-task-bar \{[\s\S]*?height: 4px/);
-    expect(COMPONENTS).toMatch(/\.gj-task-bar \{[\s\S]*?border-radius: 2px/);
+    expect(COMPONENTS).toMatch(/\.gj-task-bar \{[\s\S]*?border-radius: var\(--radius-full\)/);
     expect(COMPONENTS).toContain(".gj-task-bar--indeterminate");
     expect(COMPONENTS).toContain(".gj-task-bar--determinate");
   });

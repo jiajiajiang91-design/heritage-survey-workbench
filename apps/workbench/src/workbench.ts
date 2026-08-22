@@ -84,3 +84,65 @@ export async function bootstrapDemoProjects(): Promise<DemoLoadResult | null> {
     actorId: localActorId(),
   });
 }
+
+// 项目列表页的卡片数据。项目摘要只有名称与状态，卡片要的计数与范围在快照里，
+// 这里逐个项目读头与检查记录算出来，口径按裁决记录第三节第 5 条：
+// 待确认取问题队列未解决项与候选待确认项之和，可导出成果取通过检查的成果数。
+export interface ProjectCard {
+  readonly projectId: string;
+  readonly name: string;
+  readonly buildingName: string;
+  readonly status: "active" | "archived";
+  readonly updatedAt: string;
+  readonly taskName: string | null;
+  readonly scaleLabel: string | null;
+  readonly locationText: string | null;
+  readonly evidenceCount: number;
+  readonly photoCount: number;
+  readonly drawingCount: number;
+  readonly factCount: number;
+  readonly objectCount: number;
+  readonly artifactCount: number;
+  readonly pendingCount: number;
+  readonly checkedArtifactCount: number;
+  readonly coverAssetId: string | null;
+}
+
+export async function listProjectCards(): Promise<readonly ProjectCard[]> {
+  const summaries = await listLocalProjects();
+  return Promise.all(summaries.map(async (summary) => {
+    const [head, artifacts, checkRuns] = await Promise.all([
+      projectRepository.getProjectHead(summary.projectId),
+      projectRepository.getProjectArtifacts(summary.projectId),
+      projectRepository.getProjectCheckRuns(summary.projectId),
+    ]);
+    const snapshot = head?.snapshot ?? null;
+    const task = snapshot?.taskDefinitions.find((item) => item.confirmedAt !== null) ?? null;
+    const scales = [...new Set((task?.artifactRequirements?.views ?? []).map((view) => `1:${view.scaleDenominator}`))];
+    const geometrySpec = snapshot?.geometrySpecs.at(-1) ?? null;
+    const checkedIds = new Set(checkRuns
+      .filter((run) => run.results.every((result) => result.outcome === "passed"))
+      .flatMap((run) => run.artifactRefs));
+    const photo = snapshot?.evidences.find((item) => item.evidenceType === "photo" && item.dataStatus === "available") ?? null;
+    return {
+      projectId: summary.projectId,
+      name: summary.name,
+      buildingName: summary.buildingName,
+      status: summary.status,
+      updatedAt: summary.updatedAt,
+      taskName: task?.name ?? null,
+      scaleLabel: scales.length ? scales.join("、") : null,
+      locationText: snapshot?.project.locationText ?? null,
+      evidenceCount: snapshot?.evidences.length ?? 0,
+      photoCount: snapshot?.evidences.filter((item) => item.evidenceType === "photo").length ?? 0,
+      drawingCount: snapshot?.evidences.filter((item) => item.evidenceType === "drawing").length ?? 0,
+      factCount: snapshot?.facts.length ?? 0,
+      objectCount: geometrySpec?.objects.length ?? 0,
+      artifactCount: artifacts.length,
+      pendingCount: (snapshot?.issues.filter((item) => item.status === "open").length ?? 0)
+        + (snapshot?.candidates.filter((item) => item.reviewStatus === "unreviewed").length ?? 0),
+      checkedArtifactCount: artifacts.filter((item) => checkedIds.has(item.id)).length,
+      coverAssetId: photo?.assetId ?? null,
+    };
+  }));
+}
