@@ -29,7 +29,7 @@ export function Topbar({ breadcrumb, pages, projectListActive, pagesEnabled, onP
       <nav className="ws-topbar-nav" aria-label="项目级页面">
         <button type="button" aria-current={projectListActive ? "page" : undefined} onClick={onProjectList}>项目列表</button>
         {pages.map((page) => (
-          <button key={page.id} type="button" aria-current={page.active ? "page" : undefined} disabled={!pagesEnabled} onClick={() => onSelectPage(page.id)}>{page.label}</button>
+          <button key={page.id} type="button" aria-current={page.active && pagesEnabled ? "page" : undefined} disabled={!pagesEnabled} onClick={() => onSelectPage(page.id)}>{page.label}</button>
         ))}
       </nav>
       {/* v4 顶栏没有助手开关；只在助手栏收起时（窄屏）给一个唤起入口，裁决记录第一节第 5 条 */}

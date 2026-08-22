@@ -14,7 +14,7 @@ export interface ChangeHistoryProps {
   back: { label: string; onBack: () => void };
 }
 
-type Filter = "all" | "committed" | "other" | "unnamed";
+type Filter = "all" | "imported" | "local" | "unnamed";
 
 const OUTCOME_ZH: Record<ChangeHistoryEntry["outcome"], { label: string; tone: "success" | "warning" | "danger" | "neutral" }> = {
   committed: { label: "已提交", tone: "success" },
@@ -35,11 +35,15 @@ function timeLabel(iso: string): string {
 
 export function ChangeHistory({ entries, responsibilities, back }: ChangeHistoryProps) {
   const [filter, setFilter] = useState<Filter>("all");
+  // 筛选按 v4（66:3753）分来路：随包导入与本机产生。记录本身没有来路字段，
+  // 按最近一次导入项目包的时间划分：之前的事件随包而来，导入事件本身与之后的事件都是本机产生。
+  const importedAt = entries.filter((entry) => entry.actionZh === "导入项目包").map((entry) => entry.occurredAt).sort().at(-1) ?? null;
+  const fromPackage = (entry: ChangeHistoryEntry) => importedAt !== null && entry.actionZh !== "导入项目包" && entry.occurredAt < importedAt;
   const unnamed = entries.filter((entry) => entry.actionZh === "未记录动作类型");
-  const committed = entries.filter((entry) => entry.outcome === "committed");
-  const other = entries.filter((entry) => entry.outcome !== "committed");
-  const visible = filter === "all" ? entries : filter === "committed" ? committed : filter === "other" ? other : unnamed;
-  const filters: [Filter, string, number][] = [["all", "全部", entries.length], ["committed", "已提交", committed.length], ["other", "未生效", other.length], ["unnamed", "缺动作名", unnamed.length]];
+  const imported = entries.filter(fromPackage);
+  const local = entries.filter((entry) => !fromPackage(entry));
+  const visible = filter === "all" ? entries : filter === "imported" ? imported : filter === "local" ? local : unnamed;
+  const filters: [Filter, string, number][] = [["all", "全部", entries.length], ["imported", "随包导入", imported.length], ["local", "本机产生", local.length], ["unnamed", "缺动作名", unnamed.length]];
   return (
     <ProjectPageFrame
       title="修改历史"

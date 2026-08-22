@@ -8,7 +8,7 @@ import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShe
 import { AssistantPanel } from "./shell/AssistantPanel";
 import { StageRail } from "./shell/StageRail";
 import { Topbar } from "./shell/Topbar";
-import { STAGE_DESCRIPTIONS, projectPages, stages, type StageId } from "./view-registry";
+import { STAGE_DESCRIPTIONS, projectPages, stageLabel, stages, type StageId } from "./view-registry";
 import { useWorkbench, type WorkbenchOptions } from "./workbench/useWorkbench";
 
 // 组合根：状态与命令处理在 workbench/ 的 hook 里，页面在 screens/ 里，这里只按当前视图选屏。
@@ -32,10 +32,15 @@ export function App({ bootstrapDemo }: AppProps = {}) {
   const importProject = (file: File) => wb.importProject(file).then(() => undefined);
 
   const pages = projectPages.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id, active: activeStage === id }));
-  const breadcrumb = selected
-    ? [selected.snapshot.project.name, [selected.snapshot.buildings[0]?.name, confirmedTask?.artifactRequirements?.views[0] ? `1:${confirmedTask.artifactRequirements.views[0].scaleDenominator}` : null].filter(Boolean).join(" ")].join(" / ")
-    : "项目列表";
+  // 面包屑按 v4：列表页写项目列表，项目级页面写页面名，工作区写项目名 / 建筑名 比例
+  const breadcrumb = !selected
+    ? "项目列表"
+    : onProjectPage
+      ? stageLabel(activeStage)
+      : [selected.snapshot.project.name, [selected.snapshot.buildings[0]?.name, confirmedTask?.artifactRequirements?.views[0] ? `1:${confirmedTask.artifactRequirements.views[0].scaleDenominator}` : null].filter(Boolean).join(" ")].join(" / ");
   const single = !selected || onProjectPage;
+  // 服务中断时只出 B04 对话框，不再同时压一条错误横幅（v4 66:4120 只有对话框）
+  const serviceDown = Boolean(error && serverStatus === null && selected);
   const currentTabs = currentJourney
     ? { items: currentJourney.views.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage, onSelect: (id: string) => goToView(id as StageId) }
     : null;
@@ -96,9 +101,9 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           modelConfigured={serverStatus?.modelConfigured ?? false}
         />
       )}
-      banners={<Banners error={error} notice={notice} onDismissError={() => setError(null)} onDismissNotice={() => setNotice(null)} />}
+      banners={<Banners error={serviceDown ? null : error} notice={notice} onDismissError={() => setError(null)} onDismissNotice={() => setNotice(null)} />}
     />
-    {error && serverStatus === null && selected && (
+    {serviceDown && (
       <ServiceRecoveryDialog
         hasDrawings={drawingArtifacts.length > 0}
         hasCheck={latestCheckRun !== null}

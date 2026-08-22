@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { ArtifactRecord, ArtifactRequirementMatrix, CheckRun } from "@gujian/domain";
+import type { ArtifactRecord, CheckRun } from "@gujian/domain";
 
 import { QUALIFICATION_LIMITS, describeBlocker } from "../qualification";
 import { Button, EmptyState, Tag } from "../ui";
-import { describePreview, previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
+import { describePreview, previewLabel, type DrawingPreview, type PreviewRequirements } from "../workbench/useAssetUrls";
 import "./ChecksAndQualification.css";
 
 // W09 检查与资格（66:2949）：左卡正式图（头 36 加状态标签、图 480、题注 12/20、底部操作），
@@ -23,7 +23,7 @@ export interface ChecksAndQualificationProps {
   canRegenerate: boolean;
   onRegenerate: () => void;
   onDownload: (artifact: ArtifactRecord) => void;
-  requirements: ArtifactRequirementMatrix | null;
+  requirements: PreviewRequirements | null;
 }
 
 function blockerSummary(codes: readonly string[]): string {

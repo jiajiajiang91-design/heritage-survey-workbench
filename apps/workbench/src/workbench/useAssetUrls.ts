@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { ArtifactRecord, ArtifactRequirementMatrix, GeometryRevision } from "@gujian/domain";
+import type { ArtifactRecord, GeometryRevision } from "@gujian/domain";
 
 import { projectRepository } from "../workbench";
 
@@ -43,14 +43,22 @@ export function pageLabel(pageMm: readonly number[]): string {
 }
 
 // 预览卡的标题、比例与题注（v4 66:2905 与 66:2949）：图幅号加该图幅上的图名，比例取这些视图，题注写图种比例、图幅纸张与版本。
+// 任务书的成果要求（TaskArtifactRequirements，视图按 sheetKey 挂图幅）与出图要求矩阵（viewIds）两种形状都接。
 // 合并 PDF 没有对应图幅时标题用页签名，题注列全部视图。
-export function describePreview(preview: DrawingPreview | null, requirements: ArtifactRequirementMatrix | null): { title: string; scales: string[]; caption: string | null } {
+export interface PreviewRequirements {
+  revisionLabel: string;
+  views: readonly { id?: string; key?: string; sheetKey?: string; displayLabelZh: string; scaleDenominator: number }[];
+  sheets: readonly { id?: string; key?: string; viewIds?: readonly string[]; drawingNumber: string; displayLabelZh: string; pageMm: readonly number[] }[];
+}
+
+export function describePreview(preview: DrawingPreview | null, requirements: PreviewRequirements | null): { title: string; scales: string[]; caption: string | null } {
   if (!preview) return { title: "图面预览", scales: [], caption: null };
   const views = requirements?.views ?? [];
   const sheets = requirements?.sheets ?? [];
   const stem = preview.label.replace(/\.(svg|pdf)$/i, "");
   const sheet = sheets.find((item) => item.drawingNumber === stem) ?? null;
-  const shown = sheet ? views.filter((view) => sheet.viewIds.includes(view.id)) : views;
+  const onSheet = (view: PreviewRequirements["views"][number]) => sheet !== null && ((sheet.key !== undefined && view.sheetKey === sheet.key) || (sheet.viewIds !== undefined && view.id !== undefined && sheet.viewIds.includes(view.id)));
+  const shown = sheet ? views.filter(onSheet) : views;
   const title = sheet ? `${sheet.drawingNumber} ${shown.map((view) => view.displayLabelZh).join("、") || sheet.displayLabelZh}` : previewLabel(preview);
   const scales = [...new Set(shown.map((view) => `1:${view.scaleDenominator}`))];
   const caption = requirements

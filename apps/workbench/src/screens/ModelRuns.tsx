@@ -61,7 +61,7 @@ export function ModelRuns({ runs, costView, candidates, exclusionCount, serverMo
     <ProjectPageFrame
       title="模型运行与用量"
       description={`按用量与公开单价算费用。${costView.priceSourcesZh.length ? `单价取自${costView.priceSourcesZh.join("；")}，缓存命中的输入单独计价。` : "单价表里没有本次用到的模型时如实写明算不出。"}${serverModel ? `当前服务端模型 ${serverModel}。` : ""}`}
-      actions={<div className="gj-actions"><Button onClick={onRefreshStatus}>刷新状态</Button><Button variant="primary" loadable busy={running} disabled={!canRun} onClick={onRun}>{hasReadableDrawings ? "识别构件" : "整理资料要点"}</Button></div>}
+      actions={<Button onClick={onRefreshStatus}>刷新状态</Button>}
       back={back}
     >
       {!modelConfigured && <Alert tone="warning">服务端尚未配置模型密钥，真实运行按钮已锁定。配置 KIMI_API_KEY 后刷新状态。</Alert>}
@@ -124,6 +124,10 @@ export function ModelRuns({ runs, costView, candidates, exclusionCount, serverMo
             )}
           </article>
         ))}
+        {/* v4（66:3172）标题行只有刷新状态；发起识别是待确认区的动作，放在候选卡底部 */}
+        <div className="gj-actions">
+          <Button variant="primary" loadable busy={running} disabled={!canRun} onClick={onRun}>{hasReadableDrawings ? "识别构件" : "整理资料要点"}</Button>
+        </div>
       </section>
     </ProjectPageFrame>
   );

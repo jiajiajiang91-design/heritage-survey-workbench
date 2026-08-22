@@ -12,7 +12,7 @@
 .sc-dialog-compare-card strong { font: var(--font-weight-medium) var(--font-size-14)/var(--line-22) var(--font-family-ui); }
 .sc-dialog-choice { display: flex; align-items: center; gap: var(--space-md); min-height: 56px; padding: 0 var(--space-md); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); cursor: pointer; }
 .sc-dialog-choice.is-selected { background: var(--bg-selected); }
-.sc-dialog-choice input { width: var(--size-icon-sm); height: var(--size-icon-sm); margin: 0; accent-color: var(--action-primary-bg); }
+.sc-dialog-choice input { width: var(--size-icon-sm); height: var(--size-icon-sm); margin: 0; accent-color: var(--text-link); }
 .sc-dialog-choice-text { display: flex; flex-direction: column; gap: var(--space-2xs); min-width: 0; }
 .sc-dialog-choice-text strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
 .sc-dialog-choice-text small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }

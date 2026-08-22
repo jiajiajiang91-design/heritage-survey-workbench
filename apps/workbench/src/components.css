@@ -72,15 +72,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .gj-btn--compact { padding: 0 var(--space-md); }
 /* 图标按钮：36 见方，读屏文字由 aria-label 提供（07 第 7 节） */
 .gj-btn--icon { width: var(--size-control-md); padding: 0; }
-/* 加载态：指示器槽位常驻并预留宽度，进入加载态只切换可见性，按钮宽度不跳 */
+/* 加载态：指示器绝对定位在左内边距里，进入加载态只切换可见性，按钮宽度不跳；
+   左内边距加到 24 给指示器留位，总宽比普通按钮只多 8，W08 的两个按钮仍能并排 */
+.gj-btn--loadable { position: relative; padding-left: var(--space-2xl); }
 .gj-btn--loadable::before {
-  content: ""; width: 16px; height: 16px; flex: none;
+  content: ""; position: absolute; left: var(--space-2xs); top: 50%; transform: translateY(-50%); width: 16px; height: 16px;
   border-radius: var(--radius-full);
   border: var(--stroke-emphasis) solid currentColor; border-right-color: transparent;
   visibility: hidden;
 }
 .gj-btn[aria-busy="true"] { pointer-events: none; }
-.gj-btn[aria-busy="true"]::before { content: ""; width: 16px; height: 16px; visibility: visible; animation: gj-spin .8s linear infinite; }
+.gj-btn[aria-busy="true"]::before { content: ""; width: 16px; height: 16px; visibility: visible; animation: gj-spin-centered .8s linear infinite; }
+@keyframes gj-spin-centered { from { transform: translateY(-50%) rotate(0deg); } to { transform: translateY(-50%) rotate(360deg); } }
 @keyframes gj-spin { to { transform: rotate(360deg); } }
 
 /* ---------- 加载三档（07 表 7） ---------- */
@@ -212,6 +215,8 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 /* ---------- 分栏：数据区与证据区两张卡并排（v4 Data evidence split 66:1670），间距 12，分隔条可拖（07 第 6.4 节） ---------- */
 .gj-split { display: grid; grid-template-columns: calc(var(--split-ratio, 50%) - var(--space-xs)) var(--space-md) minmax(0, 1fr); min-height: 0; height: 100%; flex: 1 1 auto; }
 .gj-split-data, .gj-split-aside { display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; min-height: 0; overflow: auto; padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+/* 卡底操作行在列表很长时贴住卡底，不随列表滚走（v4 卡内列表都装得下，真实项目装不下） */
+.gj-split-data > .gj-actions:last-child, .gj-split-aside > .gj-actions:last-child { position: sticky; bottom: calc(-1 * var(--space-lg)); margin-bottom: calc(-1 * var(--space-lg)); padding: var(--space-sm) 0 var(--space-lg); background: var(--bg-surface); }
 .gj-split-divider { cursor: col-resize; position: relative; }
 .gj-split-divider::before { content: ""; position: absolute; top: var(--space-lg); bottom: var(--space-lg); left: 50%; width: var(--stroke-hairline); background: transparent; }
 .gj-split-divider:hover::before, .gj-split-divider:focus-visible::before { width: var(--stroke-emphasis); background: var(--border-strong); }

@@ -85,7 +85,6 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
         <span className="gj-pane-title">交付草案</span>
         <div className="gj-row">
           <Tag tone="warning">{latestDelivery ? "未签名" : "尚无草案"}</Tag>
-          {latestDelivery && <Tag>代理成果</Tag>}
         </div>
         <ul className="sc-delivery-lines">
           {summary.map(([label, value]) => <li key={label}>{label}：{value}</li>)}
@@ -119,13 +118,12 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
             </dl>
           </div>
         )}
-        <span className="gj-spacer" />
-        {/* 草案卡只有 276 宽，操作按钮竖排等宽：主操作在上，导出与检验在下 */}
-        <div className="sc-delivery-actions">
+        {/* 操作按 v4（66:3123）右对齐、主操作在前；四个按钮在 276 宽的卡里折成两行。导出进度由下方长任务条显示，按钮不再带加载槽 */}
+        <div className="gj-actions">
           {!latestDelivery && <Button variant="primary" disabled={!canCreate} onClick={onCreate}>建立代理交付草案</Button>}
-          {latestDelivery && <Button variant="primary" loadable busy={exporting} disabled={exporting} onClick={() => onExport("zip")}>导出代理 ZIP</Button>}
+          {latestDelivery && <Button variant="primary" disabled={exporting} onClick={() => onExport("zip")}>导出代理 ZIP</Button>}
           {latestDelivery && <Button onClick={() => setShowRestrictions((value) => !value)} aria-expanded={showRestrictions}>{showRestrictions ? "收起限制条款" : "查看限制条款"}</Button>}
-          <Button loadable busy={exporting} disabled={exporting} onClick={() => onExport("json")}>导出 JSON 记录</Button>
+          <Button disabled={exporting} onClick={() => onExport("json")}>导出 JSON</Button>
           <Button onClick={onVerifyRoundTrip}>检验导出与恢复</Button>
         </div>
         <p className="gj-note">导出后可在一个独立环境里恢复并逐项核对资料、记录与成果。检验不改动本机项目，结束后自动清理。{latestCheckRun ? "" : " 尚未检查的成果不进交付草案。"}</p>
