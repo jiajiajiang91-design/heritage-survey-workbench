@@ -6,7 +6,6 @@ import type { GeometryRevision } from "@gujian/domain";
 import { GlbViewer } from "../GlbViewer";
 import { cadPhaseLabel } from "../labels";
 import { LongTask } from "../LongTask";
-import { QualificationChip } from "../QualificationNotice";
 import { Button, EmptyState, Field, InfoRow, SourceTag, Tag } from "../ui";
 import type { Jobs } from "../workbench/useJobs";
 import { shortCode } from "./ComponentList";
@@ -47,14 +46,10 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
   return (
     <div className="sc-model">
       <section className="sc-model-viewport">
+        {/* 工具行按 v4（66:2766）只有两枚标签；生成按钮放卡底右侧，成果状态在检查与资格屏与任务卡范围里，不在这里重复 */}
         <div className="sc-model-toolbar">
           <Tag>透视视角</Tag>
           <Tag>按构件着色</Tag>
-          <span className="gj-spacer" />
-          {geometryRevision && <QualificationChip />}
-          <Button variant="primary" compact loadable busy={jobs.geometryRunning} disabled={!canGenerate} onClick={() => void jobs.generateDemoGeometry()}>
-            {geometryRevision ? "生成新代理版本" : "生成代理几何"}
-          </Button>
         </div>
         <div className="sc-model-canvas">
           {jobs.showGeometryTask && (
@@ -87,6 +82,10 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
           <button type="button" className="sc-model-legend-unknown" onClick={() => setShowUnknowns((value) => !value)} aria-expanded={showUnknowns}>
             <Tag tone={geometrySpec?.unknowns.length ? "warning" : "neutral"}>{geometrySpec?.unknowns.length ?? 0} 个未知项</Tag>
           </button>
+          <span className="gj-spacer" />
+          {geometryRevision && (
+            <Button variant="primary" loadable busy={jobs.geometryRunning} disabled={!canGenerate} onClick={() => void jobs.generateDemoGeometry()}>生成新代理版本</Button>
+          )}
         </div>
         {showUnknowns && geometrySpec && geometrySpec.unknowns.length > 0 && (
           <div className="sc-model-unknowns">

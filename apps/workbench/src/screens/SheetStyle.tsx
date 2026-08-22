@@ -3,7 +3,7 @@ import type { ProjectHead } from "@gujian/application";
 
 import { DRAWING_KIND_LABELS } from "../labels";
 import { Button, EmptyState, Tag } from "../ui";
-import { previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
+import { describePreview, pageLabel, previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
 import "./SheetStyle.css";
 
 // W08 图纸样式（66:2896）：左卡出图设置（六行标签 132 宽加取值，下边线），右卡图面预览（头 36、图 476、说明 12/20）。
@@ -19,12 +19,6 @@ export interface SheetStyleProps {
   onEditTask: () => void;
 }
 
-export function pageLabel(pageMm: readonly number[]): string {
-  const [w, h] = [Math.max(pageMm[0] ?? 0, pageMm[1] ?? 0), Math.min(pageMm[0] ?? 0, pageMm[1] ?? 0)];
-  const sizes: [number, number, string][] = [[1189, 841, "A0"], [841, 594, "A1"], [594, 420, "A2"], [420, 297, "A3"], [297, 210, "A4"]];
-  const hit = sizes.find(([a, b]) => a === w && b === h);
-  return hit ? hit[2] : `${pageMm[0]}×${pageMm[1]}`;
-}
 
 export function SheetStyle({ task, previews, canGenerate, generating, onGenerate, onEditTask }: SheetStyleProps) {
   const [previewIndex, setPreviewIndex] = useState(0);
@@ -37,7 +31,7 @@ export function SheetStyle({ task, previews, canGenerate, generating, onGenerate
     const scales = [...new Set(views.filter((view) => (DRAWING_KIND_LABELS[view.kind] ?? view.kind) === kind).map((view) => `1:${view.scaleDenominator}`))];
     return `${kind} ${scales.join("、")}`;
   });
-  const previewView = preview ? views.find((view) => preview.label.includes(view.drawingRef)) ?? null : null;
+  const { title: previewTitle, scales: previewScales } = describePreview(preview, requirements);
 
   const rows: [string, string][] = requirements ? [
     ["成果图种", views.map((view) => view.displayLabelZh).join("、")],
@@ -50,7 +44,7 @@ export function SheetStyle({ task, previews, canGenerate, generating, onGenerate
 
   return (
     <div className="sc-sheet">
-      <section className="sc-sheet-settings">
+      <section className="sc-sheet-settings sc-sheet-settings--hug">
         <span className="gj-pane-title">出图设置</span>
         {requirements ? rows.map(([label, value]) => (
           <div className="sc-sheet-row" key={label}>
@@ -68,9 +62,9 @@ export function SheetStyle({ task, previews, canGenerate, generating, onGenerate
       </section>
       <section className="sc-sheet-preview">
         <div className="sc-sheet-preview-head">
-          <span className="gj-pane-title">图面预览{preview ? ` · ${previewLabel(preview)}` : ""}</span>
+          <span className="gj-pane-title" title={previewTitle}>{previewTitle}</span>
           <span className="gj-spacer" />
-          {previewView && <Tag tone="accent">1:{previewView.scaleDenominator}</Tag>}
+          {previewScales.length > 0 && <Tag tone="accent">{previewScales.join("、")}</Tag>}
         </div>
         {preview ? (
           preview.kind === "svg"

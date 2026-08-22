@@ -10,11 +10,10 @@ export interface StageRailProps {
   activeStage: StageId;
   journeyState: (views: readonly string[]) => { tone: StageTone; detail: string };
   pendingItems: readonly PendingItem[];
-  qualificationLabel: string | null;
   onGoTo: (view: StageId) => void;
 }
 
-export function StageRail({ projectName, buildingName, activeStage, journeyState, pendingItems, qualificationLabel, onGoTo }: StageRailProps) {
+export function StageRail({ projectName, buildingName, activeStage, journeyState, pendingItems, onGoTo }: StageRailProps) {
   const pendingTotal = pendingItems.reduce((sum, item) => sum + item.count, 0);
   return (
     <aside className="ws-rail">
@@ -47,12 +46,11 @@ export function StageRail({ projectName, buildingName, activeStage, journeyState
         })}
       </nav>
       <span className="ws-rail-spacer" />
-      {qualificationLabel && <span className="ws-rail-qualification">{qualificationLabel}</span>}
       {pendingTotal > 0 ? (
-        <button type="button" className="ws-rail-summary" onClick={() => onGoTo(pendingItems[0]!.stage)}>
+        <button type="button" className="ws-rail-summary" title={pendingItems.map((item) => `${item.label} ${item.count}`).join(" · ")} onClick={() => onGoTo(pendingItems[0]!.stage)}>
           <span className="ws-rail-label">待处理</span>
           <strong>{pendingTotal} 项需要人工确认</strong>
-          <small>{pendingItems.map((item) => `${item.label} ${item.count}`).join(" · ")}</small>
+          <span className="sr-only">{pendingItems.map((item) => `${item.label} ${item.count}`).join("，")}</span>
         </button>
       ) : (
         <div className="ws-rail-summary">

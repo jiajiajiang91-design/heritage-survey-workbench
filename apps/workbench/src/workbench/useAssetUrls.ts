@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { ArtifactRecord, GeometryRevision } from "@gujian/domain";
+import type { ArtifactRecord, ArtifactRequirementMatrix, GeometryRevision } from "@gujian/domain";
 
 import { projectRepository } from "../workbench";
 
@@ -34,6 +34,35 @@ export function previewLabel(item: { label: string; kind: string }): string {
   return item.kind === "pdf" && /^drawings$/i.test(stem) ? "全套 PDF" : stem;
 }
 
+// 图幅纸张：A 系列按 ISO 216 尺寸识别，识别不了就写毫米
+export function pageLabel(pageMm: readonly number[]): string {
+  const [w, h] = [Math.max(pageMm[0] ?? 0, pageMm[1] ?? 0), Math.min(pageMm[0] ?? 0, pageMm[1] ?? 0)];
+  const sizes: [number, number, string][] = [[1189, 841, "A0"], [841, 594, "A1"], [594, 420, "A2"], [420, 297, "A3"], [297, 210, "A4"]];
+  const hit = sizes.find(([a, b]) => a === w && b === h);
+  return hit ? hit[2] : `${pageMm[0]}×${pageMm[1]}`;
+}
+
+// 预览卡的标题、比例与题注（v4 66:2905 与 66:2949）：图幅号加该图幅上的图名，比例取这些视图，题注写图种比例、图幅纸张与版本。
+// 合并 PDF 没有对应图幅时标题用页签名，题注列全部视图。
+export function describePreview(preview: DrawingPreview | null, requirements: ArtifactRequirementMatrix | null): { title: string; scales: string[]; caption: string | null } {
+  if (!preview) return { title: "图面预览", scales: [], caption: null };
+  const views = requirements?.views ?? [];
+  const sheets = requirements?.sheets ?? [];
+  const stem = preview.label.replace(/\.(svg|pdf)$/i, "");
+  const sheet = sheets.find((item) => item.drawingNumber === stem) ?? null;
+  const shown = sheet ? views.filter((view) => sheet.viewIds.includes(view.id)) : views;
+  const title = sheet ? `${sheet.drawingNumber} ${shown.map((view) => view.displayLabelZh).join("、") || sheet.displayLabelZh}` : previewLabel(preview);
+  const scales = [...new Set(shown.map((view) => `1:${view.scaleDenominator}`))];
+  const caption = requirements
+    ? [
+        shown.map((view) => `${view.displayLabelZh} 1:${view.scaleDenominator}`).join("，"),
+        `图幅 ${(sheet ? [sheet] : sheets).map((item) => `${item.drawingNumber} 为 ${pageLabel(item.pageMm)} ${item.pageMm[0]}×${item.pageMm[1]}`).join("，")}`,
+        `版本 ${requirements.revisionLabel}`,
+      ].join(" · ")
+    : null;
+  return { title, scales, caption };
+}
+
 // 图纸预览地址。只取前六张，对象 URL 在依赖变化或卸载时统一撤销，
 // 图纸样式与成组图纸两个视图共用同一份，不各自再建一套。
 export function useDrawingPreviews(drawingArtifacts: readonly ArtifactRecord[]): readonly DrawingPreview[] {
@@ -43,7 +72,10 @@ export function useDrawingPreviews(drawingArtifacts: readonly ArtifactRecord[]):
     let cancelled = false;
     const urls: string[] = [];
     const load = async () => {
-      const previewArtifacts = drawingArtifacts.filter((artifact): artifact is ArtifactRecord & { kind: "svg" | "pdf" } => artifact.kind === "svg" || artifact.kind === "pdf");
+      // 单张图幅的 SVG 在前、合并 PDF 在后：默认预览一张图幅（v4 66:2896 的预览就是单张图），PDF 作最后一个页签
+      const previewArtifacts = drawingArtifacts
+        .filter((artifact): artifact is ArtifactRecord & { kind: "svg" | "pdf" } => artifact.kind === "svg" || artifact.kind === "pdf")
+        .sort((left, right) => (left.kind === right.kind ? 0 : left.kind === "svg" ? -1 : 1));
       const resolved = await Promise.all(previewArtifacts.slice(0, 6).map(async (artifact) => {
         const stored = await projectRepository.getAsset(artifact.assetId);
         const url = URL.createObjectURL(stored.content);

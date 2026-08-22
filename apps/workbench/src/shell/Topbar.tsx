@@ -1,4 +1,4 @@
-import { PanelRightClose, PanelRightOpen } from "lucide-react";
+import { PanelRightOpen } from "lucide-react";
 
 import { Button } from "../ui";
 
@@ -7,12 +7,14 @@ export interface TopbarProps {
   breadcrumb: string | null;
   pages: readonly { id: string; label: string; active: boolean }[];
   projectListActive: boolean;
+  // 没有进入项目时两个项目级页面没有对象，按 v4 形式仍显示在顶栏，但不可点
+  pagesEnabled: boolean;
   onProjectList: () => void;
   onSelectPage: (id: string) => void;
   assistantToggle?: { collapsed: boolean; onToggle: () => void } | null;
 }
 
-export function Topbar({ breadcrumb, pages, projectListActive, onProjectList, onSelectPage, assistantToggle }: TopbarProps) {
+export function Topbar({ breadcrumb, pages, projectListActive, pagesEnabled, onProjectList, onSelectPage, assistantToggle }: TopbarProps) {
   return (
     <header className="ws-topbar">
       <div className="ws-brand">
@@ -27,14 +29,13 @@ export function Topbar({ breadcrumb, pages, projectListActive, onProjectList, on
       <nav className="ws-topbar-nav" aria-label="项目级页面">
         <button type="button" aria-current={projectListActive ? "page" : undefined} onClick={onProjectList}>项目列表</button>
         {pages.map((page) => (
-          <button key={page.id} type="button" aria-current={page.active ? "page" : undefined} onClick={() => onSelectPage(page.id)}>{page.label}</button>
+          <button key={page.id} type="button" aria-current={page.active ? "page" : undefined} disabled={!pagesEnabled} onClick={() => onSelectPage(page.id)}>{page.label}</button>
         ))}
       </nav>
+      {/* v4 顶栏没有助手开关；只在助手栏收起时（窄屏）给一个唤起入口，裁决记录第一节第 5 条 */}
       {assistantToggle && (
         <div className="ws-topbar-tools">
-          <Button icon onClick={assistantToggle.onToggle} aria-label={assistantToggle.collapsed ? "展开助手面板" : "收起助手面板"}>
-            {assistantToggle.collapsed ? <PanelRightOpen size={16} /> : <PanelRightClose size={16} />}
-          </Button>
+          <Button icon onClick={assistantToggle.onToggle} aria-label="展开助手面板"><PanelRightOpen size={16} /></Button>
         </div>
       )}
     </header>

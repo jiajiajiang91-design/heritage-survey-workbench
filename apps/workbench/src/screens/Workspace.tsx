@@ -180,7 +180,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 canRegenerate={Boolean(geometryRevision && confirmedTask) && !drawingRunning}
                 onRegenerate={() => void generateDrawings()}
                 onDownload={(artifact) => void downloadArtifact(artifact)}
-                sheetCaption={confirmedTask?.artifactRequirements ? `${confirmedTask.artifactRequirements.views.map((view) => `${view.displayLabelZh} 1:${view.scaleDenominator}`).join("，")} · 图幅 ${confirmedTask.artifactRequirements.sheets.map((sheet) => `${sheet.drawingNumber} ${sheet.pageMm[0]}×${sheet.pageMm[1]}`).join("，")} · 版本 ${confirmedTask.artifactRequirements.revisionLabel}` : null}
+                requirements={confirmedTask?.artifactRequirements ?? null}
               />
             )}
 

@@ -3,7 +3,7 @@ import type { ProjectHead } from "@gujian/application";
 
 import { DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS, PARSE_STATUS_LABELS } from "../labels";
 import { EvidencePane } from "../shell/EvidencePane";
-import { Button, DataStatusTag, EmptyState, Tag } from "../ui";
+import { Button, DataStatusTag, EmptyState } from "../ui";
 import { SplitPane } from "../ui/SplitPane";
 import type { EvidencePane as EvidencePaneModel } from "../workbench/useEvidencePane";
 import { EvidenceMissingDialog } from "./Dialogs";
@@ -43,18 +43,11 @@ export function EvidenceList({ snapshot, pane, readableDrawingCount, modelRunnin
     <SplitPane
       data={(
         <>
+          {/* v4（66:1661）左卡只有标题、一句说明与资料卡列表；操作按钮按 W01/W09 的卡底形式放在列表之后 */}
           <div className="gj-pane-head">
             <span className="gj-pane-title">资料文件</span>
-            <Tag>{snapshot.evidences.length} 份</Tag>
           </div>
           <p className="gj-pane-desc">{summary}</p>
-          <div className="gj-actions gj-actions--start">
-            <Button variant="primary" compact onClick={() => input.current?.click()}>上传原始资料</Button>
-            {readableDrawingCount > 0 && <Button compact disabled={modelRunning} onClick={onTranscribe}>从图纸读尺寸</Button>}
-            {missing > 0 && <Button compact onClick={() => setShowMissing(true)}>处置缺失资料</Button>}
-            <input ref={input} className="sr-only" type="file" multiple
-              onChange={(event) => { const files = Array.from(event.target.files ?? []); if (files.length) void onUpload(files).finally(() => { event.target.value = ""; }); }} />
-          </div>
           {snapshot.evidences.length ? (
             <div className="gj-pane-list">
               {snapshot.evidences.map((evidence) => {
@@ -74,10 +67,18 @@ export function EvidenceList({ snapshot, pane, readableDrawingCount, modelRunnin
               })}
             </div>
           ) : (
-            <EmptyState action={<Button variant="primary" compact onClick={() => input.current?.click()}>上传原始资料</Button>}>
+            <EmptyState>
               上传任务书、照片、测量记录或已有图纸。文件本体、证据记录和解析结果会一起进入项目版本。
             </EmptyState>
           )}
+          <span className="gj-spacer" />
+          <div className="gj-actions">
+            {missing > 0 && <Button onClick={() => setShowMissing(true)}>处置缺失资料</Button>}
+            {readableDrawingCount > 0 && <Button disabled={modelRunning} onClick={onTranscribe}>从图纸读尺寸</Button>}
+            <Button variant="primary" onClick={() => input.current?.click()}>上传原始资料</Button>
+            <input ref={input} className="sr-only" type="file" multiple
+              onChange={(event) => { const files = Array.from(event.target.files ?? []); if (files.length) void onUpload(files).finally(() => { event.target.value = ""; }); }} />
+          </div>
         </>
       )}
       aside={(

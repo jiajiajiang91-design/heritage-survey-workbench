@@ -9,8 +9,6 @@ import "./ProjectList.css";
 // 指标口径按裁决记录第三节第 5 条；卡片上的每个数都来自 listProjectCards 的真实计数。
 export interface ProjectListProps {
   cards: readonly ProjectCard[];
-  query: string;
-  onQuery: (value: string) => void;
   onOpen: (projectId: string) => void;
   onCreate: () => void;
   onImport: (file: File) => Promise<void>;
@@ -27,9 +25,8 @@ function coverText(card: ProjectCard): string {
   return card.photoCount ? parts.join("、") : `${parts.join("、")}，无现场照片`;
 }
 
-export function ProjectList({ cards, query, onQuery, onOpen, onCreate, onImport, onClear }: ProjectListProps) {
+export function ProjectList({ cards, onOpen, onCreate, onImport, onClear }: ProjectListProps) {
   const importInput = useRef<HTMLInputElement>(null);
-  const visible = cards.filter((card) => `${card.name}${card.buildingName}`.toLowerCase().includes(query.toLowerCase()));
   const active = cards.filter((card) => card.status === "active");
   const pending = cards.reduce((sum, card) => sum + card.pendingCount, 0);
   const checked = cards.reduce((sum, card) => sum + card.checkedArtifactCount, 0);
@@ -38,18 +35,7 @@ export function ProjectList({ cards, query, onQuery, onOpen, onCreate, onImport,
     <ProjectPageFrame
       title="项目列表"
       description="管理单栋建筑任务并进入成果生产链路"
-      actions={(
-        <div className="sc-projects-tools">
-          <label className="sc-projects-search">
-            <span className="sr-only">搜索项目</span>
-            <input value={query} onChange={(event) => onQuery(event.target.value)} placeholder="搜索项目或建筑" />
-          </label>
-          <Button onClick={() => importInput.current?.click()}>导入项目包</Button>
-          <input ref={importInput} className="sr-only" type="file" accept=".json,.zip,application/json,application/zip"
-            onChange={(event) => { const file = event.target.files?.[0]; if (file) void onImport(file).finally(() => { event.target.value = ""; }); }} />
-          <Button variant="primary" onClick={onCreate}>新建项目</Button>
-        </div>
-      )}
+      actions={<Button variant="primary" onClick={onCreate}>新建项目</Button>}
     >
       <div className="sc-projects-metrics">
         <Metric label="进行中" value={active.length} note={shortNames || "还没有项目"} />
@@ -57,7 +43,7 @@ export function ProjectList({ cards, query, onQuery, onOpen, onCreate, onImport,
         <Metric label="通过检查的成果" value={checked} note={cards.length ? (checked ? `${cards.filter((card) => card.checkedArtifactCount).length} 个项目有通过检查的成果` : `${cards.length} 个项目全部未获资格`) : "尚无成果"} />
       </div>
       <div className="sc-projects-grid" aria-label="项目列表">
-        {visible.map((card) => (
+        {cards.map((card) => (
           <article className="sc-project" key={card.projectId}>
             <div className="sc-project-cover">
               {card.coverUrl ? <img src={card.coverUrl} alt={`${card.buildingName} 照片`} /> : <span>{coverText(card)}</span>}
@@ -85,10 +71,14 @@ export function ProjectList({ cards, query, onQuery, onOpen, onCreate, onImport,
           <span>录入对象、范围和成果要求后开始</span>
         </button>
       </div>
+      {/* v4 标题行只有新建项目一个按钮；导入与清空是本机库的维护操作，放在页脚说明行，不进标题行 */}
       <div className="sc-projects-foot">
         <span>项目保存在本机。</span>
         <span>资料原件保存在本机，不会上传</span>
         <span className="gj-spacer" />
+        <Button variant="text" onClick={() => importInput.current?.click()}>导入项目包</Button>
+        <input ref={importInput} className="sr-only" type="file" accept=".json,.zip,application/json,application/zip"
+          onChange={(event) => { const file = event.target.files?.[0]; if (file) void onImport(file).finally(() => { event.target.value = ""; }); }} />
         <Button variant="text" onClick={onClear}>清空本机项目</Button>
       </div>
     </ProjectPageFrame>

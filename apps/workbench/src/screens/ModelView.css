@@ -8,7 +8,7 @@
 .sc-model-gate { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); }
 .sc-model-gate strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
 .sc-model-form { display: flex; flex-direction: column; gap: var(--space-md); }
-.sc-model-legend { display: flex; align-items: center; gap: var(--space-lg); min-height: 44px; }
+.sc-model-legend { display: flex; align-items: center; gap: var(--space-sm); min-height: 44px; }
 .sc-model-legend-unknown { border-radius: var(--radius-full); }
 .sc-model-unknowns { display: flex; flex-direction: column; border-top: var(--stroke-hairline) solid var(--border-subtle); }
 .sc-model-tree-rows { display: flex; flex-direction: column; }

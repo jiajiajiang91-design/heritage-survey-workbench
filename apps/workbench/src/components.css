@@ -49,7 +49,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .gj-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs);
   min-height: var(--size-control-md);
-  padding: 0 var(--space-2xl);
+  padding: 0 var(--space-lg);
   border-radius: var(--radius-md);
   border: var(--stroke-hairline) solid transparent;
   font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui);
@@ -215,7 +215,7 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 .gj-split-divider { cursor: col-resize; position: relative; }
 .gj-split-divider::before { content: ""; position: absolute; top: var(--space-lg); bottom: var(--space-lg); left: 50%; width: var(--stroke-hairline); background: transparent; }
 .gj-split-divider:hover::before, .gj-split-divider:focus-visible::before { width: var(--stroke-emphasis); background: var(--border-strong); }
-.gj-pane-title { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.gj-pane-title { flex: none; font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .gj-pane-desc { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
 .gj-pane-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
 .gj-pane-list { display: flex; flex-direction: column; gap: var(--space-md); }

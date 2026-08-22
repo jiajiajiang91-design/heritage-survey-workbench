@@ -60,6 +60,12 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
   const selected = indexed.find((item) => item.object.id === selectedObjectId) ?? null;
   const selectedUnknowns = selected ? unknowns.filter((item) => selected.object.unknownRefs.includes(item.id)) : [];
   const entities: readonly Entity[] = snapshot.entities;
+  // 选构件时右卡切到它引用的第一张能显示的照片（v4 右卡没有切换下拉）；没有引用时保持当前资料
+  const showEvidenceOf = (refs: readonly string[]) => {
+    const candidates = refs.map((ref) => snapshot.evidences.find((item) => item.id === ref)).filter((item): item is Snapshot["evidences"][number] => item !== undefined && item.dataStatus === "available");
+    const target = candidates.find((item) => item.evidenceType === "photo") ?? candidates[0];
+    if (target) pane.setActiveEvidenceId(target.id);
+  };
 
   return (
     <>
@@ -82,7 +88,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
           )}
           <div className="gj-pane-list">
             {shown.map(({ object, code }) => (
-              <button type="button" className="gj-list-card" key={object.id} aria-current={object.id === selectedObjectId ? "true" : undefined} onClick={() => onSelectObject(object.id)}>
+              <button type="button" className="gj-list-card" key={object.id} aria-current={object.id === selectedObjectId ? "true" : undefined} onClick={() => { onSelectObject(object.id); showEvidenceOf(object.evidenceRefs); }}>
                 <div className="gj-list-card-head">
                   <span className="gj-list-card-title">{code}</span>
                   <SourceTag producerType={object.producer.producerType} />

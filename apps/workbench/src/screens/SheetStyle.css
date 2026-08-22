@@ -3,6 +3,8 @@
 .sc-sheet-settings { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: auto; }
 .sc-sheet-preview { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: auto; }
 .sc-sheet-row { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: var(--space-md); align-items: start; padding-bottom: var(--space-sm); border-bottom: var(--stroke-hairline) solid var(--border-subtle); text-align: left; }
+/* 图纸样式的设置卡按内容高（66:2905 左卡 418 高），成组图纸的成果列表卡要滚动，仍拉满 */
+.sc-sheet-settings--hug { align-self: start; }
 .sc-sheet-row--file { cursor: pointer; border-radius: var(--radius-sm); }
 .sc-sheet-row--file:hover { background: var(--bg-hover); }
 .sc-sheet-label { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }

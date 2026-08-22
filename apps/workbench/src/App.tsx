@@ -26,7 +26,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
   const wb = useWorkbench(bootstrapDemo ? { bootstrapDemo } : {});
   const { notices, session, nav, evidence, jobs, assistant } = wb;
   const { error, notice, setError, setNotice } = notices;
-  const { selected, query, setQuery, serverStatus, exitToProjectList, clearLibrary, confirmedTask, drawingArtifacts, latestCheckRun, dashboard } = session;
+  const { selected, serverStatus, exitToProjectList, clearLibrary, confirmedTask, drawingArtifacts, latestCheckRun } = session;
   const { activeStage, returnView, goToView, selectedGeometryEntity, assistantCollapsed, setAssistantCollapsed, onProjectPage, currentJourney, journeyState, pendingItems } = nav;
   const [showCreate, setShowCreate] = useState(false);
   const importProject = (file: File) => wb.importProject(file).then(() => undefined);
@@ -34,7 +34,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
   const pages = projectPages.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id, active: activeStage === id }));
   const breadcrumb = selected
     ? [selected.snapshot.project.name, [selected.snapshot.buildings[0]?.name, confirmedTask?.artifactRequirements?.views[0] ? `1:${confirmedTask.artifactRequirements.views[0].scaleDenominator}` : null].filter(Boolean).join(" ")].join(" / ")
-    : null;
+    : "项目列表";
   const single = !selected || onProjectPage;
   const currentTabs = currentJourney
     ? { items: currentJourney.views.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage, onSelect: (id: string) => goToView(id as StageId) }
@@ -49,11 +49,12 @@ export function App({ bootstrapDemo }: AppProps = {}) {
       topbar={(
         <Topbar
           breadcrumb={breadcrumb}
-          pages={selected ? pages : []}
+          pages={pages}
+          pagesEnabled={Boolean(selected)}
           projectListActive={!selected}
           onProjectList={exitToProjectList}
           onSelectPage={(id) => goToView(id as StageId)}
-          assistantToggle={selected && !onProjectPage ? { collapsed: assistantCollapsed, onToggle: () => setAssistantCollapsed((value) => !value) } : null}
+          assistantToggle={selected && !onProjectPage && assistantCollapsed ? { collapsed: true, onToggle: () => setAssistantCollapsed(false) } : null}
         />
       )}
       rail={selected && (
@@ -63,15 +64,12 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           activeStage={activeStage}
           journeyState={journeyState}
           pendingItems={pendingItems}
-          qualificationLabel={dashboard?.qualificationLabel ?? null}
           onGoTo={goToView}
         />
       )}
       center={!selected ? (
         <ProjectList
           cards={session.projectCards}
-          query={query}
-          onQuery={setQuery}
           onOpen={(id) => void wb.chooseProject(id)}
           onCreate={() => setShowCreate(true)}
           onImport={importProject}
@@ -93,6 +91,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           evidence={evidence}
           collapsed={assistantCollapsed}
           onExpand={() => setAssistantCollapsed(false)}
+          onCollapse={() => setAssistantCollapsed(true)}
           selectedEntityName={selectedGeometryEntity?.displayNameZh ?? null}
           modelConfigured={serverStatus?.modelConfigured ?? false}
         />

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { ArtifactRecord, CheckRun } from "@gujian/domain";
+import type { ArtifactRecord, ArtifactRequirementMatrix, CheckRun } from "@gujian/domain";
 
 import { QUALIFICATION_LIMITS, describeBlocker } from "../qualification";
 import { Button, EmptyState, Tag } from "../ui";
-import { previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
+import { describePreview, previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
 import "./ChecksAndQualification.css";
 
 // W09 检查与资格（66:2949）：左卡正式图（头 36 加状态标签、图 480、题注 12/20、底部操作），
@@ -23,7 +23,7 @@ export interface ChecksAndQualificationProps {
   canRegenerate: boolean;
   onRegenerate: () => void;
   onDownload: (artifact: ArtifactRecord) => void;
-  sheetCaption: string | null;
+  requirements: ArtifactRequirementMatrix | null;
 }
 
 function blockerSummary(codes: readonly string[]): string {
@@ -46,17 +46,18 @@ function blockerSummary(codes: readonly string[]): string {
   return `${codes.length} 条阻断项：${parts.join("、")}`;
 }
 
-export function ChecksAndQualification({ previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, sheetCaption }: ChecksAndQualificationProps) {
+export function ChecksAndQualification({ previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, requirements }: ChecksAndQualificationProps) {
   const [showLimits, setShowLimits] = useState(false);
   const [index, setIndex] = useState(0);
   const preview = previews[Math.min(index, Math.max(0, previews.length - 1))] ?? null;
   const blocked = latestCheckRun?.results.filter((item) => item.outcome !== "passed").length ?? 0;
   const exportables = drawingArtifacts.filter((artifact) => artifact.kind === "dxf" || artifact.kind === "pdf");
+  const described = describePreview(preview, requirements);
   return (
     <div className="sc-checks">
       <section className="sc-checks-drawing">
         <div className="sc-checks-head">
-          <span className="gj-pane-title">图纸成果{preview ? ` · ${previewLabel(preview)}` : ""}</span>
+          <span className="gj-pane-title" title={described.title}>{preview ? described.title : "图纸成果"}</span>
           <span className="gj-spacer" />
           {latestCheckRun && <Tag tone="warning">已生成未获资格</Tag>}
         </div>
@@ -74,7 +75,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
             ))}
           </div>
         )}
-        {sheetCaption && <p className="sc-checks-caption">{sheetCaption}</p>}
+        {described.caption && <p className="sc-checks-caption">{described.caption}</p>}
         <span className="gj-spacer" />
         <div className="gj-actions">
           <Button disabled={!exportables.length} onClick={() => exportables.forEach((artifact) => onDownload(artifact))}>导出 DXF 与 PDF</Button>

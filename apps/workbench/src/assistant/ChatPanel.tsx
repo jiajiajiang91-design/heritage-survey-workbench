@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 
 import { describeFailure } from "../failure-notice";
 import { ActionCard, type ActionCardData } from "./ActionCard";
@@ -21,6 +21,8 @@ export interface ChatPanelProps {
     rectNormalized: { x: number; y: number; width: number; height: number };
   } | null;
   onClearSelection?: () => void;
+  // 消息流之后、输入区之前的附加内容（待采纳建议、长任务进度、来源关系），随消息一起滚动
+  extra?: ReactNode;
 }
 
 interface PendingConfirm {
@@ -28,7 +30,7 @@ interface PendingConfirm {
   card: ActionCardData;
 }
 
-export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClearSelection }: ChatPanelProps) {
+export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClearSelection, extra }: ChatPanelProps) {
   const [messages, setMessages] = useState<readonly AssistantMessage[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -135,21 +137,25 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
 
   return (
     <section className="assistant-chat-panel">
-      <MessageList messages={messages} />
-      {pendingConfirm && (
-        <div className="assistant-pending-confirm">
-          <ActionCard data={pendingConfirm.card} />
-          <ConfirmBar disabled={busy} onDecision={(decision) => void decide(decision)} />
-        </div>
-      )}
-      {selection && (
-        <div className="assistant-selection-chip">
-          <span>已框选：{selection.evidenceTitle}</span>
-          {onClearSelection && (
-            <button type="button" className="gj-btn gj-btn--text" onClick={onClearSelection}>取消框选</button>
-          )}
-        </div>
-      )}
+      {/* 消息流与附加内容一起滚动，输入区固定在面板底部（V3/Assistant Panel 36:35 Composer） */}
+      <div className="assistant-chat-scroll">
+        <MessageList messages={messages} />
+        {pendingConfirm && (
+          <div className="assistant-pending-confirm">
+            <ActionCard data={pendingConfirm.card} />
+            <ConfirmBar disabled={busy} onDecision={(decision) => void decide(decision)} />
+          </div>
+        )}
+        {selection && (
+          <div className="assistant-selection-chip">
+            <span>已框选：{selection.evidenceTitle}</span>
+            {onClearSelection && (
+              <button type="button" className="gj-btn gj-btn--text" onClick={onClearSelection}>取消框选</button>
+            )}
+          </div>
+        )}
+        {extra}
+      </div>
       <div className="assistant-input-row">
         <textarea
           value={input}

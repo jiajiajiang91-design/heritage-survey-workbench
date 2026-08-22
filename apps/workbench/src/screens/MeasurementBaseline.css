@@ -3,6 +3,9 @@
 .sc-measure-table { display: flex; flex-direction: column; }
 .sc-measure-head { display: grid; grid-template-columns: minmax(0, 120fr) minmax(0, 140fr) auto; gap: var(--space-sm); align-items: center; height: 34px; padding: 0 var(--space-sm); background: var(--bg-subtle); border-radius: var(--radius-md); font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
 .sc-measure-row { display: grid; grid-template-columns: minmax(0, 120fr) minmax(0, 140fr) auto; gap: var(--space-sm); align-items: center; min-height: 44px; padding: var(--space-xs) var(--space-sm); border-bottom: var(--stroke-hairline) solid var(--border-subtle); }
+.sc-measure-row[role="button"] { cursor: pointer; }
+.sc-measure-row[role="button"]:hover { background: var(--bg-hover); }
+.sc-measure-row[aria-current="true"] { background: var(--bg-selected); }
 .sc-measure-name { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
 .sc-measure-name.gj-numeric { font-family: var(--font-family-meta); }
 .sc-measure-value { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }

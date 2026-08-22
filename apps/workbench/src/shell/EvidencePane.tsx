@@ -28,9 +28,11 @@ export interface EvidencePaneProps {
   caption?: ReactNode;
   // 题注下方的信息行，不给时显示资料的来源与文件状态
   detail?: ReactNode;
+  // v4 各屏的证据卡都没有切换下拉，看哪份资料由左侧列表、事实行或构件卡决定；只在没有别的入口时打开
+  switcher?: boolean;
 }
 
-export function EvidencePane({ evidences, parseStatusOf, pane, title = "证据预览", description, emptyHint, caption, detail }: EvidencePaneProps) {
+export function EvidencePane({ evidences, parseStatusOf, pane, title = "证据预览", description, emptyHint, caption, detail, switcher = false }: EvidencePaneProps) {
   const { activeEvidenceId, setActiveEvidenceId, evidencePreview, imageSelection, setImageSelection, downloadEvidence } = pane;
   const active = evidences.find((item) => item.id === activeEvidenceId) ?? null;
   const parseStatus = active && parseStatusOf ? parseStatusOf(active.id) : null;
@@ -38,7 +40,7 @@ export function EvidencePane({ evidences, parseStatusOf, pane, title = "证据�
     <>
       <div className="gj-pane-head">
         <span className="gj-pane-title">{title}</span>
-        {evidences.length > 1 && (
+        {switcher && evidences.length > 1 && (
           <select className="ws-evidence-select" aria-label="切换资料" value={activeEvidenceId ?? ""} onChange={(event) => setActiveEvidenceId(event.target.value || null)}>
             <option value="">选择资料</option>
             {evidences.map((evidence) => <option key={evidence.id} value={evidence.id}>{evidence.title}</option>)}

@@ -54,7 +54,6 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const [projectArchetypes, setProjectArchetypes] = useState<readonly ArchetypeSpec[]>([]);
   const [changeHistory, setChangeHistory] = useState<readonly ChangeHistoryEntry[]>([]);
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
-  const [query, setQuery] = useState("");
   const vocabulary = useMemo(() => resolveVocabulary(), []);
 
   // 列表页要的计数随摘要一起读；卡片数据读不出来不影响列表本身
@@ -183,10 +182,6 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     setNotice("本机项目已清空");
   };
 
-  const filtered = useMemo(
-    () => projects.filter((project) => `${project.name}${project.buildingName}`.toLowerCase().includes(query.toLowerCase())),
-    [projects, query],
-  );
 
   // 以下派生数据每次渲染重算。快照在内存里，算的都是过滤与查找，不值得缓存。
   const snapshot = selected?.snapshot ?? null;
@@ -286,7 +281,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const blockerReasons = [...new Set((dashboard?.blockerCodes ?? []).map(describeBlocker))];
 
   return {
-    projects, projectCards, filtered, query, setQuery,
+    projects, projectCards,
     selected, setSelected,
     projectModelRuns, setProjectModelRuns,
     projectRuleRuns, setProjectRuleRuns,

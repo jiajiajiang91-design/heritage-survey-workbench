@@ -97,19 +97,29 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
   const submitArchetype = async (event: FormEvent<HTMLFormElement>) => { await onRegisterArchetype(event); setForm("none"); };
   const submitChain = async (event: FormEvent<HTMLFormElement>) => { await onConfirmDimensionChain(event); setForm("none"); };
 
+  // 点一行，右卡切到这条事实引用的第一份能显示的资料（v4 右卡没有切换下拉）
+  const showEvidenceOf = (refs: readonly string[]) => {
+    const target = refs.map((ref) => snapshot.evidences.find((item) => item.id === ref)).find((item) => item && item.dataStatus === "available") ?? snapshot.evidences.find((item) => refs.includes(item.id));
+    if (target) pane.setActiveEvidenceId(target.id);
+  };
   const rowOfFact = (fact: Fact) => (
-    <div className="sc-measure-row" key={fact.id} title={factMethod(fact.value) ?? undefined}>
+    <div className="sc-measure-row" key={fact.id} title={factMethod(fact.value) ?? undefined} role="button" tabIndex={0}
+      aria-current={fact.evidenceRefs.includes(pane.activeEvidenceId ?? "") ? "true" : undefined}
+      onClick={() => showEvidenceOf(fact.evidenceRefs)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); showEvidenceOf(fact.evidenceRefs); } }}>
       <span className={`sc-measure-name${isFactFieldCode(fact.field) ? " gj-numeric" : ""}`}>{factFieldLabel(fact.field)}</span>
       <span className="sc-measure-value">{factValueText(fact.value)}</span>
+      {/* 来源列按 v4（66:1720）一行一个标签：来源标记；存疑或缺失时换成数据状态，已确认时加一枚确认标签 */}
       <span className="sc-measure-tags">
-        <SourceTag producerType={fact.producer.producerType} />
-        {fact.dataStatus !== "available" && <DataStatusTag status={fact.dataStatus} label={DATA_STATUS_LABELS[fact.dataStatus] ?? fact.dataStatus} />}
-        {fact.reviewStatus !== "confirmed" && fact.dataStatus === "available" && <Tag>{REVIEW_LABELS[fact.reviewStatus] ?? fact.reviewStatus}</Tag>}
+        {fact.dataStatus !== "available"
+          ? <DataStatusTag status={fact.dataStatus} label={DATA_STATUS_LABELS[fact.dataStatus] ?? fact.dataStatus} />
+          : <SourceTag producerType={fact.producer.producerType} />}
+        {fact.reviewStatus === "confirmed" && <Tag tone="success">{REVIEW_LABELS.confirmed}</Tag>}
       </span>
     </div>
   );
   const rowOfMeasurement = (measurement: Measurement) => (
-    <div className="sc-measure-row" key={measurement.id} title={evidenceTitle(measurement.originalEvidenceRef)}>
+    <div className="sc-measure-row" key={measurement.id} title={evidenceTitle(measurement.originalEvidenceRef)} role="button" tabIndex={0}
+      onClick={() => showEvidenceOf([measurement.originalEvidenceRef])} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); showEvidenceOf([measurement.originalEvidenceRef]); } }}>
       <span className="sc-measure-name">{measurement.subjectRef}</span>
       <span className="sc-measure-value">{measurement.quantity.originalText} {measurement.quantity.originalUnit}</span>
       <span className="sc-measure-tags">
