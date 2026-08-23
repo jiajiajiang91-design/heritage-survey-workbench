@@ -54,7 +54,7 @@ export function FileViewer({ blob: source, mimeType, fileName, imageSlot, onDown
   if (!blob) return null;
   if (kind === "pdf") return <PdfPane blob={blob} style={style} />;
   if (kind === "dxf") return <DxfPane blob={blob} style={style} />;
-  if (kind === "glb") return <div className="gj-viewer" style={style}><GlbViewer blob={blob} /></div>;
+  if (kind === "glb") return <div className="gj-viewer" style={style}><GlbViewer blob={blob} onSelect={() => { /* 独立查看不联动选中 */ }} /></div>;
   const extension = fileName.toLowerCase().split(".").pop() ?? "";
   return (
     <div className="gj-viewer gj-viewer--empty" style={style}>
@@ -90,7 +90,7 @@ function SourceImage({ source, alt }: { source: Blob | string; alt: string }) {
 }
 
 // ---------- 缩放平移容器：滚轮缩放、拖动平移、双击复位 ----------
-function ZoomPane({ children, style, toolbar }: { children: ReactNode; style?: React.CSSProperties; toolbar?: ReactNode }) {
+function ZoomPane({ children, style, toolbar }: { children: ReactNode; style?: React.CSSProperties | undefined; toolbar?: ReactNode | undefined }) {
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
@@ -119,7 +119,7 @@ function ZoomPane({ children, style, toolbar }: { children: ReactNode; style?: R
 }
 
 // ---------- PDF：逐页渲染到画布 ----------
-function PdfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties }) {
+function PdfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties | undefined }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [document, setDocument] = useState<PDFDocumentProxy | null>(null);
   const [page, setPage] = useState(1);
@@ -135,7 +135,7 @@ function PdfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties }) {
       cMapUrl: `${PDFJS_ASSETS}cmaps/`,
       cMapPacked: true,
     }).promise)
-      .then((loaded) => { if (!cancelled) setDocument(loaded); else void loaded.destroy(); })
+      .then((loaded) => { if (!cancelled) setDocument(loaded); else void (loaded as unknown as { destroy?: () => Promise<void> }).destroy?.(); })
       .catch((reason: unknown) => { if (!cancelled) setError(reason instanceof Error ? reason.message : "PDF 无法读取"); });
     return () => { cancelled = true; };
   }, [blob]);
@@ -252,7 +252,7 @@ function renderEntities(entities: readonly AnyEntity[], dxf: IDxf, bounds: DxfBo
         // 块内坐标按插入点、缩放、旋转变换到图面；包围盒按变换后的四角扩
         const corners = [[inner.minX, inner.minY], [inner.maxX, inner.minY], [inner.minX, inner.maxY], [inner.maxX, inner.maxY]];
         const rad = (rotation * Math.PI) / 180;
-        for (const [cx, cy] of corners) {
+        for (const [cx = Number.NaN, cy = Number.NaN] of corners) {
           if (!Number.isFinite(cx) || !Number.isFinite(cy)) continue;
           const lx = (cx - base.x) * xScale; const ly = (cy - base.y) * yScale;
           extend(bounds, position.x + lx * Math.cos(rad) - ly * Math.sin(rad), position.y + lx * Math.sin(rad) + ly * Math.cos(rad));
@@ -295,7 +295,7 @@ function dxfToSvg(text: string): { svg: string; entityCount: number } {
   return { svg, entityCount: parts.length };
 }
 
-function DxfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties }) {
+function DxfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties | undefined }) {
   const [state, setState] = useState<{ svg: string; count: number } | { error: string } | null>(null);
   useEffect(() => {
     let cancelled = false;

@@ -40,9 +40,10 @@ describe("三个演示包都能建图", () => {
 
   // 三个包的几何上游留痕各不相同，这是包的事实不是算法的输出。
   // 数字变了说明演示包重建过，要回去核对而不是改这里的期望值。
-  it("高都的几何引用形制参数，2135 处，没有无法解析的引用", () => {
+  it("高都的几何引用形制参数，2243 处，没有无法解析的引用", () => {
     const graph = buildDependencyGraph(packages["gaodu-yuhuang-temple-main-hall"] as ImpactGraphInput);
-    expect(graph.archetypeRefCount).toBe(2135);
+    // 实施单元 09 重建演示包后实测 2243（补齐山面、飞椽、门窗判明后构件与参数变多）
+    expect(graph.archetypeRefCount).toBe(2243);
     expect(graph.unresolvedRefCount).toBe(0);
   });
 
@@ -81,8 +82,9 @@ describe("从资料出发的闭包（验收第 6 条）", () => {
   // 期望值先用独立脚本在包上算过一遍，再与实现对，不是把实现的输出抄回来当期望。
   // 脚本算出 35 / 33 / 74，实现算出 36 / 34 / 75，差的正好是每个包各一条出图要求记录，
   // 那一类脚本没算进去。差值有出处才认，对不上要回去查而不是改这里。
+  // 实施单元 09 重建演示包后实测：高都第一条资料由识别记录换成正立面照片，闭包 30
   const EXPECTED: Record<string, number> = {
-    "gaodu-yuhuang-temple-main-hall": 36,
+    "gaodu-yuhuang-temple-main-hall": 30,
     "dai-loy-habs-ca-2071-w": 34,
     "t0b-construction-sample": 75,
   };

@@ -12,6 +12,7 @@ export interface DemoLibraryEntry {
   readonly projectName: string;
   readonly limitationZh: string;
   readonly projectId: string;
+  readonly packageSha256: string;
 }
 
 export interface DemoLibraryManifest {
