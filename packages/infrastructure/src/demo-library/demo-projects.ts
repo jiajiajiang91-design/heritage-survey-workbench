@@ -180,6 +180,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-16",
       methodZh: "转写自图纸 16 平面标注 24'-0\"",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "overall-depth",
@@ -188,6 +189,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-16",
       methodZh: "转写自图纸 16 二层平面标注 60'-7\"",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "covered-alleyway-width",
@@ -196,6 +198,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-16",
       methodZh: "转写自图纸 16 平面标注 8'-2\"，尺寸线端点落在建筑北侧外墙线上，对应平面标注的 COVERED ALLEYWAY",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "alleyway-width",
@@ -204,6 +207,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-16",
       methodZh: "转写自图纸 16 平面标注 7'-9\"，尺寸线端点落在建筑南侧外墙线上，对应平面标注的 ALLEYWAY",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "covered-walk-depth",
@@ -212,6 +216,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-16",
       methodZh: "转写自图纸 16 二层平面标注 7'-6\"。该尺寸接在 60'-7\" 之外的西端，现场补测确认为二层挑出覆盖步道的进深",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "ridge-elevation",
@@ -220,6 +225,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-17",
       methodZh: "转写自图纸 17 与图纸 18 标高 RIDGE ELEV 19'-6\"，基准为 FLOOR ELEV 0'",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "eave-elevation-scaled",
@@ -228,6 +234,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-17",
       methodZh: "图上量取后由现场补测确认：激光测距仪量西立面外墙面处檐口下皮至楼面；补测记录第 1 条",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "second-floor-elevation-scaled",
@@ -236,6 +243,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-18",
       methodZh: "图上量取后由现场补测确认：激光测距仪量楼梯间二层楼面至首层楼面；补测记录第 2 条",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
     {
       key: "floor-above-grade-scaled",
@@ -244,6 +252,7 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       evidenceKey: "sheet-18",
       methodZh: "图上量取后由现场补测确认：钢卷尺量主街一侧地坪至门厅楼面，三处取均值；补测记录第 3 条",
       dataStatus: "available",
+      reviewStatus: "confirmed",
     },
   ],
   // 问题全部关闭：现场补测记录补齐了测量人、日期与方法，未标注的部位逐项量取（实施单元 09）
@@ -557,16 +566,16 @@ export const GAODU_DEMO: DemoProjectDefinition = {
     { key: "protection-level", subject: "building", field: "protectionLevelZh", value: "山西省第六批省级文物保护单位（2021 年 8 月 4 日公布）", evidenceKeys: ["plaque-photo"], reviewStatus: "confirmed", dataStatus: "available" },
   ],
   measurements: [
-    { key: "column-height", subject: "building", quantity: { name: "columnHeightMm", value: 3400, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪观测柱础上皮与柱头下皮标高差，四柱取整；实测记录第 1 条", dataStatus: "available" },
-    { key: "column-size", subject: "building", quantity: { name: "columnSizeMm", value: 380, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺量柱身中部，抹角方柱按外接正方形；实测记录第 2 条", dataStatus: "available" },
-    { key: "central-bay-width", subject: "building", quantity: { name: "centralBayWidthMm", value: 3600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪两柱中心坐标差；实测记录第 4 条", dataStatus: "available" },
-    { key: "side-bay-width", subject: "building", quantity: { name: "sideBayWidthMm", value: 3000, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪两柱中心坐标差，东西次间取整；实测记录第 5、6 条", dataStatus: "available" },
-    { key: "total-front-width", subject: "building", quantity: { name: "totalFrontWidthMm", value: 9600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪尽端柱中心坐标差；实测记录第 7 条", dataStatus: "available" },
-    { key: "total-depth", subject: "building", quantity: { name: "totalDepthMm", value: 9600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪前檐柱中与后檐墙轴线坐标差；实测记录第 8 条", dataStatus: "available" },
-    { key: "terrace-height", subject: "building", quantity: { name: "terraceHeightMm", value: 500, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺三处取均值；实测记录第 9 条", dataStatus: "available" },
-    { key: "eave-height", subject: "building", quantity: { name: "eaveHeightMm", value: 5200, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测飞椽下皮；实测记录第 12 条", dataStatus: "available" },
-    { key: "ridge-height", subject: "building", quantity: { name: "ridgeHeightMm", value: 7200, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测正脊上皮中点；实测记录第 13 条", dataStatus: "available" },
-    { key: "bracket-layer-height", subject: "building", quantity: { name: "bracketLayerHeightMm", value: 900, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺量明间正中一攒；实测记录第 16 条", dataStatus: "available" },
+    { key: "column-height", subject: "building", quantity: { name: "columnHeightMm", value: 3400, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪观测柱础上皮与柱头下皮标高差，四柱取整；实测记录第 1 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "column-size", subject: "building", quantity: { name: "columnSizeMm", value: 380, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺量柱身中部，抹角方柱按外接正方形；实测记录第 2 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "central-bay-width", subject: "building", quantity: { name: "centralBayWidthMm", value: 3600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪两柱中心坐标差；实测记录第 4 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "side-bay-width", subject: "building", quantity: { name: "sideBayWidthMm", value: 3000, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪两柱中心坐标差，东西次间取整；实测记录第 5、6 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "total-front-width", subject: "building", quantity: { name: "totalFrontWidthMm", value: 9600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪尽端柱中心坐标差；实测记录第 7 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "total-depth", subject: "building", quantity: { name: "totalDepthMm", value: 9600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪前檐柱中与后檐墙轴线坐标差；实测记录第 8 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "terrace-height", subject: "building", quantity: { name: "terraceHeightMm", value: 500, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺三处取均值；实测记录第 9 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "eave-height", subject: "building", quantity: { name: "eaveHeightMm", value: 5200, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测飞椽下皮；实测记录第 12 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "ridge-height", subject: "building", quantity: { name: "ridgeHeightMm", value: 7200, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测正脊上皮中点；实测记录第 13 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "bracket-layer-height", subject: "building", quantity: { name: "bracketLayerHeightMm", value: 900, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺量明间正中一攒；实测记录第 16 条", dataStatus: "available" , reviewStatus: "confirmed" },
   ],
   issues: [],
   task: {

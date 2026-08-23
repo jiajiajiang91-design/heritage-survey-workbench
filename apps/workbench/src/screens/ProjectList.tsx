@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { ProjectPageFrame } from "../shell/AppShell";
-import { Alert, Button, Metric, Tag } from "../ui";
+import { Alert, Button, Dialog, Metric, Tag } from "../ui";
 import type { ProjectCard } from "../workbench";
 import "./ProjectList.css";
 
@@ -30,6 +30,8 @@ function coverText(card: ProjectCard): string {
 
 export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onUpdateDemo }: ProjectListProps) {
   const importInput = useRef<HTMLInputElement>(null);
+  // 更新与清空都会动本机数据，确认用页面内对话框（内嵌浏览器会把原生弹窗按取消处理）
+  const [confirming, setConfirming] = useState<"update" | "clear" | null>(null);
   // 进行中 = 还没签发归档的项目；签发后归入已签发归档一格
   const active = cards.filter((card) => card.status === "active" && card.signedAt === null);
   const pending = cards.reduce((sum, card) => sum + card.pendingCount, 0);
@@ -44,8 +46,28 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
       {demoUpdates.length > 0 && (
         <Alert tone="info">
           演示项目有新版本（{demoUpdates.map((item) => item.projectName).join("、")}）。本机上的是旧数据，更新会清空本机项目后重新装载。
-          <Button variant="text" compact onClick={onUpdateDemo}>更新演示项目</Button>
+          <Button variant="text" compact onClick={() => setConfirming("update")}>更新演示项目</Button>
         </Alert>
+      )}
+      {confirming && (
+        <Dialog
+          title={confirming === "update" ? "更新演示项目" : "清空本机项目"}
+          onClose={() => setConfirming(null)}
+          actions={(
+            <>
+              <Button onClick={() => setConfirming(null)}>取消</Button>
+              <Button variant="primary" onClick={() => { setConfirming(null); confirming === "update" ? onUpdateDemo() : onClear(); }}>
+                {confirming === "update" ? "清空并更新" : "确认清空"}
+              </Button>
+            </>
+          )}
+        >
+          <p className="gj-text-body">
+            {confirming === "update"
+              ? "更新会清空本机全部项目，然后重新装载新版演示项目。需要保留的项目请先导出项目包。"
+              : "清空会删除本机全部项目与资料。需要保留的项目请先导出项目包。"}
+          </p>
+        </Dialog>
       )}
       <div className="sc-projects-metrics">
         <Metric label="进行中" value={active.length} note={shortNames || (cards.length ? "全部已归档" : "还没有项目")} />
@@ -89,7 +111,7 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
         <Button variant="text" onClick={() => importInput.current?.click()}>导入项目包</Button>
         <input ref={importInput} className="sr-only" type="file" accept=".json,.zip,application/json,application/zip"
           onChange={(event) => { const file = event.target.files?.[0]; if (file) void onImport(file).finally(() => { event.target.value = ""; }); }} />
-        <Button variant="text" onClick={onClear}>清空本机项目</Button>
+        <Button variant="text" onClick={() => setConfirming("clear")}>清空本机项目</Button>
       </div>
     </ProjectPageFrame>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ArtifactRecord, CheckRun, ReviewSignoff } from "@gujian/domain";
 
-import { QUALIFICATION_LIMITS, describeBlocker } from "../qualification";
+import { QUALIFICATION_LIMITS, checkItemLabel, describeBlocker } from "../qualification";
 import { Button, EmptyState, Tag } from "../ui";
 import { FileViewer } from "../ui/FileViewer";
 import { describePreview, previewLabel, type DrawingPreview, type PreviewRequirements } from "../workbench/useAssetUrls";
@@ -97,7 +97,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
         {latestCheckRun ? latestCheckRun.results.map((result) => (
           <div className="sc-check" key={result.code}>
             <div className="sc-check-head">
-              <span>{describeBlocker(result.code)}</span>
+              <span>{checkItemLabel(result.code)}</span>
               <Tag tone={result.outcome === "passed" || passedBySignoff(result.code) ? "success" : "danger"}>{result.outcome === "passed" ? "通过" : passedBySignoff(result.code) ? "已复核" : "不通过"}</Tag>
             </div>
             <p>{passedBySignoff(result.code) ? `已由${signoff!.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}于 ${signoff!.signedAt.slice(0, 10)} 复核签发。` : result.message}</p>

@@ -195,9 +195,39 @@ export async function seedDemoProject(input: DemoBuildInput): Promise<SeededDemo
           value: { ...item.quantity, methodZh: item.methodZh },
           producer,
           evidenceRefs: [evidenceRef(item.evidenceKey)],
-          reviewStatus: "unreviewed",
+          reviewStatus: item.reviewStatus ?? "unreviewed",
           dataStatus: item.dataStatus,
         })),
+      },
+    });
+  }
+
+  // 形制参数登记为独立记录（实施单元 09）：实测基准的右卡按它显示基准线与举架做法，
+  // 不登记会显示为缺失。柱网按前檐柱一排（间数加一根），数值与几何生成用的同一套。
+  if (definition.archetype) {
+    const arch = definition.archetype;
+    await commands.execute({
+      commandType: "CommitArchetypeSpec",
+      commandId: id("cmd/archetype"),
+      projectId, actorId, expectedRevisionId: (await head()).revisionId, issuedAt: at,
+      payload: {
+        archetypeSpec: {
+          id: id("archetype-spec"),
+          projectId,
+          buildingRef: buildingId,
+          baseParams: { D: String(arch.moduleMm) },
+          bayDimensions: [
+            { direction: "x" as const, valuesMm: arch.bayWidthsMm.map((value) => String(value)) },
+            { direction: "y" as const, valuesMm: [String(arch.depthMm)] },
+          ],
+          liftRatioSetRef: arch.ruleSetId,
+          stepCount: arch.stepCount,
+          pillarNet: arch.bayWidthsMm.map((unused, index) => `${index}/0`).concat(`${arch.bayWidthsMm.length}/0`).join(","),
+          fangNet: null,
+          sourceDeclaration: arch.sourceDeclarationZh.slice(0, 500),
+          producer,
+          createdAt: at,
+        },
       },
     });
   }

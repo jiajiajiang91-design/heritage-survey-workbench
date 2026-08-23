@@ -53,6 +53,11 @@ const CHECK_CODE_ZH: Record<string, string> = {
 
 // 不能正式交付的原因：交付评估写的是 CODE 或 CODE:细节:UUID 形态，直出会把
 // 内部码和 UUID 漏到界面（07 界面视觉规范 5.6）。
+// 检查项的中性名字，供检查结果列表做标题；不带通过与否的判断词
+export function checkItemLabel(code: string): string {
+  return CHECK_CODE_ZH[code] ?? describeBlocker(code);
+}
+
 export function describeBlocker(code: string): string {
   if (CHECK_CODE_ZH[code]) return `${CHECK_CODE_ZH[code]}未通过`;
   if (ISSUE_TYPE_ZH[code]) return ISSUE_TYPE_ZH[code]!;

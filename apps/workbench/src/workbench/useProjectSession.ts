@@ -112,7 +112,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     if (!result) return;
     if (result.loaded.length) {
       await refresh();
-      setNotice(`已载入 ${result.loaded.length} 个演示项目。演示数据标为示例来源，不能作为真实成果。`);
+      setNotice(`已载入 ${result.loaded.length} 个演示项目。演示数据带演示来源标记，不能作为真实成果。`);
     }
     if (result.failed.length) setError(describeFailure(result.failed[0]!.reason, "演示项目载入失败"));
   };
@@ -174,8 +174,8 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   // 演示包有新版本时，列表页提示；更新等于清空本机项目后重新装载（实施单元 09）
   const [demoUpdates, setDemoUpdates] = useState<readonly { demoId: string; projectName: string }[]>([]);
   const refreshDemoUpdates = () => checkDemoLibraryUpdates().then(setDemoUpdates).catch(() => setDemoUpdates([]));
+  // 确认在界面对话框里做（内嵌浏览器会拦掉原生弹窗），这里只执行
   const updateDemoLibrary = async () => {
-    if (!window.confirm("更新演示项目会清空本机全部项目后重新装载。请先导出需要保留的项目包。")) return;
     await projectRepository.clearAllData();
     setSelected(null);
     setProjectModelRuns([]); setProjectRuleRuns([]); setProjectDecisions([]);
@@ -188,7 +188,6 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   };
 
   const clearLibrary = async () => {
-    if (!window.confirm("清空本地项目库？请先导出需要保留的项目包。")) return;
     await projectRepository.clearAllData();
     setSelected(null);
     setProjectModelRuns([]);

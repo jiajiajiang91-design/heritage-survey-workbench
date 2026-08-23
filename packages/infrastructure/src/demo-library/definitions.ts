@@ -46,6 +46,8 @@ export interface DemoMeasurement {
   readonly evidenceKey: string;
   readonly methodZh: string;
   readonly dataStatus: DataStatus;
+  // 归档完成的演示项目里尺寸经复核确认（实施单元 09）；不写按待确认入库
+  readonly reviewStatus?: ReviewStatus;
 }
 
 export interface DemoIssue {
