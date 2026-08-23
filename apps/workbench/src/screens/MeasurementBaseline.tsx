@@ -133,10 +133,10 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
     <SplitPane
       data={(
         <>
-          <span className="gj-pane-title">尺寸与基准 · {total} 条记录</span>
+          <span className="gj-pane-title">尺寸与记录 · {total} 条</span>
           <p className="gj-pane-desc">
             {total
-              ? `${snapshot.facts.length} 条事实里 ${confirmed} 条已确认、${uncertain} 条存疑${snapshot.measurements.length ? `，另有 ${snapshot.measurements.length} 条测量记录` : "，没有现场测量记录"}。`
+              ? `${snapshot.facts.length} 条尺寸里 ${confirmed} 条已确认、${uncertain} 条待核实${snapshot.measurements.length ? `，另有 ${snapshot.measurements.length} 条现场记录` : ""}。`
               : "还没有可用的尺寸。尺寸缺失时，依赖它的成果不会生成，系统也不会用默认值补齐。"}
           </p>
           {total > 0 && (
@@ -174,7 +174,7 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
         <EvidencePane
           evidences={snapshot.evidences}
           pane={pane}
-          title="基准证据"
+          title="实测依据"
           emptyHint="选择资料查看手写草图或测量记录原件。"
           detail={(
             <div className="gj-pane-list">

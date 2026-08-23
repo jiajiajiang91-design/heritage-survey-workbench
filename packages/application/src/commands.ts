@@ -29,6 +29,7 @@ import {
   CheckRunSchema,
   DeliveryEvaluationSchema,
   DeliveryDraftSchema,
+  ReviewSignoffSchema,
   ConceptEntrySchema,
   ArchetypeSpecSchema,
 } from "@gujian/domain";
@@ -292,6 +293,13 @@ export const CreateDeliveryDraftCommandSchema = CommandHeaderSchema.extend({
   }).strict(),
 }).strict();
 
+// 复核签发（实施单元 09）：只记录正式环境签发的结果，本机授权层拒绝此命令
+export const RecordReviewSignoffCommandSchema = CommandHeaderSchema.extend({
+  commandType: z.literal("RecordReviewSignoff"),
+  expectedRevisionId: UuidSchema,
+  payload: z.object({ signoff: ReviewSignoffSchema }).strict(),
+}).strict();
+
 export const ProjectCommandSchema = z.discriminatedUnion("commandType", [
   CreateProjectCommandSchema,
   CommitFactsCommandSchema,
@@ -316,9 +324,11 @@ export const ProjectCommandSchema = z.discriminatedUnion("commandType", [
   CommitCheckRunCommandSchema,
   EvaluateDeliveryCommandSchema,
   CreateDeliveryDraftCommandSchema,
+  RecordReviewSignoffCommandSchema,
 ]);
 
 export type CreateProjectCommand = z.infer<typeof CreateProjectCommandSchema>;
+export type RecordReviewSignoffCommand = z.infer<typeof RecordReviewSignoffCommandSchema>;
 export type CommitFactsCommand = z.infer<typeof CommitFactsCommandSchema>;
 export type ImportProjectSnapshotCommand = z.infer<typeof ImportProjectSnapshotCommandSchema>;
 export type ImportEvidenceCommand = z.infer<typeof ImportEvidenceCommandSchema>;

@@ -3,6 +3,7 @@ import type { ProjectHead } from "@gujian/application";
 
 import { DRAWING_KIND_LABELS } from "../labels";
 import { Button, EmptyState, Tag } from "../ui";
+import { FileViewer } from "../ui/FileViewer";
 import { describePreview, pageLabel, previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
 import "./SheetStyle.css";
 
@@ -69,7 +70,7 @@ export function SheetStyle({ task, previews, canGenerate, generating, onGenerate
         {preview ? (
           preview.kind === "svg"
             ? <div className="sc-sheet-figure"><img src={preview.url} alt={`${preview.label} 图面预览`} /></div>
-            : <object className="sc-sheet-figure" data={preview.url} type="application/pdf" aria-label={`${preview.label} 图面预览`} />
+            : <FileViewer blob={preview.url} mimeType="application/pdf" fileName={preview.label} height={476} />
         ) : (
           <div className="sc-sheet-figure sc-sheet-figure--empty">生成成组图纸后，这里显示应用当前版面的实际图面。</div>
         )}

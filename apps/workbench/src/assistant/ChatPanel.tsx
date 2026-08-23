@@ -21,8 +21,10 @@ export interface ChatPanelProps {
     rectNormalized: { x: number; y: number; width: number; height: number };
   } | null;
   onClearSelection?: () => void;
-  // 消息流之后、输入区之前的附加内容（待采纳建议、长任务进度、来源关系），随消息一起滚动
+  // 消息流之后、输入区之前的附加内容（待采纳建议、长任务进度），随消息一起滚动
   extra?: ReactNode;
+  // 消息流之前的内容（助手建议卡，V3/Assistant Panel 36:27 Messages 的第一项）
+  lead?: ReactNode;
 }
 
 interface PendingConfirm {
@@ -30,7 +32,7 @@ interface PendingConfirm {
   card: ActionCardData;
 }
 
-export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClearSelection, extra }: ChatPanelProps) {
+export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClearSelection, extra, lead }: ChatPanelProps) {
   const [messages, setMessages] = useState<readonly AssistantMessage[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -139,6 +141,7 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
     <section className="assistant-chat-panel">
       {/* 消息流与附加内容一起滚动，输入区固定在面板底部（V3/Assistant Panel 36:35 Composer） */}
       <div className="assistant-chat-scroll">
+        {lead}
         <MessageList messages={messages} />
         {pendingConfirm && (
           <div className="assistant-pending-confirm">

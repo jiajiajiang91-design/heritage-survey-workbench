@@ -165,8 +165,11 @@ export class ConstructionAssembly {
   }
 
   result() {
+    // 构件上引用的未知项只保留真正登记过的：有现场记录判明的部位不登记未知项（实施单元 09），
+    // 构件上指向它们的引用随之去掉，否则几何规格校验会报引用缺失
+    const registered = new Set(this.#unknowns.map((item) => item.id));
     return {
-      objects: this.#objects,
+      objects: this.#objects.map((object) => object.unknownRefs.every((ref) => registered.has(ref)) ? object : { ...object, unknownRefs: object.unknownRefs.filter((ref) => registered.has(ref)) }),
       interfaces: this.#interfaces,
       unknowns: this.#unknowns,
       partCounts: Object.fromEntries([...this.#counts.entries()].sort()),

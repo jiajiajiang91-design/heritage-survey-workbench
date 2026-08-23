@@ -70,9 +70,9 @@ describe("界面标签覆盖领域取值", () => {
     }
   });
 
-  it("存疑与已过期有独立说法，不与可用混同", () => {
+  it("待核实与已过期有独立说法，不与可用混同", () => {
     const values = Object.values(DATA_STATUS_LABELS);
     expect(new Set(values).size).toBe(values.length);
-    expect(DATA_STATUS_LABELS.uncertain).toBe("存疑");
+    expect(DATA_STATUS_LABELS.uncertain).toBe("待核实");
   });
 });

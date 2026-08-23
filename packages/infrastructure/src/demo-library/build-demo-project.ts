@@ -209,7 +209,15 @@ export async function seedDemoProject(input: DemoBuildInput): Promise<SeededDemo
     scope: [...definition.task.scope],
     regulationRefs: [...definition.task.regulationRefs],
     deliverables: [...definition.task.deliverables],
-    responsibilities: [{ role: "projectLead", actorId }],
+    // 一次完整的归档至少有负责人、测绘人与复核人三个角色（实施单元 09）；
+    // 演示里三个角色由不同的稳定 id 担任，修改历史按角色显示操作人
+    responsibilities: definition.signoff
+      ? [
+        { role: "projectLead", actorId },
+        { role: "surveyor", actorId: id("actor/surveyor") },
+        { role: "professionalReviewer", actorId: id("actor/reviewer") },
+      ]
+      : [{ role: "projectLead", actorId }],
     automationPolicyRef: null,
     ...(requirements
       ? {

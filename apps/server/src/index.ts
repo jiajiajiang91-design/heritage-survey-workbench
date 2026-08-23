@@ -447,6 +447,15 @@ export function createWorkbenchServer(options: {
         return response.end();
       }
 
+      // 助手建议（实施单元 09）：按当前阶段与项目现状由模型生成一条建议
+      if (request.method === "POST" && url.pathname === "/api/assistant/suggest") {
+        const body = await readJsonBody(request);
+        const controller = new AbortController();
+        response.once("close", () => controller.abort());
+        const suggestion = await assistantRuntime.suggest(body, controller.signal);
+        return writeJson(response, 200, suggestion, origin);
+      }
+
       if (request.method === "POST" && url.pathname === "/api/assistant/confirm") {
         const body = await readJsonBody(request);
         response.writeHead(200, {

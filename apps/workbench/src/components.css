@@ -213,10 +213,10 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 .gj-dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-sm); }
 
 /* ---------- 分栏：数据区与证据区两张卡并排（v4 Data evidence split 66:1670），间距 12，分隔条可拖（07 第 6.4 节） ---------- */
-.gj-split { display: grid; grid-template-columns: calc(var(--split-ratio, 50%) - var(--space-xs)) var(--space-md) minmax(0, 1fr); min-height: 0; height: 100%; flex: 1 1 auto; }
-.gj-split-data, .gj-split-aside { display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; min-height: 0; overflow: auto; padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.gj-split { display: grid; grid-template-columns: calc(var(--split-ratio, 50%) - var(--space-xs)) var(--space-md) minmax(0, 1fr); min-height: 0; flex: 1 1 auto; }
+.gj-split-data, .gj-split-aside { display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; min-height: 0; overflow: visible; padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
 /* 卡底操作行在列表很长时贴住卡底，不随列表滚走（v4 卡内列表都装得下，真实项目装不下） */
-.gj-split-data > .gj-actions:last-child, .gj-split-aside > .gj-actions:last-child { position: sticky; bottom: calc(-1 * var(--space-lg)); margin-bottom: calc(-1 * var(--space-lg)); padding: var(--space-sm) 0 var(--space-lg); background: var(--bg-surface); }
+.gj-split-data > .gj-actions:last-child, .gj-split-aside > .gj-actions:last-child { position: sticky; bottom: var(--space-lg); padding-top: var(--space-sm); background: var(--bg-surface); }
 .gj-split-divider { cursor: col-resize; position: relative; }
 .gj-split-divider::before { content: ""; position: absolute; top: var(--space-lg); bottom: var(--space-lg); left: 50%; width: var(--stroke-hairline); background: transparent; }
 .gj-split-divider:hover::before, .gj-split-divider:focus-visible::before { width: var(--stroke-emphasis); background: var(--border-strong); }

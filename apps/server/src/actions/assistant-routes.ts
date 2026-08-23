@@ -89,6 +89,42 @@ function systemPrompt(snapshot: WorkspaceSnapshot): string {
   ].join("\n");
 }
 
+// 回答问题（实施单元 09）：模型选了 answer_question 时，不再当动作下发，
+// 而是用项目上下文再调一次模型，生成文字回答。没有上下文就如实说没有。
+function answerPrompt(snapshot: WorkspaceSnapshot): string {
+  return [
+    "你是古建测绘工作台的助手，用中文回答用户关于当前项目的问题。",
+    "只依据下面的项目现状回答；现状里没有的数字、日期、名称一律不要编，说明现状里没有记录即可。",
+    "回答要短：先给结论，再给依据，不超过一百五十字，不用标题和列表符号。",
+    "不要用阻断、证据、代理成果、稳定键这类内部词；说资料、不通过的项、待签发成果、编号。",
+    "",
+    "项目现状：",
+    snapshot.contextZh ?? "（客户端没有提供项目现状）",
+  ].join("\n");
+}
+
+// 助手建议（实施单元 09）：按当前阶段与项目现状，给一条下一步该做什么的建议，附依据。
+function suggestionPrompt(snapshot: WorkspaceSnapshot): string {
+  return [
+    "你是古建测绘工作台的助手。根据项目现状，为用户在当前这一步给一条建议。",
+    "只依据下面的项目现状；现状里没有的数字、日期、名称一律不要编。",
+    "输出 JSON 对象，两个字段：suggestion（建议正文，中文，不超过八十字，先说现状再说下一步）、basis（依据，中文，不超过三十字，写依据的是哪些资料或记录）。",
+    "不要用阻断、证据、代理成果、稳定键这类内部词；说资料、不通过的项、待签发成果、编号。",
+    "",
+    `当前这一步：${snapshot.currentStage ?? "未知"}`,
+    "项目现状：",
+    snapshot.contextZh ?? "（客户端没有提供项目现状）",
+  ].join("\n");
+}
+
+export const SuggestRequestSchema = z.object({ snapshot: WorkspaceSnapshotSchema }).strict();
+
+export interface AssistantSuggestion {
+  readonly suggestion: string;
+  readonly basis: string;
+  readonly source: "model" | "unavailable";
+}
+
 export class AssistantRuntime {
   readonly #gateway: ToolGateway;
   readonly #ledger: ActionLedger;
@@ -153,6 +189,25 @@ export class AssistantRuntime {
     }
 
     const { action, args: dispatchedArgs } = decision;
+
+    // 回答问题：模型把它当工具选出来，服务端在这里生成答案，不下发给客户端执行
+    if (action.name === "answer_question") {
+      const question = typeof (dispatchedArgs as { question?: unknown })?.question === "string" ? (dispatchedArgs as { question: string }).question : text;
+      let answer: string;
+      try {
+        const reply = await this.#gateway.executeWithTools({ systemPrompt: answerPrompt(snapshot), userContent: question, tools: [], signal });
+        answer = reply.kind === "text" ? reply.content.trim() : "这个问题我暂时答不上来，可以换个问法。";
+      } catch (error) {
+        answer = `模型服务暂时没有响应（${error instanceof Error ? error.message.slice(0, 80) : "未知错误"}），请稍后再问。`;
+      }
+      this.#ledger.recordInvocation({
+        sessionRef, actionName: "answer_question", argsHash: argsHash({ text }),
+        source: decision.source, resultCode: "ANSWERED", modelRawOutput: modelRaw,
+      });
+      emit({ type: "answer", text: answer || "这个问题我暂时答不上来，可以换个问法。" });
+      return;
+    }
+
     // 位置在进入执行之前由服务端从回合选区注入，模型不参与。注入后留痕、
     // 确认卡片与实际执行用的是同一份参数，符合通用约定 2。
     const args = action.name === "marquee_correction" && selection
@@ -204,6 +259,30 @@ export class AssistantRuntime {
       clientOp: clientOpFor(action.name) ?? "ui:unknown",
       args,
     });
+  }
+
+  // 助手建议：由模型按项目现状生成；模型不可用时返回 unavailable，由面板按规则显示一句固定说明
+  async suggest(rawBody: unknown, signal: AbortSignal): Promise<AssistantSuggestion> {
+    const parsed = SuggestRequestSchema.safeParse(rawBody);
+    if (!parsed.success) return { suggestion: "", basis: "", source: "unavailable" };
+    const { snapshot } = parsed.data;
+    if (!this.#gateway.configured || snapshot.modelRouteAvailable !== true) return { suggestion: "", basis: "", source: "unavailable" };
+    try {
+      const reply = await this.#gateway.executeWithTools({ systemPrompt: suggestionPrompt(snapshot), userContent: "请给出这一步的建议。", tools: [], signal });
+      if (reply.kind !== "text") return { suggestion: "", basis: "", source: "unavailable" };
+      const body = reply.content.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "");
+      try {
+        const json = JSON.parse(body) as { suggestion?: unknown; basis?: unknown };
+        const suggestion = typeof json.suggestion === "string" ? json.suggestion.trim() : "";
+        const basis = typeof json.basis === "string" ? json.basis.trim() : "";
+        if (suggestion) return { suggestion, basis, source: "model" };
+      } catch {
+        // 模型没按 JSON 回，整段当建议正文
+      }
+      return body ? { suggestion: body.slice(0, 200), basis: "", source: "model" } : { suggestion: "", basis: "", source: "unavailable" };
+    } catch {
+      return { suggestion: "", basis: "", source: "unavailable" };
+    }
   }
 
   async handleConfirm(rawBody: unknown, sessionRef: string, emit: SseEmit): Promise<void> {

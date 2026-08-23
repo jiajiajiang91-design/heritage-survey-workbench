@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { ReviewSignoffSchema } from "./delivery.js";
 import { DrawingViewKindSchema } from "./drawings.js";
 import { FactEnvelopeSchema, ProducerRefSchema } from "./provenance.js";
 import { ExclusionRecordSchema } from "./assistant-records.js";
@@ -291,6 +292,8 @@ export const ProjectSnapshotSchema = z.object({
   dependencyEdges: z.array(DependencyEdgeSchema),
   geometrySpecs: z.array(ProjectDrivenGeometrySpecSchema).default([]),
   geometryRevisions: z.array(GeometryRevisionSchema).default([]),
+  // 复核签发记录随快照走，导出导入原样携带（实施单元 09）
+  reviewSignoffs: z.array(ReviewSignoffSchema).default([]),
   adoptedRecordRefs: z.array(NonEmptyRefSchema),
 }).strict().superRefine((value, context) => {
   if (value.buildings.some((building) => building.projectId !== value.project.id)) {

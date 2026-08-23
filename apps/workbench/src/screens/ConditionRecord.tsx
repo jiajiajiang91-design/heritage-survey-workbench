@@ -74,7 +74,7 @@ export function ConditionRecord({ snapshot, pane, archetypeDifferences, evidence
         )}
         aside={(
           <>
-            <span className="gj-pane-title">记录事实</span>
+            <span className="gj-pane-title">记录内容</span>
             <div className="gj-card gj-card--compact">
               <InfoRow
                 label="判断类型"
@@ -89,7 +89,7 @@ export function ConditionRecord({ snapshot, pane, archetypeDifferences, evidence
             <div className="gj-card gj-card--compact">
               <InfoRow
                 label="记录对象"
-                value={<input className="sc-condition-input" value={subjectRef} onChange={(event) => setSubjectRef(event.target.value)} placeholder="整栋建筑（可填构件稳定键）" aria-label="记录对象" />}
+                value={<input className="sc-condition-input" value={subjectRef} onChange={(event) => setSubjectRef(event.target.value)} placeholder="整栋建筑（可填构件编号）" aria-label="记录对象" />}
                 trailing={<Tag>{subjectRef.trim() ? "已指定构件" : "未指定构件"}</Tag>}
               />
             </div>
@@ -108,7 +108,7 @@ export function ConditionRecord({ snapshot, pane, archetypeDifferences, evidence
             <div className="gj-card gj-card--compact">
               <InfoRow label="本项目已有记录" value={`${existing} 条`} trailing={existing ? <Tag tone="success">已记录</Tag> : <Tag tone="warning">待记录</Tag>} />
             </div>
-            <span className="gj-text-label">证据来源</span>
+            <span className="gj-text-label">依据的资料</span>
             {evidence ? (
               <div className="sc-condition-source">
                 <DataStatusTag status={evidence.dataStatus} label={DATA_STATUS_LABELS[evidence.dataStatus] ?? evidence.dataStatus} />

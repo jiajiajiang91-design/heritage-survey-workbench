@@ -29,7 +29,7 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear }: Proj
   const importInput = useRef<HTMLInputElement>(null);
   const active = cards.filter((card) => card.status === "active");
   const pending = cards.reduce((sum, card) => sum + card.pendingCount, 0);
-  const checked = cards.reduce((sum, card) => sum + card.checkedArtifactCount, 0);
+  const signed = cards.filter((card) => card.signedAt !== null).length;
   const shortNames = active.map((card) => card.buildingName).join("、");
   return (
     <ProjectPageFrame
@@ -40,7 +40,7 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear }: Proj
       <div className="sc-projects-metrics">
         <Metric label="进行中" value={active.length} note={shortNames || "还没有项目"} />
         <Metric label="待确认" value={pending} note="问题队列待处理项与识别候选" />
-        <Metric label="通过检查的成果" value={checked} note={cards.length ? (checked ? `${cards.filter((card) => card.checkedArtifactCount).length} 个项目有通过检查的成果` : `${cards.length} 个项目全部未获资格`) : "尚无成果"} />
+        <Metric label="已签发归档" value={signed} note={cards.length ? (signed ? `${signed} 个项目已复核签发` : `${cards.length} 个项目待签发`) : "尚无成果"} />
       </div>
       <div className="sc-projects-grid" aria-label="项目列表">
         {cards.map((card) => (
@@ -51,13 +51,13 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear }: Proj
             <div className="sc-project-info">
               <div className="sc-project-name">
                 <h3>{card.name}</h3>
-                <Tag tone={card.status === "active" ? "success" : "neutral"}>{card.status === "active" ? "进行中" : "已归档"}</Tag>
+                <Tag tone={card.signedAt ? "success" : card.status === "active" ? "accent" : "neutral"}>{card.signedAt ? "已归档" : card.status === "active" ? "进行中" : "已结束"}</Tag>
               </div>
               <p className="sc-project-sub">
                 {[card.buildingName, card.scaleLabel, card.taskName].filter(Boolean).join(" · ")}
               </p>
               <p className="sc-project-counts">
-                资料 {card.evidenceCount} 份，事实 {card.factCount} 条，构件 {card.objectCount} 个，成果 {card.artifactCount} 项
+                资料 {card.evidenceCount} 份，尺寸 {card.factCount} 条，构件 {card.objectCount} 个，成果 {card.artifactCount} 项
               </p>
               <div className="gj-actions">
                 <Button variant="primary" onClick={() => onOpen(card.projectId)}>进入任务</Button>

@@ -28,10 +28,10 @@ describe("资格限制说明", () => {
     expect(identity.textZh).toContain("签发");
   });
 
-  it("常驻标签同时说出代理性质、签发状态与成果等级", () => {
-    expect(QUALIFICATION_CHIP_LABEL).toContain("代理成果");
+  it("常驻标签同时说出成果性质、签发状态与成果等级（用语表 表 13）", () => {
+    expect(QUALIFICATION_CHIP_LABEL).toContain("待签发成果");
     expect(QUALIFICATION_CHIP_LABEL).toContain("未签发");
-    expect(QUALIFICATION_CHIP_LABEL).toContain("未达专业样板等级");
+    expect(QUALIFICATION_CHIP_LABEL).toContain("不作为样板");
   });
 
   it("限制说明本身不出现内部码", () => {

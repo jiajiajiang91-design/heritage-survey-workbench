@@ -40,7 +40,7 @@ export function DrawingLimitationNote(): ReactElement {
   return (
     <div className="drawing-limitation">
       <strong>图面限制</strong>
-      <p>每张图的图签都印有代理成果与未签发状态，日期栏印的也是未签发。{QUALIFICATION_LIMITS.map((limit) => limit.textZh).join("")}</p>
+      <p>每张图的图签都印有待签发状态，日期栏印的也是未签发。{QUALIFICATION_LIMITS.map((limit) => limit.textZh).join("")}</p>
     </div>
   );
 }

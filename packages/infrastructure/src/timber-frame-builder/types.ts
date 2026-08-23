@@ -13,7 +13,7 @@ import type { ProducerRef, ProjectDrivenGeometrySpec } from "@gujian/domain";
 // 不能混在一起显示：写明的标注精确到英寸，量取的只到十毫米级。
 export interface SourcedDimension {
   readonly valueMm: number;
-  readonly source: "drawn" | "scaled";
+  readonly source: "drawn" | "scaled" | "measured";
   // 指向哪一份资料、图上什么位置。量取的还要写清用什么基准校准。
   readonly methodZh: string;
   readonly evidenceRefs: readonly string[];
@@ -88,6 +88,10 @@ export interface TimberFrameForm {
   readonly partitions: readonly PlanRect[];
   // 二层楼板按房间范围分块。图上标了 OPEN BELOW 的部分不铺板。
   readonly secondFloorDecks: readonly PlanRect[];
+
+  // 图纸读不出、但项目里已有现场记录判明的部位（实施单元 09）。键与 registerUnknowns
+  // 的条目键同名，列出的项不再记未知项；记录本身以资料与事实的形式存在项目里。
+  readonly documented?: readonly string[];
 
   readonly materials: Readonly<Record<TimberFramePart, string>>;
 }

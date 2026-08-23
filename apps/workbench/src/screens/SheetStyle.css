@@ -1,7 +1,7 @@
 /* W08 图纸样式（66:2905）与成组图纸：设置卡 300 内边距 16，预览卡 476 内边距 12；设置行标签 132 宽、下边线；预览图 476 高 */
 .sc-sheet { display: grid; grid-template-columns: minmax(0, 300fr) minmax(0, 476fr); gap: var(--space-md); flex: 1 1 auto; min-height: 0; }
-.sc-sheet-settings { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: auto; }
-.sc-sheet-preview { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: auto; }
+.sc-sheet-settings { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
+.sc-sheet-preview { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
 .sc-sheet-row { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: var(--space-md); align-items: start; padding-bottom: var(--space-sm); border-bottom: var(--stroke-hairline) solid var(--border-subtle); text-align: left; }
 /* 图纸样式的设置卡按内容高（66:2905 左卡 418 高），成组图纸的成果列表卡要滚动，仍拉满 */
 .sc-sheet-settings--hug { align-self: start; }

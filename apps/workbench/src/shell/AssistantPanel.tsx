@@ -20,11 +20,10 @@ export interface AssistantPanelProps {
   onExpand: () => void;
   // 窄屏下面板浮在中栏上，头部给一个收起按钮；宽屏按 v4 不显示
   onCollapse: () => void;
-  selectedEntityName: string | null;
   modelConfigured: boolean;
 }
 
-export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evidence, collapsed, onExpand, onCollapse, selectedEntityName, modelConfigured }: AssistantPanelProps) {
+export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evidence, collapsed, onExpand, onCollapse, modelConfigured }: AssistantPanelProps) {
   if (collapsed) {
     return (
       <aside className="ws-assistant-collapsed">
@@ -36,7 +35,7 @@ export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evide
   const busy = jobs.modelRunning || jobs.geometryRunning || jobs.drawingRunning;
   const stateText = !hasProject ? "未进入项目" : busy ? "处理中" : !modelConfigured ? "识别未连接" : "等待确认";
   const dotClass = !hasProject || !modelConfigured ? "ws-assistant-dot ws-assistant-dot--off" : busy ? "ws-assistant-dot ws-assistant-dot--busy" : "ws-assistant-dot";
-  const { pendingProposal, provenance } = assistant;
+  const { pendingProposal } = assistant;
   return (
     <aside className="ws-assistant" aria-label="AI 助手">
       <div className="ws-assistant-head">
@@ -54,9 +53,24 @@ export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evide
             </div>
           </div>
         )}
-        <p className="ws-assistant-status" role="status">{assistant.currentStatusText}</p>
-        {/* 消息流之后的附加内容：待采纳建议、识别进度、长任务、来源关系、两条说明 */}
+        {/* 消息流之前是助手建议（36:27），之后是待采纳建议、识别进度与长任务；说明与来源关系不在面板里（实施单元 09） */}
         {(() => {
+          const { suggestion } = assistant;
+          const lead = hasProject ? (
+            <div className="ws-assistant-suggest" role="status">
+              <span className="ws-assistant-section-title">助手建议</span>
+              {suggestion.text ? (
+                <div className="assistant-msg assistant-msg-assistant">
+                  <p>{suggestion.text}</p>
+                  {suggestion.basis && <small>依据：{suggestion.basis}</small>}
+                </div>
+              ) : (
+                <div className="assistant-msg assistant-msg-assistant">
+                  <p>{suggestion.loading ? "正在根据项目现状整理建议" : modelConfigured ? assistant.currentStatusText : "模型服务未连接，建议暂不可用；你仍可以用下方输入切换视图或发起操作。"}</p>
+                </div>
+              )}
+            </div>
+          ) : null;
           const extra = (
             <>
               {pendingProposal && (
@@ -79,23 +93,7 @@ export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evide
                 </div>
               )}
               {jobs.showGeometryTask && <LongTask labelZh="正在生成三维模型" onCancel={() => void jobs.cancelGeometry()} cancelling={jobs.cadCancelling} />}
-              {jobs.showDrawingTask && <LongTask labelZh="正在生成成组图纸" onCancel={() => void jobs.cancelDrawings()} cancelling={jobs.drawingCancelling} />}
-              {provenance && (
-                <section className="ws-provenance" aria-label="来源关系">
-                  <span className="ws-assistant-section-title">{selectedEntityName ? `${selectedEntityName} 的来源` : "本项目的来源"}</span>
-                  {provenance.nodes.map((node) => (
-                    <div className="ws-provenance-row" key={node.key} data-status={node.status}>
-                      <strong>{node.label}</strong>
-                      <span>{node.count ? `${node.count} 项已关联` : "尚无"}</span>
-                    </div>
-                  ))}
-                  <span className="gj-note">{provenance.unknownCount} 项待确认 · {provenance.formalBlockerCount} 项影响正式交付</span>
-                </section>
-              )}
-              <div className="ws-assistant-notes">
-                <span>助手的识别结果先进入待确认区，确认后才写入项目</span>
-                <span>资料原件保存在本机，不会上传</span>
-              </div>
+              {jobs.showDrawingTask && <LongTask labelZh="正在生成图纸" onCancel={() => void jobs.cancelDrawings()} cancelling={jobs.drawingCancelling} />}
             </>
           );
           return hasProject ? (
@@ -105,9 +103,10 @@ export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evide
               onClientOp={assistant.handleAssistantClientOp}
               selection={assistant.chatSelection}
               onClearSelection={() => evidence.setImageSelection(null)}
+              lead={lead}
               extra={extra}
             />
-          ) : <div className="assistant-chat-scroll">{extra}</div>;
+          ) : <div className="assistant-chat-scroll"><p className="ws-assistant-status">进入项目后，助手按当前这一步给建议，也可以回答项目里的问题。</p></div>;
         })()}
       </div>
     </aside>

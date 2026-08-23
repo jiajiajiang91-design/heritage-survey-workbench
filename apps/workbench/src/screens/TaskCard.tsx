@@ -43,7 +43,7 @@ function objectNote(count: number, producers: Record<string, number>): string {
   const entries = Object.entries(producers);
   if (entries.length === 1) {
     const [type] = entries[0]!;
-    return type === "rule" ? "全部由形制规则推算" : type === "demo" ? "全部为示例资料" : `全部为${PRODUCER_LABELS[type] ?? type}`;
+    return type === "rule" ? "全部由形制规则推算" : type === "demo" ? "全部为演示数据" : `全部为${PRODUCER_LABELS[type] ?? type}`;
   }
   return entries.map(([type, n]) => `${PRODUCER_LABELS[type] ?? type} ${n}`).join("，");
 }
@@ -120,7 +120,7 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
             </>
           ) : (
             <>
-              <p className="gj-text-body" style={{ color: "var(--text-secondary)" }}>完成后可进入资料与证据核对。</p>
+              <p className="gj-text-body" style={{ color: "var(--text-secondary)" }}>完成后进入资料整理。</p>
               <InfoRow
                 label="对象与范围"
                 value={[building?.name, views[0] ? `${views[0].displayLabelZh} 1:${views[0].scaleDenominator}` : confirmedTask?.scope[0]].filter(Boolean).join(" · ")}

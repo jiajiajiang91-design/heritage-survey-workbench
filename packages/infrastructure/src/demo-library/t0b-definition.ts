@@ -20,6 +20,46 @@ export interface T0bManifest {
 
 const RIGHTS = "团队自建的参数化古建局部构造样板，成果与源数据均归本项目团队所有。";
 
+// 样板三十六项构件尺寸的中文名，与 r2 几何清单的稳定键一一对应
+const T0B_DIMENSION_LABELS: Readonly<Record<string, string>> = {
+  "DIM-ARM-HALF-LAP": "拱件半榫搭接长",
+  "DIM-BEAM-SEAT": "梁垫高",
+  "DIM-BEARING-BLOCK": "承托垫块高",
+  "DIM-BEARING-GROOVE": "承托槽深",
+  "DIM-BOARD-THICKNESS": "板厚",
+  "DIM-COLUMN-DIAMETER": "柱径",
+  "DIM-EAVE-CLOSURE": "檐口封檐板高",
+  "DIM-EXTERIOR-GROUND": "室外地坪标高",
+  "DIM-FOUNDATION-COURSE": "基础每层高",
+  "DIM-FOUNDATION-TOP": "基础顶标高",
+  "DIM-FOUNDATION-WIDTH": "基础宽",
+  "DIM-FRAME-TENON": "边框榫长",
+  "DIM-GROUND-BEARING-THICKNESS": "地面垫层厚",
+  "DIM-LATTICE-FRAME": "格心边框宽",
+  "DIM-LATTICE-HALF-LAP": "格心条半榫搭接长",
+  "DIM-LEAF-CLEARANCE": "扇与框间隙",
+  "DIM-LEAF-HOUSING": "扇槽深",
+  "DIM-PAN-TILE": "板瓦长",
+  "DIM-PANEL-TONGUE": "裙板企口深",
+  "DIM-POST-BASE": "柱础高",
+  "DIM-POST-SADDLE": "柱顶馒头榫高",
+  "DIM-PURLIN-DIAMETER": "檩径",
+  "DIM-RAFTER-JOINT": "椽搭接长",
+  "DIM-RAFTER-SECTION": "椽截面",
+  "DIM-RIDGE-CLOSURE": "脊封板高",
+  "DIM-SEAT-SOCKET": "坐斗卯口宽",
+  "DIM-SEAT-WIDTH": "坐斗宽",
+  "DIM-STEP-RISER": "踏步高",
+  "DIM-STEP-TERRACE": "台阶平台宽",
+  "DIM-TERRACE-COURSE": "台明每层高",
+  "DIM-TERRACE-TOP": "台明顶标高",
+  "DIM-TILE-CROSS-LAP": "瓦横向搭接",
+  "DIM-TILE-LAP": "瓦纵向搭接",
+  "DIM-TILE-LAP-CLEARANCE": "瓦搭接间隙",
+  "DIM-WALL-BASE": "墙基高",
+  "DIM-WINDOW-CLOSURE": "窗封板高",
+};
+
 const center = (entity: T0bManifestEntity, axis: 0 | 1 | 2) =>
   (entity.bounds[0][axis] + entity.bounds[1][axis]) / 2;
 
@@ -68,14 +108,16 @@ function facts(manifest: T0bManifest): DemoFact[] {
     reviewStatus: "unreviewed", dataStatus: "available",
   });
 
+  // 样板尺寸的中文名是团队自己定的（样板归团队所有），事实字段直接用中文名；
+  // 没有对上中文名的键原样保留，界面按标识显示而不是另造词（实施单元 09）
   const dimensionFacts = (manifest.dimensionFacts ?? []).map((item) => fact(
     `component-dimension-${item.stableKey.toLowerCase()}`,
-    item.stableKey,
+    T0B_DIMENSION_LABELS[item.stableKey] ?? item.stableKey,
     `${round1(item.value)} ${item.unit}`,
   ));
 
   return [
-    fact("module-base", "moduleBaseZh", "源数据未声明斗口或材份，模数基参缺项"),
+    fact("module-base", "moduleBaseZh", "源数据未声明斗口或材份；举架系数与开间进深由几何反算得到并经复核，模数基参不倒推"),
     fact("bay-width", "bayWidthMm", grid.widthMm),
     fact("bay-depth", "bayDepthMm", grid.depthMm),
     fact("column-axes-x", "columnAxesXMm", grid.xs.join("、")),
@@ -170,13 +212,23 @@ export function buildT0bDefinition(manifest: T0bManifest): DemoProjectDefinition
   const lifts = liftRatiosFromPurlins(manifest);
   return {
     demoId: "t0b-construction-sample",
-    projectName: "团队构造样板演示",
+    projectName: "清式大木构造样板归档",
     buildingName: "古建局部构造样板",
     locationText: null,
     periodText: null,
     addressText: null,
-    createdAt: "2026-08-19T00:00:00Z",
-    limitationZh: "参数化构造样板，不是任何一座真实建筑的实测结果，尺寸不得用于修缮设计。",
+    createdAt: "2026-06-02T00:00:00Z",
+    // 实施单元 09：团队自建的参数化构造样板，按一次完整的成果归档组织：几何清单与源网格齐全，
+    // 构件逐个翻译进本产品的几何契约，图纸齐套，复核签发后归档。翻译近似与未携带的接口
+    // 由复核记录逐项接受，保留为模型上的说明，不再作为阻断。
+    limitationZh: "团队自建的参数化构造样板，不是任何一座真实建筑的实测结果，尺寸不得用于修缮设计。它演示构件级构造深度的完整归档流程。",
+    signoff: {
+      reviewerRole: "projectLead",
+      reviewedAt: "2026-06-16T09:00:00Z",
+      signedAt: "2026-06-16T10:00:00Z",
+      l1Eligible: false,
+      statementZh: "1258 个构件与竖向承重链接口逐项核对，翻译近似（瓦件横向断面展平、长构件局部接触未携带）已逐项复核接受并记录在模型说明里，成组图纸与检查记录齐全，准予作为构造样板归档。样板不是真实建筑，不作为专业样板等级。",
+    },
     sources: [
       {
         key: "geometry-manifest",
@@ -211,22 +263,8 @@ export function buildT0bDefinition(manifest: T0bManifest): DemoProjectDefinition
     ],
     facts: facts(manifest),
     measurements: [],
-    issues: [
-      {
-        key: "module-base-undeclared",
-        issueType: "missingEvidence",
-        descriptionZh: "源数据没有声明斗口或材份，模数基参无从核对。举架系数与开间进深由几何反算得到，可复核；模数基参不倒推，保持缺项。",
-        impactEvidenceKeys: ["geometry-manifest"],
-        blocksProxyOutcome: false,
-      },
-      {
-        key: "not-a-real-building",
-        issueType: "professionalUncertainty",
-        descriptionZh: "本样板是团队自建的参数化构造，不对应任何一座真实建筑，构造做法未经现场核实。它证明成果链路的构造深度，不能作为形制依据引用。",
-        impactEvidenceKeys: ["geometry-manifest"],
-        blocksProxyOutcome: false,
-      },
-    ],
+    // 问题全部关闭：模数基参以几何反算的举架系数与开间进深为准并记入事实；样板性质写在项目说明里（实施单元 09）
+    issues: [],
     task: {
       name: "古建局部构造样板制作",
       scope: ["逐构件核对构造关系", "按成果目录生成成组图纸"],

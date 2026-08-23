@@ -7,7 +7,7 @@ const MIN_RATIO = 30;
 const MAX_RATIO = 70;
 const clamp = (ratio: number) => Math.min(MAX_RATIO, Math.max(MIN_RATIO, ratio));
 
-export function SplitPane({ data, aside, asideLabel = "证据区", initialRatio = 50 }: { data: ReactNode; aside: ReactNode; asideLabel?: string; initialRatio?: number }) {
+export function SplitPane({ data, aside, asideLabel = "资料区", initialRatio = 50 }: { data: ReactNode; aside: ReactNode; asideLabel?: string; initialRatio?: number }) {
   const [ratio, setRatio] = useState(clamp(initialRatio));
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,7 +41,7 @@ export function SplitPane({ data, aside, asideLabel = "证据区", initialRatio 
         className="gj-split-divider"
         role="separator"
         aria-orientation="vertical"
-        aria-label="调整数据区与证据区的宽度"
+        aria-label="调整数据区与资料区的宽度"
         aria-valuenow={Math.round(ratio)}
         aria-valuemin={MIN_RATIO}
         aria-valuemax={MAX_RATIO}

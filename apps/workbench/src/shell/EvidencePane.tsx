@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { EvidenceMarquee } from "../EvidenceMarquee";
 import { DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS, PARSE_STATUS_LABELS } from "../labels";
 import { Button, DataStatusTag, InfoRow, Tag } from "../ui";
+import { FileViewer } from "../ui/FileViewer";
 import type { EvidencePane as EvidencePaneModel } from "../workbench/useEvidencePane";
 
 // 证据半区（v4 各工作屏右侧的 Evidence pane，如 66:1698）：标题、说明、图、题注、信息行。
@@ -32,7 +33,7 @@ export interface EvidencePaneProps {
   switcher?: boolean;
 }
 
-export function EvidencePane({ evidences, parseStatusOf, pane, title = "证据预览", description, emptyHint, caption, detail, switcher = false }: EvidencePaneProps) {
+export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料原件", description, emptyHint, caption, detail, switcher = false }: EvidencePaneProps) {
   const { activeEvidenceId, setActiveEvidenceId, evidencePreview, imageSelection, setImageSelection, downloadEvidence } = pane;
   const active = evidences.find((item) => item.id === activeEvidenceId) ?? null;
   const parseStatus = active && parseStatusOf ? parseStatusOf(active.id) : null;
@@ -60,14 +61,15 @@ export function EvidencePane({ evidences, parseStatusOf, pane, title = "证据�
               />
             </div>
           )
-          : evidencePreview.mimeType === "application/pdf"
-            ? <object className="ws-evidence-object" data={evidencePreview.url} type="application/pdf" aria-label={`${evidencePreview.fileName} 原件`} />
-            : (
-              <div className="ws-evidence-placeholder">
-                <span>该类型的文件无法在页内显示。</span>
-                <Button variant="text" onClick={() => { if (active) void downloadEvidence(active.assetId); }}>下载原文件核对</Button>
-              </div>
-            )
+          : (
+            <FileViewer
+              blob={evidencePreview.url}
+              mimeType={evidencePreview.mimeType}
+              fileName={evidencePreview.fileName}
+              height={238}
+              onDownload={() => { if (active) void downloadEvidence(active.assetId); }}
+            />
+          )
       ) : (
         <div className="ws-evidence-placeholder">
           {active && active.dataStatus !== "available"

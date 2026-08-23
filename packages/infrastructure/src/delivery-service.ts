@@ -8,6 +8,7 @@ import {
   type DeliveryDraft,
   type DeliveryEvaluation,
   type GeometryRevision,
+  type ReviewSignoff,
 } from "@gujian/domain";
 import { IndexedDbProjectRepository } from "./indexeddb-project-repository.js";
 import { sha256Hex } from "./hash.js";
@@ -22,9 +23,26 @@ const GEOMETRY_KIND: Record<string, ArtifactRecord["kind"]> = {
 type DeliveryBlockerDetail = NonNullable<DeliveryEvaluation["blockerDetails"]>[number];
 const FORMAL_ONLY_CODES = new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", "L1_ELIGIBILITY_FALSE"]);
 
+// 复核签发记录解除哪些正式资格阻断：复核与签发两条随记录解除，L1 只在记录认定达到样板等级时解除
+export function signoffFor(head: ProjectHead, geometryRevisionId: string): ReviewSignoff | null {
+  return head.snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometryRevisionId) ?? null;
+}
+
+export function liftedBySignoff(signoff: ReviewSignoff | null): Set<string> {
+  if (!signoff) return new Set();
+  return new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", ...(signoff.l1Eligible ? ["L1_ELIGIBILITY_FALSE"] : [])]);
+}
+
+// 签发是项目责任人员对正式资格的人工决定：只阻断正式资格、不阻断代理成果的项
+// （未知项、未关闭的专业判断、检查里的复核要求）随签发一并视为已复核接受；
+// 阻断代理成果本身的硬错误不受签发影响。L1 另按记录里的认定。
 export function collectDeliveryBlockerDetails(head: ProjectHead, geometry: GeometryRevision, artifacts: readonly ArtifactRecord[], checkRun: CheckRun): DeliveryBlockerDetail[] {
   const details: DeliveryBlockerDetail[] = [];
+  const signoff = signoffFor(head, geometry.id);
+  const lifted = liftedBySignoff(signoff);
   const add = (detail: DeliveryBlockerDetail) => {
+    if (lifted.has(detail.code) || lifted.has(detail.code.replace(/^CHECK_BLOCKED:/, ""))) return;
+    if (signoff && !detail.blocksProxyOutcome && detail.code !== "L1_ELIGIBILITY_FALSE") return;
     if (!details.some((item) => item.code === detail.code && item.sourceRef === detail.sourceRef)) details.push(detail);
   };
   for (const code of FORMAL_ONLY_CODES) {
@@ -120,7 +138,8 @@ export class DeliveryService {
   }
 
   blockers(head: ProjectHead): string[] {
-    const missing = geometryPrerequisites(head).missing.map((field) => `缺少已确认事实或任务要求：${field}`);
+    // 几何版本已经建出来，说明构件事实已随几何规格入库，前置事实不再算缺
+    const missing = head.snapshot.geometryRevisions.length ? [] : geometryPrerequisites(head).missing.map((field) => `缺少已确认事实或任务要求：${field}`);
     const open = head.snapshot.issues.filter((item) => item.status === "open").map((item) => item.description);
     return [...missing, ...open];
   }

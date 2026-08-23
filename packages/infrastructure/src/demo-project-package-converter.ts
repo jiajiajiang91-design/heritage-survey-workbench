@@ -576,7 +576,7 @@ export function buildDemoProjectPackage(input: DemoConversionInput): DemoConvers
       sourceRef: manifestEvidenceId, status: "open", impactRefs: [geometrySpec.id], blocksProxyOutcome: false, blocksFormalEligibility: true,
       producer: { producerType: "demo", fixtureId: input.fixtureId }, createdAt: input.createdAt, resolvedAt: null,
     }],
-    dependencyEdges: [], geometrySpecs: [geometrySpec], geometryRevisions, adoptedRecordRefs: [`demo:${input.fixtureId}`],
+    dependencyEdges: [], geometrySpecs: [geometrySpec], geometryRevisions, reviewSignoffs: [], adoptedRecordRefs: [`demo:${input.fixtureId}`],
   });
   const revisionBase = {
     id: sourceRevisionId, projectId, parentId: null, snapshotHash: recordHash(snapshot),

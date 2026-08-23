@@ -49,7 +49,7 @@ export function checkModification(
 
   if (anchor && newValue) {
     if (config.mustExceedAnchor.some((part) => edit.field.includes(part)) && newValue <= anchor.valueMm) {
-      warnings.push(`${edit.field} ${newValue}mm 不大于实测${config.anchorPart} ${anchor.valueMm}mm，几何上不成立`);
+      warnings.push(`${edit.field} ${newValue}mm 不大于实测${config.anchorPart} ${anchor.valueMm}mm，尺寸关系不成立`);
     }
     if (config.mustStayBelowAnchor.some((part) => edit.subjectName.includes(part)) && newValue >= anchor.valueMm) {
       warnings.push(`${edit.subjectName}高不应达到或超过${config.anchorPart} ${anchor.valueMm}mm`);

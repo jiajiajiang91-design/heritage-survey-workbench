@@ -24,7 +24,7 @@ export function EvidenceMissingDialog({ registered, onClose, onGoToIssues, onUpl
   const [choice, setChoice] = useState<Choice>("issue");
   const missing = registered.filter((item) => item.dataStatus !== "available");
   const choices: { key: Choice; title: string; note: string }[] = [
-    { key: "issue", title: "继续，记为缺资料", note: "按缺资料写入问题队列，成果只能作为代理成果，不能作为测绘成果" },
+    { key: "issue", title: "继续，记为缺资料", note: "按缺资料写入问题队列，成果只能作为待签发成果，不能作为测绘成果" },
     { key: "reupload", title: "补入资料后重新核对", note: "资料补入后须重新核对识别结果，已有结论不自动沿用" },
     { key: "register", title: "只登记不解析", note: "记为仅登记未读取内容，不产生任何推断" },
   ];

@@ -168,7 +168,7 @@ describe("影响范围", () => {
     candidates: [], issues: [], dependencyEdges: [],
     geometrySpecs: [{ id: "spec-1", objects: [{ id: "obj-1", factRefs: ["fact-1"], evidenceRefs: [] }] }],
     geometryRevisions: [{ id: "rev-1", geometrySpecId: "spec-1" }],
-    adoptedRecordRefs: [],
+    reviewSignoffs: [], adoptedRecordRefs: [],
   } as unknown as Parameters<typeof buildChangeHistory>[0]["snapshot"];
 
   const impactInput = {

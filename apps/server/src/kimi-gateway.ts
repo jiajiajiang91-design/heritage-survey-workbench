@@ -182,10 +182,13 @@ export class KimiGateway {
               { role: "system", content: input.systemPrompt },
               { role: "user", content: input.userContent },
             ],
-            tools: input.tools.map((tool) => ({
-              type: "function",
-              function: { name: tool.name, description: tool.description, parameters: tool.parameters },
-            })),
+            // 没有工具时不发 tools 字段（回答问题与生成建议走纯文本回复）
+            ...(input.tools.length ? {
+              tools: input.tools.map((tool) => ({
+                type: "function",
+                function: { name: tool.name, description: tool.description, parameters: tool.parameters },
+              })),
+            } : {}),
             thinking: { type: "disabled" },
             stream: false,
             // 架构 v1.4 §7.3 口径：max_completion_tokens，不显式设置 temperature

@@ -11,7 +11,7 @@ describe("workbench query models", () => {
       schemaVersion: "3.0" as const,
       project: { id: projectId, name: "test", status: "active" as const, locationText: null, createdAt: "2026-08-14T00:00:00.000Z" },
       buildings: [{ id: id(), projectId, name: "building", periodText: null, addressText: null, status: "uncertain" as const }],
-      taskDefinitions: [], evidences: [], parseRecords: [], entities: [], exclusionRecords: [], relations: [], observations: [], measurements: [], facts: [], candidates: [], issues: [], dependencyEdges: [], geometrySpecs: [], geometryRevisions: [], adoptedRecordRefs: [],
+      taskDefinitions: [], evidences: [], parseRecords: [], entities: [], exclusionRecords: [], relations: [], observations: [], measurements: [], facts: [], candidates: [], issues: [], dependencyEdges: [], geometrySpecs: [], geometryRevisions: [], reviewSignoffs: [], adoptedRecordRefs: [],
     };
     const summary = buildProjectDashboardSummary({
       head: { projectId, revisionId: id(), auditEventId: id(), snapshot },
@@ -20,7 +20,7 @@ describe("workbench query models", () => {
     expect(summary.stage).toBe("资料整理");
     expect(summary.evidenceCompleteness).toBe(0);
     expect(summary.qualificationLabel).toContain("未签发");
-    expect(summary.qualificationLabel).toContain("未达专业样板等级");
+    expect(summary.qualificationLabel).toContain("不作为样板");
     expect(snapshot.evidences).toHaveLength(0);
   });
 
@@ -84,7 +84,7 @@ describe("来源面板的阻断计数", () => {
       buildings: [{ id: buildingId, projectId, name: "building", periodText: null, addressText: null, status: "existing" as const }],
       taskDefinitions: [], evidences: [], parseRecords: [], entities: [], exclusionRecords: [], relations: [], observations: [],
       measurements: [], facts: [], candidates: [], issues: [issue(true), issue(true), issue(false)],
-      dependencyEdges: [], geometrySpecs: [], geometryRevisions: [], adoptedRecordRefs: [],
+      dependencyEdges: [], geometrySpecs: [], geometryRevisions: [], reviewSignoffs: [], adoptedRecordRefs: [],
     };
     const view = buildProvenanceGraphView({
       head: { projectId, revisionId: id(), auditEventId: id(), snapshot },

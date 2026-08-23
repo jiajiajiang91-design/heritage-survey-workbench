@@ -37,8 +37,8 @@ export function shortCode(index: number): string {
 
 function objectDescription(object: GeometryObject, unknownCount: number): string {
   const source = object.producer.producerType;
-  const head = source === "rule" ? "由形制规则推算" : source === "demo" ? "来自示例资料" : source === "model" ? "由 AI 识别产生" : source === "human" ? "经人工确认" : PRODUCER_LABELS[source] ?? source;
-  const evidence = object.evidenceRefs.length ? `，引用 ${object.evidenceRefs.length} 项证据` : "，未引用项目资料";
+  const head = source === "rule" ? "由形制规则推算" : source === "demo" ? "来自演示数据" : source === "model" ? "由 AI 识别产生" : source === "human" ? "经人工确认" : PRODUCER_LABELS[source] ?? source;
+  const evidence = object.evidenceRefs.length ? `，依据 ${object.evidenceRefs.length} 份资料` : "，未引用项目资料";
   const unknown = unknownCount ? `，${unknownCount} 项待确认` : "";
   return `${head}${evidence}${unknown}。`;
 }
@@ -74,7 +74,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
       data={(
         <>
           <div className="gj-pane-head">
-            <span className="gj-pane-title">构件对象</span>
+            <span className="gj-pane-title">构件</span>
             <Tag>{objects.length} 个对象{entities.length ? ` · ${entities.length} 条构件记录` : ""}</Tag>
           </div>
           {typeCounts.length > 1 && (
@@ -124,7 +124,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
         <EvidencePane
           evidences={snapshot.evidences}
           pane={pane}
-          title="照片证据"
+          title="对应照片"
           emptyHint="选择资料查看构件对应的照片。"
           caption={selected ? (
             <div className="sc-components-caption">
@@ -136,14 +136,14 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
             <>
               {selected && (
                 <div className="gj-card gj-card--compact">
-                  <InfoRow label="稳定键" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
+                  <InfoRow label="编号" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
                   <InfoRow label="构件类型" value={`${typeLabel(selected.object.componentType, selected.object.conceptRef)}（${selected.object.componentType}）`} />
                   {selectedUnknowns.map((unknown) => (
                     <InfoRow key={unknown.id} label="待确认" value={unknown.description} trailing={<Tag tone={unknown.blocksFormalEligibility ? "danger" : "warning"}>{unknown.blocksFormalEligibility ? "影响正式交付" : "不影响正式交付"}</Tag>} />
                   ))}
                 </div>
               )}
-              {!selected && objects.length > 0 && <p className="gj-pane-desc">点击左侧构件，查看稳定键、证据引用和待确认项。</p>}
+              {!selected && objects.length > 0 && <p className="gj-pane-desc">点击左侧构件，查看编号、依据的资料和待确认项。</p>}
               {hint && <p className="gj-alert gj-alert--info">在上方照片上拖出一个框，再在右侧助手里说要改什么，例如：这里漏了一个雀替。</p>}
               <span className="gj-spacer" />
               <div className="gj-actions">

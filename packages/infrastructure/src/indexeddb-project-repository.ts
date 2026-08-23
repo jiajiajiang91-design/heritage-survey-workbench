@@ -7,6 +7,7 @@ import type {
   ProjectSummary,
   ProjectTransaction,
 } from "@gujian/application";
+import { CommandError } from "@gujian/application";
 import {
   AuditEventSchema,
   ProjectRevisionSchema,
@@ -610,7 +611,19 @@ export class IndexedDbProjectRepository implements ProjectRepositoryPort, Projec
   }
 }
 
+// 本机授权：什么都允许，唯独不接受复核签发。签发只能在正式环境完成，
+// 本机拿到的只能是随包导入的签发记录（实施单元 09 业务规则）。
 export class LocalAuthorization {
+  async assertAuthorized(input: { readonly commandType: string }): Promise<void> {
+    if (input.commandType === "RecordReviewSignoff") {
+      throw new CommandError("UNAUTHORIZED", "本机身份不具备签发资格，签发须由项目责任人员在正式环境完成");
+    }
+    return Promise.resolve();
+  }
+}
+
+// 正式环境授权：只给演示包构建与正式环境用，浏览器里不实例化它。
+export class FormalEnvironmentAuthorization {
   async assertAuthorized(): Promise<void> {
     return Promise.resolve();
   }

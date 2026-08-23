@@ -113,6 +113,12 @@ function requireMatchingProjectRefs(command: ProjectCommand): void {
   )) {
     throw new CommandError("PROJECT_REF_MISMATCH", "archetype spec must match command projectId");
   }
+  if (command.commandType === "RecordReviewSignoff" && (
+    command.payload.signoff.projectId !== command.projectId ||
+    command.payload.signoff.projectRevisionId !== command.expectedRevisionId
+  )) {
+    throw new CommandError("COMMAND_INVALID", "review signoff must reference the command project and revision");
+  }
   if (command.commandType === "DecideIssueOption" && (
     command.payload.decision.projectId !== command.projectId ||
     command.payload.decision.actorId !== command.actorId ||
@@ -200,7 +206,7 @@ function createInitialSnapshot(command: Extract<ProjectCommand, { commandType: "
     dependencyEdges: [], // 恒为空，依赖图按引用字段推导（impact-service.ts）
     geometrySpecs: [],
     geometryRevisions: [],
-    adoptedRecordRefs: [],
+    reviewSignoffs: [], adoptedRecordRefs: [],
   });
 }
 
@@ -433,6 +439,18 @@ function appendDeliveryEvaluation(head: ProjectHead, command: Extract<ProjectCom
 
 function appendDeliveryDraft(head: ProjectHead, command: Extract<ProjectCommand, { commandType: "CreateDeliveryDraft" }>): ProjectSnapshot {
   return head.snapshot;
+}
+
+// 复核签发：几何版本必须在本项目里，同一草案只能签发一次
+function appendReviewSignoff(head: ProjectHead, command: Extract<ProjectCommand, { commandType: "RecordReviewSignoff" }>): ProjectSnapshot {
+  const signoff = command.payload.signoff;
+  if (!head.snapshot.geometryRevisions.some((item) => item.id === signoff.geometryRevisionId)) {
+    throw new CommandError("COMMAND_INVALID", "review signoff references an unknown geometry revision");
+  }
+  if (head.snapshot.reviewSignoffs.some((item) => item.deliveryDraftId === signoff.deliveryDraftId)) {
+    throw new CommandError("COMMAND_INVALID", "delivery draft is already signed off");
+  }
+  return { ...head.snapshot, reviewSignoffs: [...head.snapshot.reviewSignoffs, signoff] };
 }
 
 function assertCadJobEventPrefix(previous: import("@gujian/domain").CadJob, next: import("@gujian/domain").CadJob): void {
@@ -739,6 +757,8 @@ export class ProjectCommandService {
                           ? appendDeliveryEvaluation(head, command)
                           : command.commandType === "CreateDeliveryDraft"
                             ? appendDeliveryDraft(head, command)
+                            : command.commandType === "RecordReviewSignoff"
+                              ? appendReviewSignoff(head, command)
                             : head.snapshot;
       return transaction.commit({
         command,
@@ -781,6 +801,8 @@ export class ProjectCommandService {
                             ? [command.payload.evaluation.id]
                             : command.commandType === "CreateDeliveryDraft"
                               ? [command.payload.draft.id, command.payload.manifestArtifact.id, command.payload.manifestAsset.id]
+                              : command.commandType === "RecordReviewSignoff"
+                                ? [command.payload.signoff.id, command.payload.signoff.deliveryDraftId]
                               : [command.payload.job.id, ...command.payload.job.events.map((event) => event.id)],
         ...(command.commandType === "ImportEvidence"
           ? { assetWrites: { records: [command.payload.asset], stagingSessionId: command.payload.stagingSessionId } }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { ModificationProposal } from "../assistant/action-executors";
 import { AssistantClient } from "../assistant/assistant-client";
@@ -6,6 +6,7 @@ import { runClientOp } from "../assistant/client-op-adapter";
 import { buildWorkspaceSnapshot } from "../assistant/workspace-snapshot";
 import { describeFailure } from "../failure-notice";
 import { buildProvenanceGraphView } from "../query-models";
+import { DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS } from "../labels";
 import { isStageId, stageLabel } from "../view-registry";
 import type { EvidencePane } from "./useEvidencePane";
 import type { Jobs } from "./useJobs";
@@ -31,9 +32,35 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
   const assistantChatClient = useMemo(() => new AssistantClient(), []);
   const [pendingProposal, setPendingProposal] = useState<ModificationProposal | null>(null);
 
+  // 项目现状（实施单元 09）：按真实数据写成一段中文给模型。只写数与名，不写判断。
+  const contextZh = (() => {
+    if (!selected) return "";
+    const snapshot = selected.snapshot;
+    const task = session.confirmedTask;
+    const geometry = snapshot.geometryRevisions.at(-1) ?? null;
+    const signoff = geometry ? snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometry.id) ?? null : null;
+    const evidences = snapshot.evidences.map((item) => `${item.title}（${EVIDENCE_TYPE_LABELS[item.evidenceType] ?? item.evidenceType}，${DATA_STATUS_LABELS[item.dataStatus] ?? item.dataStatus}）`);
+    const openIssueLines = openIssues.slice(0, 6).map((item) => item.description.slice(0, 60));
+    const views = task?.artifactRequirements?.views.map((view) => `${view.displayLabelZh} 1:${view.scaleDenominator}`) ?? [];
+    const check = session.latestCheckRun;
+    const blocked = check ? check.results.filter((item) => item.outcome !== "passed").length : 0;
+    return [
+      `项目：${snapshot.project.name}；建筑：${snapshot.buildings[0]?.name ?? "未登记"}；地点：${snapshot.project.locationText ?? "未登记"}。`,
+      `当前这一步：${stageLabel(nav.activeStage)}。`,
+      `资料 ${snapshot.evidences.length} 份：${evidences.join("；") || "无"}。`,
+      `尺寸记录 ${snapshot.facts.length} 条，其中已确认 ${snapshot.facts.filter((item) => item.reviewStatus === "confirmed").length} 条，待核实 ${snapshot.facts.filter((item) => item.dataStatus === "uncertain").length} 条。`,
+      `未关闭的问题 ${openIssues.length} 条${openIssueLines.length ? `：${openIssueLines.join("；")}` : ""}。`,
+      `三维模型：${geometry ? `已生成，构件 ${geometrySpec?.objects.length ?? 0} 个，待确认部位 ${geometrySpec?.unknowns.length ?? 0} 处` : "未生成"}。`,
+      `成果要求：${views.length ? views.join("、") : "未确认"}；成果文件 ${session.projectArtifacts.length} 项。`,
+      `检查：${check ? `已检查 ${check.results.length} 项，不通过 ${blocked} 项` : "未检查"}。`,
+      `签发：${signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}已于 ${signoff.signedAt.slice(0, 10)} 复核签发，可正式交付` : session.projectDeliveries.length ? "有归档草案，未签发" : "无归档草案"}。`,
+    ].join("\n");
+  })();
+
   const buildAssistantSnapshot = () => buildWorkspaceSnapshot({
     projectId: selected?.projectId ?? null,
     currentStage: nav.activeStage,
+    contextZh,
     openIssueCount: openIssues.length,
     entityCount: (geometrySpec?.objects.length ?? 0) + (selected?.snapshot.entities.length ?? 0),
     geometryRevisionCount: selected?.snapshot.geometryRevisions.length ?? 0,
@@ -100,6 +127,23 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
     setNotice("修改建议已拒绝，未生效");
   };
 
+  // 助手建议（实施单元 09）：进项目或换阶段时向模型要一条建议；换得快时只认最后一次
+  const [suggestion, setSuggestion] = useState<{ text: string; basis: string; loading: boolean; key: string }>({ text: "", basis: "", loading: false, key: "" });
+  const suggestionKey = selected ? `${selected.projectId}:${selected.revisionId}:${nav.activeStage}` : "";
+  const modelReady = session.serverStatus?.modelConfigured === true;
+  useEffect(() => {
+    if (!selected || !modelReady) { setSuggestion({ text: "", basis: "", loading: false, key: "" }); return; }
+    const controller = new AbortController();
+    setSuggestion((current) => ({ ...current, loading: true, key: suggestionKey }));
+    const timer = setTimeout(() => {
+      assistantChatClient.suggest(buildAssistantSnapshot(), controller.signal)
+        .then((reply) => { if (!controller.signal.aborted) setSuggestion({ text: reply.source === "model" ? reply.suggestion : "", basis: reply.basis, loading: false, key: suggestionKey }); })
+        .catch(() => { if (!controller.signal.aborted) setSuggestion({ text: "", basis: "", loading: false, key: suggestionKey }); });
+    }, 400);
+    return () => { clearTimeout(timer); controller.abort(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [suggestionKey, modelReady]);
+
   // 当前状态条（05 表 3）：说明系统正在做什么与进度，不用静态文案顶替
   const currentStatusText = (() => {
     if (!selected) return "选中项目后，可在这里对助手下达操作指令。";
@@ -133,7 +177,7 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
 
   return {
     assistantChatClient, pendingProposal, buildAssistantSnapshot, handleAssistantClientOp,
-    adoptProposal, rejectProposal, currentStatusText, provenance, chatSelection,
+    adoptProposal, rejectProposal, currentStatusText, provenance, chatSelection, suggestion,
   };
 }
 

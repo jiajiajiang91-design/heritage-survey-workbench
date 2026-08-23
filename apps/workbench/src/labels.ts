@@ -3,7 +3,7 @@
 // 由 label-coverage.test.ts 锁住。核心 PRD 附录 A.4：界面状态词一律取这里的取值。
 
 export const PRODUCER_LABELS: Record<string, string> = {
-  model: "AI 识别", human: "人工确认", rule: "自动核对", demo: "示例资料",
+  model: "AI 识别", human: "人工确认", rule: "自动核对", demo: "演示数据",
 };
 
 // 记录级构件的来源。框选新增与识别确认写的是同一类记录，来源必须分得开：
@@ -18,7 +18,7 @@ export const REVIEW_LABELS: Record<string, string> = {
 
 // 存疑是本产品最需要显性表达的状态，缺它等于把不确定当成可用
 export const DATA_STATUS_LABELS: Record<string, string> = {
-  available: "可用", uncertain: "存疑", missing: "缺失", stale: "已过期",
+  available: "可用", uncertain: "待核实", missing: "缺失", stale: "已过期",
 };
 
 export const PARSE_STATUS_LABELS: Record<string, string> = {
@@ -51,10 +51,10 @@ export const DRAWING_KIND_LABELS: Record<string, string> = {
 
 // 成果种类（domain ArtifactKindSchema 十七值）。交付清单与成果列表不显示 drawingIr 一类原值。
 export const ARTIFACT_KIND_LABELS: Record<string, string> = {
-  ifc: "IFC 模型", glb: "三维模型", brepBundle: "实体几何包", geometryManifest: "几何清单",
-  geometrySourceMap: "几何来源映射", geometryReport: "几何构建记录", geometryPreview: "几何预览",
-  drawingIr: "图纸中间数据", viewGeometry: "视图几何", dxf: "成组图纸 DXF", svg: "图面预览 SVG",
-  pdf: "成组图纸 PDF", png: "图面预览 PNG", drawingSourceMap: "图纸来源映射",
+  ifc: "IFC 模型", glb: "三维模型", brepBundle: "构件实体包", geometryManifest: "模型清单",
+  geometrySourceMap: "模型来源对照", geometryReport: "建模记录", geometryPreview: "模型预览",
+  drawingIr: "图纸数据", viewGeometry: "视图线稿", dxf: "图纸 DXF", svg: "图面预览 SVG",
+  pdf: "图纸 PDF", png: "图面预览 PNG", drawingSourceMap: "图纸来源对照",
   checkReport: "检查记录", licenseManifest: "许可清单", deliveryManifest: "交付清单",
 };
 

@@ -10,7 +10,7 @@ import type {
 function sourced(dimension: SourcedDimension): SourcedLength {
   return {
     valueMm: dimension.valueMm,
-    basis: dimension.source === "drawn" ? "measured" : "human",
+    basis: dimension.source === "scaled" ? "human" : "measured",
     factRefs: [...dimension.factRefs],
     evidenceRefs: [...dimension.evidenceRefs],
   };
@@ -163,7 +163,7 @@ function buildPartitions(assembly: ConstructionAssembly, form: TimberFrameForm):
       }),
       dimensions: [["thicknessMm", sourced(form.partitionThickness)], ...planDimensions(form, rect)],
       // 隔墙位置按平面量取，是人工在图上读出来的
-      positionBasis: form.planScaled.source === "drawn" ? "measured" : "human",
+      positionBasis: form.planScaled.source === "scaled" ? "human" : "measured",
       unknownKeys: ["partitionAssembly", "openings"],
     });
   }
@@ -192,7 +192,7 @@ function buildWalls(assembly: ConstructionAssembly, form: TimberFrameForm): void
         ["heightMm", sourced(form.eaveElevation)],
       ],
       // 外墙位置就是图纸标注的建筑轮廓
-      positionBasis: form.depth.source === "drawn" ? "measured" : "human",
+      positionBasis: form.depth.source === "scaled" ? "human" : "measured",
       unknownKeys: ["wallAssembly", "openings"],
     });
     assembly.connect({
@@ -220,7 +220,7 @@ function buildWalls(assembly: ConstructionAssembly, form: TimberFrameForm): void
         ["thicknessMm", sourced(form.wallThickness)], ["lengthMm", sourced(form.width)],
         ["heightMm", sourced(form.eaveElevation)],
       ],
-      positionBasis: form.width.source === "drawn" ? "measured" : "human",
+      positionBasis: form.width.source === "scaled" ? "human" : "measured",
       unknownKeys: ["wallAssembly", "openings"],
     });
     // 山尖三角形。挤出面为 XZ，沿 -Y 出料，起点取该端外皮。
@@ -465,7 +465,9 @@ function registerUnknowns(assembly: ConstructionAssembly, form: TimberFrameForm)
       requiredEvidence: ["顶棚构造详图", "现场顶棚测量记录"],
     },
   ];
+  const documented = new Set(form.documented ?? []);
   for (const entry of entries) {
+    if (documented.has(entry.key)) continue;
     assembly.addUnknown({
       key: entry.key,
       subjectRef: "building",

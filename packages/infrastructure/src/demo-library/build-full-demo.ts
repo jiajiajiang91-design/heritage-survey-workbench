@@ -6,7 +6,7 @@ import type { CadJobClient } from "../cad-job-client.js";
 import type { DeliveryService } from "../delivery-service.js";
 import type { DrawingJobClient } from "../drawing-job-client.js";
 import type { IndexedDbProjectRepository } from "../indexeddb-project-repository.js";
-import { exportDemoProject, seedDemoProject, type DemoBuildResult } from "./build-demo-project.js";
+import { demoSeededUuid, exportDemoProject, seedDemoProject, type DemoBuildResult } from "./build-demo-project.js";
 import type { DemoDrawingView, DemoProjectDefinition } from "./definitions.js";
 
 // 演示项目的完整链路：从任务书一路跑到交付草案，走产品自身的命令服务与
@@ -92,10 +92,32 @@ export async function buildFullDemoProject(input: FullDemoBuildInput): Promise<F
   head = drawn.head;
   mark("成组图纸与检查记录");
 
-  await pipeline.deliveries.createProxyDraft(
+  const drafted = await pipeline.deliveries.createProxyDraft(
     head, seeded.actorId, geometry.revision, drawn.artifacts, drawn.checkRun,
   );
+  head = drafted.head;
   mark("代理交付草案");
+
+  // 复核签发（实施单元 09）：定义里有签发项的项目，由复核人在正式环境签发这份草案。
+  // 走命令服务，授权由调用方给正式环境的实现；浏览器里的本机授权会拒绝这一步。
+  if (definition.signoff) {
+    const reviewerActorId = definition.signoff.reviewerRole === "projectLead" ? seeded.actorId : demoSeededUuid(definition.demoId, "actor/reviewer");
+    await pipeline.commands.execute({
+      commandType: "RecordReviewSignoff", commandId: demoSeededUuid(definition.demoId, "command/review-signoff"),
+      projectId: seeded.projectId, actorId: reviewerActorId, expectedRevisionId: head.revisionId, issuedAt: definition.signoff.signedAt,
+      payload: {
+        signoff: {
+          id: demoSeededUuid(definition.demoId, "review-signoff"), projectId: seeded.projectId, projectRevisionId: head.revisionId,
+          deliveryDraftId: drafted.draft.id, geometryRevisionId: geometry.revision.id,
+          reviewerRole: definition.signoff.reviewerRole, reviewerActorId,
+          reviewedAt: definition.signoff.reviewedAt, signedAt: definition.signoff.signedAt,
+          issuingEnvironment: "formal", l1Eligible: definition.signoff.l1Eligible, statementZh: definition.signoff.statementZh,
+        },
+      },
+    });
+    head = await readHead();
+    mark("复核签发与归档");
+  }
 
   const exported = await exportDemoProject(repository, seeded);
   const final = await readHead();

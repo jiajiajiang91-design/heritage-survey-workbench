@@ -1,9 +1,12 @@
+import { useState } from "react";
 import type { ArtifactRecord, CheckRun } from "@gujian/domain";
 
 import { cadPhaseLabel } from "../labels";
 import { LongTask } from "../LongTask";
 import { DrawingLimitationNote, QualificationChip } from "../QualificationNotice";
 import { Button, EmptyState, Tag } from "../ui";
+import { FileViewer } from "../ui/FileViewer";
+import { useAssetBlob } from "../workbench/useAssetUrls";
 import type { DrawingPreview } from "../workbench/useAssetUrls";
 import "./SheetStyle.css";
 
@@ -24,11 +27,15 @@ export interface DrawingSetProps {
   onDownload: (artifact: ArtifactRecord) => void;
 }
 
-const KIND_LABELS: Record<string, string> = { svg: "矢量预览", pdf: "PDF", dxf: "DXF", glb: "GLB", ifc: "IFC", json: "记录", viewGeometry: "视图几何" };
+const KIND_LABELS: Record<string, string> = { svg: "矢量预览", pdf: "PDF", dxf: "DXF", glb: "GLB", ifc: "IFC", json: "记录", viewGeometry: "视图线稿" };
 
 export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, hasTask, generating, showTask, progressPhase, cancelling, onGenerate, onCancel, onDownload }: DrawingSetProps) {
   const drawings = artifacts.filter((artifact) => ["svg", "pdf", "dxf"].includes(artifact.kind));
   const others = artifacts.filter((artifact) => !["svg", "pdf", "dxf"].includes(artifact.kind));
+  // 右卡看选中的那份；默认第一张图幅的 SVG（实施单元 09：DXF 与 PDF 都在页内看）
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = drawings.find((item) => item.id === selectedId) ?? drawings.find((item) => item.kind === "svg") ?? drawings[0] ?? null;
+  const selectedAsset = useAssetBlob(selected?.assetId ?? null);
   return (
     <div className="sc-sheet">
       <section className="sc-sheet-settings">
@@ -40,7 +47,7 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
         {artifacts.length ? (
           <div className="sc-sheet-list">
             {drawings.map((artifact) => (
-              <button type="button" className="sc-sheet-row sc-sheet-row--file" key={artifact.id} onClick={() => onDownload(artifact)} title="下载这份成果">
+              <button type="button" className="sc-sheet-row sc-sheet-row--file" key={artifact.id} aria-current={selected?.id === artifact.id ? "true" : undefined} onClick={() => setSelectedId(artifact.id)} title="在右侧查看这份图纸">
                 <span className="sc-sheet-label">{KIND_LABELS[artifact.kind] ?? artifact.kind}</span>
                 <span className="sc-sheet-value">{artifact.fileName}<small>{Math.round(artifact.byteLength / 1024)} KB</small></span>
               </button>
@@ -69,21 +76,15 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
       </section>
       <section className="sc-sheet-preview">
         <div className="sc-sheet-preview-head">
-          <span className="gj-pane-title">图面预览</span>
+          <span className="gj-pane-title" title={selected?.fileName}>{selected ? `${KIND_LABELS[selected.kind] ?? selected.kind} · ${selected.fileName.replace(/\.(svg|pdf|dxf)$/i, "")}` : "图面预览"}</span>
           <span className="gj-spacer" />
-          {previews.length > 0 && <Tag>{previews.length} 张</Tag>}
+          {previews.length > 0 && <Tag>{drawings.length} 份</Tag>}
+          {selected && <Button variant="text" compact onClick={() => onDownload(selected)}>下载</Button>}
         </div>
-        {previews.length ? (
-          <div className="sc-sheet-grid" aria-label="成组图纸预览">
-            {previews.map((preview) => (
-              <figure key={preview.id} className="sc-sheet-thumb">
-                {preview.kind === "svg"
-                  ? <img src={preview.url} alt={`${preview.label} 矢量预览`} />
-                  : <object data={preview.url} type="application/pdf" aria-label={`${preview.label} PDF 预览`} />}
-                <figcaption>{preview.label}</figcaption>
-              </figure>
-            ))}
-          </div>
+        {selected ? (
+          selectedAsset
+            ? <FileViewer blob={selectedAsset.blob} mimeType={selectedAsset.mimeType} fileName={selectedAsset.fileName} height={476} onDownload={() => onDownload(selected)} />
+            : <div className="sc-sheet-figure sc-sheet-figure--empty">正在读取图纸</div>
         ) : (
           <div className="sc-sheet-figure sc-sheet-figure--empty">出图后按张显示预览。</div>
         )}

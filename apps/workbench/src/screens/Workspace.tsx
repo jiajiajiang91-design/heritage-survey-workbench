@@ -174,6 +174,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 currentArtifactCount={artifactSetView?.currentArtifacts.length ?? 0}
                 crossRevisionArtifactCount={artifactSetView?.crossRevisionArtifactCount ?? 0}
                 qualificationLabel={dashboard?.qualificationLabel ?? null}
+                signoff={dashboard?.signoff ?? null}
                 blockerReasons={blockerReasons}
                 blockerCodes={dashboard?.blockerCodes ?? []}
                 generating={drawingRunning}
@@ -195,6 +196,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 latestDelivery={latestDelivery}
                 latestBlockedDelivery={latestBlockedDelivery}
                 deliveryBlockers={deliveryBlockers}
+                signoff={dashboard?.signoff ?? null}
                 blockerCodes={dashboard?.blockerCodes ?? []}
                 canCreate={Boolean(geometryRevision && latestCheckRun && drawingArtifacts.length && !latestDelivery)}
                 exporting={Boolean(exportProgress)}

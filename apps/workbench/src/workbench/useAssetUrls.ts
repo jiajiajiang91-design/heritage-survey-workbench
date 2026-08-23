@@ -21,6 +21,22 @@ export function useGeometryBlob(geometryRevision: GeometryRevision | null): Blob
   return geometryBlob;
 }
 
+// 任一资产的文件本体，供页内查看器用（实施单元 09）。换资产就重读，读不到为 null。
+export interface AssetBlob { blob: Blob; mimeType: string; fileName: string }
+export function useAssetBlob(assetId: string | null): AssetBlob | null {
+  const [asset, setAsset] = useState<AssetBlob | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    setAsset(null);
+    if (!assetId) return;
+    projectRepository.getAsset(assetId)
+      .then((stored) => { if (!cancelled && stored.content) setAsset({ blob: stored.content, mimeType: stored.record.mimeType, fileName: stored.record.fileName }); })
+      .catch(() => { if (!cancelled) setAsset(null); });
+    return () => { cancelled = true; };
+  }, [assetId]);
+  return asset;
+}
+
 export interface DrawingPreview {
   id: string;
   kind: "svg" | "pdf";

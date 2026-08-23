@@ -28,7 +28,7 @@ function emptyInput(): ImpactGraphInput {
       buildings: [{ id: uuid(2), projectId: uuid(1), name: "主殿", locationText: null }],
       taskDefinitions: [], evidences: [], parseRecords: [], entities: [], exclusionRecords: [],
       relations: [], observations: [], measurements: [], facts: [], candidates: [], issues: [],
-      dependencyEdges: [], geometrySpecs: [], geometryRevisions: [], adoptedRecordRefs: [],
+      dependencyEdges: [], geometrySpecs: [], geometryRevisions: [], reviewSignoffs: [], adoptedRecordRefs: [],
     } as unknown as ImpactGraphInput["snapshot"],
     artifacts: [], requirementMatrices: [], checkRuns: [], deliveryEvaluations: [], deliveries: [],
   };

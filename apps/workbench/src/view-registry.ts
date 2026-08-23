@@ -13,7 +13,7 @@ export const stages = [
   { id: "sheetStyle", label: "图纸样式" },
   { id: "drawings", label: "成组图纸" },
   { id: "checks", label: "检查与资格", icon: ShieldCheck },
-  { id: "package", label: "代理交付" },
+  { id: "package", label: "成果归档" },
   { id: "candidates", label: "模型运行与用量", icon: Activity },
   { id: "history", label: "修改历史", icon: History },
 ] as const;
@@ -46,15 +46,15 @@ export const projectPageIds = new Set<string>(projectPages);
 export const STAGE_DESCRIPTIONS: Record<StageId, string> = {
   tasks: "确认对象、范围、成果要求和资料前提。",
   evidence: "按来源和可用状态核对每份资料；缺失的资料照样登记，不隐藏。",
-  measurements: "核对尺寸事实与基准；存疑与实测分开记，不另造词。",
-  objects: "核对识别对象、构件层级和照片关联。",
-  geometry: "实体、界面与未知项全部由本项目资料与形制规则生成。",
+  measurements: "核对每条尺寸的来源；待核实与实测分开记。",
+  objects: "逐个核对构件的名称、位置和对应照片。",
+  geometry: "模型里的每个构件都由本项目资料生成，可回溯到来源。",
   conditions: "只记录当前资料上可见的内容。不可见部位记为待复查，不写推断结论。",
-  issues: "问题由规则层核对自动产出，只能由人工决定关闭。",
+  issues: "自动核对发现的问题列在这里，由你决定怎么处理。",
   sheetStyle: "图种、图幅和版面来自任务要求；图上每条线都由当前三维模型剖切或投影得到，不另外描画。",
   drawings: "按任务要求出图，DXF、PDF 与预览图同源。",
-  checks: "自动检查通过不等于专业复核通过；成果状态以资格为准。",
-  package: "交付包含成果、检查记录、来源说明与限制条件；未签发的代理成果不能用于正式交付。",
+  checks: "自动检查的结果和复核签发的状态都在这里。",
+  package: "成果包含图纸、模型、检查结果与来源说明；签发后可正式交付。",
   candidates: "按用量与公开单价算费用。",
   history: "每一次写入都留在这里，含时间、操作人、动作和改了什么。",
 };
@@ -92,7 +92,7 @@ export function deriveStageStates(input: StageStateInput): Record<StageId, Stage
   return {
     tasks: input.taskConfirmed ? { label: "已确认", tone: "done" } : { label: "待确认", tone: "active" },
     evidence: input.evidenceCount ? { label: `${input.evidenceCount} 份`, tone: "done" } : { label: "无资料", tone: "idle" },
-    measurements: input.factCount ? { label: `${input.factCount} 项事实`, tone: "done" } : { label: "无事实", tone: "idle" },
+    measurements: input.factCount ? { label: `${input.factCount} 条尺寸`, tone: "done" } : { label: "无尺寸记录", tone: "idle" },
     objects: input.objectCount ? { label: `${input.objectCount} 个对象`, tone: "done" } : { label: "无对象", tone: "idle" },
     conditions: input.observationCount ? { label: `${input.observationCount} 条记录`, tone: "done" } : { label: "无记录", tone: "idle" },
     issues: input.openIssueCount ? { label: `${input.openIssueCount} 项待办`, tone: "active" } : { label: "无待办", tone: "done" },
@@ -130,9 +130,9 @@ export interface PendingItem {
 export function derivePendingItems(openIssues: readonly { issueType: string }[]): PendingItem[] {
   const count = (type: string) => openIssues.filter((issue) => issue.issueType === type).length;
   const groups: PendingItem[] = [
-    { label: "存疑构件", count: count("professionalUncertainty"), hint: "非唯一专业选择，需要人工判断", stage: "issues" },
-    { label: "缺现场事实", count: count("missingEvidence"), hint: "补资料或补录后规则自动复检", stage: "evidence" },
-    { label: "规则冲突", count: count("ruleConflict"), hint: "尺寸链或规则核对不通过", stage: "issues" },
+    { label: "待核实构件", count: count("professionalUncertainty"), hint: "不止一种专业判断，需要人工决定", stage: "issues" },
+    { label: "缺现场资料", count: count("missingEvidence"), hint: "补入资料后自动重新核对", stage: "evidence" },
+    { label: "数据对不上", count: count("ruleConflict"), hint: "尺寸之间或与做法对不上", stage: "issues" },
   ];
   return groups.filter((item) => item.count > 0);
 }

@@ -59,28 +59,28 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
             <GlbViewer blob={geometryBlob} onSelect={onSelectObject} />
           ) : geometryGate && !geometryGate.ready ? (
             <div className="sc-model-gate">
-              <strong>建立代理几何前，需从当前项目资料逐构件确认几何事实</strong>
-              <p className="gj-pane-desc">每个构件和界面必须定位到当前项目具体证据；不得用百分比、固定厚度或其他项目数据补齐。当前缺失：{geometryGate.missing.join("、")}</p>
+              <strong>生成模型前，先从本项目资料逐个确认构件尺寸</strong>
+              <p className="gj-pane-desc">每个构件和构件间连接都要能对到本项目的一份资料；不用百分比、固定厚度或其他项目的数据补齐。当前缺少：{geometryGate.missing.join("、")}</p>
               {snapshot.evidences.length > 0 && (
                 <form className="sc-model-form" onSubmit={(event) => void onConfirmGeometryFacts(event)}>
                   <Field label="构件数据" required><textarea name="geometryComponents" required placeholder="逐个构件填写：名称、类型、尺寸、依据的资料，以及尚未确认的部分" /></Field>
-                  <Field label="界面事实 JSON" required><textarea name="geometryInterfaces" required placeholder="仅填写图纸或调查资料可证明的承托、接触、包含或搭接关系；无证据可留空 []" /></Field>
-                  <p className="gj-note">当前项目证据：{snapshot.evidences.map((item) => `${item.title}=${item.id}`).join("；")}</p>
-                  <div className="gj-actions"><Button variant="primary" type="submit">写入逐构件证据事实</Button></div>
+                  <Field label="构件间连接 JSON" required><textarea name="geometryInterfaces" required placeholder="只填图纸或调查资料能证明的承托、接触、包含或搭接关系；没有依据可留空 []" /></Field>
+                  <p className="gj-note">本项目资料：{snapshot.evidences.map((item) => `${item.title}=${item.id}`).join("；")}</p>
+                  <div className="gj-actions"><Button variant="primary" type="submit">写入构件尺寸</Button></div>
                 </form>
               )}
             </div>
           ) : (
-            <EmptyState action={geometryGate?.ready ? <Button variant="primary" compact loadable busy={jobs.geometryRunning} disabled={!canGenerate} onClick={() => void jobs.generateDemoGeometry()}>生成代理几何</Button> : undefined}>
+            <EmptyState action={geometryGate?.ready ? <Button variant="primary" compact loadable busy={jobs.geometryRunning} disabled={!canGenerate} onClick={() => void jobs.generateDemoGeometry()}>生成模型</Button> : undefined}>
               还没有三维模型。生成只使用本项目已确认的构件数据，不读取项目以外的文件；生成后可在这里查看构件并核对来源。
             </EmptyState>
           )}
         </div>
         <div className="sc-model-legend">
-          <Tag>{objects.length} 个实体</Tag>
+          <Tag>{objects.length} 个构件</Tag>
           <Tag tone="accent">{geometrySpec?.interfaces.length ?? 0} 个界面</Tag>
           <button type="button" className="sc-model-legend-unknown" onClick={() => setShowUnknowns((value) => !value)} aria-expanded={showUnknowns}>
-            <Tag tone={geometrySpec?.unknowns.length ? "warning" : "neutral"}>{geometrySpec?.unknowns.length ?? 0} 个未知项</Tag>
+            <Tag tone={geometrySpec?.unknowns.length ? "warning" : "neutral"}>{geometrySpec?.unknowns.length ?? 0} 处待确认</Tag>
           </button>
           <span className="gj-spacer" />
           {geometryRevision && (
@@ -115,12 +115,12 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
         {selected && (
           <div className="sc-model-selected">
             <InfoRow label="选中构件" value={`${shortCode(selectedIndex)} · ${selected.displayNameZh}`} trailing={<SourceTag producerType={selected.producer.producerType} />} />
-            <InfoRow label="稳定键" value={<span className="gj-numeric">{selected.stableKey}</span>} />
-            <InfoRow label="证据" value={`${selected.evidenceRefs.length} 项`} />
+            <InfoRow label="编号" value={<span className="gj-numeric">{selected.stableKey}</span>} />
+            <InfoRow label="依据的资料" value={`${selected.evidenceRefs.length} 份`} />
             {selectedUnknowns.map((unknown) => <InfoRow key={unknown.id} label="待确认" value={unknown.description} />)}
           </div>
         )}
-        {!selected && objects.length > 0 && <p className="gj-pane-desc">点击模型中的构件，查看稳定键、证据引用、未知项和资格影响。</p>}
+        {!selected && objects.length > 0 && <p className="gj-pane-desc">点击模型中的构件，查看编号、依据的资料和待确认部位。</p>}
       </section>
     </div>
   );

@@ -97,7 +97,6 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           collapsed={assistantCollapsed}
           onExpand={() => setAssistantCollapsed(false)}
           onCollapse={() => setAssistantCollapsed(true)}
-          selectedEntityName={selectedGeometryEntity?.displayNameZh ?? null}
           modelConfigured={serverStatus?.modelConfigured ?? false}
         />
       )}

@@ -388,4 +388,44 @@ describe("ProjectCommandService", () => {
     expect(afterReraise.find((item) => item.id === issueOne)?.status).toBe("superseded");
     expect(afterReraise.find((item) => item.id === issueThree)?.status).toBe("open");
   });
+
+  // 实施单元 09：复核签发记录只能指向本项目已有的几何版本，同一草案只签一次
+  it("复核签发记录追加进快照，几何版本不存在或重复签发被拒", async () => {
+    const { repository, service } = setup();
+    const created = await service.execute(createProjectCommand());
+    const geometryId = "00000000-0000-4000-8000-0000000000e1";
+    const draftId = "00000000-0000-4000-8000-0000000000e2";
+    const signoff = (id: string, geometryRevisionId: string, revisionId: string) => ({
+      id, projectId: ids.project, projectRevisionId: revisionId, deliveryDraftId: draftId, geometryRevisionId,
+      reviewerRole: "professionalReviewer", reviewerActorId: ids.actor,
+      reviewedAt: "2026-08-20T00:00:00Z", signedAt: "2026-08-20T00:00:00Z", issuingEnvironment: "formal",
+      l1Eligible: true, statementZh: "复核通过，准予归档。",
+    });
+    const command = (commandId: string, revisionId: string, geometryRevisionId: string) => ({
+      commandType: "RecordReviewSignoff", commandId, projectId: ids.project, actorId: ids.actor,
+      expectedRevisionId: revisionId, issuedAt: "2026-08-20T00:00:00Z",
+      payload: { signoff: signoff(commandId, geometryRevisionId, revisionId) },
+    });
+
+    // 项目里还没有几何版本，签不了
+    await expect(service.execute(command("00000000-0000-4000-8000-0000000000e3", created.revisionId, geometryId))).rejects.toMatchObject({ code: "COMMAND_INVALID" });
+
+    // 直接把几何版本放进快照（签发只看版本是否存在，不重跑几何链路）
+    repository.head = {
+      ...repository.head!,
+      snapshot: {
+        ...repository.head!.snapshot,
+        geometryRevisions: [{
+          id: geometryId, projectId: ids.project, projectRevisionId: created.revisionId, geometrySpecId: "00000000-0000-4000-8000-0000000000e4",
+          inputHash: "1".repeat(64), entityClosureHash: "2".repeat(64), interfaceClosureHash: "3".repeat(64), geometrySignature: "4".repeat(64), assets: [],
+          status: "generated-not-qualified", l1Eligible: false, formalEligibility: false, blockers: ["PROXY_ONLY"], createdAt: "2026-08-19T00:00:00Z",
+        }] as unknown as ProjectSnapshot["geometryRevisions"],
+      },
+    };
+    const signed = await service.execute(command("00000000-0000-4000-8000-0000000000e5", repository.head!.revisionId, geometryId));
+    expect(repository.head?.snapshot.reviewSignoffs).toHaveLength(1);
+    expect(repository.head?.snapshot.reviewSignoffs[0]?.l1Eligible).toBe(true);
+
+    await expect(service.execute(command("00000000-0000-4000-8000-0000000000e6", signed.revisionId, geometryId))).rejects.toMatchObject({ code: "COMMAND_INVALID" });
+  });
 });

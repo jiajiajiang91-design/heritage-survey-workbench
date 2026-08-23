@@ -71,9 +71,9 @@ function deliveryDraftSummary(head: ProjectHead): string {
   const unreviewed = head.snapshot.facts.filter((item) => item.reviewStatus === "unreviewed").length;
   return [
     "交付说明草稿（逐条核对后采用）：",
-    `1. 尺寸依据：${measurementCount} 条测量记录，${confirmedFacts} 条已确认事实。`,
-    "2. 限制条件：generated-not-qualified / L1=false / 代理成果 / 未签发，不可用于正式交付或施工。",
-    `3. 未确认项：${openIssues} 个开放问题，${unreviewed} 条未核对事实。`,
+    `1. 尺寸依据：${measurementCount} 条现场记录，${confirmedFacts} 条已确认尺寸。`,
+    "2. 限制条件：签发前为待签发成果，不可用于正式交付或施工。",
+    `3. 待确认：${openIssues} 个未关闭的问题，${unreviewed} 条未核对的尺寸。`,
   ].join("\n");
 }
 

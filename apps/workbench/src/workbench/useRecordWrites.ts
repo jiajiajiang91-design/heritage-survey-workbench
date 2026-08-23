@@ -98,7 +98,7 @@ export function useRecordWrites({ session, notices }: WriteDeps) {
           interfaces: JSON.parse(String(data.get("geometryInterfaces") ?? "[]")),
         },
       });
-      setSelected(head); await refresh(); setNotice("控制尺寸已作为人工确认事实写入；来源仍指向当前项目资料");
+      setSelected(head); await refresh(); setNotice("控制尺寸已作为人工确认的尺寸写入；来源仍指向本项目资料");
     } catch (reason) { setError(describeFailure(reason, "控制尺寸确认失败")); }
   };
 
@@ -109,7 +109,7 @@ export function useRecordWrites({ session, notices }: WriteDeps) {
     try {
       const outcome = await deliveries.createProxyDraft(selected, localActorId(), geometryRevision, drawingArtifacts, latestCheckRun);
       setSelected(outcome.head); await loadProject(selected.projectId); await refresh(); setNotice("交付草案已建立。尚未签发，不能用于正式交付或施工");
-    } catch (reason) { setError(describeFailure(reason, "代理交付草案建立失败")); }
+    } catch (reason) { setError(describeFailure(reason, "归档草案建立失败")); }
   };
 
   const recordBlockedDelivery = async () => {
@@ -318,7 +318,7 @@ export function useRecordWrites({ session, notices }: WriteDeps) {
         issueId,
         outcome,
         reason: outcome === "accepted"
-          ? "接受为已核对的模型候选；不转为现场实测或正式事实。"
+          ? "接受为已核对的识别结果；不转为现场实测记录。"
           : typedReason.trim(),
       });
       setSelected(updated);

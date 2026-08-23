@@ -24,6 +24,20 @@ export class AssistantClient {
     return { csrfToken: body.csrfToken, assistantCapabilityToken: body.assistantCapabilityToken };
   }
 
+  // 助手建议（实施单元 09）：按当前阶段与项目现状由模型生成，不走回合与留痕
+  async suggest(snapshot: WorkspaceSnapshot, signal?: AbortSignal): Promise<{ suggestion: string; basis: string; source: "model" | "unavailable" }> {
+    const session = await this.#session();
+    const response = await fetch(`${this.#baseUrl}/api/assistant/suggest`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "content-type": "application/json", "x-csrf-token": session.csrfToken },
+      body: JSON.stringify({ snapshot }),
+      ...(signal ? { signal } : {}),
+    });
+    if (!response.ok) throw new Error(`ASSISTANT_SUGGEST_HTTP_${response.status}`);
+    return (await response.json()) as { suggestion: string; basis: string; source: "model" | "unavailable" };
+  }
+
   async sendTurn(input: {
     text: string;
     snapshot: WorkspaceSnapshot;

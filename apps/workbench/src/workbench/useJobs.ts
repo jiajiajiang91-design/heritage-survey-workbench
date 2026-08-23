@@ -73,7 +73,7 @@ export function useJobs({ session, nav, notices }: JobDeps) {
       setCadProgress(null);
       // 用户主动取消不是失败，不进失败提示。
       if (cadCancelRequested.current || isCancelled(reason)) setNotice("三维模型生成已取消，本机数据保持在生成前的状态");
-      else setError(describeFailure(reason, "几何作业失败"));
+      else setError(describeFailure(reason, "建模作业失败"));
     } finally {
       setGeometryStarting(false);
       setCadCancelling(false);

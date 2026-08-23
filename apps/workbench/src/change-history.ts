@@ -38,7 +38,8 @@ const COMMAND_LABELS: Record<string, string> = {
   ImportEvidence: "上传资料",
   ConfirmTaskSetup: "确认任务要求",
   ReplaceTaskDefinition: "更换任务书",
-  CommitFacts: "写入尺寸与事实",
+  CommitFacts: "写入尺寸记录",
+  RecordReviewSignoff: "复核签发",
   CommitObservations: "记录现状",
   CommitEntities: "写入构件记录",
   ReviseEntities: "修订构件记录",
@@ -54,7 +55,7 @@ const COMMAND_LABELS: Record<string, string> = {
   DecideIssueOption: "选定方案",
   CommitArchetypeSpec: "登记形制参数",
   CommitConceptEntries: "更新词表",
-  StartCadJob: "发起几何作业",
+  StartCadJob: "发起建模作业",
   SyncCadJobEvents: "同步作业进度",
 };
 

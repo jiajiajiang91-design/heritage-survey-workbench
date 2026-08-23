@@ -41,7 +41,7 @@ function refLabel(ref: string, snapshot: Snapshot, evidenceTitle: (ref: string) 
   const object = snapshot.geometrySpecs.flatMap((spec) => spec.objects).find((item) => item.id === id || item.stableKey === ref);
   if (object) return object.displayNameZh;
   const fact = snapshot.facts.find((item) => item.id === id);
-  if (fact) return `事实 ${fact.field}`;
+  if (fact) return `尺寸 ${fact.field}`;
   const building = snapshot.buildings.find((item) => item.id === id);
   if (building) return building.name;
   return ref;
@@ -80,14 +80,14 @@ export function IssueQueue({ snapshot, openIssues, taskConfirmed, evidenceTitle,
           </div>
           <p className="gj-pane-desc">
             {visible.length
-              ? `${ruleCount} 条由规则层核对自动产出${proxyBlockers ? `，${proxyBlockers} 条阻断代理成果` : "，都不阻断代理成果"}${formalBlockers ? `，${formalBlockers} 条阻断正式交付资格` : ""}。`
+              ? `${ruleCount} 条由自动核对发现${proxyBlockers ? `，${proxyBlockers} 条影响出图` : ""}${formalBlockers ? `，${formalBlockers} 条签发前要处理` : ""}。`
               : "当前没有需要人工处理的异常。自动规则已完成。"}
           </p>
           {!taskConfirmed && (
             <Alert tone="warning">任务要求尚未确认，成果要求与责任角色缺失。<Button variant="text" compact onClick={onGoToTask}>去任务卡确认</Button></Alert>
           )}
           {humanInterventions && (
-            <p className="gj-note">现场事实缺失 {humanInterventions.missingFieldFacts.length} · 非唯一专业选择 {humanInterventions.professionalChoices.length} · 成组审核与交付 {humanInterventions.groupedReviewRefs.length}。规则确定项自动执行，不增加逐项确认。</p>
+            <p className="gj-note">缺现场资料 {humanInterventions.missingFieldFacts.length} · 需专业判断 {humanInterventions.professionalChoices.length} · 成组复核 {humanInterventions.groupedReviewRefs.length}</p>
           )}
           <div className="gj-pane-list">
             {visible.map((issue) => (
@@ -111,13 +111,13 @@ export function IssueQueue({ snapshot, openIssues, taskConfirmed, evidenceTitle,
           </div>
           <p className="sc-issue-body">{selected.description}</p>
           <div className="gj-card gj-card--compact">
-            <span className="gj-text-label">影响范围与阻断</span>
+            <span className="gj-text-label">影响范围</span>
             <div className="sc-issue-lines">
               {selected.impactRefs.length
                 ? selected.impactRefs.slice(0, 6).map((ref) => <span key={ref}>{refLabel(ref, snapshot, evidenceTitle)}</span>)
                 : selected.subjectRefs.map((ref) => <span key={ref}>{refLabel(ref, snapshot, evidenceTitle)}</span>)}
               {selected.impactRefs.length > 6 && <span className="gj-note">另有 {selected.impactRefs.length - 6} 项</span>}
-              <span>{selected.blocksProxyOutcome ? "代理成果阻断" : "代理成果不阻断"}，{selected.blocksFormalEligibility ? "正式交付资格阻断" : "不影响正式交付资格"}</span>
+              <span>{selected.blocksProxyOutcome ? "影响出图" : "不影响出图"}，{selected.blocksFormalEligibility ? "签发前要处理" : "不影响签发"}</span>
             </div>
           </div>
           <div className="gj-card gj-card--compact">

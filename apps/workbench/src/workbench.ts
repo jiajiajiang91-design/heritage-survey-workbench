@@ -94,6 +94,9 @@ export interface ProjectCard {
   readonly buildingName: string;
   readonly status: "active" | "archived";
   readonly updatedAt: string;
+  readonly createdAt: string;
+  // 复核签发时间；没有签发记录时为 null，卡片显示进行中
+  readonly signedAt: string | null;
   readonly taskName: string | null;
   readonly scaleLabel: string | null;
   readonly locationText: string | null;
@@ -111,7 +114,7 @@ export interface ProjectCard {
 
 export async function listProjectCards(): Promise<readonly ProjectCard[]> {
   const summaries = await listLocalProjects();
-  return Promise.all(summaries.map(async (summary) => {
+  const cards = await Promise.all(summaries.map(async (summary) => {
     const [head, artifacts, checkRuns] = await Promise.all([
       projectRepository.getProjectHead(summary.projectId),
       projectRepository.getProjectArtifacts(summary.projectId),
@@ -125,15 +128,21 @@ export async function listProjectCards(): Promise<readonly ProjectCard[]> {
       .filter((run) => run.results.every((result) => result.outcome === "passed"))
       .flatMap((run) => run.artifactRefs));
     const photo = snapshot?.evidences.find((item) => item.evidenceType === "photo" && item.dataStatus === "available") ?? null;
-    const coverUrl = photo
-      ? await projectRepository.getAsset(photo.assetId).then((asset) => asset.content ? URL.createObjectURL(asset.content) : null).catch(() => null)
+    // 封面：第一张可用照片；没有照片的项目（如参数化样板）用第一张图纸的 SVG 预览
+    const coverSvg = artifacts.find((item) => item.kind === "svg") ?? null;
+    const coverAssetId = photo?.assetId ?? coverSvg?.assetId ?? null;
+    const coverUrl = coverAssetId
+      ? await projectRepository.getAsset(coverAssetId).then((asset) => asset.content ? URL.createObjectURL(asset.content) : null).catch(() => null)
       : null;
+    const signoff = snapshot?.reviewSignoffs.at(-1) ?? null;
     return {
       projectId: summary.projectId,
       name: summary.name,
       buildingName: summary.buildingName,
       status: summary.status,
       updatedAt: summary.updatedAt,
+      createdAt: snapshot?.project.createdAt ?? summary.updatedAt,
+      signedAt: signoff?.signedAt ?? null,
       taskName: task?.name ?? null,
       scaleLabel: scales.length ? scales.join("、") : null,
       locationText: snapshot?.project.locationText ?? null,
@@ -149,4 +158,6 @@ export async function listProjectCards(): Promise<readonly ProjectCard[]> {
       coverUrl,
     };
   }));
+  // 列表按项目建立时间升序：演示项目按各自的建立日期排，本机新建的排在后面
+  return cards.sort((left, right) => left.createdAt.localeCompare(right.createdAt));
 }

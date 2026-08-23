@@ -29,7 +29,7 @@ export function EvidenceList({ snapshot, pane, readableDrawingCount, modelRunnin
   const parseStatusOf = (evidenceId: string) => snapshot.parseRecords.find((record) => record.evidenceId === evidenceId)?.status ?? null;
   const summary = snapshot.evidences.length
     ? `${snapshot.evidences.length} 份资料${missing ? `，${missing} 份没有文件` : ""}。状态取数据状态四值，不另造词。`
-    : "还没有资料。上传任务书、照片、测量记录或已有图纸，文件本体、证据记录和解析结果一起进入项目版本。";
+    : "还没有资料。上传任务书、照片、测量记录或已有图纸，文件本体、登记信息和读取结果一起进入项目。";
   return (
     <>
     {showMissing && (
@@ -68,7 +68,7 @@ export function EvidenceList({ snapshot, pane, readableDrawingCount, modelRunnin
             </div>
           ) : (
             <EmptyState>
-              上传任务书、照片、测量记录或已有图纸。文件本体、证据记录和解析结果会一起进入项目版本。
+              上传任务书、照片、测量记录或已有图纸。文件本体、登记信息和读取结果会一起进入项目。
             </EmptyState>
           )}
           <span className="gj-spacer" />

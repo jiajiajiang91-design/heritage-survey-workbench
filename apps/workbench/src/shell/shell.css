@@ -48,13 +48,14 @@
 button.ws-rail-summary:hover { background: var(--bg-hover); }
 
 /* ---------- 中栏（66:1603）：白底，内边距 16，间距 12 ---------- */
-.ws-center { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); min-width: 0; min-height: 0; overflow: hidden; }
+/* 中栏整体滚动（实施单元 09）：卡片不内部滚动，内容长了整栏往下长；短内容时卡片仍拉到底部 */
+.ws-center { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; }
 .ws-page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-md); }
 .ws-page-header > div:first-child { display: flex; flex-direction: column; gap: var(--space-2xs); min-width: 0; }
 .ws-page-title { font: var(--font-weight-medium) var(--font-size-22)/var(--line-30) var(--font-family-ui); color: var(--text-primary); }
 .ws-page-description { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
-.ws-center-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: var(--space-md); overflow: auto; }
-.ws-center-body--fill { overflow: hidden; }
+.ws-center-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: var(--space-md); }
+.ws-center-body--fill { min-height: 0; }
 
 /* ---------- 项目级页面（P01 至 P03）：单栏，内容最大宽 1120，页边距 160 ---------- */
 .ws-page { min-width: 0; min-height: 0; overflow: auto; background: var(--bg-canvas); }
@@ -65,6 +66,11 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 .ws-page-titlebar p { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
 .ws-back { display: inline-flex; align-items: center; gap: var(--space-xs); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-tertiary); border-radius: var(--radius-sm); }
 .ws-back:hover { color: var(--text-primary); }
+
+/* ---------- 成果预览对话框（实施单元 09）：宽屏对话框，查看器占 70vh ---------- */
+.ws-preview-dialog { max-width: var(--layout-page-content-max); gap: var(--space-md); }
+.ws-preview-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-lg); }
+.ws-preview-head > div:first-child { display: flex; flex-direction: column; gap: var(--space-2xs); min-width: 0; }
 
 /* ---------- 助手栏（36:14）：宽 380，白底，左边线；头 56，对话区 16 内边距，输入区 ---------- */
 .ws-assistant { display: grid; grid-template-rows: var(--layout-topbar-height) minmax(0, 1fr) auto; background: var(--bg-surface); border-left: var(--stroke-hairline) solid var(--border-subtle); min-height: 0; min-width: 0; }
@@ -83,6 +89,8 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 .ws-assistant-task .ws-assistant-task-name { font: var(--font-weight-medium) var(--font-size-14)/var(--line-22) var(--font-family-ui); color: var(--text-primary); }
 .ws-assistant-progress { position: relative; height: 4px; border-radius: var(--radius-full); background: var(--border-default); overflow: hidden; }
 .ws-assistant-progress i { position: absolute; inset: 0 auto 0 0; width: var(--progress, 0%); background: var(--status-success-fg); border-radius: var(--radius-full); }
+.ws-assistant-suggest { display: flex; flex-direction: column; gap: var(--space-md); }
+.ws-assistant-suggest .assistant-msg small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
 .ws-assistant-status { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
 .ws-assistant-section-title { font: var(--font-weight-medium) var(--font-size-12)/var(--line-16) var(--font-family-ui); color: var(--text-primary); }
 /* 对话面板：消息流在上，输入区在下（36:35 Composer） */

@@ -8,17 +8,19 @@ import type {
   DeliveryEvaluation,
   ModelRun,
   ProjectGeometryObject,
+  ReviewSignoff,
   RuleRun,
 } from "@gujian/domain";
 
-import { QUALIFICATION_CHIP_LABEL } from "./qualification";
+import { QUALIFICATION_CHIP_LABEL, SIGNED_CHIP_LABEL } from "./qualification";
 
 export type WorkbenchStage =
   | "资料整理"
   | "问题处理中"
-  | "几何待生成"
+  | "模型待生成"
   | "图纸待生成"
-  | "检查与交付";
+  | "检查与交付"
+  | "已签发归档";
 
 export interface ProjectDashboardSummary {
   readonly stage: WorkbenchStage;
@@ -28,7 +30,25 @@ export interface ProjectDashboardSummary {
   readonly geometryRevisionCount: number;
   readonly artifactCount: number;
   readonly blockerCodes: readonly string[];
-  readonly qualificationLabel: typeof QUALIFICATION_CHIP_LABEL;
+  readonly qualificationLabel: string;
+  // 正式环境的复核签发记录（实施单元 09）；没有时为 null，成果按待签发显示
+  readonly signoff: ReviewSignoff | null;
+}
+
+// 签发解除哪些不通过项：未经复核与本机不能签发两条随签发解除，只阻断正式资格的项视为已复核接受，
+// L1 只在记录认定时解除。评估记录是签发前写的，不改；显示时按这里过滤。
+const FORMAL_ONLY = new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", "L1_ELIGIBILITY_FALSE", "PROXY_ONLY"]);
+export function effectiveBlockerCodes(codes: readonly string[], signoff: ReviewSignoff | null, details?: readonly { code: string; blocksProxyOutcome: boolean }[]): string[] {
+  if (!signoff) return [...codes];
+  const hard = new Set((details ?? []).filter((item) => item.blocksProxyOutcome).map((item) => item.code));
+  return codes.filter((code) => {
+    const bare = code.replace(/^CHECK_BLOCKED:/, "");
+    if (bare === "L1_ELIGIBILITY_FALSE") return !signoff.l1Eligible;
+    if (FORMAL_ONLY.has(bare)) return false;
+    if (details?.length) return hard.has(code);
+    // 没有明细的来源（几何版本自带的阻断码）按只阻断正式资格处理
+    return false;
+  });
 }
 
 export interface ProvenanceNode {
@@ -106,20 +126,23 @@ export function buildProjectDashboardSummary(input: ReadModelInput): ProjectDash
   const geometryRevision = snapshot.geometryRevisions.at(-1) ?? null;
   const currentArtifacts = input.artifacts.filter((artifact) => artifact.geometryRevisionId === geometryRevision?.id);
   const latestEvaluation = input.evaluations.at(-1) ?? null;
+  const signoff = geometryRevision ? snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometryRevision.id) ?? null : null;
   const blockers = new Set<string>([
     ...openIssues.filter((issue) => issue.blocksProxyOutcome).map((issue) => issue.issueType),
-    ...(geometryRevision?.blockers ?? []),
-    ...(latestEvaluation?.blockerCodes ?? []),
+    ...effectiveBlockerCodes(geometryRevision?.blockers ?? [], signoff),
+    ...effectiveBlockerCodes(latestEvaluation?.blockerCodes ?? [], signoff, latestEvaluation?.blockerDetails),
   ]);
   const stage: WorkbenchStage = !evidenceTotal
     ? "资料整理"
     : openIssues.length
       ? "问题处理中"
       : !geometryRevision
-        ? "几何待生成"
+        ? "模型待生成"
         : !currentArtifacts.length
           ? "图纸待生成"
-          : "检查与交付";
+          : signoff
+            ? "已签发归档"
+            : "检查与交付";
   return {
     stage,
     evidenceCompleteness,
@@ -128,7 +151,8 @@ export function buildProjectDashboardSummary(input: ReadModelInput): ProjectDash
     geometryRevisionCount: snapshot.geometryRevisions.length,
     artifactCount: currentArtifacts.length,
     blockerCodes: [...blockers],
-    qualificationLabel: QUALIFICATION_CHIP_LABEL,
+    qualificationLabel: signoff ? (signoff.l1Eligible ? SIGNED_CHIP_LABEL : `${SIGNED_CHIP_LABEL} · 不作为样板`) : QUALIFICATION_CHIP_LABEL,
+    signoff,
   };
 }
 
@@ -228,7 +252,7 @@ export function buildProvenanceGraphView(input: ReadModelInput, selectedObject: 
     selectedObjectId: selectedObject?.id ?? null,
     nodes: [
       node("evidence", "原始资料", objectEvidenceRefs),
-      node("fact", "尺寸与事实", objectFactRefs),
+      node("fact", "尺寸与记录", objectFactRefs),
       node("run", "识别与自动核对", [...input.modelRuns.map((run) => run.id), ...input.ruleRuns.map((run) => run.id)]),
       node("decision", "人工决定", input.decisions.map((decision) => decision.id)),
       node("geometry", "三维模型", geometryRevision ? [geometryRevision.id] : [], objectUnknowns.some((item) => item.blocksProxyOutcome)),

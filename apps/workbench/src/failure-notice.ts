@@ -59,8 +59,8 @@ const EXACT: Record<string, FailureRule> = {
     nextStepZh: "压缩或分卷后重新上传。",
   },
   DELIVERY_NOT_BLOCKED: {
-    summaryZh: "当前项目没有处于阻断状态，代理交付草案不适用。",
-    nextStepZh: "按正式交付流程处理，不需要代理交付草案。",
+    summaryZh: "当前项目没有不通过的项，不需要记录无法交付的原因。",
+    nextStepZh: "直接建立归档草案。",
   },
   DRAWING_TASK_NOT_CONFIRMED: {
     summaryZh: "任务的成果要求尚未确认，图纸没有开始生成。",
@@ -148,7 +148,7 @@ const FAMILIES: Array<[string, FailureRule]> = [
   ["PROJECT_NOT_FOUND", { summaryZh: "读取项目数据失败，界面显示的内容可能不是最新的。", nextStepZh: RELOAD }],
   ["REVISION_NOT_FOUND", { summaryZh: "读取项目版本失败，界面显示的内容可能不是最新的。", nextStepZh: RELOAD }],
   ["DEMO_", { summaryZh: "演示数据不完整，演示项目没有载入。", nextStepZh: "重新载入演示项目。演示数据不影响真实项目。" }],
-  ["DELIVERY_", { summaryZh: "交付条件不满足，交付没有生成。", nextStepZh: "查看问题队列，处理阻断项后重试。", showDetail: true }],
+  ["DELIVERY_", { summaryZh: "归档条件不满足，草案没有生成。", nextStepZh: "查看问题队列，处理不通过的项后重试。", showDetail: true }],
   ["ARTIFACT_", { summaryZh: "数据的项目归属对不上，本次操作没有执行。", nextStepZh: RELOAD }],
   ["CHECK_RUN_", { summaryZh: "数据的项目归属对不上，本次操作没有执行。", nextStepZh: RELOAD }],
   ["INVALID_JSON", { summaryZh: "收到的数据格式不正确，本次操作没有执行。", nextStepZh: RETRY }],
