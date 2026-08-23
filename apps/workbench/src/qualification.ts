@@ -39,21 +39,23 @@ const ISSUE_TYPE_ZH: Record<string, string> = {
   highRisk: "高风险",
 };
 
+// 检查项的名字写成检查的内容，不写成失败的样子：通过时显示"图纸与生成记录一致 通过"，
+// 不通过时由 describeBlocker 加"检查不通过："前缀
 const CHECK_CODE_ZH: Record<string, string> = {
-  PROFESSIONAL_REVIEW_REQUIRED: "尚未经专业复核",
-  FORMAL_SIGNOFF_UNAVAILABLE: "本机环境不能签发",
-  L1_ELIGIBILITY_FALSE: "不作为专业样板",
-  DRAWING_OUTPUT_HASH_CLOSURE: "图纸与生成记录对不上",
-  UNVERIFIED_DIMENSION_CANDIDATES: "尺寸尚未核验",
-  MEASUREMENT_METADATA_MISSING: "测量记录缺测量人、时间或方法",
-  GEOMETRY_EVIDENCE_FACTS_MISSING: "缺少支撑三维模型的实测数据",
+  PROFESSIONAL_REVIEW_REQUIRED: "专业复核",
+  FORMAL_SIGNOFF_UNAVAILABLE: "正式签发",
+  L1_ELIGIBILITY_FALSE: "专业样板等级",
+  DRAWING_OUTPUT_HASH_CLOSURE: "图纸与生成记录一致",
+  UNVERIFIED_DIMENSION_CANDIDATES: "尺寸核验",
+  MEASUREMENT_METADATA_MISSING: "测量记录的测量人、时间与方法",
+  GEOMETRY_EVIDENCE_FACTS_MISSING: "三维模型的实测依据",
 };
 
 // 不能正式交付的原因：交付评估写的是 CODE 或 CODE:细节:UUID 形态，直出会把
 // 内部码和 UUID 漏到界面（07 界面视觉规范 5.6）。
 export function describeBlocker(code: string): string {
-  const direct = CHECK_CODE_ZH[code] ?? ISSUE_TYPE_ZH[code];
-  if (direct) return direct;
+  if (CHECK_CODE_ZH[code]) return `${CHECK_CODE_ZH[code]}未通过`;
+  if (ISSUE_TYPE_ZH[code]) return ISSUE_TYPE_ZH[code]!;
 
   const [head = "", second = ""] = code.split(":");
   if (head === "OPEN_ISSUE") return `未处理事项：${ISSUE_TYPE_ZH[second] ?? "需人工判断"}`;

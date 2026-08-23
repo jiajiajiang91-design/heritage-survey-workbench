@@ -79,6 +79,7 @@ export const FACT_FIELD_LABELS: Record<string, string> = {
   moduleBaseZh: "模数基参", bayCount: "开间数", bayWidthMm: "开间尺寸", bayDepthMm: "进深尺寸",
   columnAxesXMm: "柱轴横向坐标", columnAxesYMm: "柱轴纵向坐标", purlinCount: "檩数", floorCount: "层数",
   bracketSetZh: "斗拱", columnMaterialZh: "柱材", frontPorchZh: "前廊", roofFormZh: "屋顶形式", structureSystemZh: "结构体系",
+  wallOpeningsZh: "门窗做法", foundationZh: "基础做法", protectionLevelZh: "保护级别",
   "roofFrame.totalDepthMm": "通进深", "roofFrame.stepCount": "步架数",
   "documentedDimension.totalWidthMm": "资料记载总尺寸", "documentedDimension.segmentWidthsMm": "资料记载分段尺寸",
   "documentedDimension.measurementMetadataComplete": "测量记录完整性",
@@ -87,6 +88,8 @@ export const FACT_FIELD_LABELS: Record<string, string> = {
   "documentedDimension.centralBayWidthMm": "中间开间宽", "documentedDimension.sideBayWidthMm": "边开间宽", "documentedDimension.totalFrontWidthMm": "正面总宽",
   "documentedDimension.alleywayWidthMm": "巷道宽", "documentedDimension.coveredAlleywayWidthMm": "有盖巷道宽", "documentedDimension.coveredWalkDepthMm": "檐廊进深",
   "documentedDimension.assumedColumnHeightMm": "假定柱高",
+  "documentedDimension.columnHeightMm": "檐柱净高", "documentedDimension.columnSizeMm": "檐柱截面", "documentedDimension.totalDepthMm": "通进深",
+  "documentedDimension.terraceHeightMm": "台明高", "documentedDimension.bracketLayerHeightMm": "斗栱层高",
   "documentedDimension.scaledEaveElevationMm": "檐口标高（图上量取）", "documentedDimension.scaledFloorAboveGradeMm": "首层高出地坪（图上量取）",
   "documentedDimension.scaledSecondFloorElevationMm": "二层楼面标高（图上量取）",
 };

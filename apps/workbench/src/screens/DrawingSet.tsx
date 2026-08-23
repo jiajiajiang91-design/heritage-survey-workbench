@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ArtifactRecord, CheckRun } from "@gujian/domain";
+import type { ArtifactRecord, CheckRun, ReviewSignoff } from "@gujian/domain";
 
 import { cadPhaseLabel } from "../labels";
 import { LongTask } from "../LongTask";
@@ -25,23 +25,26 @@ export interface DrawingSetProps {
   onGenerate: () => void;
   onCancel: () => void;
   onDownload: (artifact: ArtifactRecord) => void;
+  // 有复核签发记录时成果按已签发显示，图面限制与复核类检查结果随之解除（实施单元 09）
+  signoff: ReviewSignoff | null;
 }
 
 const KIND_LABELS: Record<string, string> = { svg: "矢量预览", pdf: "PDF", dxf: "DXF", glb: "GLB", ifc: "IFC", json: "记录", viewGeometry: "视图线稿" };
 
-export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, hasTask, generating, showTask, progressPhase, cancelling, onGenerate, onCancel, onDownload }: DrawingSetProps) {
+export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, hasTask, generating, showTask, progressPhase, cancelling, onGenerate, onCancel, onDownload, signoff }: DrawingSetProps) {
   const drawings = artifacts.filter((artifact) => ["svg", "pdf", "dxf"].includes(artifact.kind));
   const others = artifacts.filter((artifact) => !["svg", "pdf", "dxf"].includes(artifact.kind));
   // 右卡看选中的那份；默认第一张图幅的 SVG（实施单元 09：DXF 与 PDF 都在页内看）
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = drawings.find((item) => item.id === selectedId) ?? drawings.find((item) => item.kind === "svg") ?? drawings[0] ?? null;
   const selectedAsset = useAssetBlob(selected?.assetId ?? null);
+  const liftedBySignoff = (code: string) => Boolean(signoff) && (code === "PROFESSIONAL_REVIEW_REQUIRED" || code === "FORMAL_SIGNOFF_UNAVAILABLE" || (code === "L1_ELIGIBILITY_FALSE" && Boolean(signoff?.l1Eligible)));
   return (
     <div className="sc-sheet">
       <section className="sc-sheet-settings">
         <div className="gj-pane-head">
           <span className="gj-pane-title">成组图纸</span>
-          {artifacts.length > 0 && <QualificationChip />}
+          {artifacts.length > 0 && (signoff ? <Tag tone="success">已签发成果</Tag> : <QualificationChip />)}
         </div>
         {showTask && <LongTask labelZh={`正在生成成组图纸：${cadPhaseLabel(progressPhase)}`} onCancel={onCancel} cancelling={cancelling} />}
         {artifacts.length ? (
@@ -57,14 +60,14 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
         ) : (
           <EmptyState>{hasGeometry ? "还没有图纸。按任务要求出图后，图纸会同时导出 DXF、PDF 和预览图。" : "先生成三维模型，再按任务要求出图。"}</EmptyState>
         )}
-        {artifacts.length > 0 && <DrawingLimitationNote />}
+        {artifacts.length > 0 && !signoff && <DrawingLimitationNote />}
         {latestCheckRun && (
           <div className="sc-sheet-checks">
             <span className="gj-text-label">检查结果</span>
             {latestCheckRun.results.map((item) => (
               <div className="sc-sheet-check" key={item.code}>
-                <Tag tone={item.outcome === "passed" ? "success" : "danger"}>{item.outcome === "passed" ? "通过" : "不通过"}</Tag>
-                <span>{item.message}</span>
+                <Tag tone={item.outcome === "passed" || liftedBySignoff(item.code) ? "success" : "danger"}>{item.outcome === "passed" ? "通过" : liftedBySignoff(item.code) ? "已复核" : "不通过"}</Tag>
+                <span>{liftedBySignoff(item.code) ? `已由${signoff!.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}于 ${signoff!.signedAt.slice(0, 10)} 复核签发。` : item.message}</span>
               </div>
             ))}
           </div>

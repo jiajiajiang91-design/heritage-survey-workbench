@@ -29,21 +29,23 @@ export interface ComponentListProps {
   onOpenInModel: (id: string) => void;
   // 模型服务未配置凭证时在顶部给一条警示（B03），识别不会运行
   modelConfigured: boolean;
+  // 有复核签发记录时，待确认项按复核已接受的建模说明显示（实施单元 09）
+  signedOff: boolean;
 }
 
 export function shortCode(index: number): string {
   return `C-${String(index + 1).padStart(3, "0")}`;
 }
 
-function objectDescription(object: GeometryObject, unknownCount: number): string {
+function objectDescription(object: GeometryObject, unknownCount: number, signedOff: boolean): string {
   const source = object.producer.producerType;
   const head = source === "rule" ? "由形制规则推算" : source === "demo" ? "来自演示数据" : source === "model" ? "由 AI 识别产生" : source === "human" ? "经人工确认" : PRODUCER_LABELS[source] ?? source;
   const evidence = object.evidenceRefs.length ? `，依据 ${object.evidenceRefs.length} 份资料` : "，未引用项目资料";
-  const unknown = unknownCount ? `，${unknownCount} 项待确认` : "";
+  const unknown = unknownCount ? `，${unknownCount} 条${signedOff ? "建模说明" : "待确认"}` : "";
   return `${head}${evidence}${unknown}。`;
 }
 
-export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, selectedObjectId, onSelectObject, onOpenInModel, modelConfigured }: ComponentListProps) {
+export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, selectedObjectId, onSelectObject, onOpenInModel, modelConfigured, signedOff }: ComponentListProps) {
   const [typeFilter, setTypeFilter] = useState("all");
   const [fallbackDismissed, setFallbackDismissed] = useState(false);
   const [limit, setLimit] = useState(PAGE_SIZE);
@@ -93,7 +95,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
                   <span className="gj-list-card-title">{code}</span>
                   <SourceTag producerType={object.producer.producerType} />
                 </div>
-                <span className="gj-list-card-sub">{object.displayNameZh} · 词表 {typeLabel(object.componentType, object.conceptRef)}{object.unknownRefs.length ? ` · ${object.unknownRefs.length} 项待确认` : ""}</span>
+                <span className="gj-list-card-sub">{object.displayNameZh} · 词表 {typeLabel(object.componentType, object.conceptRef)}{object.unknownRefs.length ? ` · ${object.unknownRefs.length} 条${signedOff ? "说明" : "待确认"}` : ""}</span>
               </button>
             ))}
             {visible.length > shown.length && (
@@ -129,7 +131,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
           caption={selected ? (
             <div className="sc-components-caption">
               <strong>{selected.code} · {selected.object.displayNameZh}</strong>
-              <p>{objectDescription(selected.object, selectedUnknowns.length)}{pane.activeEvidenceId ? "" : " 照片原件未随包提供或未选择，无法回溯到图像位置。"}</p>
+              <p>{objectDescription(selected.object, selectedUnknowns.length, signedOff)}{pane.activeEvidenceId ? "" : " 照片原件未随包提供或未选择，无法回溯到图像位置。"}</p>
             </div>
           ) : null}
           detail={(
@@ -139,11 +141,11 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
                   <InfoRow label="编号" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
                   <InfoRow label="构件类型" value={`${typeLabel(selected.object.componentType, selected.object.conceptRef)}（${selected.object.componentType}）`} />
                   {selectedUnknowns.map((unknown) => (
-                    <InfoRow key={unknown.id} label="待确认" value={unknown.description} trailing={<Tag tone={unknown.blocksFormalEligibility ? "danger" : "warning"}>{unknown.blocksFormalEligibility ? "影响正式交付" : "不影响正式交付"}</Tag>} />
+                    <InfoRow key={unknown.id} label={signedOff ? "建模说明" : "待确认"} value={unknown.description} trailing={signedOff ? <Tag tone="success">复核已接受</Tag> : <Tag tone={unknown.blocksFormalEligibility ? "danger" : "warning"}>{unknown.blocksFormalEligibility ? "签发前要处理" : "不影响签发"}</Tag>} />
                   ))}
                 </div>
               )}
-              {!selected && objects.length > 0 && <p className="gj-pane-desc">点击左侧构件，查看编号、依据的资料和待确认项。</p>}
+              {!selected && objects.length > 0 && <p className="gj-pane-desc">点击左侧构件，查看编号、依据的资料和说明。</p>}
               {hint && <p className="gj-alert gj-alert--info">在上方照片上拖出一个框，再在右侧助手里说要改什么，例如：这里漏了一个雀替。</p>}
               <span className="gj-spacer" />
               <div className="gj-actions">

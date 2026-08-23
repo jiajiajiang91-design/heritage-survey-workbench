@@ -85,6 +85,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
 
             {activeStage === "objects" && (
               <ComponentList
+                signedOff={Boolean(dashboard?.signoff)}
                 snapshot={selected.snapshot}
                 objects={geometrySpec?.objects ?? []}
                 unknowns={geometrySpec?.unknowns ?? []}
@@ -124,6 +125,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
 
             {activeStage === "geometry" && (
               <ModelView
+                signedOff={Boolean(dashboard?.signoff)}
                 snapshot={selected.snapshot}
                 geometryRevision={geometryRevision}
                 geometrySpec={geometrySpec}
@@ -150,6 +152,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
 
             {activeStage === "drawings" && (
               <DrawingSet
+                signoff={dashboard?.signoff ?? null}
                 artifacts={drawingArtifacts}
                 previews={drawingPreviewUrls}
                 latestCheckRun={latestCheckRun}

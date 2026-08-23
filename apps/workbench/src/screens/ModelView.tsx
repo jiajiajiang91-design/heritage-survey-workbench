@@ -17,6 +17,8 @@ type Snapshot = ProjectHead["snapshot"];
 type GeometrySpec = Snapshot["geometrySpecs"][number];
 
 export interface ModelViewProps {
+  // 有复核签发记录时，模型上的待确认部位按复核已接受的建模说明显示（实施单元 09）
+  signedOff: boolean;
   snapshot: Snapshot;
   geometryRevision: GeometryRevision | null;
   geometrySpec: GeometrySpec | null;
@@ -29,7 +31,7 @@ export interface ModelViewProps {
   onConfirmGeometryFacts: (event: FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBlob, geometryGate, jobs, typeLabel, selectedObjectId, onSelectObject, onConfirmGeometryFacts }: ModelViewProps) {
+export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBlob, geometryGate, jobs, typeLabel, selectedObjectId, onSelectObject, onConfirmGeometryFacts, signedOff }: ModelViewProps) {
   const [showUnknowns, setShowUnknowns] = useState(false);
   const objects = geometrySpec?.objects ?? [];
   const groups = useMemo(() => {
@@ -80,7 +82,7 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
           <Tag>{objects.length} 个构件</Tag>
           <Tag tone="accent">{geometrySpec?.interfaces.length ?? 0} 个界面</Tag>
           <button type="button" className="sc-model-legend-unknown" onClick={() => setShowUnknowns((value) => !value)} aria-expanded={showUnknowns}>
-            <Tag tone={geometrySpec?.unknowns.length ? "warning" : "neutral"}>{geometrySpec?.unknowns.length ?? 0} 处待确认</Tag>
+            <Tag tone={geometrySpec?.unknowns.length && !signedOff ? "warning" : "neutral"}>{geometrySpec?.unknowns.length ?? 0} {signedOff ? "条建模说明" : "处待确认"}</Tag>
           </button>
           <span className="gj-spacer" />
           {geometryRevision && (
@@ -117,10 +119,10 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
             <InfoRow label="选中构件" value={`${shortCode(selectedIndex)} · ${selected.displayNameZh}`} trailing={<SourceTag producerType={selected.producer.producerType} />} />
             <InfoRow label="编号" value={<span className="gj-numeric">{selected.stableKey}</span>} />
             <InfoRow label="依据的资料" value={`${selected.evidenceRefs.length} 份`} />
-            {selectedUnknowns.map((unknown) => <InfoRow key={unknown.id} label="待确认" value={unknown.description} />)}
+            {selectedUnknowns.map((unknown) => <InfoRow key={unknown.id} label={signedOff ? "建模说明（复核已接受）" : "待确认"} value={unknown.description} />)}
           </div>
         )}
-        {!selected && objects.length > 0 && <p className="gj-pane-desc">点击模型中的构件，查看编号、依据的资料和待确认部位。</p>}
+        {!selected && objects.length > 0 && <p className="gj-pane-desc">点击模型中的构件，查看编号、依据的资料和说明。</p>}
       </section>
     </div>
   );

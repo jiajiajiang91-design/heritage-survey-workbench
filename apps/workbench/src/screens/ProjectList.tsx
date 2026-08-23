@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
 import { ProjectPageFrame } from "../shell/AppShell";
-import { Button, Metric, Tag } from "../ui";
+import { Alert, Button, Metric, Tag } from "../ui";
 import type { ProjectCard } from "../workbench";
 import "./ProjectList.css";
 
@@ -13,6 +13,9 @@ export interface ProjectListProps {
   onCreate: () => void;
   onImport: (file: File) => Promise<void>;
   onClear: () => void;
+  // 本机上的演示项目有新版本时提示（实施单元 09）
+  demoUpdates: readonly { demoId: string; projectName: string }[];
+  onUpdateDemo: () => void;
 }
 
 function coverText(card: ProjectCard): string {
@@ -25,9 +28,10 @@ function coverText(card: ProjectCard): string {
   return card.photoCount ? parts.join("、") : `${parts.join("、")}，无现场照片`;
 }
 
-export function ProjectList({ cards, onOpen, onCreate, onImport, onClear }: ProjectListProps) {
+export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onUpdateDemo }: ProjectListProps) {
   const importInput = useRef<HTMLInputElement>(null);
-  const active = cards.filter((card) => card.status === "active");
+  // 进行中 = 还没签发归档的项目；签发后归入已签发归档一格
+  const active = cards.filter((card) => card.status === "active" && card.signedAt === null);
   const pending = cards.reduce((sum, card) => sum + card.pendingCount, 0);
   const signed = cards.filter((card) => card.signedAt !== null).length;
   const shortNames = active.map((card) => card.buildingName).join("、");
@@ -37,8 +41,14 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear }: Proj
       description="管理单栋建筑任务并进入成果生产链路"
       actions={<Button variant="primary" onClick={onCreate}>新建项目</Button>}
     >
+      {demoUpdates.length > 0 && (
+        <Alert tone="info">
+          演示项目有新版本（{demoUpdates.map((item) => item.projectName).join("、")}）。本机上的是旧数据，更新会清空本机项目后重新装载。
+          <Button variant="text" compact onClick={onUpdateDemo}>更新演示项目</Button>
+        </Alert>
+      )}
       <div className="sc-projects-metrics">
-        <Metric label="进行中" value={active.length} note={shortNames || "还没有项目"} />
+        <Metric label="进行中" value={active.length} note={shortNames || (cards.length ? "全部已归档" : "还没有项目")} />
         <Metric label="待确认" value={pending} note="问题队列待处理项与识别候选" />
         <Metric label="已签发归档" value={signed} note={cards.length ? (signed ? `${signed} 个项目已复核签发` : `${cards.length} 个项目待签发`) : "尚无成果"} />
       </div>

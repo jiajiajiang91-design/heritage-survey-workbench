@@ -3,18 +3,44 @@
   "generatedFrom": "tools/build-demo-packages.mjs",
   "projects": [
     {
+      "demoId": "gaodu-yuhuang-temple-main-hall",
+      "fileName": "gaodu-yuhuang-temple-main-hall.gujian.zip",
+      "projectName": "高都玉皇庙主殿现状测绘归档",
+      "buildingName": "玉皇庙院内主殿",
+      "limitationZh": "演示项目。现场实测记录为演示设定值，与照片比例一致，按一次完整的测绘归档流程组织；不是对高都玉皇庙主殿的实际测绘成果，不得用于修缮设计。",
+      "projectId": "4d89aca9-358b-569a-8fe9-6291fa4c239a",
+      "packageSha256": "5779936851a0052f62d84003a998132b6b16519b2e7c45acc3242ad380251b61",
+      "packageBytes": 11296475,
+      "evidenceCount": 5,
+      "missingEvidenceCount": 0,
+      "factCount": 18,
+      "issueCount": 0,
+      "geometryRevisionCount": 1,
+      "geometryObjectCount": 1186,
+      "artifactCount": 20,
+      "checkRunCount": 1,
+      "deliveryCount": 1,
+      "stagesCompleted": [
+        "任务书、资料与尺寸事实",
+        "三维模型",
+        "成组图纸与检查记录",
+        "代理交付草案",
+        "复核签发与归档"
+      ]
+    },
+    {
       "demoId": "t0b-construction-sample",
       "fileName": "t0b-construction-sample.gujian.zip",
-      "projectName": "团队构造样板演示",
+      "projectName": "清式大木构造样板归档",
       "buildingName": "古建局部构造样板",
-      "limitationZh": "参数化构造样板，不是任何一座真实建筑的实测结果，尺寸不得用于修缮设计。",
+      "limitationZh": "团队自建的参数化构造样板，不是任何一座真实建筑的实测结果，尺寸不得用于修缮设计。它演示构件级构造深度的完整归档流程。",
       "projectId": "6fb40a60-0d60-56ca-89ea-d155880af509",
-      "packageSha256": "4b86609386c69c21e2dbcb2f9d9ea2199e37e38434a97150ccc373ad4eb63d7a",
-      "packageBytes": 30419021,
+      "packageSha256": "688251ce07f074ddf4326381e284cc6ebffdc77981e9c07ea0b91d51fa8d296d",
+      "packageBytes": 30432846,
       "evidenceCount": 2,
       "missingEvidenceCount": 0,
       "factCount": 45,
-      "issueCount": 2,
+      "issueCount": 0,
       "geometryRevisionCount": 1,
       "geometryObjectCount": 1258,
       "artifactCount": 24,
@@ -24,7 +50,8 @@
         "任务书、资料与尺寸事实",
         "三维模型",
         "成组图纸与检查记录",
-        "代理交付草案"
+        "代理交付草案",
+        "复核签发与归档"
       ]
     },
     {
@@ -32,14 +59,14 @@
       "fileName": "dai-loy-habs-ca-2071-w.gujian.zip",
       "projectName": "Dai Loy 赌馆博物馆测绘归档",
       "buildingName": "Dai Loy 主楼",
-      "limitationZh": "美国华人木构，不代表中国官式古建形制。它验证工程流程与制图质量，不证明中国古建构件识别能力。",
+      "limitationZh": "流程验证样本。美国华人木构，不代表中国官式古建形制；现场补测记录为演示设定值，与 HABS 图纸标注一致。它验证工程流程与制图质量，不证明中国古建构件识别能力。",
       "projectId": "a1548db4-cfa6-5dff-9f71-e020d4487e59",
-      "packageSha256": "c6668f6d0d78279eaf2244c98559b0d38bf638c41664a0bcc7bef27264882a0b",
-      "packageBytes": 2164133,
+      "packageSha256": "0812e6ea93feabf0b18ed0130661955cd95a8adee451afde568c99c755012c28",
+      "packageBytes": 2156664,
       "evidenceCount": 7,
-      "missingEvidenceCount": 1,
+      "missingEvidenceCount": 0,
       "factCount": 12,
-      "issueCount": 7,
+      "issueCount": 0,
       "geometryRevisionCount": 1,
       "geometryObjectCount": 75,
       "artifactCount": 22,
@@ -49,32 +76,8 @@
         "任务书、资料与尺寸事实",
         "三维模型",
         "成组图纸与检查记录",
-        "代理交付草案"
-      ]
-    },
-    {
-      "demoId": "gaodu-yuhuang-temple-main-hall",
-      "fileName": "gaodu-yuhuang-temple-main-hall.gujian.zip",
-      "projectName": "高都玉皇庙主殿现状记录",
-      "buildingName": "玉皇庙院内主殿",
-      "limitationZh": "全部尺寸由照片比例推算，无实测基准。成果只能作为草图参考，不能作为测绘成果使用。",
-      "projectId": "4d89aca9-358b-569a-8fe9-6291fa4c239a",
-      "packageSha256": "44f87356f27c622bee1aa622754111dcd67735ee194043f2fc7f052de3864468",
-      "packageBytes": 3561849,
-      "evidenceCount": 3,
-      "missingEvidenceCount": 2,
-      "factCount": 10,
-      "issueCount": 4,
-      "geometryRevisionCount": 1,
-      "geometryObjectCount": 1131,
-      "artifactCount": 20,
-      "checkRunCount": 1,
-      "deliveryCount": 1,
-      "stagesCompleted": [
-        "任务书、资料与尺寸事实",
-        "三维模型",
-        "成组图纸与检查记录",
-        "代理交付草案"
+        "代理交付草案",
+        "复核签发与归档"
       ]
     }
   ]

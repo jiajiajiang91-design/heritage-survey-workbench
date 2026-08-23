@@ -11,9 +11,11 @@ import "./FileViewer.css";
 // DWG 是闭源格式，页内看不了，给下载与说明。缩放与平移由查看器自己管。
 
 // pdf.js 按需加载：它在模块顶层就要用 DOMMatrix，测试环境（jsdom）没有；也让主包不带它
+// worker、wasm 解码器（JBIG2、JPX）、标准字体与字符映射由 sync-pdfjs-assets.mjs 复制到 public/pdfjs，同源加载
+const PDFJS_ASSETS = "/pdfjs/";
 async function loadPdfJs() {
   const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+  pdfjs.GlobalWorkerOptions.workerSrc = `${PDFJS_ASSETS}pdf.worker.min.mjs`;
   return pdfjs;
 }
 
@@ -21,10 +23,11 @@ export type ViewerKind = "image" | "svg" | "pdf" | "dxf" | "glb" | "unsupported"
 
 export function viewerKindOf(mimeType: string, fileName: string): ViewerKind {
   const extension = fileName.toLowerCase().split(".").pop() ?? "";
+  // DXF 的 MIME 常写成 image/vnd.dxf，要先于图片判断
+  if (extension === "dxf" || mimeType === "image/vnd.dxf" || mimeType === "application/dxf") return "dxf";
   if (mimeType === "image/svg+xml" || extension === "svg") return "svg";
   if (mimeType.startsWith("image/")) return "image";
   if (mimeType === "application/pdf" || extension === "pdf") return "pdf";
-  if (extension === "dxf" || mimeType === "image/vnd.dxf" || mimeType === "application/dxf") return "dxf";
   if (extension === "glb" || mimeType === "model/gltf-binary") return "glb";
   return "unsupported";
 }
@@ -124,7 +127,14 @@ function PdfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties }) {
   useEffect(() => {
     let cancelled = false;
     setDocument(null); setPage(1); setError(null);
-    Promise.all([loadPdfJs(), blob.arrayBuffer()]).then(([pdfjs, buffer]) => pdfjs.getDocument({ data: new Uint8Array(buffer) }).promise)
+    Promise.all([loadPdfJs(), blob.arrayBuffer()]).then(([pdfjs, buffer]) => pdfjs.getDocument({
+      data: new Uint8Array(buffer),
+      // 扫描件的 JBIG2、JPX 图像靠 wasm 解码器，路径指到同源资源，否则整页空白
+      wasmUrl: `${PDFJS_ASSETS}wasm/`,
+      standardFontDataUrl: `${PDFJS_ASSETS}standard_fonts/`,
+      cMapUrl: `${PDFJS_ASSETS}cmaps/`,
+      cMapPacked: true,
+    }).promise)
       .then((loaded) => { if (!cancelled) setDocument(loaded); else void loaded.destroy(); })
       .catch((reason: unknown) => { if (!cancelled) setError(reason instanceof Error ? reason.message : "PDF 无法读取"); });
     return () => { cancelled = true; };
@@ -132,8 +142,11 @@ function PdfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties }) {
   useEffect(() => {
     if (!document || !canvasRef.current) return;
     let cancelled = false;
+    // 渲染任务要能取消：开发模式下 effect 会连跑两次，前一次不取消就会和后一次抢同一块画布，
+    // 后一次改画布尺寸又会把前一次画好的清掉
+    let task: { cancel: () => void } | null = null;
     const canvas = canvasRef.current;
-    document.getPage(page).then(async (pdfPage) => {
+    document.getPage(page).then((pdfPage) => {
       if (cancelled) return;
       // 按 2 倍像素渲染，放大后仍清楚
       const viewport = pdfPage.getViewport({ scale: 2 });
@@ -141,9 +154,13 @@ function PdfPane({ blob, style }: { blob: Blob; style?: React.CSSProperties }) {
       canvas.style.width = `${viewport.width / 2}px`; canvas.style.height = `${viewport.height / 2}px`;
       const context = canvas.getContext("2d");
       if (!context) return;
-      await pdfPage.render({ canvasContext: context, viewport, canvas }).promise;
-    }).catch(() => { /* 页面切换中途取消 */ });
-    return () => { cancelled = true; };
+      task = pdfPage.render({ canvasContext: context, viewport, canvas });
+      return (task as unknown as { promise: Promise<void> }).promise.then(() => { if (!cancelled) canvas.dataset.rendered = String(page); });
+    }).catch((reason: unknown) => {
+      // 页面切换中途取消是正常的；其余原因记到控制台，不弹给用户
+      if (!cancelled) console.warn("PDF 渲染失败", reason);
+    });
+    return () => { cancelled = true; task?.cancel(); };
   }, [document, page]);
   if (error) return <div className="gj-viewer gj-viewer--empty" style={style}><span>PDF 无法读取：{error}</span></div>;
   const pages = document?.numPages ?? 0;

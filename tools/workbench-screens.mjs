@@ -81,7 +81,7 @@ await sleep(800);
 await shot("P01_项目列表");
 
 // 进入 Dai Loy（第二张卡）
-await evaluate(`(() => { const cards = [...document.querySelectorAll("article.sc-project")]; const card = cards.find((c) => c.textContent.includes("Dai Loy")) ?? cards[0]; const btn = [...card.querySelectorAll("button")].find((b) => b.textContent.includes("进入")); btn.click(); return true; })()`);
+await evaluate(`(() => { const cards = [...document.querySelectorAll("article.sc-project")]; const card = cards.find((c) => c.textContent.includes("高都")) ?? cards[0]; const btn = [...card.querySelectorAll("button")].find((b) => b.textContent.includes("进入")); btn.click(); return true; })()`);
 await waitFor(`!!document.querySelector(".ws-stage-nav")`);
 await sleep(600);
 
@@ -105,7 +105,7 @@ for (const [stage, tab, name] of views) {
   await sleep(500);
   await shot(name);
   if (name === "W09_检查与资格") {
-    if (await click("查看资格限制")) { await sleep(300); await shot("W09A_资格与限制"); await click("收起资格限制"); }
+    if (await click("查看使用限制")) { await sleep(300); await shot("W09A_资格与限制"); await click("收起使用限制"); }
   }
 }
 // 项目级页面

@@ -15,7 +15,7 @@ import {
   buildArtifactSetView, buildHumanInterventionView, buildModelRunCostView, buildProjectDashboardSummary,
 } from "../query-models";
 import {
-  createLocalProject, deliveries, listLocalProjects, listProjectCards, localActorId, projectPackages, projectRepository, workflow,
+  checkDemoLibraryUpdates, createLocalProject, deliveries, listLocalProjects, listProjectCards, localActorId, projectPackages, projectRepository, workflow,
   type ProjectCard,
 } from "../workbench";
 import type { Notices } from "./useNotices";
@@ -128,6 +128,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
       .then(showBootstrapResult)
       .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")));
     void refreshServerStatus();
+    void refreshDemoUpdates();
   }, []);
 
   const chooseProject = async (projectId: string) => {
@@ -168,6 +169,22 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
       setError(describeFailure(reason, "项目包导入失败"));
       return false;
     }
+  };
+
+  // 演示包有新版本时，列表页提示；更新等于清空本机项目后重新装载（实施单元 09）
+  const [demoUpdates, setDemoUpdates] = useState<readonly { demoId: string; projectName: string }[]>([]);
+  const refreshDemoUpdates = () => checkDemoLibraryUpdates().then(setDemoUpdates).catch(() => setDemoUpdates([]));
+  const updateDemoLibrary = async () => {
+    if (!window.confirm("更新演示项目会清空本机全部项目后重新装载。请先导出需要保留的项目包。")) return;
+    await projectRepository.clearAllData();
+    setSelected(null);
+    setProjectModelRuns([]); setProjectRuleRuns([]); setProjectDecisions([]);
+    setProjectArtifacts([]); setProjectCheckRuns([]); setProjectDeliveries([]);
+    await refresh();
+    const result = await bootstrapDemo();
+    await showBootstrapResult(result);
+    await refresh();
+    setDemoUpdates([]);
   };
 
   const clearLibrary = async () => {
@@ -289,6 +306,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     projectArtifacts, projectCheckRuns, projectDeliveryEvaluations, projectDeliveries,
     projectArchetypes, changeHistory, serverStatus, refreshServerStatus,
     refresh, loadProject, chooseProject, exitToProjectList, createProject, importProject, clearLibrary,
+    demoUpdates, updateDemoLibrary,
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues,
     geometryRevision, geometrySpec, latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery,
     geometryGate, dashboard, artifactSetView, modelCostView, humanInterventions, deliveryBlockers,

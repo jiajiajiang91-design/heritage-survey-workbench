@@ -73,3 +73,6 @@ desktop.ini
 文档/05_验证证据/04_T0_CAD可行性与资产保全/*preview*.png
 文档/05_验证证据/04_T0_CAD可行性与资产保全/t0b-v3-outputs/previews/*.png
 文档/05_验证证据/04_T0_CAD可行性与资产保全/t0b-v2-outputs/geometry-manifest.json
+
+# pdf.js 的 worker、wasm、字体与字符映射由 apps/workbench/sync-pdfjs-assets.mjs 从依赖复制，不进仓库
+apps/workbench/public/pdfjs/

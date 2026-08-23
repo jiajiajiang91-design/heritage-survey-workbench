@@ -70,14 +70,24 @@ function needsConfirmation(action: ActionDefinition, args: unknown): boolean {
   return true;
 }
 
+// 回答用词按界面用语表（01_产品/03_界面与交互形态.md 表 13）：不用内部词，不用 Markdown，不出现英文标识
+const WORDING_RULES = [
+  "用中文回答，不用 Markdown 标记（不要星号、井号、列表符号），不出现英文标识或代码。",
+  "不要用阻断、证据、代理成果、稳定键、环节、几何这类内部词；说资料、不通过的项、待签发成果、编号、这一步、模型。",
+  "回答要短：先给结论，再给依据；现状里没有的数字、日期、名称一律不要编。",
+];
+
 function systemPrompt(snapshot: WorkspaceSnapshot): string {
   return [
     "你是古建测绘工作台的操作助手。根据用户这句话，从提供的动作中选择一个调用；",
-    "只在没有任何动作匹配、纯属提问或闲聊时用文字回答。",
+    "用户是在提问时（问几份、哪张、是什么、为什么、下一步该做什么、能不能），一律选 answer_question 回答，不要替他切换视图或推进流程；",
+    "只有用户明确要求去做、打开、切到、生成、导出、继续时才选对应的动作。",
+    "没有任何动作匹配或闲聊时用文字回答，文字回答只依据下面的项目现状。",
     "不要虚构动作参数；用户没说清楚的参数宁可省略让校验提示。",
-    `当前工作区：环节 ${snapshot.currentStage ?? "未知"}，` +
-    `停靠事项 ${snapshot.openDockItems ?? "未知"} 项，构件 ${snapshot.componentCount ?? "未知"} 个，` +
-    `几何版本${snapshot.hasGeometryRevision ? "已有" : "没有"}，图纸${snapshot.hasDrawings ? "已有" : "没有"}。`,
+    ...WORDING_RULES,
+    "",
+    "项目现状：",
+    snapshot.contextZh ?? `当前这一步 ${snapshot.currentStage ?? "未知"}，待处理 ${snapshot.openDockItems ?? "未知"} 项，构件 ${snapshot.componentCount ?? "未知"} 个，模型${snapshot.hasGeometryRevision ? "已有" : "没有"}，图纸${snapshot.hasDrawings ? "已有" : "没有"}。`,
     // 模型必须知道有没有框选，否则只能靠用户措辞猜。实测里用户说框住的这块砖
     // 有裂缝，模型答消息中没有包含框选位置信息，就是因为提示里从没提过这件事。
     // 坐标仍然不给模型：模型看不到那张照片，给了也只能编。位置由客户端选区
@@ -94,9 +104,8 @@ function systemPrompt(snapshot: WorkspaceSnapshot): string {
 function answerPrompt(snapshot: WorkspaceSnapshot): string {
   return [
     "你是古建测绘工作台的助手，用中文回答用户关于当前项目的问题。",
-    "只依据下面的项目现状回答；现状里没有的数字、日期、名称一律不要编，说明现状里没有记录即可。",
-    "回答要短：先给结论，再给依据，不超过一百五十字，不用标题和列表符号。",
-    "不要用阻断、证据、代理成果、稳定键这类内部词；说资料、不通过的项、待签发成果、编号。",
+    "只依据下面的项目现状回答；现状里没有的，说明现状里没有记录即可。不超过一百五十字。",
+    ...WORDING_RULES,
     "",
     "项目现状：",
     snapshot.contextZh ?? "（客户端没有提供项目现状）",
@@ -107,9 +116,10 @@ function answerPrompt(snapshot: WorkspaceSnapshot): string {
 function suggestionPrompt(snapshot: WorkspaceSnapshot): string {
   return [
     "你是古建测绘工作台的助手。根据项目现状，为用户在当前这一步给一条建议。",
-    "只依据下面的项目现状；现状里没有的数字、日期、名称一律不要编。",
+    "只依据下面的项目现状；现状里没有的数字、日期、名称一律不要编，也不要把成果数、资料数当成检查数。",
+    "项目已经复核签发归档时，建议要说明这一步已经完成，用户可以查看、核对或导出，不要再建议整改。",
     "输出 JSON 对象，两个字段：suggestion（建议正文，中文，不超过八十字，先说现状再说下一步）、basis（依据，中文，不超过三十字，写依据的是哪些资料或记录）。",
-    "不要用阻断、证据、代理成果、稳定键这类内部词；说资料、不通过的项、待签发成果、编号。",
+    ...WORDING_RULES,
     "",
     `当前这一步：${snapshot.currentStage ?? "未知"}`,
     "项目现状：",

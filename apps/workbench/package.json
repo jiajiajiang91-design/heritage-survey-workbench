@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -b && vite build",
-    "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "build": "node sync-pdfjs-assets.mjs && tsc -b && vite build",
+    "dev": "node sync-pdfjs-assets.mjs && vite --host 127.0.0.1 --port 5173 --strictPort",
     "start": "vite preview --host 127.0.0.1 --port 5173 --strictPort",
     "test": "vitest run",
     "typecheck": "tsc -b --pretty false"

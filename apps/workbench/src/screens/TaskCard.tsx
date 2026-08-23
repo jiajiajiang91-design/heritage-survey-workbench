@@ -159,9 +159,13 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
             <li>{regulations.length ? `适用规范 ${regulations.length} 项` : "适用规范未填写"}</li>
           </ul>
           <p className="sc-task-scope-note">
-            {measuredRecordCount
-              ? `本项目有 ${measuredRecordCount} 条完整的现场实测记录。`
-              : "本项目无现场实测记录，尺寸来自资料转写或形制推算。"}
+            {(() => {
+              // 现场实测记录可能是动作层写的逐条记录，也可能是随包入库的实测记录表（资料类型为测量记录）
+              const surveyRecords = snapshot.evidences.filter((item) => item.evidenceType === "measurementRecord" && item.dataStatus === "available");
+              if (measuredRecordCount) return `本项目有 ${measuredRecordCount} 条完整的现场实测记录。`;
+              if (surveyRecords.length) return `尺寸来自现场实测记录：${surveyRecords.map((item) => item.title).join("、")}。`;
+              return "本项目无现场实测记录，尺寸来自资料转写或形制推算。";
+            })()}
             {qualificationLabel ? `成果状态：${qualificationLabel}。` : ""}
           </p>
         </section>

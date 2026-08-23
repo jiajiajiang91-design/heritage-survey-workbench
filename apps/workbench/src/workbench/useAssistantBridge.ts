@@ -43,7 +43,9 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
     const openIssueLines = openIssues.slice(0, 6).map((item) => item.description.slice(0, 60));
     const views = task?.artifactRequirements?.views.map((view) => `${view.displayLabelZh} 1:${view.scaleDenominator}`) ?? [];
     const check = session.latestCheckRun;
-    const blocked = check ? check.results.filter((item) => item.outcome !== "passed").length : 0;
+    // 签发后，检查里要求专业复核一类的结果已由签发记录解除，不再算不通过
+    const liftedCodes = new Set(signoff ? ["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", ...(signoff.l1Eligible ? ["L1_ELIGIBILITY_FALSE"] : [])] : []);
+    const blocked = check ? check.results.filter((item) => item.outcome !== "passed" && !liftedCodes.has(item.code)).length : 0;
     return [
       `项目：${snapshot.project.name}；建筑：${snapshot.buildings[0]?.name ?? "未登记"}；地点：${snapshot.project.locationText ?? "未登记"}。`,
       `当前这一步：${stageLabel(nav.activeStage)}。`,
@@ -52,8 +54,8 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
       `未关闭的问题 ${openIssues.length} 条${openIssueLines.length ? `：${openIssueLines.join("；")}` : ""}。`,
       `三维模型：${geometry ? `已生成，构件 ${geometrySpec?.objects.length ?? 0} 个，待确认部位 ${geometrySpec?.unknowns.length ?? 0} 处` : "未生成"}。`,
       `成果要求：${views.length ? views.join("、") : "未确认"}；成果文件 ${session.projectArtifacts.length} 项。`,
-      `检查：${check ? `已检查 ${check.results.length} 项，不通过 ${blocked} 项` : "未检查"}。`,
-      `签发：${signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}已于 ${signoff.signedAt.slice(0, 10)} 复核签发，可正式交付` : session.projectDeliveries.length ? "有归档草案，未签发" : "无归档草案"}。`,
+      `检查：${check ? (blocked ? `已检查 ${check.results.length} 项，${blocked} 项不通过` : `已检查 ${check.results.length} 项，全部通过`) : "未检查"}。`,
+      `签发与归档：${signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}已于 ${signoff.signedAt.slice(0, 10)} 复核签发，成果可正式交付，归档已完成；复核意见：${signoff.statementZh}` : session.projectDeliveries.length ? "有归档草案，未签发" : "无归档草案"}。`,
     ].join("\n");
   })();
 

@@ -39,6 +39,28 @@ async function fetchManifest(base: string): Promise<DemoLibraryManifest | null> 
 // 会在写入时撞键，表现为一半成功一半报错。
 let inFlight: Promise<DemoLoadResult> | null = null;
 
+// 装载过的演示包校验和记在本机（实施单元 09）。清单里的校验和变了，说明演示包有新版本，
+// 本机上的是旧数据；旧项目不静默覆盖，由列表页提示后用户决定更新。
+const LOADED_KEY = "gujian-demo-library-loaded";
+function readLoaded(): Record<string, string> {
+  try { return JSON.parse(globalThis.localStorage?.getItem(LOADED_KEY) ?? "{}") as Record<string, string>; } catch { return {}; }
+}
+function rememberLoaded(demoId: string, sha: string): void {
+  try { globalThis.localStorage?.setItem(LOADED_KEY, JSON.stringify({ ...readLoaded(), [demoId]: sha })); } catch { /* 无本机存储时不记 */ }
+}
+
+export interface DemoLibraryUpdate { readonly demoId: string; readonly projectName: string }
+
+// 本机已装载的演示项目里，哪些的包已经有新版本
+export async function listDemoLibraryUpdates(input: { existingProjectIds: ReadonlySet<string>; baseUrl?: string }): Promise<DemoLibraryUpdate[]> {
+  const manifest = await fetchManifest(input.baseUrl ?? "/").catch(() => null);
+  if (!manifest) return [];
+  const loaded = readLoaded();
+  return manifest.projects
+    .filter((entry) => input.existingProjectIds.has(entry.projectId) && loaded[entry.demoId] !== entry.packageSha256)
+    .map((entry) => ({ demoId: entry.demoId, projectName: entry.projectName }));
+}
+
 // 已存在的项目不重复导入，也不覆盖：用户在演示项目上做过的操作要保留。
 export function loadDemoLibrary(input: {
   packages: ProjectPackageService;
@@ -73,6 +95,7 @@ async function runLoad(input: {
       if (!response.ok) throw new Error("DEMO_PACKAGE_DOWNLOAD_FAILED");
       const bytes = new Uint8Array(await response.arrayBuffer());
       await input.packages.import(bytes, entry.fileName, input.actorId);
+      rememberLoaded(entry.demoId, entry.packageSha256);
       loaded.push(entry.demoId);
     } catch (reason) {
       failed.push({ demoId: entry.demoId, reason });

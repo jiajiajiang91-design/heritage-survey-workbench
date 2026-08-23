@@ -57,7 +57,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
     ["检查", `${checkRuns.length} 次，${checkResults} 条结果`],
     ["评估结果", signoff ? "可正式交付" : latestDelivery ? "可作为待签发成果" : deliveryBlockers.length ? "暂不能归档" : "尚未评估"],
     ["签发状态", signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"} ${signoff.signedAt.slice(0, 10)} 签发` : latestDelivery ? "未签发" : "尚无草案"],
-    ["限制条款", latestDelivery ? `${latestDelivery.restrictions.length} 条` : "尚无"],
+    [signoff ? "签发前的限制条款" : "限制条款", latestDelivery ? `${latestDelivery.restrictions.length} 条${signoff ? "，签发后以复核意见为准" : ""}` : "尚无"],
     ["责任人", roles.length ? roles.join("、") : "未登记"],
   ];
 
@@ -103,7 +103,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
         </div>
         {showRestrictions && latestDelivery && (
           <div className="gj-card gj-card--compact">
-            <span className="gj-text-label">限制条款 {latestDelivery.restrictions.length} 条</span>
+            <span className="gj-text-label">{signoff ? "签发前的限制条款" : "限制条款"} {latestDelivery.restrictions.length} 条</span>
             <ol className="sc-delivery-restrictions">{latestDelivery.restrictions.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ol>
           </div>
         )}

@@ -4,7 +4,7 @@ import {
   IndexedDbProjectRepository, LocalAuthorization, ProjectPackageService, WorkflowService,
 } from "@gujian/infrastructure";
 
-import { loadDemoLibrary, type DemoLoadResult } from "./demo-library-loader";
+import { listDemoLibraryUpdates, loadDemoLibrary, type DemoLibraryUpdate, type DemoLoadResult } from "./demo-library-loader";
 import { ModelRunClient } from "./model-run-client";
 
 export const projectRepository = new IndexedDbProjectRepository();
@@ -83,6 +83,13 @@ export async function bootstrapDemoProjects(): Promise<DemoLoadResult | null> {
     existingProjectIds: new Set(existing.map((item) => item.projectId)),
     actorId: localActorId(),
   });
+}
+
+// 本机上的演示项目有没有新版本的包（实施单元 09）。有就由列表页提示，用户点更新后清空重装。
+export async function checkDemoLibraryUpdates(): Promise<DemoLibraryUpdate[]> {
+  const existing = await listLocalProjects();
+  if (!existing.length) return [];
+  return listDemoLibraryUpdates({ existingProjectIds: new Set(existing.map((item) => item.projectId)) });
 }
 
 // 项目列表页的卡片数据。项目摘要只有名称与状态，卡片要的计数与范围在快照里，

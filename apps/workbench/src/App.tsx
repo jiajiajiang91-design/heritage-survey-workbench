@@ -79,6 +79,8 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           onCreate={() => setShowCreate(true)}
           onImport={importProject}
           onClear={() => void clearLibrary()}
+          demoUpdates={session.demoUpdates}
+          onUpdateDemo={() => void session.updateDemoLibrary()}
         />
       ) : onProjectPage ? (
         <ProjectPage wb={wb} selected={selected} />

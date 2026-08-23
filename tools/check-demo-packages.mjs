@@ -59,6 +59,17 @@ for (const name of NAMES) {
     }
   }
 
+  // 四、实施单元 09 起三个演示项目演示的是归档完成的项目：资料无缺失、问题为零、模型无待确认部位、
+  //     交付草案带正式环境的复核签发记录。缺任何一项即为演示不成立。
+  const missingEvidence = snapshot.evidences.filter((item) => item.dataStatus !== "available").length;
+  if (missingEvidence) say(`有 ${missingEvidence} 份资料缺原件，演示项目应资料齐全`);
+  if (openIssues.length) say(`有 ${openIssues.length} 条未关闭的问题，演示项目应全部关闭`);
+  const latestSpec = snapshot.geometrySpecs?.at?.(-1);
+  const signoff = (snapshot.reviewSignoffs ?? []).at?.(-1);
+  if (!signoff) say("没有复核签发记录，演示项目应演示归档完成");
+  else if (signoff.issuingEnvironment !== "formal") say("复核签发记录不是正式环境签发的");
+  if (latestSpec && latestSpec.unknowns.length && !signoff) say(`模型有 ${latestSpec.unknowns.length} 处待确认部位且无复核签发`);
+
   // 三、清单计数与包内记录要对得上
   const expected = manifestById.get(name);
   if (!expected) {
@@ -90,6 +101,8 @@ for (const name of NAMES) {
     回执: receipts.length,
     未解决问题: openIssues.length,
     阻断码: evaluation?.blockerCodes.length ?? 0,
+    待确认部位: latestSpec?.unknowns.length ?? 0,
+    签发: signoff ? signoff.signedAt.slice(0, 10) : "无",
     成果: (data.artifacts ?? []).length,
     限制条款: draft?.restrictions?.length ?? 0,
   });
@@ -97,7 +110,7 @@ for (const name of NAMES) {
 
 const width = (text) => [...String(text)].reduce((n, c) => n + (c.charCodeAt(0) > 127 ? 2 : 1), 0);
 const pad = (text, size) => String(text) + " ".repeat(Math.max(0, size - width(text)));
-const columns = ["name", "审计", "回执", "未解决问题", "阻断码", "成果", "限制条款"];
+const columns = ["name", "审计", "回执", "未解决问题", "阻断码", "待确认部位", "签发", "成果", "限制条款"];
 console.log(columns.map((c) => pad(c === "name" ? "项目" : c, c === "name" ? 34 : 12)).join(""));
 for (const row of rows) {
   console.log(columns.map((c) => pad(row[c], c === "name" ? 34 : 12)).join(""));
