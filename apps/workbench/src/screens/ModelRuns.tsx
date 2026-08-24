@@ -2,7 +2,7 @@ import type { ProjectHead } from "@gujian/application";
 import type { ModelRun } from "@gujian/domain";
 
 import { REVIEW_LABELS } from "../labels";
-import { formatCost } from "../model-pricing";
+import { estimateRunCost, formatCost } from "../model-pricing";
 import type { ModelRunCostView } from "../query-models";
 import { ProjectPageFrame } from "../shell/AppShell";
 import { Alert, Button, EmptyState, Metric, SourceTag, Tag } from "../ui";
@@ -15,8 +15,8 @@ type Candidate = ProjectHead["snapshot"]["candidates"][number];
 export interface ModelRunsProps {
   runs: readonly ModelRun[];
   costView: ModelRunCostView;
-  // 服务器侧今日的助手调用数（对话与建议不在项目里留运行记录，靠它对账）
-  assistantUsage: { day: string; totals: { assistant: number; suggest: number; jobs: number } } | null;
+  // 服务器侧今日的助手调用数与 token 用量（对话与建议不在项目里留运行记录，靠它对账）
+  assistantUsage: { day: string; totals: { assistant: number; suggest: number; jobs: number }; tokens: { promptTokens: number; completionTokens: number; cachedTokens: number; totalTokens: number } } | null;
   candidates: readonly Candidate[];
   exclusionCount: number;
   serverModel: string | null;
@@ -59,6 +59,21 @@ export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusio
   for (const run of runs) byTask.set(run.taskType, (byTask.get(run.taskType) ?? 0) + 1);
   const priced = costView.rows.filter((row) => row.cost).length;
   const recognitionTokens = runs.filter((run) => run.taskType === "component-recognition").reduce((sum, run) => sum + (run.usage?.totalTokens ?? 0), 0);
+  // 三张大卡合并两路数：本机项目内的识别转写运行 + 服务器侧今日的助手调用。
+  // 只显示本机会让页面在助手真调用之后仍是一排 0，被读成模型没接上（线上实测两次）
+  const serverCalls = assistantUsage ? assistantUsage.totals.assistant + assistantUsage.totals.suggest : 0;
+  const serverTokens = assistantUsage?.tokens.totalTokens ?? 0;
+  const serverCost = assistantUsage && serverTokens > 0
+    ? estimateRunCost({
+      provider: "moonshot", model: serverModel ?? "kimi-k2.6",
+      promptTokens: assistantUsage.tokens.promptTokens,
+      completionTokens: assistantUsage.tokens.completionTokens,
+      cachedTokens: assistantUsage.tokens.cachedTokens,
+    })
+    : null;
+  const combinedCost = serverCost && costView.totalCost
+    ? { ...costView.totalCost, amount: costView.totalCost.amount + serverCost.amount }
+    : serverCost ?? costView.totalCost;
   return (
     <ProjectPageFrame
       title="模型运行与用量"
@@ -68,9 +83,17 @@ export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusio
     >
       {!modelConfigured && <Alert tone="warning">服务端尚未配置模型密钥，真实运行按钮已锁定。配置 KIMI_API_KEY 后刷新状态。</Alert>}
       <div className="sc-runs-metrics">
-        <Metric label="真实调用" value={`${runs.length} 次`} note={[...byTask.entries()].map(([task, count]) => `${TASK_ZH[task] ?? task} ${count} 次`).join(" · ") || "尚未运行"} />
-        <Metric label="累计用量" value={tokenLabel(costView.totalTokens)} note={recognitionTokens ? `其中构件识别 ${recognitionTokens} token` : "按服务端返回的用量累计"} />
-        <Metric label="费用合计" value={costView.totalCost ? formatCost(costView.totalCost) : "暂无法计算"} note={costView.totalCost ? `表内 ${priced} 次算得${priced < runs.length ? `，其余 ${runs.length - priced} 次未留用量或无单价` : ""}` : "没有可计价的运行"} />
+        <Metric label="真实调用" value={`${runs.length + serverCalls} 次`} note={[
+          serverCalls ? `助手对话与建议 ${serverCalls} 次（今日）` : "",
+          [...byTask.entries()].map(([task, count]) => `${TASK_ZH[task] ?? task} ${count} 次`).join(" · "),
+        ].filter(Boolean).join(" · ") || "尚未运行"} />
+        <Metric label="累计用量" value={tokenLabel(costView.totalTokens + serverTokens)} note={[
+          serverTokens ? `助手今日 ${serverTokens} token` : "",
+          recognitionTokens ? `构件识别 ${recognitionTokens} token` : "",
+        ].filter(Boolean).join(" · ") || "按服务端返回的用量累计"} />
+        <Metric label="费用合计" value={combinedCost ? formatCost(combinedCost) : "暂无法计算"} note={combinedCost
+          ? `${serverCost ? "含助手今日调用；" : ""}表内 ${priced} 次算得${priced < runs.length ? `，其余 ${runs.length - priced} 次未留用量或无单价` : ""}`
+          : "没有可计价的运行"} />
       </div>
       <section className="sc-runs-table">
         <div className="sc-runs-head"><span>运行内容</span><span>发起时间</span><span>耗时</span><span>用量与费用</span><span>结果</span></div>
@@ -87,7 +110,7 @@ export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusio
               <span><Tag tone={status.tone}>{(row?.attempts ?? 1) > 1 && run.status === "succeeded" ? "重试后完成" : status.label}</Tag></span>
             </div>
           );
-        }) : <EmptyState>还没有真实调用。识别与转写在资料清单发起，结果回到这里的待确认区。</EmptyState>}
+        }) : <EmptyState>本机还没有识别与转写运行。它们在资料清单发起，结果回到这里的待确认区；助手的对话与建议计在上方的今日调用里。</EmptyState>}
         {runs.length > 0 && <p className="gj-note">费用按用量与公开单价算得，仅供参考，以服务商账单为准。</p>}
       </section>
       <section className="sc-runs-candidates">

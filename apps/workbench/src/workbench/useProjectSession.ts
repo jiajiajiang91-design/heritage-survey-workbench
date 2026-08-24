@@ -31,6 +31,7 @@ export interface ServerStatus {
 export interface AssistantUsage {
   day: string;
   totals: { assistant: number; suggest: number; jobs: number };
+  tokens: { promptTokens: number; completionTokens: number; cachedTokens: number; totalTokens: number };
 }
 
 export interface CreateProjectValues {

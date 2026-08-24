@@ -172,8 +172,8 @@ export interface ModelGateway {
     tools: Array<{ name: string; description: string; parameters: Record<string, unknown> }>;
     signal: AbortSignal;
   }): Promise<
-    | { kind: "tool_call"; name: string; argumentsJson: string; raw: string }
-    | { kind: "text"; content: string; raw: string }
+    | { kind: "tool_call"; name: string; argumentsJson: string; raw: string; usage?: { promptTokens: number; completionTokens: number; totalTokens: number; cachedTokens: number } }
+    | { kind: "text"; content: string; raw: string; usage?: { promptTokens: number; completionTokens: number; totalTokens: number; cachedTokens: number } }
   >;
 }
 
@@ -318,9 +318,15 @@ export function createWorkbenchServer(options: {
   const assistantRuntime = new AssistantRuntime({
     gateway: {
       get configured() { return gateway.configured && typeof gateway.executeWithTools === "function"; },
-      executeWithTools: (input) => {
+      executeWithTools: async (input) => {
         if (!gateway.executeWithTools) throw new Error("KIMI_TOOLS_UNAVAILABLE");
-        return gateway.executeWithTools(input);
+        const result = await gateway.executeWithTools(input);
+        // 每次真实调用的 token 记进当日累计，供用量页对账
+        dailyUsage.tokens.promptTokens += result.usage?.promptTokens ?? 0;
+        dailyUsage.tokens.completionTokens += result.usage?.completionTokens ?? 0;
+        dailyUsage.tokens.cachedTokens += result.usage?.cachedTokens ?? 0;
+        dailyUsage.tokens.totalTokens += result.usage?.totalTokens ?? 0;
+        return result;
       },
     },
     ledger: new ActionLedger(process.env.NODE_ENV === "test" ? ":memory:" : undefined),
@@ -340,7 +346,22 @@ export function createWorkbenchServer(options: {
   );
   const sessions = new Map<string, SessionRecord>();
   // 公网限额的当日用量。进程内计数即可：单机部署、超限只是当天不再服务，不需要持久化
-  const dailyUsage = { day: "", perIp: new Map<string, { assistant: number; suggest: number; jobs: number }>(), totals: { assistant: 0, suggest: 0, jobs: 0 } };
+  const dailyUsage = {
+    day: "",
+    perIp: new Map<string, { assistant: number; suggest: number; jobs: number }>(),
+    totals: { assistant: 0, suggest: 0, jobs: 0 },
+    // 服务器侧模型调用的 token 累计（网关每次应答都带 usage），用量页按它对账
+    tokens: { promptTokens: 0, completionTokens: 0, cachedTokens: 0, totalTokens: 0 },
+  };
+  const rollUsageDay = () => {
+    const day = new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10);
+    if (dailyUsage.day !== day) {
+      dailyUsage.day = day;
+      dailyUsage.perIp.clear();
+      dailyUsage.totals = { assistant: 0, suggest: 0, jobs: 0 };
+      dailyUsage.tokens = { promptTokens: 0, completionTokens: 0, cachedTokens: 0, totalTokens: 0 };
+    }
+  };
   const clientIpOf = (request: IncomingMessage): string => {
     const socketIp = request.socket.remoteAddress ?? "unknown";
     const isLoopback = socketIp === "127.0.0.1" || socketIp === "::1" || socketIp === "::ffff:127.0.0.1";
@@ -350,8 +371,7 @@ export function createWorkbenchServer(options: {
     return socketIp;
   };
   const takeDailyQuota = (request: IncomingMessage, kind: "assistant" | "suggest" | "jobs"): string | null => {
-    const day = new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10);
-    if (dailyUsage.day !== day) { dailyUsage.day = day; dailyUsage.perIp.clear(); dailyUsage.totals = { assistant: 0, suggest: 0, jobs: 0 }; }
+    rollUsageDay();
     const ip = clientIpOf(request);
     const mine = dailyUsage.perIp.get(ip) ?? { assistant: 0, suggest: 0, jobs: 0 };
     const perIpLimit = kind === "assistant" ? dailyLimits.assistantPerIp : kind === "suggest" ? dailyLimits.suggestPerIp : dailyLimits.jobsPerIp;
@@ -419,9 +439,11 @@ export function createWorkbenchServer(options: {
       // 服务器侧今日调用数（进程内计数，重启起算）。助手对话与建议不在项目里留运行记录，
       // 用量页拿这个数来显示，免得本机的 0 被读成模型没接上
       if (request.method === "GET" && url.pathname === "/api/assistant/usage") {
+        rollUsageDay();
         return writeJson(response, 200, {
-          day: dailyUsage.day || new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10),
+          day: dailyUsage.day,
           totals: dailyUsage.totals,
+          tokens: dailyUsage.tokens,
         }, origin);
       }
 
