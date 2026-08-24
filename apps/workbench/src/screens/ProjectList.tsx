@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { ProjectPageFrame } from "../shell/AppShell";
 import { Alert, Button, Dialog, EmptyState, Metric, Tag } from "../ui";
 import type { ProjectCard } from "../workbench";
+import type { DemoLibraryUpdate } from "../demo-library-loader";
 import "./ProjectList.css";
 
 // P01 项目列表（66:1562）：标题行、三张指标卡、项目卡网格、新建卡。
@@ -14,7 +15,8 @@ export interface ProjectListProps {
   onImport: (file: File) => Promise<void>;
   onClear: () => void;
   // 本机上的演示项目有新版本时提示（实施单元 09）
-  demoUpdates: readonly { demoId: string; projectName: string }[];
+  demoUpdates: readonly DemoLibraryUpdate[];
+  onRetryDemo: () => void;
   onUpdateDemo: () => void;
   loading: boolean;
 }
@@ -29,7 +31,7 @@ function coverText(card: ProjectCard): string {
   return card.photoCount ? parts.join("、") : `${parts.join("、")}，无现场照片`;
 }
 
-export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onUpdateDemo, loading }: ProjectListProps) {
+export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onRetryDemo, onUpdateDemo, loading }: ProjectListProps) {
   const importInput = useRef<HTMLInputElement>(null);
   // 更新与清空都会动本机数据，确认用页面内对话框（内嵌浏览器会把原生弹窗按取消处理）
   const [confirming, setConfirming] = useState<"update" | "clear" | null>(null);
@@ -38,16 +40,19 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
   const pending = cards.reduce((sum, card) => sum + card.pendingCount, 0);
   const signed = cards.filter((card) => card.signedAt !== null).length;
   const shortNames = active.map((card) => card.buildingName).join("、");
+  const missingOnly = demoUpdates.length > 0 && demoUpdates.every((item) => item.kind === "missing");
   return (
     <ProjectPageFrame
       title="项目列表"
-      description="管理单栋建筑任务并进入成果生产链路"
+      description="面向古建测绘与文保成果生产人员，把单栋建筑的资料、实测、模型、图纸和归档成果放进同一条可追溯流程"
       actions={<Button variant="primary" onClick={onCreate}>新建项目</Button>}
     >
       {demoUpdates.length > 0 && (
         <Alert tone="info">
-          演示项目有新版本（{demoUpdates.map((item) => item.projectName).join("、")}）。本机上的是旧数据，更新会清空本机项目后重新装载。
-          <Button variant="text" compact onClick={() => setConfirming("update")}>更新演示项目</Button>
+          {missingOnly
+            ? `有展示项目尚未载入（${demoUpdates.map((item) => item.projectName).join("、")}）。可继续载入，不会改动本机已有项目。`
+            : `展示项目有新版本（${demoUpdates.map((item) => item.projectName).join("、")}）。本机上的是旧数据，更新会清空本机项目后重新装载。`}
+          <Button variant="text" compact onClick={missingOnly ? onRetryDemo : () => setConfirming("update")}>{missingOnly ? "继续载入" : "更新展示项目"}</Button>
         </Alert>
       )}
       {cards.some((card) => card.demoLimitationZh) && (
@@ -76,7 +81,7 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
       <div className="sc-projects-metrics">
         <Metric label="进行中" value={loading ? "…" : active.length} note={loading ? "正在载入本机项目" : shortNames || (cards.length ? "全部已归档" : "还没有项目")} />
         <Metric label="待确认" value={loading ? "…" : pending} note="问题队列待处理项与识别候选" />
-        <Metric label="已签发归档" value={loading ? "…" : signed} note={loading ? "正在核对项目状态" : cards.length ? (signed ? `${signed} 个项目包含复核签发记录` : `${cards.length} 个项目待签发`) : "尚无成果"} />
+        <Metric label="已归档" value={loading ? "…" : signed} note={loading ? "正在核对项目状态" : cards.length ? (signed ? `${signed} 个项目包含签发记录` : `${cards.length} 个项目待签发`) : "尚无成果"} />
       </div>
       <div className="sc-projects-grid" aria-label="项目列表">
         {loading && <EmptyState>正在载入项目与展示内容。</EmptyState>}

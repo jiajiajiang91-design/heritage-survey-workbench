@@ -77,7 +77,13 @@ export async function listLocalProjects(): Promise<readonly ProjectSummary[]> {
 // 返回 null 表示本地已有项目，没有装载动作。
 export async function bootstrapDemoProjects(): Promise<DemoLoadResult | null> {
   const existing = await listLocalProjects();
-  if (existing.length) return null;
+  if (existing.length) {
+    const manifest = await readDemoLibraryManifest().catch(() => null);
+    if (!manifest) return null;
+    const existingIds = new Set(existing.map((item) => item.projectId));
+    // 只在本机已经有展示项目时补齐缺少的展示项目。纯用户项目库不自动加入展示内容。
+    if (!manifest.projects.some((entry) => existingIds.has(entry.projectId))) return null;
+  }
   return loadDemoLibrary({
     packages: projectPackages,
     existingProjectIds: new Set(existing.map((item) => item.projectId)),

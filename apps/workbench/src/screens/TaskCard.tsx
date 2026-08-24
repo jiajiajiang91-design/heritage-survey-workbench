@@ -173,7 +173,7 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
               if (surveyRecords.length) return `尺寸依据：${surveyRecords.map((item) => item.title).join("、")}。`;
               return "本项目无现场实测记录，尺寸来自资料转写或形制推算。";
             })()}
-            {qualificationLabel ? `成果状态：${qualificationLabel}。` : ""}
+            {qualificationLabel ? `成果状态：${demoLimitationZh ? "展示流程已归档，仅供体验" : qualificationLabel}。` : ""}
           </p>
         </section>
       </div>

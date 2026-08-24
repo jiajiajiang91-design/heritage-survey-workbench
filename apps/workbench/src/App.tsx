@@ -83,6 +83,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           onImport={importProject}
           onClear={() => void clearLibrary()}
           demoUpdates={session.demoUpdates}
+          onRetryDemo={() => void session.retryDemoLibrary()}
           onUpdateDemo={() => void session.updateDemoLibrary()}
           loading={session.initializing}
         />

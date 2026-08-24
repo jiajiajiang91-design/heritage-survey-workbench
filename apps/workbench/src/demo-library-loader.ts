@@ -55,7 +55,11 @@ function rememberLoaded(demoId: string, sha: string): void {
   try { globalThis.localStorage?.setItem(LOADED_KEY, JSON.stringify({ ...readLoaded(), [demoId]: sha })); } catch { /* 无本机存储时不记 */ }
 }
 
-export interface DemoLibraryUpdate { readonly demoId: string; readonly projectName: string }
+export interface DemoLibraryUpdate {
+  readonly demoId: string;
+  readonly projectName: string;
+  readonly kind: "missing" | "changed";
+}
 
 // 需要提示更新的演示项目：本机已装载但包有新版本的，加上装载残局（清单里的演示项目
 // 只装进来一部分——首次装载在下载中途被关页打断就会这样，空库自动装载不会再跑，
@@ -70,7 +74,11 @@ export async function listDemoLibraryUpdates(input: { existingProjectIds: Readon
     .filter((entry) => input.existingProjectIds.has(entry.projectId)
       ? loaded[entry.demoId] !== entry.packageSha256
       : demoPresent)
-    .map((entry) => ({ demoId: entry.demoId, projectName: entry.projectName }));
+    .map((entry) => ({
+      demoId: entry.demoId,
+      projectName: entry.projectName,
+      kind: input.existingProjectIds.has(entry.projectId) ? "changed" as const : "missing" as const,
+    }));
 }
 
 // 已存在的项目不重复导入，也不覆盖：用户在演示项目上做过的操作要保留。
@@ -103,9 +111,7 @@ async function runLoad(input: {
       continue;
     }
     try {
-      const response = await fetch(`${base}demo/${entry.fileName}`);
-      if (!response.ok) throw new Error("DEMO_PACKAGE_DOWNLOAD_FAILED");
-      const bytes = new Uint8Array(await response.arrayBuffer());
+      const bytes = await fetchPackage(`${base}demo/${entry.fileName}`);
       await input.packages.import(bytes, entry.fileName, input.actorId);
       rememberLoaded(entry.demoId, entry.packageSha256);
       loaded.push(entry.demoId);
@@ -114,4 +120,20 @@ async function runLoad(input: {
     }
   }
   return { loaded, skipped, failed };
+}
+
+async function fetchPackage(url: string): Promise<Uint8Array> {
+  const delays = [0, 500, 1_500];
+  let lastReason: unknown = new Error("DEMO_PACKAGE_DOWNLOAD_FAILED");
+  for (const delay of delays) {
+    if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw new Error(`DEMO_PACKAGE_DOWNLOAD_FAILED:${response.status}`);
+      return new Uint8Array(await response.arrayBuffer());
+    } catch (reason) {
+      lastReason = reason;
+    }
+  }
+  throw lastReason;
 }

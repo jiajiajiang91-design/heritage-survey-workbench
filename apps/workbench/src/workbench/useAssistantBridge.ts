@@ -40,6 +40,7 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
     const task = session.confirmedTask;
     const geometry = snapshot.geometryRevisions.at(-1) ?? null;
     const signoff = geometry ? snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometry.id) ?? null : null;
+    const demoLimitationZh = session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null;
     const evidences = snapshot.evidences.map((item) => `${item.title}（${EVIDENCE_TYPE_LABELS[item.evidenceType] ?? item.evidenceType}，${DATA_STATUS_LABELS[item.dataStatus] ?? item.dataStatus}）`);
     const openIssueLines = openIssues.slice(0, 6).map((item) => item.description.slice(0, 60));
     const views = task?.artifactRequirements?.views.map((view) => `${view.displayLabelZh} 1:${view.scaleDenominator}`) ?? [];
@@ -58,7 +59,7 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
       `三维模型：${geometry ? `已生成，构件 ${geometrySpec?.objects.length ?? 0} 个，待确认部位 ${geometrySpec?.unknowns.length ?? 0} 处` : "未生成"}。`,
       `成果要求：${views.length ? views.join("、") : "未确认"}；成果文件 ${session.projectArtifacts.length} 项。`,
       `检查：${check ? (blocked ? `已检查 ${check.results.length} 项，${blocked} 项不通过` : `已检查 ${check.results.length} 项，全部通过`) : "未检查"}。`,
-      `签发与归档：${signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}已于 ${signoff.signedAt.slice(0, 10)} 复核签发，成果可正式交付，归档已完成；复核意见：${signoff.statementZh}` : session.projectDeliveries.length ? "有归档草案，未签发" : "无归档草案"}。`,
+      `签发与归档：${signoff ? demoLimitationZh ? `流程演示签发记录于 ${signoff.signedAt.slice(0, 10)} 生成，展示归档已完成，但不构成真实工程签发或交付资格；使用范围：${demoLimitationZh}；复核意见：${signoff.statementZh}` : `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}已于 ${signoff.signedAt.slice(0, 10)} 复核签发，成果可正式交付，归档已完成；复核意见：${signoff.statementZh}` : session.projectDeliveries.length ? "有归档草案，未签发" : "无归档草案"}。`,
     ].join("\n");
   })();
 

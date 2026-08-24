@@ -8,7 +8,7 @@ import {
 } from "@gujian/infrastructure";
 
 import { buildChangeHistory, type ChangeHistoryEntry } from "../change-history";
-import type { DemoLoadResult } from "../demo-library-loader";
+import type { DemoLibraryUpdate, DemoLoadResult } from "../demo-library-loader";
 import { describeFailure } from "../failure-notice";
 import { describeBlocker } from "../qualification";
 import {
@@ -127,6 +127,21 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     if (result.failed.length) setError(describeFailure(result.failed[0]!.reason, "演示项目载入失败"));
   };
 
+  // 首次载入中途断网时，已成功的项目保留，只补齐缺少的包。外层再尝试一次，
+  // 与单包下载重试共同覆盖短暂网络波动，不需要用户清空项目。
+  const bootstrapDemoStably = async (): Promise<DemoLoadResult | null> => {
+    const first = await bootstrapDemo();
+    if (!first?.failed.length) return first;
+    await refresh();
+    const second = await bootstrapDemo();
+    if (!second) return first;
+    return {
+      loaded: [...new Set([...first.loaded, ...second.loaded])],
+      skipped: [...new Set([...first.skipped, ...second.skipped])],
+      failed: second.failed,
+    };
+  };
+
   const refreshServerStatus = () => Promise.all([
     fetch("/api/status")
       .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
@@ -140,12 +155,12 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
 
   useEffect(() => {
     void refresh()
-      .then(bootstrapDemo)
+      .then(bootstrapDemoStably)
       .then(showBootstrapResult)
+      .then(refreshDemoUpdates)
       .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")))
       .finally(() => setInitializing(false));
     void refreshServerStatus();
-    void refreshDemoUpdates();
   }, []);
 
   const chooseProject = async (projectId: string) => {
@@ -189,8 +204,22 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   };
 
   // 演示包有新版本时，列表页提示；更新等于清空本机项目后重新装载（实施单元 09）
-  const [demoUpdates, setDemoUpdates] = useState<readonly { demoId: string; projectName: string }[]>([]);
+  const [demoUpdates, setDemoUpdates] = useState<readonly DemoLibraryUpdate[]>([]);
   const refreshDemoUpdates = () => checkDemoLibraryUpdates().then(setDemoUpdates).catch(() => setDemoUpdates([]));
+  const retryDemoLibrary = async () => {
+    setInitializing(true);
+    setError(null);
+    try {
+      const result = await bootstrapDemoStably();
+      await showBootstrapResult(result);
+      await refresh();
+      await refreshDemoUpdates();
+    } catch (reason) {
+      setError(describeFailure(reason, "展示项目载入失败"));
+    } finally {
+      setInitializing(false);
+    }
+  };
   // 确认在界面对话框里做（内嵌浏览器会拦掉原生弹窗），这里只执行
   const updateDemoLibrary = async () => {
     await projectRepository.clearAllData();
@@ -198,7 +227,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     setProjectModelRuns([]); setProjectRuleRuns([]); setProjectDecisions([]);
     setProjectArtifacts([]); setProjectCheckRuns([]); setProjectDeliveries([]);
     await refresh();
-    const result = await bootstrapDemo();
+    const result = await bootstrapDemoStably();
     await showBootstrapResult(result);
     await refresh();
     setDemoUpdates([]);
@@ -322,7 +351,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     projectArtifacts, projectCheckRuns, projectDeliveryEvaluations, projectDeliveries,
     projectArchetypes, changeHistory, serverStatus, assistantUsage, refreshServerStatus,
     refresh, loadProject, chooseProject, exitToProjectList, createProject, importProject, clearLibrary,
-    demoUpdates, updateDemoLibrary,
+    demoUpdates, retryDemoLibrary, updateDemoLibrary,
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues,
     geometryRevision, geometrySpec, latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery,
     geometryGate, dashboard, artifactSetView, modelCostView, humanInterventions, deliveryBlockers,
