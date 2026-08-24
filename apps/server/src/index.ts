@@ -420,7 +420,8 @@ export function createWorkbenchServer(options: {
           expiresAt: Date.now() + sessionLifetimeMs, lastRunStartedAt: 0,
         };
         sessions.set(sessionId, record);
-        response.setHeader("set-cookie", `gujian_session=${sessionId}; HttpOnly; SameSite=Strict; Path=/api; Max-Age=1800${publicMode ? "; Secure" : ""}`);
+        // Secure 只在确实经 https 进来时加：绑证书前用 IP 走 http 验收，加了浏览器会拒收会话
+        response.setHeader("set-cookie", `gujian_session=${sessionId}; HttpOnly; SameSite=Strict; Path=/api; Max-Age=1800${publicMode && request.headers["x-forwarded-proto"] === "https" ? "; Secure" : ""}`);
         return writeJson(response, 200, {
           csrfToken: record.csrfToken,
           capabilityToken: record.capabilityToken,

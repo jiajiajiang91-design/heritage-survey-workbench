@@ -52,13 +52,19 @@ function rememberLoaded(demoId: string, sha: string): void {
 
 export interface DemoLibraryUpdate { readonly demoId: string; readonly projectName: string }
 
-// 本机已装载的演示项目里，哪些的包已经有新版本
+// 需要提示更新的演示项目：本机已装载但包有新版本的，加上装载残局（清单里的演示项目
+// 只装进来一部分——首次装载在下载中途被关页打断就会这样，空库自动装载不会再跑，
+// 不提示的话残局没有任何修复入口）。只有本机一个演示项目都没有时不提示，
+// 免得对只用自己项目的用户推销清空重装。
 export async function listDemoLibraryUpdates(input: { existingProjectIds: ReadonlySet<string>; baseUrl?: string }): Promise<DemoLibraryUpdate[]> {
   const manifest = await fetchManifest(input.baseUrl ?? "/").catch(() => null);
   if (!manifest) return [];
   const loaded = readLoaded();
+  const demoPresent = manifest.projects.some((entry) => input.existingProjectIds.has(entry.projectId));
   return manifest.projects
-    .filter((entry) => input.existingProjectIds.has(entry.projectId) && loaded[entry.demoId] !== entry.packageSha256)
+    .filter((entry) => input.existingProjectIds.has(entry.projectId)
+      ? loaded[entry.demoId] !== entry.packageSha256
+      : demoPresent)
     .map((entry) => ({ demoId: entry.demoId, projectName: entry.projectName }));
 }
 
