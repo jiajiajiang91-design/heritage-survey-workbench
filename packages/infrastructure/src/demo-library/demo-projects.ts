@@ -680,4 +680,6 @@ export const GAODU_DEMO: DemoProjectDefinition = {
 };
 
 // 列表顺序：高都（真实古建、归档完成）在前，Dai Loy（流程验证样本）在后；团队样板由构建脚本插在两者之间
-export const DEMO_PROJECTS: readonly DemoProjectDefinition[] = [GAODU_DEMO, DAI_LOY_DEMO];
+// 演示库只放两个中国古建项目（2026-08-25 JIAJIA 定）：赌馆博物馆不属真正的古建，
+// 从演示库下架。定义与素材保留：它仍是第三项目泛化验证（T12）与 HABS 图纸转写链路的测试素材。
+export const DEMO_PROJECTS: readonly DemoProjectDefinition[] = [GAODU_DEMO];

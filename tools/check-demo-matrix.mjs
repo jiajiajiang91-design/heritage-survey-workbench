@@ -6,7 +6,7 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { unzipSync } from "../packages/infrastructure/node_modules/fflate/esm/browser.js";
 import { DEMO_MATRIX_STEPS, evaluateDemoMatrix } from "../packages/infrastructure/dist/index.js";
-const names = ["t0b-construction-sample", "dai-loy-habs-ca-2071-w", "gaodu-yuhuang-temple-main-hall"];
+const names = ["t0b-construction-sample", "gaodu-yuhuang-temple-main-hall"];
 const rows = [];
 for (const name of names) {
   const zip = unzipSync(new Uint8Array(await readFile(resolve(import.meta.dirname, "..", `apps/workbench/public/demo/${name}.gujian.zip`))));

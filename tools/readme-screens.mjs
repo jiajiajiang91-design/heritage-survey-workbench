@@ -2,13 +2,15 @@
 // 用法：node tools/readme-screens.mjs [输出目录] [站点地址]
 // 助手问答一张要真连模型，站点侧有每日限额，脚本一次只问一句。
 import { spawn } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const outDir = process.argv[2] ?? "docs/readme-assets";
 const site = process.argv[3] ?? "https://heritage.jiajiajiang.com/";
 mkdirSync(outDir, { recursive: true });
 const profile = join(process.env.TEMP ?? ".", "gj-readme-shoot");
+// 每次都以全新访客身份截：残留的本机数据会把旧项目和更新提示条截进图里
+rmSync(profile, { recursive: true, force: true });
 const port = 9337;
 const chrome = spawn(process.env.CHROME_PATH ?? "C:/Program Files/Google/Chrome/Application/chrome.exe", [
   "--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`,
@@ -71,7 +73,7 @@ await send("Page.enable");
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 2, mobile: false });
 await send("Page.navigate", { url: site });
 // 首次装载要下载三个演示包，公网给足时间
-await waitFor(`document.querySelectorAll("article.sc-project").length >= 3`, 300000);
+await waitFor(`document.querySelectorAll("article.sc-project").length >= 2`, 300000);
 await evaluate(`document.fonts.ready.then(() => true)`);
 await sleep(1000);
 // 关掉装载完成的提示条再截
