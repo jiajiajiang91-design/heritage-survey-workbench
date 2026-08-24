@@ -33,11 +33,14 @@ export function QualificationChip({ className }: { className?: string }): ReactE
 }
 
 // 图面限制说明：与图纸图签上印的内容一致，防止界面说得比图纸松。
+// 日期栏原来写作留空，与实际出图不符：三种格式的图签都印着日期：未签发
+// （workers/cad/project_drawings/sheet_writer.py 第 366、444、500 行）。
+// 留空会被当成待填，印未签发才封死这一格，按图纸的实际做法改口径。
 export function DrawingLimitationNote(): ReactElement {
   return (
     <div className="drawing-limitation">
       <strong>图面限制</strong>
-      <p>每张图的图签都印有代理成果与未签发状态，日期栏留空。{QUALIFICATION_LIMITS.map((limit) => limit.textZh).join("")}</p>
+      <p>每张图的图签都印有待签发状态，日期栏印的也是未签发。{QUALIFICATION_LIMITS.map((limit) => limit.textZh).join("")}</p>
     </div>
   );
 }

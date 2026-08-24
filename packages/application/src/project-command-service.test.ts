@@ -294,4 +294,138 @@ describe("ProjectCommandService", () => {
     expect(stored?.producer.producerType).toBe("human");
     expect(stored?.evidenceRefs).toEqual(["evidence:site-photo-1"]);
   });
+
+  // 规则核对一律作废未解决问题是本产品最不该有的行为：跑一次核对就把上一轮
+  // 没人处理过的问题标成已被替代并盖上解决时间。几何作业为记一条输入闭合检查
+  // 也发这条命令，三个演示项目共 13 条真实问题因此在问题队列与交付阻断里同时消失。
+  it("规则核对只作废本轮重新提出的问题，没提的保持未解决", async () => {
+    const { repository, service } = setup();
+    const created = await service.execute(createProjectCommand());
+
+    const ruleRun = (id: string, revisionId: string, issueRefs: string[], at: string) => ({
+      id,
+      projectId: ids.project,
+      inputRevisionId: revisionId,
+      ruleSetVersion: "heritage-baseline/1.0",
+      status: "completed",
+      producer: { producerType: "rule", ruleRunId: id },
+      results: [{
+        ruleId: "evidence-closure",
+        outcome: issueRefs.length ? "issue" : "passed",
+        inputRefs: [ids.building],
+        issueRefs,
+        message: "资料闭合核对",
+      }],
+      startedAt: at,
+      completedAt: at,
+    });
+
+    const issue = (id: string, runId: string, issueType: string, subjectRefs: string[], at: string) => ({
+      id,
+      projectId: ids.project,
+      issueType,
+      subjectRefs,
+      description: "本项目没有任何现场实测记录",
+      sourceRef: runId,
+      status: "open",
+      impactRefs: [],
+      blocksProxyOutcome: false,
+      blocksFormalEligibility: true,
+      producer: { producerType: "rule", ruleRunId: runId },
+      createdAt: at,
+      resolvedAt: null,
+    });
+
+    const runOne = "00000000-0000-4000-8000-0000000000c1";
+    const issueOne = "00000000-0000-4000-8000-0000000000d1";
+    const first = await service.execute({
+      commandType: "CommitRuleEvaluation",
+      commandId: "00000000-0000-4000-8000-0000000000e1",
+      projectId: ids.project,
+      actorId: ids.actor,
+      expectedRevisionId: created.revisionId,
+      issuedAt: "2026-08-11T00:02:00Z",
+      payload: {
+        ruleRun: ruleRun(runOne, created.revisionId, [issueOne], "2026-08-11T00:02:00Z"),
+        issues: [issue(issueOne, runOne, "missingEvidence", [ids.building], "2026-08-11T00:02:00Z")],
+      },
+    });
+    expect((repository.head?.snapshot as ProjectSnapshot).issues.filter((item) => item.status === "open")).toHaveLength(1);
+
+    // 第二次核对是几何输入闭合，一条问题都没提，上一轮那条必须还在
+    const runTwo = "00000000-0000-4000-8000-0000000000c2";
+    const second = await service.execute({
+      commandType: "CommitRuleEvaluation",
+      commandId: "00000000-0000-4000-8000-0000000000e2",
+      projectId: ids.project,
+      actorId: ids.actor,
+      expectedRevisionId: first.revisionId,
+      issuedAt: "2026-08-11T00:03:00Z",
+      payload: { ruleRun: ruleRun(runTwo, first.revisionId, [], "2026-08-11T00:03:00Z"), issues: [] },
+    });
+    const afterEmpty = (repository.head?.snapshot as ProjectSnapshot).issues;
+    expect(afterEmpty).toHaveLength(1);
+    expect(afterEmpty[0]?.status).toBe("open");
+    expect(afterEmpty[0]?.resolvedAt).toBeNull();
+
+    // 第三次重新提出同一类同一对象的问题，旧的才让位给新的
+    const runThree = "00000000-0000-4000-8000-0000000000c3";
+    const issueThree = "00000000-0000-4000-8000-0000000000d3";
+    await service.execute({
+      commandType: "CommitRuleEvaluation",
+      commandId: "00000000-0000-4000-8000-0000000000e3",
+      projectId: ids.project,
+      actorId: ids.actor,
+      expectedRevisionId: second.revisionId,
+      issuedAt: "2026-08-11T00:04:00Z",
+      payload: {
+        ruleRun: ruleRun(runThree, second.revisionId, [issueThree], "2026-08-11T00:04:00Z"),
+        issues: [issue(issueThree, runThree, "missingEvidence", [ids.building], "2026-08-11T00:04:00Z")],
+      },
+    });
+    const afterReraise = (repository.head?.snapshot as ProjectSnapshot).issues;
+    expect(afterReraise).toHaveLength(2);
+    expect(afterReraise.find((item) => item.id === issueOne)?.status).toBe("superseded");
+    expect(afterReraise.find((item) => item.id === issueThree)?.status).toBe("open");
+  });
+
+  // 实施单元 09：复核签发记录只能指向本项目已有的几何版本，同一草案只签一次
+  it("复核签发记录追加进快照，几何版本不存在或重复签发被拒", async () => {
+    const { repository, service } = setup();
+    const created = await service.execute(createProjectCommand());
+    const geometryId = "00000000-0000-4000-8000-0000000000e1";
+    const draftId = "00000000-0000-4000-8000-0000000000e2";
+    const signoff = (id: string, geometryRevisionId: string, revisionId: string) => ({
+      id, projectId: ids.project, projectRevisionId: revisionId, deliveryDraftId: draftId, geometryRevisionId,
+      reviewerRole: "professionalReviewer", reviewerActorId: ids.actor,
+      reviewedAt: "2026-08-20T00:00:00Z", signedAt: "2026-08-20T00:00:00Z", issuingEnvironment: "formal",
+      l1Eligible: true, statementZh: "复核通过，准予归档。",
+    });
+    const command = (commandId: string, revisionId: string, geometryRevisionId: string) => ({
+      commandType: "RecordReviewSignoff", commandId, projectId: ids.project, actorId: ids.actor,
+      expectedRevisionId: revisionId, issuedAt: "2026-08-20T00:00:00Z",
+      payload: { signoff: signoff(commandId, geometryRevisionId, revisionId) },
+    });
+
+    // 项目里还没有几何版本，签不了
+    await expect(service.execute(command("00000000-0000-4000-8000-0000000000e3", created.revisionId, geometryId))).rejects.toMatchObject({ code: "COMMAND_INVALID" });
+
+    // 直接把几何版本放进快照（签发只看版本是否存在，不重跑几何链路）
+    repository.head = {
+      ...repository.head!,
+      snapshot: {
+        ...repository.head!.snapshot,
+        geometryRevisions: [{
+          id: geometryId, projectId: ids.project, projectRevisionId: created.revisionId, geometrySpecId: "00000000-0000-4000-8000-0000000000e4",
+          inputHash: "1".repeat(64), entityClosureHash: "2".repeat(64), interfaceClosureHash: "3".repeat(64), geometrySignature: "4".repeat(64), assets: [],
+          status: "generated-not-qualified", l1Eligible: false, formalEligibility: false, blockers: ["PROXY_ONLY"], createdAt: "2026-08-19T00:00:00Z",
+        }] as unknown as ProjectSnapshot["geometryRevisions"],
+      },
+    };
+    const signed = await service.execute(command("00000000-0000-4000-8000-0000000000e5", repository.head!.revisionId, geometryId));
+    expect(repository.head?.snapshot.reviewSignoffs).toHaveLength(1);
+    expect(repository.head?.snapshot.reviewSignoffs[0]?.l1Eligible).toBe(true);
+
+    await expect(service.execute(command("00000000-0000-4000-8000-0000000000e6", signed.revisionId, geometryId))).rejects.toMatchObject({ code: "COMMAND_INVALID" });
+  });
 });

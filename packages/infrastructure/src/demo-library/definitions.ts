@@ -46,6 +46,8 @@ export interface DemoMeasurement {
   readonly evidenceKey: string;
   readonly methodZh: string;
   readonly dataStatus: DataStatus;
+  // 归档完成的演示项目里尺寸经复核确认（实施单元 09）；不写按待确认入库
+  readonly reviewStatus?: ReviewStatus;
 }
 
 export interface DemoIssue {
@@ -99,8 +101,19 @@ export interface DemoTask {
   };
 }
 
+// 正式环境的复核签发（实施单元 09）。随包导入后交付按已签发显示；本机新建的项目没有这一项。
+// 签发时间不在这里定：模型与图纸在构建时生成，签发必须晚于生成，时间由构建流程按当时时刻写入，
+// 否则修改历史里会出现签发早于出图两个月的倒置档案。
+export interface DemoSignoff {
+  readonly reviewerRole: "projectLead" | "professionalReviewer";
+  readonly l1Eligible: boolean;
+  readonly statementZh: string;
+}
+
 export interface DemoProjectDefinition {
   readonly demoId: string;
+  // 有这一项的项目在链路末尾记复核签发，演示的是一次归档完成的项目
+  readonly signoff?: DemoSignoff;
   readonly projectName: string;
   readonly buildingName: string;
   readonly locationText: string | null;
@@ -112,6 +125,9 @@ export interface DemoProjectDefinition {
   readonly sources: readonly DemoLibrarySource[];
   readonly facts: readonly DemoFact[];
   readonly measurements: readonly DemoMeasurement[];
+  // 现状记录：现场照片上可见的材料与保存状况，逐条引用资料。
+  // 一次现状测绘归档不该没有现状记录，缺了它记录现状这一步是空的。
+  readonly observations?: readonly DemoObservation[];
   readonly issues: readonly DemoIssue[];
   readonly task: DemoTask;
   // 形制参数。有它才能由规则推算出尺寸并驱动构件生成，
@@ -122,11 +138,19 @@ export interface DemoProjectDefinition {
   readonly timberFrame?: DemoTimberFrame;
 }
 
+// 一条现状记录：类型与领域 ObservationSchema 的 observationType 同名
+export interface DemoObservation {
+  readonly key: string;
+  readonly observationType: "visibleCondition" | "material" | "damage" | "state";
+  readonly text: string;
+  readonly evidenceKeys: readonly string[];
+}
+
 // 一条尺寸连同它是怎么来的。drawn 是图纸上写明的标注，scaled 是按图上量取；
 // 两者精度差一个量级，界面必须分开显示，不能都算成实测。
 export interface DemoSourcedDimension {
   readonly valueMm: number;
-  readonly source: "drawn" | "scaled";
+  readonly source: "drawn" | "scaled" | "measured";
   readonly methodZh: string;
   // 对应 measurements 里的条目键，写明的标注才有；量取值不进尺寸事实
   readonly measurementKey?: string;
@@ -144,7 +168,7 @@ export interface DemoPlanRect {
 }
 
 interface DemoDimensionGroup {
-  readonly source: "drawn" | "scaled";
+  readonly source: "drawn" | "scaled" | "measured";
   readonly methodZh: string;
   readonly evidenceKeys: readonly string[];
 }
@@ -178,6 +202,8 @@ export interface DemoTimberFrame {
     readonly postSizeMm: number;
   })[];
   readonly materials: Readonly<Record<string, string>>;
+  // 已有现场记录判明的部位，键与木构架生成器未知项条目同名（实施单元 09）
+  readonly documentedKeys?: readonly string[];
 }
 
 // 形制参数与由它驱动的构件生成配置。数值全部来自照片估算或规则推算，
@@ -213,4 +239,12 @@ export interface DemoArchetype {
   readonly materials: Readonly<Record<string, string>>;
   // 哪些尺寸是照片估算，其余按规则推算标注
   readonly estimatedDimensionKeys: readonly string[];
+  // 哪些尺寸来自现场实测记录（实施单元 09）。既不在估算表也不在实测表里的按规则推算标注。
+  readonly measuredDimensionKeys?: readonly string[];
+  // 现场记录已判明的三项做法：门窗分格、基础做法、敞廊围护。判明的项生成器不记未知项。
+  readonly surveyed?: {
+    readonly wallOpenings: boolean;
+    readonly foundation: boolean;
+    readonly enclosure: boolean;
+  };
 }

@@ -83,24 +83,44 @@ describe("演示项目包生成", () => {
     }
   });
 
-  it("不写测量记录，实测条数为零", async () => {
+  // 演示定义里的尺寸以事实入库（documentedDimension.*），MeasurementRecord 表由动作层写，这里保持为零；
+  // 每条尺寸都要写明测量方法，实施单元 09 起方法里要能看出是实测还是转写
+  it("尺寸以事实入库并写明测量方法，实测记录表由动作层写", async () => {
     for (const definition of DEMO_PROJECTS) {
       const built = await build(definition, `measure-${definition.demoId}`);
       expect(built.measurementCount, definition.demoId).toBe(0);
-      expect(built.completeMeasurementCount, definition.demoId).toBe(0);
+      expect(built.factCount, definition.demoId).toBeGreaterThanOrEqual(definition.measurements.length);
+      for (const item of definition.measurements) expect(item.methodZh.length, `${definition.demoId}/${item.key}`).toBeGreaterThan(8);
+    }
+  });
+
+  // 实施单元 09 起三个演示项目资料齐全；缺原件的登记行为用一份补了缺项的定义来验
+  const WITH_MISSING: DemoProjectDefinition = {
+    ...GAODU_DEMO,
+    demoId: "gaodu-with-missing-source",
+    sources: [...GAODU_DEMO.sources, {
+      key: "absent-record", filePath: null, fileName: "缺失的记录.pdf", mimeType: "application/pdf", evidenceType: "document",
+      title: "拿不到原件的记录", rightsDeclaration: null, intendedUse: "验证缺失登记", recordedAt: null,
+      parser: "binary-metadata", parseStatus: "failed", extractedText: null, parseWarnings: [], absenceReasonZh: "测试：原件不存在。",
+    }],
+  };
+
+  it("三个演示项目的资料全部有原件，缺失为零", async () => {
+    for (const definition of DEMO_PROJECTS) {
+      const built = await build(definition, `complete-${definition.demoId}`);
+      expect(built.evidenceCount, definition.demoId).toBe(definition.sources.length);
+      expect(built.missingEvidenceCount, definition.demoId).toBe(0);
     }
   });
 
   it("拿不到原件的资料登记为缺失，不悄悄少一条", async () => {
-    const built = await build(GAODU_DEMO, "missing");
-    const declared = GAODU_DEMO.sources.filter((source) => source.filePath === null).length;
-    expect(built.evidenceCount).toBe(GAODU_DEMO.sources.length);
-    expect(built.missingEvidenceCount).toBe(declared);
-    expect(declared).toBeGreaterThan(0);
+    const built = await build(WITH_MISSING, "missing");
+    expect(built.evidenceCount).toBe(WITH_MISSING.sources.length);
+    expect(built.missingEvidenceCount).toBe(1);
   });
 
   it("缺原件的资料在包里仍标为缺失，不被改成可用", async () => {
-    const built = await build(GAODU_DEMO, "content-status");
+    const built = await build(WITH_MISSING, "content-status");
     const parsed = new ProjectPackageService(repository("content-status-target"))
       .parse(built.packageBytes, "demo.gujian.zip");
     const missingIds = new Set(parsed.snapshot.evidences
@@ -112,16 +132,16 @@ describe("演示项目包生成", () => {
   });
 
   it("含缺原件资料的包能完整导入，不整批失败", async () => {
-    const built = await build(GAODU_DEMO, "import-missing");
+    const built = await build(WITH_MISSING, "import-missing");
     const target = repository("import-missing-target");
     const projectId = await new ProjectPackageService(target).import(built.packageBytes, "demo.gujian.zip", crypto.randomUUID());
     const head = await target.getProjectHead(projectId);
     expect(head).not.toBeNull();
-    expect(head!.snapshot.evidences).toHaveLength(GAODU_DEMO.sources.length);
+    expect(head!.snapshot.evidences).toHaveLength(WITH_MISSING.sources.length);
     const assets = await target.getProjectAssets(projectId);
-    expect(assets).toHaveLength(GAODU_DEMO.sources.length);
+    expect(assets).toHaveLength(WITH_MISSING.sources.length);
     const missing = assets.filter((item) => item.record.contentStatus === "missing");
-    expect(missing).toHaveLength(GAODU_DEMO.sources.filter((source) => source.filePath === null).length);
+    expect(missing).toHaveLength(1);
   });
 
   it("定义里声明了路径却没给文件就报错，不降级成缺失", async () => {
@@ -132,16 +152,13 @@ describe("演示项目包生成", () => {
     })).rejects.toThrow(/DEMO_SOURCE_FILE_MISSING/);
   });
 
-  it("每个演示项目都带阻断项，正式资格全部阻断，代理成果不阻断", async () => {
+  // 实施单元 09：演示的是归档完成的项目，问题为零，并带正式环境的复核签发定义
+  it("每个演示项目没有未关闭的问题，且定义了复核签发", async () => {
     for (const definition of DEMO_PROJECTS) {
       const built = await build(definition, `issue-${definition.demoId}`);
-      expect(built.issueCount, definition.demoId).toBeGreaterThan(0);
-      const parsed = new ProjectPackageService(repository(`issue-target-${definition.demoId}`))
-        .parse(built.packageBytes, "demo.gujian.zip");
-      for (const issue of parsed.snapshot.issues) {
-        expect(issue.blocksFormalEligibility, `${definition.demoId}/${issue.id}`).toBe(true);
-        expect(issue.blocksProxyOutcome, `${definition.demoId}/${issue.id}`).toBe(false);
-      }
+      expect(built.issueCount, definition.demoId).toBe(0);
+      expect(definition.signoff, definition.demoId).toBeDefined();
+      expect(definition.signoff!.statementZh.length, definition.demoId).toBeGreaterThan(20);
     }
   });
 

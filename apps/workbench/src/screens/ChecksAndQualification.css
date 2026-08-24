@@ -1,0 +1,20 @@
+/* W09 检查与签发（66:2958）：正式图卡 512 内边距 12，检查卡 264 内边距 6；图 480 高；检查小卡 10 内边距，标题行 22 高 */
+.sc-checks { display: grid; grid-template-columns: minmax(0, 512fr) minmax(0, 264fr); gap: var(--space-md); flex: 1 1 auto; min-height: 0; }
+.sc-checks-drawing { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
+.sc-checks-results { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-xs); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
+.sc-checks-head { display: flex; align-items: center; gap: var(--space-sm); min-height: var(--size-control-md); }
+.sc-checks-head--tight { padding: 0 var(--space-xs); }
+.sc-checks-figure { width: 100%; height: 480px; border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); }
+.sc-checks-figure img { width: 100%; height: 100%; object-fit: contain; }
+.sc-checks-figure--empty { color: var(--text-tertiary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); background: var(--bg-subtle); border-color: transparent; padding: var(--space-lg); text-align: center; }
+.sc-checks-switch { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+.sc-checks-switch button { min-height: var(--size-control-sm); padding: 0 var(--space-md); border-radius: var(--radius-md); font: var(--font-weight-medium) var(--font-size-12)/var(--line-16) var(--font-family-ui); color: var(--text-secondary); }
+.sc-checks-switch button[aria-current="true"] { background: var(--bg-selected); color: var(--text-primary); }
+.sc-checks-caption { font: var(--font-weight-regular) var(--font-size-12)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
+.sc-check { display: flex; flex-direction: column; gap: var(--space-2xs); padding: var(--space-10); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-check-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); min-height: 22px; font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-check p { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); overflow-wrap: anywhere; }
+.sc-check-reasons { margin: 0; padding-left: var(--space-lg); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-check--limits { gap: var(--space-sm); }
+.sc-check-limit { display: flex; flex-direction: column; gap: var(--space-2xs); }
+.sc-check-limit strong { font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-primary); }

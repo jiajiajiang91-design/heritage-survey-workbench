@@ -85,6 +85,15 @@ export interface BuildingForm {
   // 判不出时传 null，生成器记未知项。
   readonly flyRafter: FlyRafterForm | null;
 
+  // 三项生成器自己判不出、只能由现场记录判明的做法（实施单元 09）。
+  // 记为 true 表示项目资料里有对应的实测或档案记录（门窗分格、基础做法、敞廊围护），
+  // 生成器据此不记未知项；记录本身以事实的形式存在项目里，不在这里复述。
+  readonly surveyed?: {
+    readonly wallOpenings: boolean;
+    readonly foundation: boolean;
+    readonly enclosure: boolean;
+  };
+
   readonly materials: Readonly<Record<ConstructionPart, string>>;
 }
 

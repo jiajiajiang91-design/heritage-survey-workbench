@@ -24,7 +24,7 @@ function input(requirements: TaskArtifactRequirements): { head: ProjectHead; geo
           artifactRequirements: requirements, confirmedAt: "2026-08-14T00:00:00Z",
         }],
         evidences: [], parseRecords: [], entities: [], exclusionRecords: [], relations: [], observations: [], measurements: [], facts: [], candidates: [], issues: [], dependencyEdges: [],
-        geometrySpecs: [], geometryRevisions: [], adoptedRecordRefs: [],
+        geometrySpecs: [], geometryRevisions: [], reviewSignoffs: [], adoptedRecordRefs: [],
       },
     },
     geometry: {

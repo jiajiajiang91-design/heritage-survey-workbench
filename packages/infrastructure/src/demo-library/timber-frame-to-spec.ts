@@ -44,7 +44,7 @@ export function buildTimberFrameGeometrySpec(input: TimberFrameGeometryInput): P
   };
   // 气窗与顶棚的位置尺寸整组同一来源，逐条重复声明只会让定义更难核对
   const grouped = (
-    valueMm: number, group: { readonly source: "drawn" | "scaled"; readonly methodZh: string; readonly evidenceKeys: readonly string[] },
+    valueMm: number, group: { readonly source: "drawn" | "scaled" | "measured"; readonly methodZh: string; readonly evidenceKeys: readonly string[] },
   ): SourcedDimension => ({
     valueMm, source: group.source, methodZh: group.methodZh,
     evidenceRefs: group.evidenceKeys.map(evidenceRef), factRefs: [],
@@ -98,6 +98,7 @@ export function buildTimberFrameGeometrySpec(input: TimberFrameGeometryInput): P
     partitionThickness: convert("partitionThickness"),
     partitions: timberFrame.partitions,
     secondFloorDecks: timberFrame.secondFloorDecks,
+    ...(timberFrame.documentedKeys ? { documented: timberFrame.documentedKeys } : {}),
     materials: timberFrame.materials as TimberFrameForm["materials"],
   };
 

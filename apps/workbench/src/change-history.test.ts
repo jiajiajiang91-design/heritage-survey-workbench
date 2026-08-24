@@ -154,3 +154,65 @@ describe("修改历史", () => {
     expect(new Set(labels).size).toBe(labels.length);
   });
 });
+
+// 影响范围（单元 07 第三组）。写入集与影响范围是两件事：
+// 写入集是这条命令自己动了什么，影响范围是因此不能再用的下游。
+describe("影响范围", () => {
+  const IMPACT_SNAPSHOT = {
+    schemaVersion: "3.0",
+    project: { id: "prj-1" },
+    buildings: [{ id: "bld-1" }],
+    taskDefinitions: [], evidences: [{ id: "ev-1", title: "现场照片" }], parseRecords: [],
+    entities: [], exclusionRecords: [], relations: [], observations: [], measurements: [],
+    facts: [{ id: "fact-1", field: "bayCount", evidenceRefs: ["ev-1"] }],
+    candidates: [], issues: [], dependencyEdges: [],
+    geometrySpecs: [{ id: "spec-1", objects: [{ id: "obj-1", factRefs: ["fact-1"], evidenceRefs: [] }] }],
+    geometryRevisions: [{ id: "rev-1", geometrySpecId: "spec-1" }],
+    reviewSignoffs: [], adoptedRecordRefs: [],
+  } as unknown as Parameters<typeof buildChangeHistory>[0]["snapshot"];
+
+  const impactInput = {
+    snapshot: IMPACT_SNAPSHOT,
+    artifacts: [{ id: "art-1", geometryRevisionId: "rev-1", sourceRefs: [], requirementMatrixId: null, fileName: "GD-01.svg" }],
+    requirementMatrices: [], checkRuns: [], deliveryEvaluations: [], deliveries: [],
+  } as unknown as NonNullable<Parameters<typeof buildChangeHistory>[0]["impactInput"]>;
+
+  function entryFor(changedRefs: string[]) {
+    return buildChangeHistory({
+      auditEvents: [event({ writeSet: [{ storeName: "revisions", id: changedRefs[0] as string }] })],
+      receipts: [{ commandId: "cmd-1", commandType: "CommitFacts", changedRefs }],
+      snapshot: IMPACT_SNAPSHOT,
+      impactInput,
+    })[0];
+  }
+
+  it("影响范围与写入集不是同一批对象", () => {
+    const entry = entryFor(["ev-1"]);
+    expect(entry?.writeCount).toBe(1);
+    expect(entry?.impact?.total).toBe(4);
+    const impacted = entry?.impact?.groups.flatMap((group) => group.names) ?? [];
+    // 写入的是资料本身，影响的是它的下游，两者没有交集
+    expect(impacted).not.toContain("现场照片");
+  });
+
+  it("影响范围不含写入集自身", () => {
+    const entry = entryFor(["ev-1", "fact-1"]);
+    const kinds = entry?.impact?.groups.map((group) => group.kind) ?? [];
+    expect(kinds).not.toContain("资料");
+    expect(kinds).not.toContain("尺寸记录");
+    expect(kinds.sort()).toEqual(["模型版本", "模型规格", "成果"].sort());
+  });
+
+  it("没给算影响所需记录时是 null，与影响为空区分开", () => {
+    const withoutInput = buildChangeHistory({
+      auditEvents: [event()],
+      receipts: [{ commandId: "cmd-1", commandType: "CommitEntities" }],
+      snapshot,
+    })[0];
+    expect(withoutInput?.impact).toBeNull();
+
+    const noDownstream = entryFor(["art-1"]);
+    expect(noDownstream?.impact).not.toBeNull();
+    expect(noDownstream?.impact?.total).toBe(0);
+  });
+});

@@ -71,7 +71,7 @@ describe("数值合理性核查（五条规则）", () => {
       { subjectName: "屋面", field: "檐口高", oldValueText: "5200", newValueText: "3900" },
       measurements,
     );
-    expect(warnings.some((w) => w.includes("几何上不成立"))).toBe(true);
+    expect(warnings.some((w) => w.includes("尺寸关系不成立"))).toBe(true);
   });
 
   it("台基高不应达到檐柱高", () => {

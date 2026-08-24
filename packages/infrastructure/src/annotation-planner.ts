@@ -301,6 +301,8 @@ function planLevels(
   const found: PlannedLevel[] = [];
   const conflicts: LevelConflict[] = [];
   for (const source of LEVEL_SOURCES) {
+    // 同名标高只取先命中的来源：檐口在有斗栱的模型取里口木下皮，柱顶那一路不再出第二条檐口
+    if (!source.multiple && found.some((item) => item.label === source.labelZh)) continue;
     const members = spec.objects.filter((item) => source.componentTypes.includes(item.componentType));
     if (!members.length) continue;
     const faceIndex = source.face === "top" ? 1 : 0;

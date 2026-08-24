@@ -3,12 +3,14 @@ import "fake-indexeddb/auto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+// 第一个导入：dist 落后于源码就在这里停下，不要产出按旧代码算出来的包
+import "./assert-dist-current.mjs";
 import { ProjectCommandService } from "../packages/application/dist/index.js";
 import { createWorkbenchServer } from "../apps/server/dist/index.js";
 import {
   CadJobClient, DeliveryService, DrawingJobClient,
   DEMO_PROJECTS, HERITAGE_BASELINE_RULE_DATA,
-  IndexedDbProjectRepository, LocalAuthorization,
+  FormalEnvironmentAuthorization, IndexedDbProjectRepository,
   buildArchetypeGeometrySpec, buildFullDemoProject, buildT0bDefinition,
   buildTimberFrameGeometrySpec, demoSeededUuid,
   openWorkbenchDatabase, resolveViewTargets, sha256Hex, translateLegacyGeometry,
@@ -101,7 +103,8 @@ const fetchImpl = (input, init = {}) => new Promise((settle, fail) => {
 // 团队构造样板的定义由已验收的 r2 清单现算，数值不抄进源码
 const t0bManifestPath = "文档/05_验证证据/04_T0_CAD可行性与资产保全/t0b-v3-outputs/r2-geometry/geometry-manifest.json";
 const t0bManifest = JSON.parse(await readFile(resolve(root, t0bManifestPath), "utf8"));
-const allDefinitions = [buildT0bDefinition(t0bManifest), ...DEMO_PROJECTS];
+// 顺序：高都、构造样板、Dai Loy（实施单元 09）
+const allDefinitions = [DEMO_PROJECTS[0], buildT0bDefinition(t0bManifest), ...DEMO_PROJECTS.slice(1)];
 // 只重建指定项目时传 demoId：改一个项目不必等另外两个的制图作业。
 // 不传则全建，manifest 也只在全建时重写，避免留下缺项的清单。
 const only = process.argv.slice(2).filter((item) => !item.startsWith("-"));
@@ -118,7 +121,8 @@ try {
     const repository = new IndexedDbProjectRepository(
       await openWorkbenchDatabase(`gujian-demo-build-${definition.demoId}`),
     );
-    const commands = new ProjectCommandService({ repository, authorization: new LocalAuthorization() });
+    // 演示包在正式环境口径下构建：复核签发命令只有这里放行，浏览器里的本机授权会拒绝
+    const commands = new ProjectCommandService({ repository, authorization: new FormalEnvironmentAuthorization() });
     const started = Date.now();
     const elapsed = () => `${Math.round((Date.now() - started) / 1000)}s`;
 

@@ -15,7 +15,7 @@ tools:
 
 ## 位置
 
-`project-lead / pm-assistant → [research-expert] → pm-assistant / doc-writer`
+`project-lead / pm-assistant / product-designer → [research-expert] → pm-assistant / product-designer / doc-writer`
 
 ## 职责
 
@@ -56,7 +56,7 @@ tools:
 - 只搜索同类竞品
 - 无范围的漫游式检索
 - 把单一案例写成行业结论
-- 做产品取舍、版本规划或正式 PRD
+- 做产品取舍、版本规划、界面设计或正式 PRD
 
 ## 按需读取
 

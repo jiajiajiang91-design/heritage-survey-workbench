@@ -1,0 +1,16 @@
+/* W10 代理交付（66:3123）：交付清单卡 500、草案卡 276，内边距 16；文件卡 76 高内边距 12，标题行 24；摘要行 13/26 */
+.sc-delivery { display: grid; grid-template-columns: minmax(0, 500fr) minmax(0, 276fr); gap: var(--space-md); flex: 1 1 auto; min-height: 0; }
+.sc-delivery-manifest, .sc-delivery-summary { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
+.sc-delivery-file { display: flex; flex-direction: column; gap: var(--space-2xs); min-height: 76px; padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); text-align: left; cursor: pointer; }
+.sc-delivery-file:hover { background: var(--bg-hover); }
+.sc-delivery-file-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); min-height: var(--size-icon-lg); font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; }
+.sc-delivery-file small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+/* 草案卡按内容高（v4 484 高），展开限制条款时在自己的格子里滚动 */
+.sc-delivery-summary { align-self: start; }
+.sc-delivery-lines { list-style: none; margin: 0; padding: 0; font: var(--font-weight-regular) var(--font-size-13)/var(--line-26) var(--font-family-ui); color: var(--text-primary); }
+.sc-delivery-blockers p { font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); color: var(--text-primary); }
+.sc-delivery-restrictions { margin: 0; padding-left: var(--space-lg); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-delivery-receipt { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2xs) var(--space-md); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); }
+.sc-delivery-receipt div { display: contents; }
+.sc-delivery-receipt dt { color: var(--text-secondary); }
+.sc-delivery-receipt dd { color: var(--text-primary); }

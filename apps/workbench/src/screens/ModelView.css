@@ -1,0 +1,19 @@
+/* W06 三维模型（66:2777）：视口卡 526 与对象树卡 250，间距 12，内边距 12 间距 8；画布 488 高；树行 36 高 */
+.sc-model { display: grid; grid-template-columns: minmax(0, 526fr) minmax(0, 250fr); gap: var(--space-md); flex: 1 1 auto; min-height: 0; }
+.sc-model-viewport, .sc-model-tree { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
+.sc-model-toolbar { display: flex; align-items: center; gap: var(--space-sm); min-height: var(--size-control-md); }
+.sc-model-canvas { position: relative; flex: 1 1 auto; min-height: 320px; background: var(--bg-subtle); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; }
+.sc-model-canvas .glb-viewer { flex: 1 1 auto; min-height: 320px; }
+.sc-model-task { position: absolute; top: var(--space-md); left: var(--space-md); right: var(--space-md); z-index: 2; }
+.sc-model-gate { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); }
+.sc-model-gate strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-model-form { display: flex; flex-direction: column; gap: var(--space-md); }
+.sc-model-legend { display: flex; align-items: center; gap: var(--space-sm); min-height: 44px; }
+.sc-model-legend-unknown { border-radius: var(--radius-full); }
+.sc-model-unknowns { display: flex; flex-direction: column; border-top: var(--stroke-hairline) solid var(--border-subtle); }
+.sc-model-tree-rows { display: flex; flex-direction: column; }
+.sc-model-tree-row { display: flex; align-items: center; gap: var(--space-sm); height: var(--size-control-md); padding: 0 var(--space-sm); border-radius: var(--radius-md); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-model-tree-row small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-model-tree-row--child { padding-left: var(--space-2xl); }
+.sc-model-tree-row.is-selected { background: var(--bg-selected); font-weight: var(--font-weight-medium); }
+.sc-model-selected { display: flex; flex-direction: column; padding-top: var(--space-sm); border-top: var(--stroke-hairline) solid var(--border-subtle); }

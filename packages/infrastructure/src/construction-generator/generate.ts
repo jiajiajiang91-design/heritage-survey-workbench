@@ -655,7 +655,7 @@ function buildEaveDetail(assembly: ConstructionAssembly, form: BuildingForm): vo
       key: "fly-rafter-undetermined",
       subjectRef: "form:eave",
       reasonCode: "FLY_RAFTER_NOT_DETERMINED",
-      descriptionZh: "资料判不出檐口是否用飞椽，本次不生成飞椽与檐口封闭构件。补齐檐口近景照片或檐部做法记录后可重新生成。",
+      descriptionZh: "资料判不出檐口是否用飞椽，本次不生成飞椽与里口木。补齐檐口近景照片或檐部做法记录后可重新生成。",
       requiredEvidence: ["檐口近景照片", "檐部做法的形制定级记录"],
       affectedRefs: ["form:eave"],
     });
@@ -697,7 +697,7 @@ function buildEaveDetail(assembly: ConstructionAssembly, form: BuildingForm): vo
   assembly.add({
     stableKey: "eave-closure",
     componentType: "eaveClosure",
-    displayNameZh: "檐口封闭",
+    displayNameZh: "里口木",
     materialCode: form.materials.flyRafter,
     solid: boxSolid({
       sizeX: width, sizeY: fly.sectionSize.valueMm, sizeZ: fly.eaveClosureHeight.valueMm,
@@ -738,7 +738,7 @@ function buildEnclosure(assembly: ConstructionAssembly, form: BuildingForm): voi
   // 有墙的面上是否开门窗，形制参数里没有这一项。前檐照片拍不到后檐与山面，
   // 因此不生成门窗构件，也不默认判为无。质量基准 2.3 要求演示项目之间构件
   // 深度一致，缺的类型要么补出来要么说明依据，不能默认省略。
-  if (sides.some((side) => !side.open)) {
+  if (sides.some((side) => !side.open) && !form.surveyed?.wallOpenings) {
     assembly.addUnknown({
       key: "fitment-openings-undetermined",
       subjectRef: "form:fitment",
@@ -749,8 +749,8 @@ function buildEnclosure(assembly: ConstructionAssembly, form: BuildingForm): voi
     });
   }
 
-  // 基础在地面以下，照片与形制规则都给不出分层做法
-  assembly.addUnknown({
+  // 基础在地面以下，照片与形制规则都给不出分层做法；有探槽或工程档案记录时不记未知项
+  if (!form.surveyed?.foundation) assembly.addUnknown({
     key: "foundation-layers-undetermined",
     subjectRef: "form:foundation",
     reasonCode: "FOUNDATION_LAYERS_NOT_DETERMINED",
@@ -761,8 +761,8 @@ function buildEnclosure(assembly: ConstructionAssembly, form: BuildingForm): voi
 
   for (const side of sides) {
     if (side.open) {
-      // 敞廊是形制不是省略，如实记录该面无围护
-      assembly.addUnknown({
+      // 敞廊是形制不是省略，如实记录该面无围护；现场记录已判明敞开时不记未知项
+      if (!form.surveyed?.enclosure) assembly.addUnknown({
         key: `${side.key}:open`,
         subjectRef: `form:${side.key}`,
         reasonCode: "ENCLOSURE_DECLARED_OPEN",

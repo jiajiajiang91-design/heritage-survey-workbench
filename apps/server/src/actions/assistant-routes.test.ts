@@ -132,6 +132,41 @@ describe("助手回合", () => {
     expect(events.find((e) => e.type === "answer")).toMatchObject({ text: "泥道栱是坐于栌斗的横栱" });
   });
 
+  // 实施单元 09：模型把提问选成 answer_question 工具时，服务端再调一次模型生成回答，不当动作下发
+  it("模型选了回答问题这个工具时，用项目现状生成文字回答，不下发动作", async () => {
+    const calls: Array<{ tools: number; systemPrompt: string; userContent: string }> = [];
+    const gateway = {
+      configured: true,
+      executeWithTools: async (input: { systemPrompt: string; userContent: string; tools: unknown[] }) => {
+        calls.push({ tools: input.tools.length, systemPrompt: input.systemPrompt, userContent: input.userContent });
+        return input.tools.length
+          ? { kind: "tool_call" as const, name: "answer_question", argumentsJson: JSON.stringify({ question: "有几份资料" }), raw: "raw-tool" }
+          : { kind: "text" as const, content: "共 5 份资料。", raw: "raw-text" };
+      },
+    };
+    const rt = new AssistantRuntime({ gateway, ledger: new ActionLedger(":memory:"), tokens: new ConfirmationTokenStore() });
+    const events = await collect((emit) =>
+      rt.handleTurn(turnBody("这个项目有几份资料？", { ...SNAPSHOT_FULL, contextZh: "资料 5 份。" }), "s1", emit, new AbortController().signal),
+    );
+    expect(events.find((e) => e.type === "answer")).toMatchObject({ text: "共 5 份资料。" });
+    expect(events.some((e) => e.type === "action")).toBe(false);
+    // 第二次调用不带工具，且带着项目现状
+    expect(calls).toHaveLength(2);
+    expect(calls[1]?.tools).toBe(0);
+    expect(calls[1]?.systemPrompt).toContain("资料 5 份。");
+  });
+
+  it("助手建议由模型按项目现状生成，模型不可用时返回不可用", async () => {
+    const rt = runtime({ text: JSON.stringify({ suggestion: "资料齐全，可以进入核对实测。", basis: "资料清单" }) });
+    const reply = await rt.suggest({ snapshot: { ...SNAPSHOT_FULL, contextZh: "资料 5 份。" } }, new AbortController().signal);
+    expect(reply).toMatchObject({ suggestion: "资料齐全，可以进入核对实测。", basis: "资料清单", source: "model" });
+    const offline = new AssistantRuntime({
+      gateway: { configured: false, executeWithTools: async () => { throw new Error("unreachable"); } },
+      ledger: new ActionLedger(":memory:"), tokens: new ConfirmationTokenStore(),
+    });
+    expect((await offline.suggest({ snapshot: SNAPSHOT_FULL }, new AbortController().signal)).source).toBe("unavailable");
+  });
+
   it("模型不可用时关键词路径仍可执行明确指令", async () => {
     const rt = new AssistantRuntime({
       gateway: { configured: false, executeWithTools: async () => { throw new Error("unreachable"); } },

@@ -12,6 +12,12 @@ const kindMap: Record<string, ArtifactRecord["kind"]> = {
   sourceMap: "drawingSourceMap", checkReport: "checkReport",
 };
 
+const extensionKinds: Record<string, ArtifactRecord["kind"]> = { png: "png", svg: "svg", pdf: "pdf", dxf: "dxf" };
+function kindByExtension(fileName: string): ArtifactRecord["kind"] {
+  const extension = fileName.toLowerCase().split(".").pop() ?? "";
+  return extensionKinds[extension] ?? "checkReport";
+}
+
 export class DrawingJobClient {
   #active: { jobId: string; csrfToken: string } | null = null;
 
@@ -82,7 +88,9 @@ export class DrawingJobClient {
     await this.input.repository.stageAssets(sessionId, downloaded.map((item) => item.record), new Map(downloaded.map((item) => [item.record.id, item.blob])));
     const artifacts = downloaded.map(({ worker, record }) => ArtifactRecordSchema.parse({
       id: crypto.randomUUID(), projectId: head.projectId, projectRevisionId: geometry.projectRevisionId, geometryRevisionId: geometry.id,
-      requirementMatrixId: matrix.id, kind: kindMap[worker.kind] ?? "checkReport", fileName: record.fileName, assetId: record.id,
+      // 作业进程给的类型认不出时按文件后缀归类，不能一律标成检查记录：
+      // 一张 PNG 预览标成检查记录，用户点开看到图纸会以为档案标错了
+      requirementMatrixId: matrix.id, kind: kindMap[worker.kind] ?? kindByExtension(record.fileName), fileName: record.fileName, assetId: record.id,
       sha256: record.sha256, mimeType: record.mimeType, byteLength: record.byteLength, status: "generated-not-qualified", l1Eligible: false,
       formalEligibility: false, sourceRefs: [geometry.id, matrix.id], blockers: ["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE"], createdAt,
     }));
@@ -94,7 +102,7 @@ export class DrawingJobClient {
     const checkRun = CheckRunSchema.parse({
       id: crypto.randomUUID(), projectId: head.projectId, projectRevisionId: updated.revisionId, geometryRevisionId: geometry.id,
       artifactRefs: artifacts.map((item) => item.id), status: "completed", results: [
-        { code: "DRAWING_OUTPUT_HASH_CLOSURE", outcome: "passed", message: "所有图纸成果与服务端构建清单哈希一致。", sourceRefs: [completed.buildRecordHash] },
+        { code: "DRAWING_OUTPUT_HASH_CLOSURE", outcome: "passed", message: "每份图纸文件都与本次出图的生成记录逐一对上，出图后没有被改动过。", sourceRefs: [completed.buildRecordHash] },
         { code: "PROFESSIONAL_REVIEW_REQUIRED", outcome: "blocked", message: "图纸尚未经过项目责任人员专业复核。", sourceRefs: [geometry.id] },
       ], reportAssetId: report.assetId, reportHash: report.sha256, qualification: "generated-not-qualified", l1Eligible: false, formalEligibility: false, completedAt: createdAt,
     });

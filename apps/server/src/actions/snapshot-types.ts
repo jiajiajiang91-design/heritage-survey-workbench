@@ -16,6 +16,9 @@ export const WorkspaceSnapshotSchema = z.object({
   // 用户当前是否在某张证据图片上框了一个位置。框选修正的前置条件，
   // 也是模型可见目录里该动作是否可选的依据。
   hasImageSelection: z.boolean().optional(),
+  // 项目上下文（实施单元 09）：客户端按真实数据写成的一段中文，含项目、资料、尺寸、问题、模型、图纸、
+  // 检查与签发的现状。回答问题与生成建议只依据它，模型不得补写里面没有的数字。
+  contextZh: z.string().max(8_000).optional(),
 }).strict();
 
 export type WorkspaceSnapshot = z.infer<typeof WorkspaceSnapshotSchema>;

@@ -58,7 +58,7 @@ function minimalSnapshot(): Record<string, unknown> {
     candidates: [],
     issues: [],
     dependencyEdges: [],
-    adoptedRecordRefs: [],
+    reviewSignoffs: [], adoptedRecordRefs: [],
   };
 }
 

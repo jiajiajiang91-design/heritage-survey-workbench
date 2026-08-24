@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { ReviewSignoffSchema } from "./delivery.js";
 import { DrawingViewKindSchema } from "./drawings.js";
 import { FactEnvelopeSchema, ProducerRefSchema } from "./provenance.js";
 import { ExclusionRecordSchema } from "./assistant-records.js";
@@ -252,6 +253,10 @@ export const IssueSchema = z.object({
   }
 });
 
+// 依赖边。2026-08-22 单元 07 起改为按记录已有的引用字段推导，不再存这张表：
+// 存一份边只是 geometryRevisionId 一类权威字段的副本，两者一旦不同步，
+// 算出来的影响范围就是错的且看不出来。推导实现见 packages/application/src/impact-service.ts。
+// 字段保留是为了不动快照版本号与三个演示包，数组恒为空，由测试锁住。
 export const DependencyEdgeSchema = z.object({
   id: UuidSchema,
   fromRef: NonEmptyRefSchema,
@@ -287,6 +292,8 @@ export const ProjectSnapshotSchema = z.object({
   dependencyEdges: z.array(DependencyEdgeSchema),
   geometrySpecs: z.array(ProjectDrivenGeometrySpecSchema).default([]),
   geometryRevisions: z.array(GeometryRevisionSchema).default([]),
+  // 复核签发记录随快照走，导出导入原样携带（实施单元 09）
+  reviewSignoffs: z.array(ReviewSignoffSchema).default([]),
   adoptedRecordRefs: z.array(NonEmptyRefSchema),
 }).strict().superRefine((value, context) => {
   if (value.buildings.some((building) => building.projectId !== value.project.id)) {

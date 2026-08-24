@@ -1,0 +1,7 @@
+/* B01 新建任务（66:3851）：对话框 720 宽内边距 24 间距 12；步骤条 40 高，步骤片 32 高圆角 8 */
+.sc-create { width: 100%; max-width: 720px; max-height: 100%; overflow: auto; display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-2xl); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-create-title { font: var(--font-weight-medium) var(--font-size-18)/var(--line-26) var(--font-family-ui); color: var(--text-primary); }
+.sc-create-note { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
+.sc-create-steps { display: flex; gap: var(--space-sm); min-height: var(--size-control-lg); align-items: flex-start; }
+.sc-create-step { display: inline-flex; align-items: center; height: var(--size-control-sm); padding: 0 var(--space-md); border-radius: var(--radius-md); background: var(--bg-subtle); color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
+.sc-create-step.is-active { background: var(--bg-selected); color: var(--text-primary); font-weight: var(--font-weight-medium); }

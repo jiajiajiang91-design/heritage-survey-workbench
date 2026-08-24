@@ -1,0 +1,99 @@
+{
+  "runId": "heritage-product-prototype-v3-2026-08-21",
+  "fileKey": "JjPzJEu3boS7xFFlERfs3B",
+  "fileUrl": "https://www.figma.com/design/JjPzJEu3boS7xFFlERfs3B",
+  "fileName": "古建保护成果工作台 · 产品原型 v2",
+  "status": "complete",
+  "lastReviewed": "2026-08-21",
+  "page": {
+    "name": "04 产品原型 v3",
+    "id": "29:2"
+  },
+  "sources": [
+    "文档/01_产品/01_核心PRD.md",
+    "文档/01_产品/03_界面与交互形态.md",
+    "文档/02_技术/02_界面视觉规范.md",
+    "交互原型/02_AI工作台 当前实现",
+    "古建项目接续 (fork1) 对话，只读核对"
+  ],
+  "layout": {
+    "canvas": "1440 × 900",
+    "topbarHeight": 56,
+    "workspaceHeight": 844,
+    "leftRailWidth": 240,
+    "centerWidth": 820,
+    "assistantWidth": 380
+  },
+  "components": {
+    "V3/Tag": {"id": "31:9", "variants": 5},
+    "V3/Info Row": {"id": "33:39", "variants": 5},
+    "V3/Task Nav Item": {"id": "34:30", "variants": 4},
+    "V3/Topbar": {"id": "35:14", "variants": 1},
+    "V3/Assistant Panel": {"id": "36:14", "variants": 1},
+    "V3/Left Rail": {"id": "38:444", "variants": 8}
+  },
+  "screens": {
+    "P01 项目列表": "39:2",
+    "W01 任务卡": "39:53",
+    "W02 资料清单": "39:218",
+    "W03 实测基准": "39:386",
+    "W04 构件清单": "41:341",
+    "W04A 框选修正": "41:519",
+    "W05 现状记录": "42:546",
+    "W06 三维模型": "42:710",
+    "W07 问题队列": "43:755",
+    "W08 图纸样式": "43:926",
+    "W09 图纸与检查": "44:968",
+    "W09A 局部退回": "44:1121",
+    "W10 交付包": "44:1306",
+    "P02 模型运行与费用": "45:1250",
+    "P03 修改历史": "45:1325",
+    "B01 新建任务": "45:1399",
+    "B02 导入冲突": "45:1490",
+    "B03 识别降级": "46:1379",
+    "B04 服务恢复": "46:1539"
+  },
+  "prototype": {
+    "screens": 19,
+    "mainAndBranchReactions": 35,
+    "projectNavigationReactions": 54,
+    "totalReactions": 89
+  },
+  "changes": [
+    "旧版产品原型页改为 99 产品原型 v2 归档",
+    "顶栏删除演示、人员和来源等重复标签",
+    "状态标签改为内容自适应宽度",
+    "信息行采用伸缩内容列和固定状态列",
+    "任务导航采用固定编号列、伸缩标题列和固定状态列",
+    "工作台统一为 240 / 820 / 380 三栏结构",
+    "补齐项目级页面、主流程页面和异常状态页面",
+    "统一 19 屏的标题、说明、卡片和组件间距档位",
+    "修复指标卡、助手消息、证据说明卡等固定高度容器的内容压缩",
+    "修改历史采用固定时间列、操作人列、动作列和右侧状态列",
+    "单选与复选项统一图形和文字间距",
+    "五个弹层的操作区统一保留 24 px 底部留白",
+    "收紧导入冲突对比卡和交付归档说明卡的多余留白"
+  ],
+  "validation": {
+    "screenDimensions": "passed",
+    "workspaceColumns": "passed",
+    "textOverlap": "passed",
+    "textOverflow": "passed",
+    "minimumFontSize": "passed",
+    "forbiddenTechnicalText": "passed",
+    "redundantTopbarTags": "passed",
+    "prototypeDestinations": "passed",
+    "autoLayoutCapacity": "passed",
+    "spacingTokens": "passed",
+    "dialogActionInset": "passed",
+    "buttonAndTagCentering": "passed",
+    "clippingBounds": "passed",
+    "historyColumnAlignment": "passed",
+    "visualReview": "passed"
+  },
+  "implementation": {
+    "status": "requires_rebuild",
+    "reason": "当前 React 前端仍为早期稀疏版本，布局尺寸、信息密度和业务文案与 v3 原型存在差异。",
+    "codeConnect": "deferred"
+  }
+}

@@ -8,6 +8,7 @@ import {
   type DeliveryDraft,
   type DeliveryEvaluation,
   type GeometryRevision,
+  type ReviewSignoff,
 } from "@gujian/domain";
 import { IndexedDbProjectRepository } from "./indexeddb-project-repository.js";
 import { sha256Hex } from "./hash.js";
@@ -22,13 +23,36 @@ const GEOMETRY_KIND: Record<string, ArtifactRecord["kind"]> = {
 type DeliveryBlockerDetail = NonNullable<DeliveryEvaluation["blockerDetails"]>[number];
 const FORMAL_ONLY_CODES = new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", "L1_ELIGIBILITY_FALSE"]);
 
+// 复核签发记录解除哪些正式资格阻断：复核与签发两条随记录解除，L1 只在记录认定达到样板等级时解除
+export function signoffFor(head: ProjectHead, geometryRevisionId: string): ReviewSignoff | null {
+  return head.snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometryRevisionId) ?? null;
+}
+
+export function liftedBySignoff(signoff: ReviewSignoff | null): Set<string> {
+  if (!signoff) return new Set();
+  return new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", ...(signoff.l1Eligible ? ["L1_ELIGIBILITY_FALSE"] : [])]);
+}
+
+// 签发是项目责任人员对正式资格的人工决定：只阻断正式资格、不阻断代理成果的项
+// （未知项、未关闭的专业判断、检查里的复核要求）随签发一并视为已复核接受；
+// 阻断代理成果本身的硬错误不受签发影响。L1 另按记录里的认定。
 export function collectDeliveryBlockerDetails(head: ProjectHead, geometry: GeometryRevision, artifacts: readonly ArtifactRecord[], checkRun: CheckRun): DeliveryBlockerDetail[] {
   const details: DeliveryBlockerDetail[] = [];
+  const signoff = signoffFor(head, geometry.id);
+  const lifted = liftedBySignoff(signoff);
   const add = (detail: DeliveryBlockerDetail) => {
+    if (lifted.has(detail.code) || lifted.has(detail.code.replace(/^CHECK_BLOCKED:/, ""))) return;
+    if (signoff && !detail.blocksProxyOutcome && detail.code !== "L1_ELIGIBILITY_FALSE") return;
     if (!details.some((item) => item.code === detail.code && item.sourceRef === detail.sourceRef)) details.push(detail);
   };
+  // 三条正式资格限制各有各的话，不合写成一句带内部码的判词
+  const FORMAL_ONLY_ZH: Record<string, string> = {
+    PROFESSIONAL_REVIEW_REQUIRED: "成果尚未经项目责任人员专业复核。",
+    FORMAL_SIGNOFF_UNAVAILABLE: "本机身份不具备签发资格，签发须在正式环境完成。",
+    L1_ELIGIBILITY_FALSE: "成果未评定为专业样板等级，不作为其他项目的参照标准。",
+  };
   for (const code of FORMAL_ONLY_CODES) {
-    add({ code, sourceType: "qualification", sourceRef: geometry.id, message: "代理成果未取得专业复核、正式签发或 L1 资格。", blocksProxyOutcome: false });
+    add({ code, sourceType: "qualification", sourceRef: geometry.id, message: FORMAL_ONLY_ZH[code] ?? "成果尚未取得正式交付资格。", blocksProxyOutcome: false });
   }
   const spec = head.snapshot.geometrySpecs.find((item) => item.id === geometry.geometrySpecId);
   for (const unknown of spec?.unknowns ?? []) {
@@ -40,9 +64,13 @@ export function collectDeliveryBlockerDetails(head: ProjectHead, geometry: Geome
   for (const result of checkRun.results.filter((item) => item.outcome === "blocked")) {
     add({ code: `CHECK_BLOCKED:${result.code}`, sourceType: "check", sourceRef: checkRun.id, message: result.message, blocksProxyOutcome: !FORMAL_ONLY_CODES.has(result.code) });
   }
+  const ARTIFACT_CODE_ZH: Record<string, string> = {
+    PROFESSIONAL_REVIEW_REQUIRED: "尚未经专业复核",
+    FORMAL_SIGNOFF_UNAVAILABLE: "不能由本机签发",
+  };
   for (const artifact of artifacts) {
     for (const code of artifact.blockers) {
-      add({ code, sourceType: "artifact", sourceRef: artifact.id, message: `成果 ${artifact.fileName} 的资格或质量阻断：${code}`, blocksProxyOutcome: !FORMAL_ONLY_CODES.has(code) });
+      add({ code, sourceType: "artifact", sourceRef: artifact.id, message: `成果文件 ${artifact.fileName} 在签发前${ARTIFACT_CODE_ZH[code] ?? "有未解除的限制"}。`, blocksProxyOutcome: !FORMAL_ONLY_CODES.has(code) });
     }
   }
   return details;
@@ -113,14 +141,28 @@ export class DeliveryService {
       id: crypto.randomUUID(), projectId: head.projectId, projectRevisionId: updated.revisionId, geometryRevisionId: geometry.id,
       evaluationId: evaluation.id, artifactRefs: [...unique.map((item) => item.id), manifestArtifact.id], manifestAssetId: manifestAsset.id,
       manifestHash: manifestAsset.sha256, status: "proxy-unissued", l1Eligible: false, formalEligibility: false, signatureStatus: "unsigned",
-      restrictions: ["代理成果", "未签发", "不可用于正式交付或施工", "需专业复核", ...[...new Set(blockerDetails.map((item) => item.message))].slice(0, 96)], createdAt: manifestAsset.createdAt,
+      // 限制条款写给读档案的人：整句中文，逐文件重复的成果限制合并成一条带件数的说明
+      restrictions: [
+        "本套成果由系统生成，签发前只作为待签发成果使用。",
+        "签发前不可用于正式交付、施工或法定档案入库。",
+        "签发前须经项目责任人员专业复核。",
+        ...(() => {
+          const merged = new Map<string, number>();
+          for (const item of blockerDetails) {
+            const key = item.sourceType === "artifact" ? item.message.replace(/^成果文件 .+ 在签发前/, "成果文件在签发前") : item.message;
+            merged.set(key, (merged.get(key) ?? 0) + 1);
+          }
+          return [...merged.entries()].map(([text, count]) => (count > 1 ? `${text}（涉及 ${count} 项）` : text));
+        })().slice(0, 96),
+      ], createdAt: manifestAsset.createdAt,
     });
     await this.input.commands.execute({ commandType: "CreateDeliveryDraft", commandId: crypto.randomUUID(), projectId: head.projectId, actorId, expectedRevisionId: updated.revisionId, issuedAt: draft.createdAt, payload: { draft, manifestAsset, manifestArtifact, stagingSessionId: sessionId } });
     return { head: (await this.input.repository.getProjectHead(head.projectId))!, draft };
   }
 
   blockers(head: ProjectHead): string[] {
-    const missing = geometryPrerequisites(head).missing.map((field) => `缺少已确认事实或任务要求：${field}`);
+    // 几何版本已经建出来，说明构件事实已随几何规格入库，前置事实不再算缺
+    const missing = head.snapshot.geometryRevisions.length ? [] : geometryPrerequisites(head).missing.map((field) => `缺少已确认事实或任务要求：${field}`);
     const open = head.snapshot.issues.filter((item) => item.status === "open").map((item) => item.description);
     return [...missing, ...open];
   }

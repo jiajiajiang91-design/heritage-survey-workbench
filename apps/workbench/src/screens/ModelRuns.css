@@ -1,0 +1,14 @@
+/* P02 模型运行与用量（66:3174）：指标卡 96 高；运行表卡内边距 16，表头 40 高次级底，行 56 高下边线，列 340/180/120/120/160；候选区内边距 20 */
+.sc-runs-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-md); }
+.sc-runs-table { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-runs-head, .sc-runs-row { display: grid; grid-template-columns: minmax(0, 340fr) minmax(0, 180fr) minmax(0, 120fr) minmax(0, 200fr) minmax(0, 160fr); gap: var(--space-md); align-items: center; padding: 0 var(--space-md); }
+.sc-runs-head { min-height: var(--size-control-lg); background: var(--bg-subtle); border-radius: var(--radius-md); font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-runs-row { min-height: 56px; border-bottom: var(--stroke-hairline) solid var(--border-subtle); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-runs-name { display: flex; flex-direction: column; font-weight: var(--font-weight-medium); }
+.sc-runs-name small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-meta); color: var(--text-tertiary); }
+.sc-runs-time { color: var(--text-secondary); }
+.sc-runs-candidates { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-xl); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-subtle); border-radius: var(--radius-md); }
+.sc-runs-candidate { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
+.sc-runs-candidate strong { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-runs-candidate-raw { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-meta); color: var(--text-secondary); white-space: pre-wrap; overflow-wrap: anywhere; }
+.sc-runs-candidate ul { margin: 0; padding-left: var(--space-lg); color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); }

@@ -1,0 +1,5 @@
+/* W04 构件清单（66:1798）：对象卡标题行 24 高；照片 278 高；编号与名称 14/22，说明 13/22 */
+.sc-components-filter { min-height: var(--size-control-sm); padding: 0 var(--space-sm); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); }
+.sc-components-caption { display: flex; flex-direction: column; gap: var(--space-2xs); }
+.sc-components-caption strong { font: var(--font-weight-medium) var(--font-size-14)/var(--line-22) var(--font-family-ui); color: var(--text-primary); }
+.sc-components-caption p { font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); color: var(--text-secondary); }

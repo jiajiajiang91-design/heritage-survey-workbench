@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 
 import { describeFailure } from "../failure-notice";
 import { ActionCard, type ActionCardData } from "./ActionCard";
@@ -21,6 +21,10 @@ export interface ChatPanelProps {
     rectNormalized: { x: number; y: number; width: number; height: number };
   } | null;
   onClearSelection?: () => void;
+  // 消息流之后、输入区之前的附加内容（待采纳建议、长任务进度），随消息一起滚动
+  extra?: ReactNode;
+  // 消息流之前的内容（助手建议卡，V3/Assistant Panel 36:27 Messages 的第一项）
+  lead?: ReactNode;
 }
 
 interface PendingConfirm {
@@ -28,7 +32,7 @@ interface PendingConfirm {
   card: ActionCardData;
 }
 
-export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClearSelection }: ChatPanelProps) {
+export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClearSelection, extra, lead }: ChatPanelProps) {
   const [messages, setMessages] = useState<readonly AssistantMessage[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -112,6 +116,8 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
       }));
     } finally {
       setBusy(false);
+      // 过程提示（正在理解你的指令）只在回合进行中有意义，留在消息流里会像卡住了
+      setMessages((existing) => existing.filter((message) => message.kind !== "progress"));
     }
   }, [append, buildSnapshot, busy, client, handleEvent, input, selection]);
 
@@ -130,32 +136,38 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
       }));
     } finally {
       setBusy(false);
+      setMessages((existing) => existing.filter((message) => message.kind !== "progress"));
     }
   }, [append, client, handleEvent, pendingConfirm]);
 
   return (
     <section className="assistant-chat-panel">
-      <MessageList messages={messages} />
-      {pendingConfirm && (
-        <div className="assistant-pending-confirm">
-          <ActionCard data={pendingConfirm.card} />
-          <ConfirmBar disabled={busy} onDecision={(decision) => void decide(decision)} />
-        </div>
-      )}
-      {selection && (
-        <div className="assistant-selection-chip">
-          <span>已框选：{selection.evidenceTitle}</span>
-          {onClearSelection && (
-            <button type="button" className="gj-btn gj-btn--text" onClick={onClearSelection}>取消框选</button>
-          )}
-        </div>
-      )}
+      {/* 消息流与附加内容一起滚动，输入区固定在面板底部（V3/Assistant Panel 36:35 Composer） */}
+      <div className="assistant-chat-scroll">
+        {lead}
+        <MessageList messages={messages} />
+        {pendingConfirm && (
+          <div className="assistant-pending-confirm">
+            <ActionCard data={pendingConfirm.card} />
+            <ConfirmBar disabled={busy} onDecision={(decision) => void decide(decision)} />
+          </div>
+        )}
+        {selection && (
+          <div className="assistant-selection-chip">
+            <span>已框选：{selection.evidenceTitle}</span>
+            {onClearSelection && (
+              <button type="button" className="gj-btn gj-btn--text" onClick={onClearSelection}>取消框选</button>
+            )}
+          </div>
+        )}
+        {extra}
+      </div>
       <div className="assistant-input-row">
         <textarea
           value={input}
           placeholder={selection
             ? "说要在框选位置改什么，例如：这里漏了一个雀替，和右边那个对称的"
-            : "对助手说要做什么，例如：把 P48 的长度改成 620，或：生成图纸"}
+            : "输入问题或处理要求，例如：生成图纸"}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {

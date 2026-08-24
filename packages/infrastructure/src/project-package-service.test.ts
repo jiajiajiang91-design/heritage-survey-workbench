@@ -222,6 +222,45 @@ describe("ProjectPackageService", () => {
     expect(await seeded.repository.getProjectModelRuns(seeded.projectId)).toHaveLength(1);
   });
 
+  // 动作名只存在命令回执里。包不带回执时，导入后的修改历史每条都显示未记录动作类型，
+  // 看不出这一步做了什么。回执随包走之后，导入侧要能按 commandId 对回原来的动作名。
+  it("导出再导入后每条历史事件仍能对回自己的动作名", async () => {
+    const seeded = await seededRepository();
+    const before = await seeded.repository.exportProjectClosure(seeded.projectId);
+    const beforeReceipts = await seeded.repository.getProjectCommandReceipts(seeded.projectId);
+    expect(beforeReceipts.length).toBeGreaterThan(0);
+
+    const bytes = await seeded.packages.exportZip(seeded.projectId);
+    expect(seeded.packages.parse(bytes, "project.zip").commandReceipts).toHaveLength(beforeReceipts.length);
+
+    await seeded.repository.clearAllData();
+    await seeded.packages.import(bytes, "project.zip", crypto.randomUUID());
+
+    const afterReceipts = await seeded.repository.getProjectCommandReceipts(seeded.projectId);
+    const byCommand = new Map(afterReceipts.map((item) => [item.commandId, item.commandType]));
+    for (const event of before.auditEvents) {
+      expect(byCommand.get(event.commandId)).toBe(
+        beforeReceipts.find((item) => item.commandId === event.commandId)?.commandType,
+      );
+    }
+    // 导入这一步本身也留一条回执，因此比导出前多一条
+    expect(afterReceipts).toHaveLength(beforeReceipts.length + 1);
+    expect(afterReceipts.some((item) => item.commandType === "ImportProjectSnapshot")).toBe(true);
+  });
+
+  it("拒绝携带未知动作名的回执", async () => {
+    const seeded = await seededRepository();
+    const bytes = await seeded.packages.exportJson(seeded.projectId);
+    const value = JSON.parse(new TextDecoder().decode(bytes)) as Record<string, unknown>;
+    const receipts = value.commandReceipts as Array<Record<string, unknown>>;
+    expect(receipts.length).toBeGreaterThan(0);
+    receipts[0]!.commandType = "DropAllData";
+    await seeded.repository.clearAllData();
+    await expect(seeded.packages.import(
+      new TextEncoder().encode(JSON.stringify(value)), "project.json", crypto.randomUUID(),
+    )).rejects.toThrow();
+  });
+
   it("拒绝 ZIP 路径穿越和未支持的文件类型", async () => {
     const seeded = await seededRepository();
     const malicious = zipSync({ "../project.json": strToU8("{}"), "manifest.json": strToU8("{}") });
@@ -243,10 +282,12 @@ describe("ProjectPackageService", () => {
     delete value.modelRuns;
     delete value.ruleRuns;
     delete value.decisions;
+    delete value.commandReceipts;
     const parsed = seeded.packages.parse(new TextEncoder().encode(JSON.stringify(value)), "project.json");
     expect(parsed.modelRuns).toEqual([]);
     expect(parsed.ruleRuns).toEqual([]);
     expect(parsed.decisions).toEqual([]);
+    expect(parsed.commandReceipts).toEqual([]);
   });
 
   it("ZIP 空库回导保留几何、成果、检查、交付和真实成果文件", async () => {

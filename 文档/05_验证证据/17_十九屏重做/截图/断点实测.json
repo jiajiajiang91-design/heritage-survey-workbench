@@ -1,0 +1,38 @@
+[
+  {
+    "inner": 1440,
+    "rail": 240,
+    "center": 820,
+    "assistant": 380,
+    "scrollX": false,
+    "collapsed": false,
+    "topbarToggle": true
+  },
+  {
+    "inner": 1280,
+    "rail": 240,
+    "center": 660,
+    "assistant": 380,
+    "scrollX": false,
+    "collapsed": false,
+    "topbarToggle": true
+  },
+  {
+    "inner": 1200,
+    "rail": 240,
+    "center": 916,
+    "assistant": 44,
+    "scrollX": false,
+    "collapsed": true,
+    "topbarToggle": true
+  },
+  {
+    "inner": 1000,
+    "rail": 56,
+    "center": 900,
+    "assistant": 44,
+    "scrollX": false,
+    "collapsed": true,
+    "topbarToggle": true
+  }
+]

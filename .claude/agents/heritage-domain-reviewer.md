@@ -13,7 +13,7 @@ tools:
 
 ## 位置
 
-`project-lead / pm-assistant / doc-writer / solution-architect → [heritage-domain-reviewer]`
+`project-lead / pm-assistant / product-designer / doc-writer / solution-architect → [heritage-domain-reviewer]`
 
 ## 职责
 

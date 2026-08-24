@@ -1,5 +1,6 @@
-import { ProjectCommandService } from "@gujian/application";
+import { CommandReceiptRecordSchema, ProjectCommandService } from "@gujian/application";
 import {
+  ArchetypeSpecSchema,
   AuditEventSchema,
   AssetRecordSchema,
   ProjectRevisionSchema,
@@ -42,6 +43,8 @@ const ProjectDataSchema = z.object({
   auditHeadHash: Sha256Schema,
   snapshot: ProjectSnapshotSchema,
   auditEvents: z.array(AuditEventSchema).max(100_000),
+  // 命令回执随包走，动作名才不会在导入后丢掉。旧包没有这一项，缺省为空
+  commandReceipts: z.array(CommandReceiptRecordSchema).max(100_000).default([]),
   modelRuns: z.array(ModelRunSchema).max(100_000).default([]),
   ruleRuns: z.array(RuleRunSchema).max(100_000).default([]),
   decisions: z.array(DecisionSchema).max(100_000).default([]),
@@ -53,6 +56,8 @@ const ProjectDataSchema = z.object({
   deliveries: z.array(DeliveryDraftSchema).max(100_000).default([]),
   // v1.4：项目引用的词表条目快照；旧包缺省为空按原格式兼容导入
   conceptEntries: z.array(ConceptEntrySchema).max(2_000).default([]),
+  // 实施单元 09 复查：形制记录随包走。不带这一项的旧包导入后形制会丢，实测基准屏显示未登记形制
+  archetypeSpecs: z.array(ArchetypeSpecSchema).max(10_000).default([]),
   assets: z.array(AssetRecordSchema.extend({
     path: z.string().min(1).max(500),
   }).strict()).max(MAX_ENTRY_COUNT),
@@ -110,6 +115,7 @@ export class ProjectPackageService {
   async #buildProjectData(projectId: string, includeBinary: boolean): Promise<ProjectData> {
     const closure = await this.#repository.exportProjectClosure(projectId);
     const assets = await this.#repository.getProjectAssets(projectId);
+    const commandReceipts = await this.#repository.getProjectCommandReceipts(projectId);
     const modelRuns = await this.#repository.getProjectModelRuns(projectId);
     const ruleRuns = await this.#repository.getProjectRuleRuns(projectId);
     const decisions = await this.#repository.getProjectDecisions(projectId);
@@ -119,6 +125,7 @@ export class ProjectPackageService {
     const checkRuns = await this.#repository.getProjectCheckRuns(projectId);
     const deliveryEvaluations = await this.#repository.getProjectDeliveryEvaluations(projectId);
     const deliveries = await this.#repository.getProjectDeliveries(projectId);
+    const archetypeSpecs = await this.#repository.getProjectArchetypeSpecs(projectId);
     // 项目引用的词表条目随包携带快照（v1.4 §6.3）：按几何对象引用过滤当前词表
     const vocabulary = resolveVocabulary(await this.#repository.getConceptEntries());
     const referencedConcepts = new Set(closure.head.snapshot.geometrySpecs.flatMap((spec) =>
@@ -133,6 +140,9 @@ export class ProjectPackageService {
       auditHeadHash: closure.auditEvents.at(-1)?.eventHash,
       snapshot: closure.head.snapshot,
       auditEvents: closure.auditEvents,
+      // 只带与包内审计事件对得上的回执，导入侧按同一条件校验
+      commandReceipts: commandReceipts.filter((receipt) =>
+        closure.auditEvents.some((event) => event.commandId === receipt.commandId)),
       modelRuns,
       ruleRuns,
       decisions,
@@ -143,6 +153,7 @@ export class ProjectPackageService {
       deliveryEvaluations,
       deliveries,
       conceptEntries,
+      archetypeSpecs,
       assets: assets.map(({ record, content }) => ({
         ...record,
         // 登记时就标为缺失的资料不能因为占位内容存在而被改成可用。
@@ -283,6 +294,7 @@ export class ProjectPackageService {
         sourceRevisionId: data.sourceRevision.id,
         sourceAuditHeadHash: data.auditHeadHash,
         sourceAuditEvents: data.auditEvents,
+        sourceCommandReceipts: data.commandReceipts,
         assets: assetRecords,
         modelRuns: data.modelRuns,
         ruleRuns: data.ruleRuns,
@@ -294,6 +306,7 @@ export class ProjectPackageService {
         deliveryEvaluations: data.deliveryEvaluations,
         deliveries: data.deliveries,
         conceptEntries: data.conceptEntries,
+        archetypeSpecs: data.archetypeSpecs,
         assetSessionId: sessionId,
         packageHash: sha256Hex(bytes),
       },

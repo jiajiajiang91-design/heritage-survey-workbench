@@ -88,6 +88,28 @@ export const DeliveryDraftSchema = z.object({
   createdAt: IsoDateTimeSchema,
 }).strict();
 
+// 复核签发记录（实施单元 09）：项目责任人员在正式环境复核并签发一份交付草案。
+// 草案、成果与检查记录本身不改（它们是生成时的事实），资格由这条记录派生：
+// 有记录的草案按已签发显示，未经专业复核与本机不能签发两条阻断随之解除。
+// 只能随项目包导入，本机命令服务不接受写入（LocalAuthorization 拒绝）。
+export const ReviewSignoffSchema = z.object({
+  id: UuidSchema,
+  projectId: UuidSchema,
+  projectRevisionId: UuidSchema,
+  deliveryDraftId: UuidSchema,
+  geometryRevisionId: UuidSchema,
+  reviewerRole: z.enum(["projectLead", "professionalReviewer"]),
+  reviewerActorId: UuidSchema,
+  reviewedAt: IsoDateTimeSchema,
+  signedAt: IsoDateTimeSchema,
+  issuingEnvironment: z.literal("formal"),
+  // 是否同时认定达到专业样板等级（L1）。复核通过不等于样板等级，分开记。
+  l1Eligible: z.boolean(),
+  statementZh: z.string().min(1).max(1_000),
+}).strict();
+
+export type ReviewSignoff = z.infer<typeof ReviewSignoffSchema>;
+
 export type ArtifactRecord = z.infer<typeof ArtifactRecordSchema>;
 export type CheckRun = z.infer<typeof CheckRunSchema>;
 export type DeliveryEvaluation = z.infer<typeof DeliveryEvaluationSchema>;

@@ -64,7 +64,8 @@ describe("演示内容用语", () => {
     for (const definition of DEMO_PROJECTS) {
       if (!definition.archetype) continue;
       expect(definition.archetype.sourceDeclarationZh.length, definition.demoId).toBeGreaterThan(20);
-      expect(definition.archetype.estimatedDimensionKeys.length, definition.demoId).toBeGreaterThan(0);
+      // 每个尺寸要么声明为照片估算，要么声明为实测；两张表都空等于没说来源
+      expect(definition.archetype.estimatedDimensionKeys.length + (definition.archetype.measuredDimensionKeys?.length ?? 0), definition.demoId).toBeGreaterThan(0);
     }
   });
 });

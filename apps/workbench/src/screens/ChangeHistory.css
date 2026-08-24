@@ -1,0 +1,15 @@
+/* P03 修改历史（66:3755）：筛选行 40 高；列表卡内边距 16 间距 12；事件卡 86 高内边距 12，标题行 24（时间 100、操作人 80、动作 520） */
+.sc-history-filters { display: flex; gap: var(--space-sm); min-height: var(--size-control-lg); align-items: flex-start; }
+.sc-history-list { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-history-event { display: flex; flex-direction: column; gap: var(--space-sm); min-height: 86px; padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-history-title { display: flex; align-items: center; gap: var(--space-md); min-height: var(--size-icon-lg); }
+.sc-history-time { flex: 0 0 auto; width: 140px; font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-history-actor { flex: 0 0 auto; width: 80px; font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-history-action { flex: 0 1 520px; min-width: 0; font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sc-history-detail { display: flex; gap: var(--space-2xl); align-items: flex-start; font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); }
+.sc-history-write { color: var(--text-secondary); overflow-wrap: anywhere; }
+.sc-history-impact { color: var(--status-warning-fg); white-space: nowrap; flex: none; }
+.sc-history-impact--unknown { color: var(--text-tertiary); }
+.sc-history-none { color: var(--text-secondary); white-space: nowrap; flex: none; }
+.sc-history-note { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-tertiary); }
+.sc-history-note--warn { color: var(--text-warning); }

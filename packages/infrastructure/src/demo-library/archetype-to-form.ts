@@ -30,12 +30,13 @@ function requireDimension(archetype: DemoArchetype, key: string): number {
 export function buildArchetypeGeometrySpec(input: ArchetypeGeometryInput): ProjectDrivenGeometrySpec {
   const { archetype, head } = input;
   const estimated = new Set(archetype.estimatedDimensionKeys);
+  const measured = new Set(archetype.measuredDimensionKeys ?? []);
   const evidenceRefs = [...input.formEvidenceRefs];
 
-  // 照片估算与规则推算要分开标。把估算值显示成推算值等于抹掉不确定性。
+  // 实测、照片估算与规则推算要分开标。把估算值显示成推算值等于抹掉不确定性。
   const sourced = (key: string, valueMm: number): SourcedLength => ({
     valueMm,
-    basis: estimated.has(key) ? "demo" : "rule",
+    basis: measured.has(key) ? "measured" : estimated.has(key) ? "demo" : "rule",
     factRefs: [`archetype:${archetype.ruleSetId}:${key}`],
     evidenceRefs,
   });
@@ -115,6 +116,7 @@ export function buildArchetypeGeometrySpec(input: ArchetypeGeometryInput): Proje
         eaveClosureHeight: sourced("eaveClosureHeight", archetype.flyRafter.eaveClosureHeightMm),
       }
       : null,
+    ...(archetype.surveyed ? { surveyed: archetype.surveyed } : {}),
     materials: archetype.materials as BuildingForm["materials"],
   };
 

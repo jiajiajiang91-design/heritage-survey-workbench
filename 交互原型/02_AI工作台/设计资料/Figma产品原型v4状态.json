@@ -1,0 +1,233 @@
+{
+  "runId": "heritage-product-prototype-v4-2026-08-21",
+  "fileKey": "JjPzJEu3boS7xFFlERfs3B",
+  "page": {
+    "name": "05 产品原型 v4",
+    "id": "66:1559"
+  },
+  "basis": {
+    "page": "04 产品原型 v3",
+    "id": "29:2",
+    "relation": "视觉规范完全继承，技术内容与信息结构换成实现侧的真实状态"
+  },
+  "designSystem": {
+    "collections": [
+      "Primitives 39",
+      "Semantic Color 62",
+      "Geometry 26",
+      "Typography 21"
+    ],
+    "total": 148,
+    "definedOn": [
+      "01 基础规范",
+      "02 组件"
+    ],
+    "addedInV4": [
+      "teal/50",
+      "teal/100",
+      "teal/600",
+      "teal/700",
+      "source/ai-bg",
+      "source/ai-fg",
+      "source/ai-border",
+      "source/human-bg",
+      "source/human-fg",
+      "source/human-border"
+    ]
+  },
+  "componentChanges": [
+    "V3/Tag 的 Tone 轴由五个增至七个，新增 Ai 与 Rule，分别绑定 source/ai 与 source/rule",
+    "V3/Assistant Panel 的消息气泡与四处文字改为随内容长高，换真实文案后不再压行",
+    "V3/Assistant Panel 的用户消息气泡改浅灰底深色字，与主按钮区分（裁决第 4 条）",
+    "V3/Topbar 的导航项由运行与费用改为运行与用量，标识块绑定 action/primary-bg 且圆角改为 radius/md",
+    "V3/Topbar 的面包屑默认值改为高都玉皇庙主殿现状记录",
+    "V3/Tag 的 Tone 轴增至八个：补 Human，来源五类各有专属色调",
+    "QualificationNotice 的图面限制文案改为日期栏印未签发，与实际出图一致",
+    "五个对话框遮罩层修回 bg/scrim：统一主按钮令牌时误绑为不透明黑"
+  ],
+  "status": "complete",
+  "screens": {
+    "P01 项目列表": {
+      "id": "66:1560",
+      "done": true
+    },
+    "W01 任务卡": {
+      "id": "66:1599",
+      "done": true,
+      "stage": "01"
+    },
+    "W02 资料清单": {
+      "id": "66:1657",
+      "done": true,
+      "stage": "02"
+    },
+    "W03 实测基准": {
+      "id": "66:1716",
+      "done": true,
+      "stage": "03"
+    },
+    "W04 构件清单": {
+      "id": "66:1783",
+      "done": true,
+      "stage": "04"
+    },
+    "W04A 框选修正": {
+      "id": "66:1846",
+      "done": true,
+      "stage": "04"
+    },
+    "W05 现状记录": {
+      "id": "66:1923",
+      "done": true,
+      "stage": "05"
+    },
+    "W06 三维模型": {
+      "id": "66:2762",
+      "done": true,
+      "stage": "04"
+    },
+    "W07 问题队列": {
+      "id": "66:2830",
+      "done": true,
+      "stage": "05"
+    },
+    "W08 图纸样式": {
+      "id": "66:2892",
+      "done": true,
+      "stage": "06"
+    },
+    "W09 检查与资格": {
+      "id": "66:2945",
+      "done": true,
+      "stage": "07",
+      "renamedFrom": "W09 图纸与检查"
+    },
+    "W09A 资格与限制": {
+      "id": "66:3012",
+      "done": true,
+      "stage": "07",
+      "renamedFrom": "W09A 局部退回"
+    },
+    "W10 代理交付": {
+      "id": "66:3112",
+      "done": true,
+      "stage": "08",
+      "renamedFrom": "W10 交付包"
+    },
+    "P02 模型运行与用量": {
+      "id": "66:3172",
+      "done": true,
+      "renamedFrom": "P02 模型运行与费用"
+    },
+    "P03 修改历史": {
+      "id": "66:3753",
+      "done": true
+    },
+    "B01 新建任务": {
+      "id": "66:3811",
+      "done": true
+    },
+    "B02 资料缺失": {
+      "id": "66:3891",
+      "done": true,
+      "stage": "02",
+      "renamedFrom": "B02 导入冲突"
+    },
+    "B03 识别未运行": {
+      "id": "66:3984",
+      "done": true,
+      "stage": "04",
+      "renamedFrom": "B03 识别降级"
+    },
+    "B04 服务恢复": {
+      "id": "66:4054",
+      "done": true,
+      "stage": "07"
+    }
+  },
+  "progress": {
+    "total": 19,
+    "done": 19
+  },
+  "dataSource": {
+    "project": "gaodu-yuhuang-temple-main-hall",
+    "derivedBy": "seedDemoProject 播种后调 buildArchetypeGeometrySpec，并读 apps/workbench/public/demo/gaodu-yuhuang-temple-main-hall.gujian.zip",
+    "recordedIn": "文档/05_验证证据/14_界面重做/原型内容与真实数据对照表.md 第三节"
+  },
+  "nextUnits": [
+    "06 外壳与令牌",
+    "07 影响范围能力",
+    "08 十九屏与四动作"
+  ],
+  "audit": {
+    "date": "2026-08-22",
+    "method": "八维度并行审计加三视角对抗式复核",
+    "confirmed": 24,
+    "fixed": 24,
+    "notes": "复核阶段有 106 个 agent 因账户额度中断，35 条发现未经复核，已由主对话逐条自查",
+    "recordedIn": "文档/05_验证证据/14_界面重做/v4对v3的偏离清单.md 第十节",
+    "secondPass": {
+      "date": "2026-08-22",
+      "method": "主对话逐条自查审计中未复核的 35 条，另做残留字符串与阶段页签的全页扫描",
+      "note": "页签图层名与显示文字对齐，阶段与视图一对一核对通过"
+    },
+    "layoutPass": {
+      "date": "2026-08-22",
+      "method": "对 19 屏执行自动布局结构扫描，并导出 P01、W03、W04A、W08、W10 做视觉复核",
+      "fixed": 22,
+      "scope": [
+        "12 个固定高面板的末级操作区统一锚定底部",
+        "W08 六组设置项统一标签列与值列",
+        "W10 双按钮操作区改为横向右对齐",
+        "P01 顶栏与内容顺序修正",
+        "B01 弹层背景替换为完整项目列表布局",
+        "W04A 框选范围完整收进照片区域"
+      ],
+      "result": "间距令牌、按钮高度、多按钮操作区、弹层内边距、字体、三栏工作区和内部裁切检查均通过"
+    }
+  },
+  "productDefectsFound": [
+    {
+      "what": "规则核对一律作废未解决问题",
+      "where": "packages/application/src/project-command-service.ts appendRuleEvaluation",
+      "status": "已修并重建三个演示包"
+    },
+    {
+      "what": "项目包不带命令回执，导入后修改历史丢动作名",
+      "where": "项目包格式与 ImportProjectSnapshot",
+      "status": "已修并重建三个演示包"
+    },
+    {
+      "what": "界面说图签日期栏留空，实际印未签发",
+      "where": "apps/workbench/src/QualificationNotice.tsx",
+      "status": "已修，按图纸实际做法改文案"
+    },
+    {
+      "what": "费用一律不估算，理由写作没有可靠单价依据",
+      "where": "apps/workbench/src/query-models.ts",
+      "status": "已修：新增 model-pricing.ts，按 kimi-k2.6 公开单价与用量计价，缓存命中单独计价"
+    },
+    {
+      "what": "模型请求超时上限 45 秒，多图识别过不去",
+      "where": "apps/server/src/kimi-gateway.ts",
+      "status": "已修：默认改为 180 秒，依据实测耗时外推；超时提示同步改写"
+    }
+  ],
+  "decisions": [
+    {
+      "what": "v3 不分叉，共用一套 V3 组件",
+      "by": "project-lead 2026-08-22",
+      "note": "v3 页面加了状态说明，写明继承的三处改动与冻结方法"
+    },
+    {
+      "what": "W07 17px 与 B01 20px 两处一次性字号归到多数值 16/24 与 18/26",
+      "by": "project-lead 2026-08-22",
+      "note": "判为画图手误，非有意档位"
+    },
+    {
+      "what": "来源标记不做形状，口径改为颜色加文字标签",
+      "by": "project-lead 2026-08-22",
+      "note": "视觉规范第 2、7 节与 README 已改写"
+    }
+  ]
+}

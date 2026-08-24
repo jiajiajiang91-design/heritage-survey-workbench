@@ -4,6 +4,7 @@ import {
   EvidenceSchema,
   FactEnvelopeSchema,
   IssueSchema,
+  ObservationSchema,
   ParseRecordSchema,
   TaskDefinitionSchema,
 } from "@gujian/domain";
@@ -195,9 +196,60 @@ export async function seedDemoProject(input: DemoBuildInput): Promise<SeededDemo
           value: { ...item.quantity, methodZh: item.methodZh },
           producer,
           evidenceRefs: [evidenceRef(item.evidenceKey)],
-          reviewStatus: "unreviewed",
+          reviewStatus: item.reviewStatus ?? "unreviewed",
           dataStatus: item.dataStatus,
         })),
+      },
+    });
+  }
+
+  // 现状记录：照片上可见的材料与保存状况。归档完成的测绘项目在记录现状这一步要有内容，
+  // 一栏空白会让专业用户质疑成果完整性（独立试用问题清单 B-5）。
+  if (definition.observations?.length) {
+    await commands.execute({
+      commandType: "CommitObservations",
+      commandId: id("cmd/observations"),
+      projectId, actorId, expectedRevisionId: (await head()).revisionId, issuedAt: at,
+      payload: {
+        observations: definition.observations.map((item) => ObservationSchema.parse({
+          id: id(`observation/${item.key}`),
+          subjectRef: buildingId,
+          observationType: item.observationType,
+          text: item.text,
+          producer,
+          evidenceRefs: item.evidenceKeys.map(evidenceRef),
+          dataStatus: "available",
+        })),
+      },
+    });
+  }
+
+  // 形制参数登记为独立记录（实施单元 09）：实测基准的右卡按它显示基准线与举架做法，
+  // 不登记会显示为缺失。柱网按前檐柱一排（间数加一根），数值与几何生成用的同一套。
+  if (definition.archetype) {
+    const arch = definition.archetype;
+    await commands.execute({
+      commandType: "CommitArchetypeSpec",
+      commandId: id("cmd/archetype"),
+      projectId, actorId, expectedRevisionId: (await head()).revisionId, issuedAt: at,
+      payload: {
+        archetypeSpec: {
+          id: id("archetype-spec"),
+          projectId,
+          buildingRef: buildingId,
+          baseParams: { D: String(arch.moduleMm) },
+          bayDimensions: [
+            { direction: "x" as const, valuesMm: arch.bayWidthsMm.map((value) => String(value)) },
+            { direction: "y" as const, valuesMm: [String(arch.depthMm)] },
+          ],
+          liftRatioSetRef: arch.ruleSetId,
+          stepCount: arch.stepCount,
+          pillarNet: arch.bayWidthsMm.map((unused, index) => `${index}/0`).concat(`${arch.bayWidthsMm.length}/0`).join(","),
+          fangNet: null,
+          sourceDeclaration: arch.sourceDeclarationZh.slice(0, 500),
+          producer,
+          createdAt: at,
+        },
       },
     });
   }
@@ -209,7 +261,15 @@ export async function seedDemoProject(input: DemoBuildInput): Promise<SeededDemo
     scope: [...definition.task.scope],
     regulationRefs: [...definition.task.regulationRefs],
     deliverables: [...definition.task.deliverables],
-    responsibilities: [{ role: "projectLead", actorId }],
+    // 一次完整的归档至少有负责人、测绘人与复核人三个角色（实施单元 09）；
+    // 演示里三个角色由不同的稳定 id 担任，修改历史按角色显示操作人
+    responsibilities: definition.signoff
+      ? [
+        { role: "projectLead", actorId },
+        { role: "surveyor", actorId: id("actor/surveyor") },
+        { role: "professionalReviewer", actorId: id("actor/reviewer") },
+      ]
+      : [{ role: "projectLead", actorId }],
     automationPolicyRef: null,
     ...(requirements
       ? {

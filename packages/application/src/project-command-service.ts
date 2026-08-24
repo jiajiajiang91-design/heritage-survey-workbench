@@ -25,6 +25,19 @@ function requireMatchingProjectRefs(command: ProjectCommand): void {
   )) {
     throw new CommandError("COMMAND_INVALID", "imported audit prefix must match project and head hash");
   }
+  // 回执带着动作名跨机搬运。取值必须是本机认得的命令名，否则界面会把陌生字符串
+  // 当动作名显示出来；commandId 也必须对得上包里的审计事件，防止塞进无主回执。
+  if (command.commandType === "ImportProjectSnapshot") {
+    const known = new Set(ProjectCommandSchema.options.map((option) => option.shape.commandType.value as string));
+    const auditCommandIds = new Set(command.payload.sourceAuditEvents.map((event) => event.commandId));
+    if (command.payload.sourceCommandReceipts.some((receipt) => (
+      receipt.projectId !== command.projectId
+      || !known.has(receipt.commandType)
+      || !auditCommandIds.has(receipt.commandId)
+    ))) {
+      throw new CommandError("COMMAND_INVALID", "imported command receipts must match project, known command types and audit events");
+    }
+  }
   if (command.commandType === "ImportProjectSnapshot" && command.payload.assets.some((asset) => asset.projectId !== command.projectId)) {
     throw new CommandError("PROJECT_REF_MISMATCH", "imported assets must match command projectId");
   }
@@ -43,7 +56,8 @@ function requireMatchingProjectRefs(command: ProjectCommand): void {
     command.payload.artifacts.some((item) => item.projectId !== command.projectId) ||
     command.payload.checkRuns.some((item) => item.projectId !== command.projectId) ||
     command.payload.deliveryEvaluations.some((item) => item.projectId !== command.projectId) ||
-    command.payload.deliveries.some((item) => item.projectId !== command.projectId)
+    command.payload.deliveries.some((item) => item.projectId !== command.projectId) ||
+    command.payload.archetypeSpecs.some((item) => item.projectId !== command.projectId)
   )) {
     throw new CommandError("PROJECT_REF_MISMATCH", "imported CAD, artifact and delivery records must match command projectId");
   }
@@ -99,6 +113,12 @@ function requireMatchingProjectRefs(command: ProjectCommand): void {
     command.payload.archetypeSpec.projectId !== command.projectId
   )) {
     throw new CommandError("PROJECT_REF_MISMATCH", "archetype spec must match command projectId");
+  }
+  if (command.commandType === "RecordReviewSignoff" && (
+    command.payload.signoff.projectId !== command.projectId ||
+    command.payload.signoff.projectRevisionId !== command.expectedRevisionId
+  )) {
+    throw new CommandError("COMMAND_INVALID", "review signoff must reference the command project and revision");
   }
   if (command.commandType === "DecideIssueOption" && (
     command.payload.decision.projectId !== command.projectId ||
@@ -184,10 +204,10 @@ function createInitialSnapshot(command: Extract<ProjectCommand, { commandType: "
     facts: [],
     candidates: [],
     issues: [],
-    dependencyEdges: [],
+    dependencyEdges: [], // 恒为空，依赖图按引用字段推导（impact-service.ts）
     geometrySpecs: [],
     geometryRevisions: [],
-    adoptedRecordRefs: [],
+    reviewSignoffs: [], adoptedRecordRefs: [],
   });
 }
 
@@ -302,12 +322,25 @@ function replaceTaskDefinition(
   return ProjectSnapshotSchema.parse({ ...head.snapshot, taskDefinitions: [command.payload.taskDefinition] });
 }
 
+// 同一个问题的身份：说的是哪一类问题、针对哪些对象。规则引擎每次重算，
+// 同一个问题会带着新的 id 重新产出，靠 id 认不出是同一条。
+function issueIdentity(issue: { issueType: string; subjectRefs: readonly string[] }): string {
+  return `${issue.issueType}::${[...issue.subjectRefs].sort().join(",")}`;
+}
+
 function appendRuleEvaluation(
   head: ProjectHead,
   command: Extract<ProjectCommand, { commandType: "CommitRuleEvaluation" }>,
 ): ProjectSnapshot {
+  // 只作废本轮重新提出的那些问题，其余保持原状。
+  // 原来是一律作废：跑一次规则核对就把上一轮所有未解决问题标成已被替代并盖上
+  // 解决时间，哪怕本轮一条都没提。几何作业为记录一条输入闭合检查也会发这条命令，
+  // 于是三个演示项目共 13 条没人处理过的问题在问题队列与交付阻断里同时消失。
+  // 问题只能由人工决定关闭（见 decideCandidate 与 decideIssueOption），
+  // 规则没重新提出不等于问题没了，宁可留着未解决，也不替人判定已解决。
+  const raised = new Set(command.payload.issues.map(issueIdentity));
   const superseded = head.snapshot.issues.map((issue) => (
-    issue.status === "open" && issue.producer.producerType === "rule"
+    issue.status === "open" && issue.producer.producerType === "rule" && raised.has(issueIdentity(issue))
       ? { ...issue, status: "superseded" as const, resolvedAt: command.issuedAt }
       : issue
   ));
@@ -409,6 +442,18 @@ function appendDeliveryDraft(head: ProjectHead, command: Extract<ProjectCommand,
   return head.snapshot;
 }
 
+// 复核签发：几何版本必须在本项目里，同一草案只能签发一次
+function appendReviewSignoff(head: ProjectHead, command: Extract<ProjectCommand, { commandType: "RecordReviewSignoff" }>): ProjectSnapshot {
+  const signoff = command.payload.signoff;
+  if (!head.snapshot.geometryRevisions.some((item) => item.id === signoff.geometryRevisionId)) {
+    throw new CommandError("COMMAND_INVALID", "review signoff references an unknown geometry revision");
+  }
+  if (head.snapshot.reviewSignoffs.some((item) => item.deliveryDraftId === signoff.deliveryDraftId)) {
+    throw new CommandError("COMMAND_INVALID", "delivery draft is already signed off");
+  }
+  return { ...head.snapshot, reviewSignoffs: [...head.snapshot.reviewSignoffs, signoff] };
+}
+
 function assertCadJobEventPrefix(previous: import("@gujian/domain").CadJob, next: import("@gujian/domain").CadJob): void {
   if (next.id !== previous.id || next.projectId !== previous.projectId ||
       next.inputRevisionId !== previous.inputRevisionId || next.geometrySpecId !== previous.geometrySpecId ||
@@ -486,6 +531,17 @@ export class ProjectCommandService {
           ...(command.commandType === "ImportProjectSnapshot"
             ? { priorAuditEvents: command.payload.sourceAuditEvents }
             : {}),
+          ...(command.commandType === "ImportProjectSnapshot" && command.payload.sourceCommandReceipts.length
+            ? { priorCommandReceipts: command.payload.sourceCommandReceipts.map((receipt) => ({
+              commandId: receipt.commandId,
+              commandType: receipt.commandType as CommandReceipt["commandType"],
+              projectId: receipt.projectId,
+              revisionId: receipt.revisionId,
+              auditEventId: receipt.auditEventId,
+              committedAt: receipt.committedAt,
+              ...(receipt.changedRefs ? { changedRefs: receipt.changedRefs } : {}),
+            })) }
+            : {}),
           ...(command.commandType === "ImportProjectSnapshot" && command.payload.assets.length
             ? { assetWrites: { records: command.payload.assets, stagingSessionId: command.payload.assetSessionId } }
             : {}),
@@ -524,6 +580,9 @@ export class ProjectCommandService {
             : {}),
           ...(command.commandType === "ImportProjectSnapshot" && command.payload.deliveries.length
             ? { deliveriesToPut: command.payload.deliveries }
+            : {}),
+          ...(command.commandType === "ImportProjectSnapshot" && command.payload.archetypeSpecs.length
+            ? { archetypeSpecsToPut: command.payload.archetypeSpecs }
             : {}),
         });
       }
@@ -702,6 +761,8 @@ export class ProjectCommandService {
                           ? appendDeliveryEvaluation(head, command)
                           : command.commandType === "CreateDeliveryDraft"
                             ? appendDeliveryDraft(head, command)
+                            : command.commandType === "RecordReviewSignoff"
+                              ? appendReviewSignoff(head, command)
                             : head.snapshot;
       return transaction.commit({
         command,
@@ -744,6 +805,8 @@ export class ProjectCommandService {
                             ? [command.payload.evaluation.id]
                             : command.commandType === "CreateDeliveryDraft"
                               ? [command.payload.draft.id, command.payload.manifestArtifact.id, command.payload.manifestAsset.id]
+                              : command.commandType === "RecordReviewSignoff"
+                                ? [command.payload.signoff.id, command.payload.signoff.deliveryDraftId]
                               : [command.payload.job.id, ...command.payload.job.events.map((event) => event.id)],
         ...(command.commandType === "ImportEvidence"
           ? { assetWrites: { records: [command.payload.asset], stagingSessionId: command.payload.stagingSessionId } }

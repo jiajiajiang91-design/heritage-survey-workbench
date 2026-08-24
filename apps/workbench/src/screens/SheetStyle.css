@@ -1,0 +1,27 @@
+/* W08 图纸样式（66:2905）与成组图纸：设置卡 300 内边距 16，预览卡 476 内边距 12；设置行标签 132 宽、下边线；预览图 476 高 */
+.sc-sheet { display: grid; grid-template-columns: minmax(0, 300fr) minmax(0, 476fr); gap: var(--space-md); flex: 1 1 auto; min-height: 0; }
+.sc-sheet-settings { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
+.sc-sheet-preview { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); min-height: 0; overflow: visible; }
+.sc-sheet-row { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: var(--space-md); align-items: start; padding-bottom: var(--space-sm); border-bottom: var(--stroke-hairline) solid var(--border-subtle); text-align: left; }
+/* 图纸样式的设置卡按内容高（66:2905 左卡 418 高），成组图纸的成果列表卡要滚动，仍拉满 */
+.sc-sheet-settings--hug { align-self: start; }
+.sc-sheet-row--file { cursor: pointer; border-radius: var(--radius-sm); }
+.sc-sheet-row--file:hover { background: var(--bg-hover); }
+.sc-sheet-label { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
+.sc-sheet-value { font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); overflow-wrap: anywhere; display: flex; flex-direction: column; gap: var(--space-2xs); }
+.sc-sheet-value small { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-tertiary); }
+.sc-sheet-list { display: flex; flex-direction: column; gap: var(--space-md); }
+.sc-sheet-checks { display: flex; flex-direction: column; gap: var(--space-sm); }
+.sc-sheet-check { display: flex; align-items: flex-start; gap: var(--space-sm); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-primary); }
+.sc-sheet-preview-head { display: flex; align-items: center; gap: var(--space-sm); min-height: var(--size-control-md); }
+.sc-sheet-figure { width: 100%; height: 476px; border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-surface); display: flex; align-items: center; justify-content: center; }
+.sc-sheet-figure img { width: 100%; height: 100%; object-fit: contain; }
+.sc-sheet-figure--empty { color: var(--text-tertiary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); background: var(--bg-subtle); border-color: transparent; }
+.sc-sheet-switch { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+.sc-sheet-switch button { min-height: var(--size-control-sm); padding: 0 var(--space-md); border-radius: var(--radius-md); font: var(--font-weight-medium) var(--font-size-12)/var(--line-16) var(--font-family-ui); color: var(--text-secondary); }
+.sc-sheet-switch button[aria-current="true"] { background: var(--bg-selected); color: var(--text-primary); }
+.sc-sheet-note { font: var(--font-weight-regular) var(--font-size-12)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
+.sc-sheet-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.sc-sheet-thumb { display: flex; flex-direction: column; gap: var(--space-2xs); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); padding: var(--space-sm); background: var(--bg-surface); }
+.sc-sheet-thumb img, .sc-sheet-thumb object { width: 100%; height: 200px; object-fit: contain; background: var(--bg-surface); }
+.sc-sheet-thumb figcaption { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); overflow-wrap: anywhere; }

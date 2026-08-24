@@ -43,6 +43,9 @@ export interface CommitProjectMutation {
     readonly records: readonly AssetRecord[];
     readonly stagingSessionId: string | null;
   };
+  // 随包导入的历史回执。动作名只存在回执里，不带过来的话导入后的修改历史
+  // 只剩时间与写集，每条都显示未记录动作类型。
+  readonly priorCommandReceipts?: readonly CommandReceipt[];
   readonly modelRunsToPut?: readonly ModelRun[];
   readonly ruleRunsToPut?: readonly RuleRun[];
   readonly decisionsToPut?: readonly Decision[];

@@ -25,6 +25,7 @@ describe("delivery blocker propagation", () => {
       projectId, revisionId, auditEventId: crypto.randomUUID(),
       snapshot: {
         geometrySpecs: [spec],
+        reviewSignoffs: [],
         issues: [{ id: issueId, projectId, issueType: "ruleConflict", subjectRefs: [objectId], description: "开口定位冲突。", sourceRef: "rule:opening", status: "open", impactRefs: [geometryId], blocksProxyOutcome: true, blocksFormalEligibility: true, producer: { producerType: "rule", ruleRunId: crypto.randomUUID() }, createdAt: "2026-08-14T00:00:00Z", resolvedAt: null }],
       },
     } as unknown as ProjectHead;
@@ -43,5 +44,58 @@ describe("delivery blocker propagation", () => {
     expect(details.some((item) => item.code === "CHECK_BLOCKED:GEOMETRY_SOURCE_CLOSURE_FAILED" && item.blocksProxyOutcome)).toBe(true);
     expect(details.find((item) => item.code === "CHECK_BLOCKED:PROFESSIONAL_REVIEW_REQUIRED")?.blocksProxyOutcome).toBe(false);
     expect(details.find((item) => item.code === "FORMAL_SIGNOFF_UNAVAILABLE")?.blocksProxyOutcome).toBe(false);
+  });
+
+  // 实施单元 09：正式环境的复核签发记录解除未经复核与本机不能签发两条阻断，
+  // 检查记录里对应的阻断结果与成果上的阻断码一并解除；L1 只在记录认定时解除。
+  it("有复核签发记录时，正式资格阻断随记录解除，其余阻断照旧", () => {
+    const projectId = crypto.randomUUID();
+    const geometryId = crypto.randomUUID();
+    const geometrySpecId = crypto.randomUUID();
+    const issueId = crypto.randomUUID();
+    const base = {
+      projectId, revisionId: crypto.randomUUID(), auditEventId: crypto.randomUUID(),
+      snapshot: {
+        geometrySpecs: [{ id: geometrySpecId, unknowns: [] }],
+        issues: [{ id: issueId, issueType: "ruleConflict", description: "尺寸冲突。", status: "open", blocksProxyOutcome: false }],
+        reviewSignoffs: [] as unknown[],
+      },
+    };
+    const geometry = { id: geometryId, geometrySpecId } as GeometryRevision;
+    const checkRun = {
+      id: crypto.randomUUID(),
+      results: [{ code: "PROFESSIONAL_REVIEW_REQUIRED", outcome: "blocked", message: "需专业复核。", sourceRefs: [geometryId] }],
+    } as CheckRun;
+    const artifact = { id: crypto.randomUUID(), fileName: "drawing.dxf", blockers: ["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE"] } as ArtifactRecord;
+
+    const before = collectDeliveryBlockerDetails(base as unknown as ProjectHead, geometry, [artifact], checkRun);
+    expect(before.map((item) => item.code)).toEqual(expect.arrayContaining(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", "L1_ELIGIBILITY_FALSE", "CHECK_BLOCKED:PROFESSIONAL_REVIEW_REQUIRED"]));
+
+    const signed = {
+      ...base,
+      snapshot: {
+        ...base.snapshot,
+        reviewSignoffs: [{
+          id: crypto.randomUUID(), projectId, projectRevisionId: base.revisionId, deliveryDraftId: crypto.randomUUID(), geometryRevisionId: geometryId,
+          reviewerRole: "professionalReviewer", reviewerActorId: crypto.randomUUID(), reviewedAt: "2026-08-20T00:00:00Z", signedAt: "2026-08-20T00:00:00Z",
+          issuingEnvironment: "formal", l1Eligible: false, statementZh: "复核通过。",
+        }],
+      },
+    };
+    const after = collectDeliveryBlockerDetails(signed as unknown as ProjectHead, geometry, [artifact], checkRun);
+    const codes = after.map((item) => item.code);
+    expect(codes).not.toContain("PROFESSIONAL_REVIEW_REQUIRED");
+    expect(codes).not.toContain("FORMAL_SIGNOFF_UNAVAILABLE");
+    expect(codes).not.toContain("CHECK_BLOCKED:PROFESSIONAL_REVIEW_REQUIRED");
+    // L1 未认定，仍在；只阻断正式资格的问题随签发视为已复核接受，不再是阻断
+    expect(codes).toContain("L1_ELIGIBILITY_FALSE");
+    expect(after.some((item) => item.sourceType === "issue")).toBe(false);
+
+    // 阻断代理成果本身的硬错误不受签发影响
+    const hard = { ...signed, snapshot: { ...signed.snapshot, issues: [{ id: issueId, issueType: "ruleConflict", description: "尺寸冲突。", status: "open", blocksProxyOutcome: true }] } };
+    expect(collectDeliveryBlockerDetails(hard as unknown as ProjectHead, geometry, [artifact], checkRun).some((item) => item.sourceType === "issue")).toBe(true);
+
+    const l1 = { ...signed, snapshot: { ...signed.snapshot, reviewSignoffs: [{ ...(signed.snapshot.reviewSignoffs[0] as Record<string, unknown>), l1Eligible: true }] } };
+    expect(collectDeliveryBlockerDetails(l1 as unknown as ProjectHead, geometry, [artifact], checkRun).map((item) => item.code)).not.toContain("L1_ELIGIBILITY_FALSE");
   });
 });

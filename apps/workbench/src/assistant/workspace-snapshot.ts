@@ -10,8 +10,10 @@ export interface WorkspaceSnapshot {
   hasDeliverable: boolean;
   modelRouteAvailable: boolean;
   unparsedEvidenceCount: number;
-  // 用户当前是否在某张证据图片上框了位置
+  // 用户当前是否在某张资料图片上框了位置
   hasImageSelection: boolean;
+  // 项目现状的一段中文（实施单元 09）：按真实数据写成，回答问题与生成建议只依据它
+  contextZh?: string;
 }
 
 export interface SnapshotInput {
@@ -25,6 +27,7 @@ export interface SnapshotInput {
   serverModelConfigured: boolean;
   unparsedEvidenceCount: number;
   hasImageSelection: boolean;
+  contextZh?: string;
 }
 
 export function buildWorkspaceSnapshot(input: SnapshotInput): WorkspaceSnapshot {
@@ -39,5 +42,6 @@ export function buildWorkspaceSnapshot(input: SnapshotInput): WorkspaceSnapshot 
     modelRouteAvailable: input.serverModelConfigured,
     unparsedEvidenceCount: Math.max(0, input.unparsedEvidenceCount),
     hasImageSelection: input.hasImageSelection === true,
+    ...(input.contextZh ? { contextZh: input.contextZh.slice(0, 8_000) } : {}),
   };
 }

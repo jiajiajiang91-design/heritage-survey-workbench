@@ -565,7 +565,7 @@ def verify(
     visible_text = "\n".join(_visible_dxf_text(doc))
     forbidden_visible = ["targetViewId", "generated-not-qualified", "proxy-unissued", "2000-01-01"]
     _check(not any(value in visible_text for value in forbidden_visible) and not re.search(r"\b[0-9a-f]{8}-[0-9a-f-]{27,}\b", visible_text, re.I), "visible-labels", "图面不显示内部 ID、英文状态、假日期或完整 UUID", checks)
-    _check("代理成果·未签发" in visible_text and visible_text.count("未签发") >= len(matrix["sheets"]) * 2, "titleblock-boundary", "图签明确代理、未签发和未签发日期", checks)
+    _check("待签发成果" in visible_text and visible_text.count("见签发记录") >= len(matrix["sheets"]), "titleblock-boundary", "图签写明待签发状态并指向签发记录", checks)
 
     svg_structure_count = 0
     svg_region_count = 0
@@ -597,7 +597,7 @@ def verify(
         if item["embeddedBytes"]:
             parsed = TTFont(__import__("io").BytesIO(item["embeddedBytes"]))
             font_ok = font_ok and parsed["OS/2"].usWeightClass == 400 and parsed["OS/2"].fsType == 0
-    required_text = ["代理成果·未签发", *[view["displayLabelZh"] for view in matrix["views"]], *[view["drawingRef"] for view in matrix["views"]]]
+    required_text = ["待签发成果", *[view["displayLabelZh"] for view in matrix["views"]], *[view["drawingRef"] for view in matrix["views"]]]
     _check(pages_ok and font_ok and all(value in pdf_text for value in required_text) and "?" not in pdf_text and "�" not in pdf_text, "pdf-closure", "PDF 页幅、嵌入字重 400、ToUnicode 和可检索中文闭合", checks)
 
     png_ok = True
