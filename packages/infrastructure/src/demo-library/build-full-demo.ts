@@ -102,15 +102,18 @@ export async function buildFullDemoProject(input: FullDemoBuildInput): Promise<F
   // 走命令服务，授权由调用方给正式环境的实现；浏览器里的本机授权会拒绝这一步。
   if (definition.signoff) {
     const reviewerActorId = definition.signoff.reviewerRole === "projectLead" ? seeded.actorId : demoSeededUuid(definition.demoId, "actor/reviewer");
+    // 签发时间取当下：签发发生在模型与图纸生成之后，修改历史的时间线才立得住
+    const reviewedAt = new Date().toISOString();
+    const signedAt = new Date(Date.now() + 60_000).toISOString();
     await pipeline.commands.execute({
       commandType: "RecordReviewSignoff", commandId: demoSeededUuid(definition.demoId, "command/review-signoff"),
-      projectId: seeded.projectId, actorId: reviewerActorId, expectedRevisionId: head.revisionId, issuedAt: definition.signoff.signedAt,
+      projectId: seeded.projectId, actorId: reviewerActorId, expectedRevisionId: head.revisionId, issuedAt: signedAt,
       payload: {
         signoff: {
           id: demoSeededUuid(definition.demoId, "review-signoff"), projectId: seeded.projectId, projectRevisionId: head.revisionId,
           deliveryDraftId: drafted.draft.id, geometryRevisionId: geometry.revision.id,
           reviewerRole: definition.signoff.reviewerRole, reviewerActorId,
-          reviewedAt: definition.signoff.reviewedAt, signedAt: definition.signoff.signedAt,
+          reviewedAt, signedAt,
           issuingEnvironment: "formal", l1Eligible: definition.signoff.l1Eligible, statementZh: definition.signoff.statementZh,
         },
       },

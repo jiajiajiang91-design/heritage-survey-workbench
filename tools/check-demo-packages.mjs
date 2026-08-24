@@ -70,6 +70,24 @@ for (const name of NAMES) {
   else if (signoff.issuingEnvironment !== "formal") say("复核签发记录不是正式环境签发的");
   if (latestSpec && latestSpec.unknowns.length && !signoff) say(`模型有 ${latestSpec.unknowns.length} 处待确认部位且无复核签发`);
 
+  // 五、时间线：签发必须晚于全部成果生成，早于生成的签发是倒置档案（独立试用问题清单 B-7）
+  if (signoff) {
+    const lastArtifactAt = (data.artifacts ?? []).map((item) => item.createdAt).sort().at(-1);
+    if (lastArtifactAt && signoff.signedAt < lastArtifactAt) {
+      say(`签发时间 ${signoff.signedAt} 早于最后一项成果生成时间 ${lastArtifactAt}，档案时间线倒置`);
+    }
+  }
+
+  // 六、形制或实测记录随包走：登记过形制的项目，包里要有形制记录（旧包格式丢形制的回归防线）
+  if (name === "gaodu-yuhuang-temple-main-hall" && !(data.archetypeSpecs ?? []).length) {
+    say("包里没有形制记录，实测基准屏会显示未登记形制");
+  }
+
+  // 七、归档完成的测绘项目要有现状记录（构造样板除外，样板没有现状可记）
+  if (name !== "t0b-construction-sample" && !(snapshot.observations ?? []).length) {
+    say("包里没有现状记录，记录现状这一步是空的");
+  }
+
   // 三、清单计数与包内记录要对得上
   const expected = manifestById.get(name);
   if (!expected) {

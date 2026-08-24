@@ -60,7 +60,7 @@ export function ModelRuns({ runs, costView, candidates, exclusionCount, serverMo
   return (
     <ProjectPageFrame
       title="模型运行与用量"
-      description={`按用量与公开单价算费用。${costView.priceSourcesZh.length ? `单价取自${costView.priceSourcesZh.join("；")}，缓存命中的输入单独计价。` : "单价表里没有本次用到的模型时如实写明算不出。"}${serverModel ? `当前服务端模型 ${serverModel}。` : ""}`}
+      description={`本页只统计项目内的识别与转写运行，右侧助手的对话和建议不计入。${costView.priceSourcesZh.length ? `费用按用量与公开单价算得，单价取自${costView.priceSourcesZh.join("；")}，缓存命中的输入单独计价。` : "单价表里没有本次用到的模型时如实写明暂无法计算。"}${serverModel ? `当前使用的模型是 ${serverModel}。` : ""}`}
       actions={<Button onClick={onRefreshStatus}>刷新状态</Button>}
       back={back}
     >
@@ -68,10 +68,11 @@ export function ModelRuns({ runs, costView, candidates, exclusionCount, serverMo
       <div className="sc-runs-metrics">
         <Metric label="真实调用" value={`${runs.length} 次`} note={[...byTask.entries()].map(([task, count]) => `${TASK_ZH[task] ?? task} ${count} 次`).join(" · ") || "尚未运行"} />
         <Metric label="累计用量" value={tokenLabel(costView.totalTokens)} note={recognitionTokens ? `其中构件识别 ${recognitionTokens} token` : "按服务端返回的用量累计"} />
-        <Metric label="费用合计" value={costView.totalCost ? formatCost(costView.totalCost) : "算不出"} note={costView.totalCost ? `表内 ${priced} 次算得${priced < runs.length ? `，其余 ${runs.length - priced} 次未留用量或无单价` : ""}` : "没有可计价的运行"} />
+        <Metric label="费用合计" value={costView.totalCost ? formatCost(costView.totalCost) : "暂无法计算"} note={costView.totalCost ? `表内 ${priced} 次算得${priced < runs.length ? `，其余 ${runs.length - priced} 次未留用量或无单价` : ""}` : "没有可计价的运行"} />
       </div>
       <section className="sc-runs-table">
         <div className="sc-runs-head"><span>运行内容</span><span>发起时间</span><span>耗时</span><span>用量与费用</span><span>结果</span></div>
+        {/* 助手对话与建议不留项目内运行记录，这里只列识别与转写。表头下说明一句，免得用户拿对话次数来对账 */}
         {runs.length ? [...runs].reverse().map((run) => {
           const row = costView.rows.find((item) => item.runId === run.id);
           const status = STATUS_ZH[run.status] ?? { label: run.status, tone: "neutral" as const };
@@ -93,7 +94,9 @@ export function ModelRuns({ runs, costView, candidates, exclusionCount, serverMo
         {candidates.map((candidate) => (
           <article className="sc-runs-candidate" key={candidate.id}>
             <div className="gj-row"><SourceTag producerType="model" /><Tag>{REVIEW_LABELS[candidate.reviewStatus] ?? candidate.reviewStatus}</Tag></div>
-            <strong>{candidate.structured?.summary ?? "模型返回了未结构化候选"}</strong>
+            <strong>{candidate.structured?.summary ?? "模型返回的原文（未按固定格式整理，内容如下，由你判断是否采用）"}</strong>
+            {/* 没整理成结构的回答也要给人看原文：只写一句"未结构化"等于让用户对着空气做接受或驳回的决定 */}
+            {!candidate.structured && <p className="sc-runs-candidate-raw">{candidate.contentText.slice(0, 2_000)}{candidate.contentText.length > 2_000 ? "……（更长的部分略）" : ""}</p>}
             {candidate.structured?.kind === "evidenceSummary" && candidate.structured.findings.length > 0 && (
               <ul>{candidate.structured.findings.map((item) => <li key={item}>{item}</li>)}</ul>
             )}

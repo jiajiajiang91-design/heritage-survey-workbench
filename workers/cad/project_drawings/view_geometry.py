@@ -882,7 +882,7 @@ def build_drawing_ir(matrix: dict[str, Any], manifest: dict[str, Any], views: li
                 # 只出在模型空间；纸面成果由图签承载同一句话，不重复画。
                 "requirementId": f"qualification:{view['id']}", "kind": "qualification", "viewId": view["id"],
                 "space": "modelSpaceOnly", "layerKey": "text", "paperTextHeightMm": 2.5,
-                "text": "代理成果·未签发\n未经项目责任人员专业复核，不可用于正式交付或施工。",
+                "text": "待签发成果·签发状态以项目签发记录为准\n签发前不可用于正式交付或施工。",
                 "anchorMm": [[bounds[0][0], bounds[1][1]]],
                 "sourceRefs": [manifest["geometryRevisionId"]],
             },

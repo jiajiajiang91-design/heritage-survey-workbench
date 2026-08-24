@@ -1,5 +1,6 @@
 import { CommandReceiptRecordSchema, ProjectCommandService } from "@gujian/application";
 import {
+  ArchetypeSpecSchema,
   AuditEventSchema,
   AssetRecordSchema,
   ProjectRevisionSchema,
@@ -55,6 +56,8 @@ const ProjectDataSchema = z.object({
   deliveries: z.array(DeliveryDraftSchema).max(100_000).default([]),
   // v1.4：项目引用的词表条目快照；旧包缺省为空按原格式兼容导入
   conceptEntries: z.array(ConceptEntrySchema).max(2_000).default([]),
+  // 实施单元 09 复查：形制记录随包走。不带这一项的旧包导入后形制会丢，实测基准屏显示未登记形制
+  archetypeSpecs: z.array(ArchetypeSpecSchema).max(10_000).default([]),
   assets: z.array(AssetRecordSchema.extend({
     path: z.string().min(1).max(500),
   }).strict()).max(MAX_ENTRY_COUNT),
@@ -122,6 +125,7 @@ export class ProjectPackageService {
     const checkRuns = await this.#repository.getProjectCheckRuns(projectId);
     const deliveryEvaluations = await this.#repository.getProjectDeliveryEvaluations(projectId);
     const deliveries = await this.#repository.getProjectDeliveries(projectId);
+    const archetypeSpecs = await this.#repository.getProjectArchetypeSpecs(projectId);
     // 项目引用的词表条目随包携带快照（v1.4 §6.3）：按几何对象引用过滤当前词表
     const vocabulary = resolveVocabulary(await this.#repository.getConceptEntries());
     const referencedConcepts = new Set(closure.head.snapshot.geometrySpecs.flatMap((spec) =>
@@ -149,6 +153,7 @@ export class ProjectPackageService {
       deliveryEvaluations,
       deliveries,
       conceptEntries,
+      archetypeSpecs,
       assets: assets.map(({ record, content }) => ({
         ...record,
         // 登记时就标为缺失的资料不能因为占位内容存在而被改成可用。
@@ -301,6 +306,7 @@ export class ProjectPackageService {
         deliveryEvaluations: data.deliveryEvaluations,
         deliveries: data.deliveries,
         conceptEntries: data.conceptEntries,
+        archetypeSpecs: data.archetypeSpecs,
         assetSessionId: sessionId,
         packageHash: sha256Hex(bytes),
       },

@@ -143,6 +143,9 @@ export const ImportProjectSnapshotCommandSchema = CommandHeaderSchema.extend({
     deliveryEvaluations: z.array(DeliveryEvaluationSchema).max(100_000).default([]),
     deliveries: z.array(DeliveryDraftSchema).max(100_000).default([]),
     conceptEntries: z.array(ConceptEntrySchema).max(2_000).default([]),
+    // 形制记录随包走（实施单元 09 复查）：不带这一项时，包里的形制在导入后丢失，
+    // 实测基准屏会显示未登记形制。旧包没有这一项，缺省为空
+    archetypeSpecs: z.array(ArchetypeSpecSchema).max(10_000).default([]),
     assetSessionId: UuidSchema.nullable(),
     packageHash: Sha256Schema,
   }).strict(),

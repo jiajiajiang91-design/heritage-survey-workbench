@@ -19,16 +19,23 @@ async function loadPdfJs() {
   return pdfjs;
 }
 
-export type ViewerKind = "image" | "svg" | "pdf" | "dxf" | "glb" | "unsupported";
+export type ViewerKind = "image" | "svg" | "pdf" | "dxf" | "glb" | "table" | "text" | "unsupported";
+
+const TEXT_EXTENSIONS = new Set(["json", "ndjson", "txt", "md", "log"]);
 
 export function viewerKindOf(mimeType: string, fileName: string): ViewerKind {
-  const extension = fileName.toLowerCase().split(".").pop() ?? "";
+  let lower = fileName.toLowerCase();
+  // 压缩过的记录文件（json.gz 一类）解压后按内层类型看
+  if (lower.endsWith(".gz")) lower = lower.slice(0, -3);
+  const extension = lower.split(".").pop() ?? "";
   // DXF 的 MIME 常写成 image/vnd.dxf，要先于图片判断
   if (extension === "dxf" || mimeType === "image/vnd.dxf" || mimeType === "application/dxf") return "dxf";
   if (mimeType === "image/svg+xml" || extension === "svg") return "svg";
   if (mimeType.startsWith("image/")) return "image";
   if (mimeType === "application/pdf" || extension === "pdf") return "pdf";
   if (extension === "glb" || mimeType === "model/gltf-binary") return "glb";
+  if (extension === "csv" || mimeType === "text/csv") return "table";
+  if (TEXT_EXTENSIONS.has(extension) || mimeType === "application/json" || mimeType === "application/x-ndjson" || mimeType.startsWith("text/")) return "text";
   return "unsupported";
 }
 
@@ -54,6 +61,7 @@ export function FileViewer({ blob: source, mimeType, fileName, imageSlot, onDown
   if (!blob) return null;
   if (kind === "pdf") return <PdfPane blob={blob} style={style} />;
   if (kind === "dxf") return <DxfPane blob={blob} style={style} />;
+  if (kind === "table" || kind === "text") return <TextPane blob={blob} fileName={fileName} asTable={kind === "table"} style={style} />;
   if (kind === "glb") return <div className="gj-viewer" style={style}><GlbViewer blob={blob} onSelect={() => { /* 独立查看不联动选中 */ }} /></div>;
   const extension = fileName.toLowerCase().split(".").pop() ?? "";
   return (
@@ -94,7 +102,20 @@ function ZoomPane({ children, style, toolbar }: { children: ReactNode; style?: R
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const reset = () => { setScale(1); setOffset({ x: 0, y: 0 }); };
+  // 滚轮缩放要拦住页面滚动。React 的合成滚轮事件挂在被动监听上，preventDefault 只会
+  // 在控制台报错不生效，所以自己挂非被动的原生监听
+  useEffect(() => {
+    const node = stageRef.current;
+    if (!node) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      setScale((value) => Math.min(16, Math.max(0.2, value * (event.deltaY < 0 ? 1.1 : 1 / 1.1))));
+    };
+    node.addEventListener("wheel", onWheel, { passive: false });
+    return () => node.removeEventListener("wheel", onWheel);
+  }, []);
   return (
     <div className="gj-viewer" style={style}>
       <div className="gj-viewer-tools">
@@ -105,14 +126,74 @@ function ZoomPane({ children, style, toolbar }: { children: ReactNode; style?: R
         {toolbar}
       </div>
       <div
+        ref={stageRef}
         className="gj-viewer-stage"
-        onWheel={(event) => { event.preventDefault(); setScale((value) => Math.min(16, Math.max(0.2, value * (event.deltaY < 0 ? 1.1 : 1 / 1.1)))); }}
         onPointerDown={(event) => { drag.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }; event.currentTarget.setPointerCapture(event.pointerId); }}
         onPointerMove={(event) => { if (drag.current) setOffset({ x: drag.current.ox + event.clientX - drag.current.x, y: drag.current.oy + event.clientY - drag.current.y }); }}
         onPointerUp={() => { drag.current = null; }}
         onDoubleClick={reset}
       >
         <div className="gj-viewer-content" style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})` }}>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- 表格与文本：CSV 排成表，JSON 等按原文显示；.gz 先解压 ----------
+// 简易 CSV 解析：支持双引号包裹与引号转义，够读实测记录表；不处理引号内换行
+function parseCsv(text: string): string[][] {
+  return text.replace(/\r\n?/g, "\n").split("\n").filter((line) => line.trim().length > 0).map((line) => {
+    const cells: string[] = [];
+    let current = "";
+    let quoted = false;
+    for (let index = 0; index < line.length; index += 1) {
+      const char = line[index]!;
+      if (quoted) {
+        if (char === "\"" && line[index + 1] === "\"") { current += "\""; index += 1; }
+        else if (char === "\"") quoted = false;
+        else current += char;
+      } else if (char === "\"") quoted = true;
+      else if (char === ",") { cells.push(current); current = ""; }
+      else current += char;
+    }
+    cells.push(current);
+    return cells;
+  });
+}
+
+const TEXT_DISPLAY_LIMIT = 300_000;
+
+function TextPane({ blob, fileName, asTable, style }: { blob: Blob; fileName: string; asTable: boolean; style?: React.CSSProperties | undefined }) {
+  const [state, setState] = useState<{ text: string; truncated: boolean } | { error: string } | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    setState(null);
+    const read = async () => {
+      let source = blob;
+      if (fileName.toLowerCase().endsWith(".gz")) {
+        source = await new Response(blob.stream().pipeThrough(new DecompressionStream("gzip"))).blob();
+      }
+      const text = await source.text();
+      if (!cancelled) setState({ text: text.slice(0, TEXT_DISPLAY_LIMIT), truncated: text.length > TEXT_DISPLAY_LIMIT });
+    };
+    read().catch((reason: unknown) => { if (!cancelled) setState({ error: reason instanceof Error ? reason.message : "文件无法读取" }); });
+    return () => { cancelled = true; };
+  }, [blob, fileName]);
+  if (!state) return <div className="gj-viewer gj-viewer--empty" style={style}><span className="gj-viewer-loading">正在读取文件</span></div>;
+  if ("error" in state) return <div className="gj-viewer gj-viewer--empty" style={style}><span>文件无法在页内显示：{state.error}</span></div>;
+  const rows = asTable ? parseCsv(state.text) : null;
+  return (
+    <div className="gj-viewer gj-viewer--doc" style={style}>
+      <div className="gj-viewer-doc-scroll">
+        {rows && rows.length > 0 ? (
+          <table className="gj-viewer-table">
+            <thead><tr>{rows[0]!.map((cell, index) => <th key={index}>{cell}</th>)}</tr></thead>
+            <tbody>{rows.slice(1).map((row, rowIndex) => <tr key={rowIndex}>{row.map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)}</tr>)}</tbody>
+          </table>
+        ) : (
+          <pre className="gj-viewer-text">{state.text}</pre>
+        )}
+        {state.truncated && <p className="gj-note">文件较长，只显示前面部分；完整内容请下载原文件。</p>}
       </div>
     </div>
   );

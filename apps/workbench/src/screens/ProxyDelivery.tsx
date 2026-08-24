@@ -42,6 +42,27 @@ function sizeLabel(bytes: number): string {
   return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 }
 
+// 旧版草案的限制条款里存过英文常量（每个文件重复一行）。记录不改写，
+// 显示时翻成中文并把逐文件重复的行合并成一条带件数的说明。
+const RESTRICTION_CODE_ZH: Record<string, string> = {
+  PROFESSIONAL_REVIEW_REQUIRED: "未经项目责任人员专业复核",
+  FORMAL_SIGNOFF_UNAVAILABLE: "本机身份不具备签发资格",
+  L1_ELIGIBILITY_FALSE: "不作为专业样板或参照标准",
+};
+function displayRestrictions(items: readonly string[]): string[] {
+  const merged = new Map<string, number>();
+  for (const item of items) {
+    // 旧版条款以英文常量结尾（每个文件一行）；新版条款是整句中文（成果文件 xx 在签发前……）
+    const legacy = /：([A-Z][A-Z_]+)$/.exec(item);
+    const perFile = /^成果文件 .+ 在签发前(.+)$/.exec(item);
+    const key = legacy
+      ? `签发前${RESTRICTION_CODE_ZH[legacy[1] ?? ""] ?? "有未解除的限制"}`
+      : perFile ? `成果文件在签发前${perFile[1]}` : item;
+    merged.set(key, (merged.get(key) ?? 0) + 1);
+  }
+  return [...merged.entries()].map(([text, count]) => (count > 1 ? `${text}（涉及 ${count} 项成果文件）` : text));
+}
+
 export function ProxyDelivery(props: ProxyDeliveryProps) {
   const { projectName, buildingName, responsibilityRoles, artifacts, checkRuns, latestCheckRun, latestDelivery, latestBlockedDelivery, deliveryBlockers, blockerCodes, signoff, canCreate, exporting, showExportTask, exportPhase, exportCancelling, roundTripReceipt, onCreate, onRecordBlocked, onExport, onCancelExport, onVerifyRoundTrip, onDownload } = props;
   const [showRestrictions, setShowRestrictions] = useState(false);
@@ -57,7 +78,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
     ["检查", `${checkRuns.length} 次，${checkResults} 条结果`],
     ["评估结果", signoff ? "可正式交付" : latestDelivery ? "可作为待签发成果" : deliveryBlockers.length ? "暂不能归档" : "尚未评估"],
     ["签发状态", signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"} ${signoff.signedAt.slice(0, 10)} 签发` : latestDelivery ? "未签发" : "尚无草案"],
-    [signoff ? "签发前的限制条款" : "限制条款", latestDelivery ? `${latestDelivery.restrictions.length} 条${signoff ? "，签发后以复核意见为准" : ""}` : "尚无"],
+    [signoff ? "签发前的限制条款" : "限制条款", latestDelivery ? `${displayRestrictions(latestDelivery.restrictions).length} 条${signoff ? "，签发后以复核意见为准" : ""}` : "尚无"],
     ["责任人", roles.length ? roles.join("、") : "未登记"],
   ];
 
@@ -101,12 +122,15 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
             <Button compact disabled={Boolean(latestBlockedDelivery)} onClick={onRecordBlocked}>{latestBlockedDelivery ? "已记录原因" : "记录无法交付的原因"}</Button>
           )}
         </div>
-        {showRestrictions && latestDelivery && (
-          <div className="gj-card gj-card--compact">
-            <span className="gj-text-label">{signoff ? "签发前的限制条款" : "限制条款"} {latestDelivery.restrictions.length} 条</span>
-            <ol className="sc-delivery-restrictions">{latestDelivery.restrictions.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ol>
-          </div>
-        )}
+        {showRestrictions && latestDelivery && (() => {
+          const restrictions = displayRestrictions(latestDelivery.restrictions);
+          return (
+            <div className="gj-card gj-card--compact">
+              <span className="gj-text-label">{signoff ? "签发前的限制条款" : "限制条款"} {restrictions.length} 条{signoff ? "（签发后以复核意见为准）" : ""}</span>
+              <ol className="sc-delivery-restrictions">{restrictions.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ol>
+            </div>
+          );
+        })()}
         {showExportTask && <LongTask labelZh={`正在导出项目包：${exportPhase ?? ""}`} onCancel={onCancelExport} cancelling={exportCancelling} />}
         {roundTripReceipt && (
           <div className="gj-card gj-card--compact">

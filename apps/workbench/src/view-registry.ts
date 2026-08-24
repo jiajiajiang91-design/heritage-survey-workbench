@@ -12,7 +12,7 @@ export const stages = [
   { id: "geometry", label: "三维模型" },
   { id: "sheetStyle", label: "图纸样式" },
   { id: "drawings", label: "成组图纸" },
-  { id: "checks", label: "检查与资格", icon: ShieldCheck },
+  { id: "checks", label: "检查与签发", icon: ShieldCheck },
   { id: "package", label: "成果归档" },
   { id: "candidates", label: "模型运行与用量", icon: Activity },
   { id: "history", label: "修改历史", icon: History },
@@ -86,6 +86,8 @@ export interface StageStateInput {
   readonly hasDelivery: boolean;
   readonly modelRunCount: number;
   readonly changeCount: number;
+  // 有复核签发记录时，空着的现状记录按已完成显示：签发即认定现状核对完毕，没有要记的问题
+  readonly signedOff: boolean;
 }
 
 export function deriveStageStates(input: StageStateInput): Record<StageId, StageState> {
@@ -94,7 +96,9 @@ export function deriveStageStates(input: StageStateInput): Record<StageId, Stage
     evidence: input.evidenceCount ? { label: `${input.evidenceCount} 份`, tone: "done" } : { label: "无资料", tone: "idle" },
     measurements: input.factCount ? { label: `${input.factCount} 条尺寸`, tone: "done" } : { label: "无尺寸记录", tone: "idle" },
     objects: input.objectCount ? { label: `${input.objectCount} 个对象`, tone: "done" } : { label: "无对象", tone: "idle" },
-    conditions: input.observationCount ? { label: `${input.observationCount} 条记录`, tone: "done" } : { label: "无记录", tone: "idle" },
+    conditions: input.observationCount
+      ? { label: `${input.observationCount} 条记录`, tone: "done" }
+      : input.signedOff ? { label: "无现状问题", tone: "done" } : { label: "无记录", tone: "idle" },
     issues: input.openIssueCount ? { label: `${input.openIssueCount} 项待办`, tone: "active" } : { label: "无待办", tone: "done" },
     geometry: input.hasGeometryRevision ? { label: "已生成", tone: "done" } : { label: "未生成", tone: "idle" },
     sheetStyle: input.sheetCount !== null ? { label: `${input.sheetCount} 张图幅`, tone: "done" } : { label: "未设置", tone: "idle" },
@@ -130,7 +134,7 @@ export interface PendingItem {
 export function derivePendingItems(openIssues: readonly { issueType: string }[]): PendingItem[] {
   const count = (type: string) => openIssues.filter((issue) => issue.issueType === type).length;
   const groups: PendingItem[] = [
-    { label: "待核实构件", count: count("professionalUncertainty"), hint: "不止一种专业判断，需要人工决定", stage: "issues" },
+    { label: "需专业判断", count: count("professionalUncertainty"), hint: "不止一种专业判断，需要人工决定", stage: "issues" },
     { label: "缺现场资料", count: count("missingEvidence"), hint: "补入资料后自动重新核对", stage: "evidence" },
     { label: "数据对不上", count: count("ruleConflict"), hint: "尺寸之间或与做法对不上", stage: "issues" },
   ];

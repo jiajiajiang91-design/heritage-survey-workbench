@@ -363,7 +363,7 @@ class SheetArtifactWriter:
             f'<rect class="frame" x="{title_x}" y="{title_y}" width="221" height="30"/>',
             f'<text class="text" x="{title_x+3}" y="{title_y+8}" font-size="4">{html.escape(self.ir["titleZh"])}</text>',
             f'<text class="text" x="{title_x+3}" y="{title_y+16}" font-size="4">{html.escape(sheet["displayLabelZh"])}</text>',
-            f'<text class="text" x="{title_x+3}" y="{title_y+24}" font-size="3">{html.escape(sheet["drawingNumber"])}　代理成果·未签发　{html.escape(self.ir["revisionLabel"])}　日期：未签发</text>',
+            f'<text class="text" x="{title_x+3}" y="{title_y+24}" font-size="3">{html.escape(sheet["drawingNumber"])}　待签发成果　{html.escape(self.ir["revisionLabel"])}　日期：见签发记录</text>',
         ])
         parts.append('</svg>')
         body = "".join(parts)
@@ -382,7 +382,7 @@ class SheetArtifactWriter:
         first = self.ir["sheets"][0]
         pdf = canvas.Canvas(str(output_path), pagesize=(first["pageMm"][0] * MM_TO_POINT, first["pageMm"][1] * MM_TO_POINT), pageCompression=1, invariant=1)
         pdf.setAuthor("古建保护成果工作台")
-        pdf.setTitle("代理成果·未签发")
+        pdf.setTitle("待签发成果")
         for sheet_index, sheet in enumerate(self.ir["sheets"]):
             width, height = sheet["pageMm"]
             if sheet_index:
@@ -441,7 +441,7 @@ class SheetArtifactWriter:
             pdf.drawString((title_x + 3) * MM_TO_POINT, 27 * MM_TO_POINT, self.ir["titleZh"])
             pdf.drawString((title_x + 3) * MM_TO_POINT, 19 * MM_TO_POINT, sheet["displayLabelZh"])
             pdf.setFont("GujianSansSC", 3 * MM_TO_POINT)
-            pdf.drawString((title_x + 3) * MM_TO_POINT, 11 * MM_TO_POINT, f"{sheet['drawingNumber']}　代理成果·未签发　{self.ir['revisionLabel']}　日期：未签发")
+            pdf.drawString((title_x + 3) * MM_TO_POINT, 11 * MM_TO_POINT, f"{sheet['drawingNumber']}　待签发成果　{self.ir['revisionLabel']}　日期：见签发记录")
             pdf.showPage()
         pdf.save()
 
@@ -497,7 +497,7 @@ class SheetArtifactWriter:
         draw.rectangle((title_x * scale, title_top * scale, (width_mm - 5) * scale, (height_mm - 5) * scale), outline="#111111", width=max(1, round(.35 * scale)))
         draw.text(((title_x + 3) * scale, (title_top + 3) * scale), self.ir["titleZh"], fill="#111111", font=title_font)
         draw.text(((title_x + 3) * scale, (title_top + 11) * scale), sheet["displayLabelZh"], fill="#111111", font=title_font)
-        draw.text(((title_x + 3) * scale, (title_top + 21) * scale), f"{sheet['drawingNumber']}　代理成果·未签发　{self.ir['revisionLabel']}　日期：未签发", fill="#111111", font=small_font)
+        draw.text(((title_x + 3) * scale, (title_top + 21) * scale), f"{sheet['drawingNumber']}　待签发成果　{self.ir['revisionLabel']}　日期：见签发记录", fill="#111111", font=small_font)
         image.save(output_path, dpi=(300, 300), optimize=True)
 
     def write(self, output_dir: Path) -> dict[str, Any]:

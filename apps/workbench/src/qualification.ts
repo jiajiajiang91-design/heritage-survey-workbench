@@ -9,7 +9,7 @@ export interface QualificationLimit {
 }
 
 // 三条与 delivery-service 的 FORMAL_ONLY_CODES 一一对应，
-// 也与图纸图签上印的代理成果、未签发、未经专业复核不可用于正式交付或施工同源。
+// 也与图纸图签上印的待签发成果、见签发记录、签发前不可用于正式交付或施工同源。
 export const QUALIFICATION_LIMITS: readonly QualificationLimit[] = [
   {
     code: "L1_ELIGIBILITY_FALSE",

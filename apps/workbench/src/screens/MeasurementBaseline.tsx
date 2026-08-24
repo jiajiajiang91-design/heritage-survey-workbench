@@ -73,8 +73,8 @@ function ArchetypeForm({ onSubmit }: { onSubmit: (event: FormEvent<HTMLFormEleme
 function DimensionChainForm({ onSubmit }: { onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void> }) {
   return (
     <form className="sc-measure-form" onSubmit={(event) => void onSubmit(event)}>
-      <span className="gj-pane-title">文档尺寸链核对</span>
-      <p className="gj-pane-desc">只转写当前项目资料中的数值。系统自动计算差值；人工转写不等于现场测量。</p>
+      <span className="gj-pane-title">从资料转写尺寸并核对</span>
+      <p className="gj-pane-desc">只转写当前项目资料中的数值，总尺寸与分段尺寸的差值自动算出；人工转写不等于现场测量。</p>
       <div className="sc-measure-form-grid">
         <Field label="总尺寸 mm" required><input name="totalWidthMm" type="number" min="1" step="any" required /></Field>
         <Field label="分段尺寸 mm" required><textarea name="segmentWidthsMm" required placeholder="例如：4200, 3600, 3600" /></Field>
@@ -96,6 +96,11 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
 
   const submitArchetype = async (event: FormEvent<HTMLFormElement>) => { await onRegisterArchetype(event); setForm("none"); };
   const submitChain = async (event: FormEvent<HTMLFormElement>) => { await onConfirmDimensionChain(event); setForm("none"); };
+
+  // 基准行的三种情形：登记过形制按形制；没有形制但有已确认的转写或实测尺寸，按这些尺寸；两者都没有才是缺失。
+  // 图纸转写型项目没有形制也没有测量记录表，此前被错判成红色缺失，与已签发状态冲突。
+  const confirmedDimensionCount = snapshot.facts.filter((fact) =>
+    fact.field.startsWith("documentedDimension.") && fact.reviewStatus === "confirmed" && fact.dataStatus === "available").length;
 
   // 点一行，右卡切到这条事实引用的第一份能显示的资料（v4 右卡没有切换下拉）
   const showEvidenceOf = (refs: readonly string[]) => {
@@ -153,9 +158,15 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
               {comparisons.map((item) => (
                 <InfoRow
                   key={item.dimension}
-                  label={`${item.dimension} · 推算 ${item.valueMm !== null ? `${item.valueMm} mm` : "按实际测量"}${item.toleranceText ? `，允许偏差 ${item.toleranceText}` : ""}`}
+                  label={item.valueMm !== null
+                    ? `${item.dimension} · 推算 ${item.valueMm} mm${item.toleranceText ? `，允许偏差 ${item.toleranceText}` : ""}`
+                    : `${item.dimension} · 无文献取值，按实测为准`}
                   value={item.measuredMm !== null ? `实测 ${item.measuredMm} mm${item.deltaMm !== null ? `，相差 ${item.deltaMm} mm` : ""}` : "尚无实测记录"}
-                  trailing={item.withinTolerance === null ? <Tag>缺实测</Tag> : item.withinTolerance ? <Tag tone="success">在允许偏差内</Tag> : <Tag tone="warning">超出允许偏差</Tag>}
+                  trailing={item.measuredMm === null
+                    ? <Tag>缺实测</Tag>
+                    : item.withinTolerance === null
+                      ? (item.deltaMm === 0 ? <Tag tone="success">一致</Tag> : <Tag>已对照，无偏差档</Tag>)
+                      : item.withinTolerance ? <Tag tone="success">在允许偏差内</Tag> : <Tag tone="warning">超出允许偏差</Tag>}
                 />
               ))}
             </div>
@@ -166,7 +177,7 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
           <div className="gj-actions">
             {form !== "none" && <Button onClick={() => setForm("none")}>收起</Button>}
             {!archetype && <Button onClick={() => setForm(form === "archetype" ? "none" : "archetype")}>登记形制</Button>}
-            <Button variant="primary" onClick={() => setForm(form === "chain" ? "none" : "chain")}>转写尺寸链</Button>
+            <Button variant="primary" onClick={() => setForm(form === "chain" ? "none" : "chain")}>从资料转写尺寸</Button>
           </div>
         </>
       )}
@@ -181,16 +192,26 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
               <div className="gj-card gj-card--compact">
                 <InfoRow
                   label="基准线"
-                  value={archetype ? `斗口或材宽 ${archetype.baseParams.D} mm（${archetype.sourceDeclaration}）` : snapshot.measurements.length ? "以现场测量记录为基准" : "未登记形制，也没有现场测量记录"}
-                  trailing={archetype ? <Tag tone="warning">形制假设值</Tag> : snapshot.measurements.length ? <Tag tone="success">实测</Tag> : <Tag tone="danger">缺失</Tag>}
+                  value={archetype
+                    ? `斗口或材宽 ${archetype.baseParams.D} mm（${archetype.sourceDeclaration}）`
+                    : snapshot.measurements.length
+                      ? "以现场测量记录为基准"
+                      : confirmedDimensionCount
+                        ? `以 ${confirmedDimensionCount} 条已确认的转写与实测尺寸为基准，未做形制推算`
+                        : "未登记形制，也没有现场测量记录"}
+                  trailing={archetype
+                    ? <Tag tone="warning">形制假设值</Tag>
+                    : snapshot.measurements.length || confirmedDimensionCount
+                      ? <Tag tone="success">实测</Tag>
+                      : <Tag tone="danger">缺失</Tag>}
                 />
               </div>
               <div className="gj-card gj-card--compact">
-                <InfoRow label="尺寸单位" value="毫米，全项目固定" trailing={<Tag>非任务字段</Tag>} />
+                <InfoRow label="尺寸单位" value="毫米，全项目一致" trailing={<Tag>固定设置</Tag>} />
               </div>
               <div className="gj-card gj-card--compact">
                 <InfoRow
-                  label="形制参数层"
+                  label="形制做法"
                   value={archetype ? (archetype.liftRatioSetRef ? LIFT_RATIO_SET_LABELS[archetype.liftRatioSetRef] ?? archetype.liftRatioSetRef : "未指定举架做法") : "未登记形制"}
                   trailing={archetype ? <SourceTag producerType="rule" /> : undefined}
                 />

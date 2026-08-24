@@ -56,7 +56,8 @@ function requireMatchingProjectRefs(command: ProjectCommand): void {
     command.payload.artifacts.some((item) => item.projectId !== command.projectId) ||
     command.payload.checkRuns.some((item) => item.projectId !== command.projectId) ||
     command.payload.deliveryEvaluations.some((item) => item.projectId !== command.projectId) ||
-    command.payload.deliveries.some((item) => item.projectId !== command.projectId)
+    command.payload.deliveries.some((item) => item.projectId !== command.projectId) ||
+    command.payload.archetypeSpecs.some((item) => item.projectId !== command.projectId)
   )) {
     throw new CommandError("PROJECT_REF_MISMATCH", "imported CAD, artifact and delivery records must match command projectId");
   }
@@ -579,6 +580,9 @@ export class ProjectCommandService {
             : {}),
           ...(command.commandType === "ImportProjectSnapshot" && command.payload.deliveries.length
             ? { deliveriesToPut: command.payload.deliveries }
+            : {}),
+          ...(command.commandType === "ImportProjectSnapshot" && command.payload.archetypeSpecs.length
+            ? { archetypeSpecsToPut: command.payload.archetypeSpecs }
             : {}),
         });
       }

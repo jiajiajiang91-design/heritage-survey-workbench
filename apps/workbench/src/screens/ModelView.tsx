@@ -12,7 +12,7 @@ import { shortCode } from "./ComponentList";
 import "./ModelView.css";
 
 // W06 三维模型（66:2766）：左卡视口（工具条 36、画布 488、图例 44），右卡对象树（行 36，按类型分组计数）。
-// 实体、界面、未知项三个计数与图例一一对应，未知项在模型里可见（PRD F07）。
+// 构件、构件连接、待确认三个计数与图例一一对应，待确认部位在模型里可见（PRD F07）。
 type Snapshot = ProjectHead["snapshot"];
 type GeometrySpec = Snapshot["geometrySpecs"][number];
 
@@ -48,7 +48,7 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
   return (
     <div className="sc-model">
       <section className="sc-model-viewport">
-        {/* 工具行按 v4（66:2766）只有两枚标签；生成按钮放卡底右侧，成果状态在检查与资格屏与任务卡范围里，不在这里重复 */}
+        {/* 工具行按 v4（66:2766）只有两枚标签；生成按钮放卡底右侧，成果状态在检查与签发屏与任务卡范围里，不在这里重复 */}
         <div className="sc-model-toolbar">
           <Tag>透视视角</Tag>
           <Tag>按构件着色</Tag>
@@ -80,13 +80,13 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
         </div>
         <div className="sc-model-legend">
           <Tag>{objects.length} 个构件</Tag>
-          <Tag tone="accent">{geometrySpec?.interfaces.length ?? 0} 个界面</Tag>
+          <Tag tone="accent">{geometrySpec?.interfaces.length ?? 0} 处构件连接</Tag>
           <button type="button" className="sc-model-legend-unknown" onClick={() => setShowUnknowns((value) => !value)} aria-expanded={showUnknowns}>
             <Tag tone={geometrySpec?.unknowns.length && !signedOff ? "warning" : "neutral"}>{geometrySpec?.unknowns.length ?? 0} {signedOff ? "条建模说明" : "处待确认"}</Tag>
           </button>
           <span className="gj-spacer" />
           {geometryRevision && (
-            <Button variant="primary" loadable busy={jobs.geometryRunning} disabled={!canGenerate} onClick={() => void jobs.generateDemoGeometry()}>生成新代理版本</Button>
+            <Button variant="primary" loadable busy={jobs.geometryRunning} disabled={!canGenerate} onClick={() => void jobs.generateDemoGeometry()}>重新生成模型</Button>
           )}
         </div>
         {showUnknowns && geometrySpec && geometrySpec.unknowns.length > 0 && (
@@ -117,7 +117,7 @@ export function ModelView({ snapshot, geometryRevision, geometrySpec, geometryBl
         {selected && (
           <div className="sc-model-selected">
             <InfoRow label="选中构件" value={`${shortCode(selectedIndex)} · ${selected.displayNameZh}`} trailing={<SourceTag producerType={selected.producer.producerType} />} />
-            <InfoRow label="编号" value={<span className="gj-numeric">{selected.stableKey}</span>} />
+            <InfoRow label="追溯编号" value={<span className="gj-numeric">{selected.stableKey}</span>} />
             <InfoRow label="依据的资料" value={`${selected.evidenceRefs.length} 份`} />
             {selectedUnknowns.map((unknown) => <InfoRow key={unknown.id} label={signedOff ? "建模说明（复核已接受）" : "待确认"} value={unknown.description} />)}
           </div>

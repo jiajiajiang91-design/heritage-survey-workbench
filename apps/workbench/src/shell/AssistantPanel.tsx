@@ -24,20 +24,20 @@ export interface AssistantPanelProps {
 }
 
 export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evidence, collapsed, onExpand, onCollapse, modelConfigured }: AssistantPanelProps) {
-  if (collapsed) {
-    return (
+  const stageIndex = journeyStages.findIndex((stage) => (stage.views as readonly string[]).includes(activeStage));
+  const busy = jobs.modelRunning || jobs.geometryRunning || jobs.drawingRunning;
+  const stateText = !hasProject ? "未进入项目" : busy ? "处理中" : !modelConfigured ? "识别未连接" : "在线";
+  const dotClass = !hasProject || !modelConfigured ? "ws-assistant-dot ws-assistant-dot--off" : busy ? "ws-assistant-dot ws-assistant-dot--busy" : "ws-assistant-dot";
+  const { pendingProposal } = assistant;
+  // 收起时只藏不卸：对话记录在 ChatPanel 的组件状态里，卸载再装载会把问答清空
+  return (
+    <>
+    {collapsed && (
       <aside className="ws-assistant-collapsed">
         <Button icon onClick={onExpand} aria-label="展开助手面板"><PanelRightOpen size={16} /></Button>
       </aside>
-    );
-  }
-  const stageIndex = journeyStages.findIndex((stage) => (stage.views as readonly string[]).includes(activeStage));
-  const busy = jobs.modelRunning || jobs.geometryRunning || jobs.drawingRunning;
-  const stateText = !hasProject ? "未进入项目" : busy ? "处理中" : !modelConfigured ? "识别未连接" : "等待确认";
-  const dotClass = !hasProject || !modelConfigured ? "ws-assistant-dot ws-assistant-dot--off" : busy ? "ws-assistant-dot ws-assistant-dot--busy" : "ws-assistant-dot";
-  const { pendingProposal } = assistant;
-  return (
-    <aside className="ws-assistant" aria-label="AI 助手">
+    )}
+    <aside className="ws-assistant" aria-label="AI 助手" hidden={collapsed}>
       <div className="ws-assistant-head">
         <h2>AI 助手</h2>
         <span className="ws-assistant-state"><i className={dotClass} aria-hidden="true" />{stateText}</span>
@@ -110,5 +110,6 @@ export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evide
         })()}
       </div>
     </aside>
+    </>
   );
 }

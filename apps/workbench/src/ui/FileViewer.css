@@ -11,3 +11,11 @@
 .gj-viewer-dxf svg { width: 100%; height: 100%; }
 .gj-viewer-loading { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-tertiary); }
 .gj-viewer--empty { align-items: center; justify-content: center; gap: var(--space-sm); padding: var(--space-lg); text-align: center; font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-tertiary); background: var(--bg-subtle); border-color: transparent; }
+
+/* 表格与文本查看：内容自身滚动（查看器高度由版面定），表头吸顶 */
+.gj-viewer--doc { background: var(--bg-surface); }
+.gj-viewer-doc-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding: var(--space-sm); }
+.gj-viewer-table { border-collapse: collapse; width: 100%; font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-meta); }
+.gj-viewer-table th { position: sticky; top: calc(-1 * var(--space-sm)); background: var(--bg-subtle); font-weight: var(--font-weight-medium); text-align: left; }
+.gj-viewer-table th, .gj-viewer-table td { border: var(--stroke-hairline) solid var(--border-subtle); padding: var(--space-2xs) var(--space-xs); white-space: nowrap; color: var(--text-primary); }
+.gj-viewer-text { margin: 0; font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-meta); color: var(--text-primary); white-space: pre-wrap; word-break: break-all; }

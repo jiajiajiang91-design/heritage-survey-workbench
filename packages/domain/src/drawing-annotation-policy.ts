@@ -81,6 +81,9 @@ export const LEVEL_SOURCES: readonly LevelSource[] = [
   { componentTypes: ["foundationPier", "foundationLayer", "groundLayer", "columnBase", "terrace"], face: "bottom", labelZh: "室外地坪" },
   { componentTypes: ["terrace"], face: "top", labelZh: "台基顶" },
   { componentTypes: ["floorStructure"], face: "top", labelZh: "楼面", multiple: true, factNameHints: ["floorElevation", "secondFloorElevation"] },
+  // 檐口的取法分两路：官式带斗栱的模型檐口在檐部封护构件（里口木）下皮，柱顶远低于檐口；
+  // 木构架房屋（墙承重）檐口即墙顶。同名标高只取先命中的一路（planLevels 按 label 去重）。
+  { componentTypes: ["eaveClosure"], face: "bottom", labelZh: "檐口", factNameHints: ["eaveElevation", "eaveHeight"] },
   { componentTypes: ["exteriorWall", "wall", "column"], face: "top", labelZh: "檐口", factNameHints: ["eaveElevation", "eaveHeight"] },
   { componentTypes: ["roofPlane", "ridge", "ridgeTile", "gableRidgeCap"], face: "top", labelZh: "屋脊", factNameHints: ["ridgeElevation", "ridgeHeight"] },
   { componentTypes: ["monitorRoof"], face: "top", labelZh: "气窗顶" },

@@ -3,8 +3,10 @@ import type { ConceptEntriesFile } from "@gujian/domain";
 // 种子词表：单一对象字面量，专业人员逐条审阅，不含任何逻辑。
 // 覆盖 v3 团队 demo 的 27 个构件类型与木构架生成器的 11 个构件类型（conceptId 与 componentType 字符串一致，
 // 双写迁移零成本映射）加族层级与规则层引用的概念。
-// 同物异名实证转引自 jiangshu aliases.json（见 文档/06_研究底稿/02_开源技术借鉴.md 第 3.5 节）；
-// demo 构件沿用 v3 合同的中性术语，未经专业确认不补类型学名称。
+// 同物异名实证转引自 jiangshu aliases.json（见 文档/06_研究底稿/02_开源技术借鉴.md 第 3.5 节）。
+// 实施单元 09 复查：有通行叫法（清式或匠作通称）的条目以通行叫法为首选名，原中性描述降为别名——
+// 界面上给测绘从业者看的名字要是行业叫法；生成器对象名（坐斗、散斗）本就用通行叫法，两处一致。
+// 没有可靠通行叫法的条目仍用中性描述，不造词。
 
 export const HERITAGE_CONCEPTS_V1 = {
   schemaVersion: "concept-entries-1",
@@ -24,7 +26,7 @@ export const HERITAGE_CONCEPTS_V1 = {
     { conceptId: "foundationLayer", prefLabelZh: "基础层", altLabels: [], broader: "base-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
     { conceptId: "terrace", prefLabelZh: "台基", altLabels: [], broader: "base-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
     { conceptId: "step", prefLabelZh: "踏步", altLabels: [], broader: "base-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
-    { conceptId: "columnBase", prefLabelZh: "柱下承托构件", altLabels: ["柱础"], broader: "base-family", sourceText: "v3 团队 demo 中性术语；别名为通行叫法", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "columnBase", prefLabelZh: "柱础", altLabels: ["柱下承托构件"], broader: "base-family", sourceText: "通行叫法为首选名；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
 
     { conceptId: "column", prefLabelZh: "柱", altLabels: [], broader: "column-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
     { conceptId: "eave-column", prefLabelZh: "檐柱", altLabels: ["小檐柱"], broader: "column-family", sourceText: "jiangshu aliases.json：檐柱又称小檐柱", roleZh: "檐口下最外圈承重柱", descZh: null, confirmedBy: null },
@@ -41,18 +43,18 @@ export const HERITAGE_CONCEPTS_V1 = {
     { conceptId: "tieBeam", prefLabelZh: "联系梁", altLabels: [], broader: "beam-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
     { conceptId: "crescent-beam", prefLabelZh: "月梁", altLabels: ["顶梁"], broader: "beam-family", sourceText: "jiangshu aliases.json：月梁又称顶梁", roleZh: null, descZh: null, confirmedBy: null },
 
-    { conceptId: "bracketSeat", prefLabelZh: "承托座", altLabels: [], broader: "bracket-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
-    { conceptId: "bracketArm", prefLabelZh: "承托臂", altLabels: [], broader: "bracket-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
-    { conceptId: "bearingBlock", prefLabelZh: "檩下承块", altLabels: [], broader: "bracket-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "bracketSeat", prefLabelZh: "坐斗", altLabels: ["承托座", "大斗"], broader: "bracket-family", sourceText: "清式叫法为首选名，与生成器对象名一致；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "bracketArm", prefLabelZh: "栱", altLabels: ["承托臂"], broader: "bracket-family", sourceText: "清式叫法为首选名，与生成器对象名一致；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "bearingBlock", prefLabelZh: "散斗", altLabels: ["檩下承块"], broader: "bracket-family", sourceText: "清式叫法为首选名，与生成器对象名一致；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
 
     { conceptId: "purlin", prefLabelZh: "檩", altLabels: ["桁"], broader: "roof-frame", sourceText: "v3 团队 demo 中性术语；别名为通行叫法", roleZh: null, descZh: null, confirmedBy: null },
     { conceptId: "rafter", prefLabelZh: "椽", altLabels: [], broader: "roof-frame", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
-    { conceptId: "flyRafter", prefLabelZh: "檐端续接椽", altLabels: ["飞椽"], broader: "roof-frame", sourceText: "v3 团队 demo 中性术语；别名为通行叫法", roleZh: null, descZh: null, confirmedBy: null },
-    { conceptId: "eaveClosure", prefLabelZh: "檐口封闭构件", altLabels: [], broader: "roof-frame", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "flyRafter", prefLabelZh: "飞椽", altLabels: ["檐端续接椽"], broader: "roof-frame", sourceText: "通行叫法为首选名；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "eaveClosure", prefLabelZh: "里口木", altLabels: ["檐口封闭构件", "闸挡板"], broader: "roof-frame", sourceText: "按生成器建模范围（檐口封护板类）取通行叫法；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
     { conceptId: "roofBoard", prefLabelZh: "屋面板", altLabels: ["望板"], broader: "roof-frame", sourceText: "v3 团队 demo 中性术语；别名为通行叫法", roleZh: null, descZh: null, confirmedBy: null },
 
-    { conceptId: "panTile", prefLabelZh: "凹面瓦件", altLabels: ["板瓦"], broader: "tile-family", sourceText: "v3 团队 demo 中性术语；别名为通行叫法", roleZh: null, descZh: null, confirmedBy: null },
-    { conceptId: "coverTile", prefLabelZh: "盖瓦件", altLabels: ["筒瓦"], broader: "tile-family", sourceText: "v3 团队 demo 中性术语；别名为通行叫法", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "panTile", prefLabelZh: "板瓦", altLabels: ["凹面瓦件"], broader: "tile-family", sourceText: "通行叫法为首选名；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
+    { conceptId: "coverTile", prefLabelZh: "筒瓦", altLabels: ["盖瓦件"], broader: "tile-family", sourceText: "通行叫法为首选名；别名为 v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
     { conceptId: "ridgeTile", prefLabelZh: "屋脊构件", altLabels: [], broader: "tile-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },
 
     { conceptId: "wall", prefLabelZh: "墙体", altLabels: [], broader: "fitment-family", sourceText: "v3 团队 demo 中性术语", roleZh: null, descZh: null, confirmedBy: null },

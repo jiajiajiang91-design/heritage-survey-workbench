@@ -145,15 +145,15 @@ const APPROXIMATION_REASONS: Record<ApproximationTag, { code: string; descriptio
   },
   stripCrossSectionFlattened: {
     code: "DEMO_TRANSLATION_TILE_SECTION_FLATTENED",
-    description: "瓦件按中线纵向剖面条带挤出转换，纵向曲线与压茬保留，横向抛物断面被展平。",
+    description: "瓦件沿中线纵向剖面挤出转换，纵向曲线与压茬保留，横向的弧形断面取平。",
   },
   decomposedParts: {
     code: "DEMO_TRANSLATION_DECOMPOSED_PARTS",
-    description: "合并多块构件按网格连通分量拆分为多个实体分件，分件通过 parentId 归组，构造关系保留。",
+    description: "原模型把多块构件合并成一体，转换时按相互连接的块拆回逐件实体并归入同一母件，构造关系保留。",
   },
   boundsEnvelopeFallback: {
     code: "DEMO_TRANSLATION_BOUNDS_FALLBACK",
-    description: "该构件网格无法识别为棱柱、圆柱或剖面条带，退化为轴对齐包围盒。",
+    description: "该构件外形无法识别为棱柱、圆柱或剖面条带，按外接长方体近似表达。",
   },
 };
 
@@ -182,18 +182,19 @@ function readableName(entity: LegacyEntity): string {
   // 源数据的名称带有内部标注，界面只显示构件本身的名称
   const value = entity.domainTerm?.displayNameZh?.trim().replace(/（[^）]*演示[^）]*）/g, "").trim();
   if (value && /[㐀-鿿]/u.test(value)) return value;
+  // 与词表 heritage-concepts-v1 的首选名保持一致：有通行叫法的用通行叫法
   const names: Record<string, string> = {
     column: "柱",
-    columnBase: "柱下承托构件",
-    bracketSeat: "承托座",
-    bracketArm: "承托臂",
-    bearingBlock: "檩下承块",
-    panTile: "凹面瓦件",
-    coverTile: "盖瓦件",
+    columnBase: "柱础",
+    bracketSeat: "坐斗",
+    bracketArm: "栱",
+    bearingBlock: "散斗",
+    panTile: "板瓦",
+    coverTile: "筒瓦",
     ridgeTile: "屋脊构件",
     roofBoard: "屋面板",
     rafter: "椽",
-    flyRafter: "檐端续接椽",
+    flyRafter: "飞椽",
     wall: "墙体",
   };
   return names[entity.componentType] ?? `${entity.componentType}`;
@@ -263,7 +264,7 @@ function translateManifest(input: DemoConversionInput, evidenceId: string, fixtu
       unknowns.push({
         id: entityUnknownIds[index]!, subjectRef: entity.entityId,
         reasonCode: `LEGACY_DEMO_${unknownKey(item).toUpperCase().replace(/[^A-Z0-9]+/g, "_")}`.slice(0, 120),
-        description: `待确认项：${unknownLabel(item)}`,
+        description: unknownLabel(item),
         requiredEvidence: ["项目自身证据或专业人员复核记录"], affectedRefs: [entity.entityId], evidenceRefs: [evidenceId],
         blocksProxyOutcome: false, blocksFormalEligibility: true,
       });
@@ -279,7 +280,8 @@ function translateManifest(input: DemoConversionInput, evidenceId: string, fixtu
         family = {
           id: deterministicUuid(`unknown:translation:${familyKey}`),
           code: reason.code,
-          description: `${entity.componentType}：${reason.description}`,
+          // 构件类型写中文名，英文类型键不进说明正文
+          description: `${readableName(entity)}：${reason.description}`,
           affected: [],
         };
         familyUnknowns.set(familyKey, family);
@@ -393,7 +395,7 @@ function translateManifest(input: DemoConversionInput, evidenceId: string, fixtu
       id: deterministicUuid("unknown:interfaces:not-carried"),
       subjectRef: "demo:v3-interfaces",
       reasonCode: "DEMO_INTERFACES_NOT_CARRIED",
-      description: `原 v3 接口共 ${(input.manifest.interfaces ?? []).length} 项，本次携带完整竖向承重链 ${interfaces.length} 项。未携带：瓦件接口 ${tileCount} 项（横向断面展平后几何见证失效）；长构件局部接触接口 ${localCount} 项（当前接口检查语义仅支持构件极值面，多点接触表达留待后续版本）。原始接口关系保留在 v3 manifest 证据资产中。`,
+      description: `原教学模型记录构件接触关系 ${(input.manifest.interfaces ?? []).length} 项，本次携带完整竖向承重链 ${interfaces.length} 项。未携带：瓦件之间的搭接 ${tileCount} 项（横向断面取平后无法按面核对）；长构件的局部接触 ${localCount} 项（当前只核对构件端面与顶底面的接触，多点接触留待后续版本）。原始接触关系保留在随包的原始清单资料里。`,
       requiredEvidence: ["支持局部接触面语义的接口检查实现", "瓦件曲面精确重建记录"],
       affectedRefs: ["demo:v3-interface-group:tile", "demo:v3-interface-group:local-contact"],
       evidenceRefs: [evidenceId],

@@ -95,7 +95,7 @@ const views = [
   ["记录现状", "问题队列", "W07_问题队列"],
   ["生成图纸", "图纸样式", "W08_图纸样式"],
   ["生成图纸", "成组图纸", "W08b_成组图纸"],
-  ["检查签发", null, "W09_检查与资格"],
+  ["检查签发", null, "W09_检查与签发"],
   ["交付归档", null, "W10_代理交付"],
 ];
 for (const [stage, tab, name] of views) {
@@ -104,7 +104,7 @@ for (const [stage, tab, name] of views) {
   if (tab) { await click(tab, `(document.querySelector("[aria-label='工作区视图']") ?? document)`); await sleep(300); }
   await sleep(500);
   await shot(name);
-  if (name === "W09_检查与资格") {
+  if (name === "W09_检查与签发") {
     if (await click("查看使用限制")) { await sleep(300); await shot("W09A_资格与限制"); await click("收起使用限制"); }
   }
 }

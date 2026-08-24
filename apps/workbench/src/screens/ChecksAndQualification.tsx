@@ -7,9 +7,9 @@ import { FileViewer } from "../ui/FileViewer";
 import { describePreview, previewLabel, type DrawingPreview, type PreviewRequirements } from "../workbench/useAssetUrls";
 import "./ChecksAndQualification.css";
 
-// W09 检查与资格（66:2949）：左卡正式图（头 36 加状态标签、图 480、题注 12/20、底部操作），
-// 右卡检查结果与资格（头 36 加阻断计数、检查小卡 10 内边距）。W09A 资格与限制（66:3016）
-// 是同一屏的展开态：三层限制逐条列出（qualification.ts 的 QUALIFICATION_LIMITS）。
+// W09 检查与签发（66:2949）：左卡正式图（头 36 加状态标签、图 480、题注 12/20、底部操作），
+// 右卡检查结果（头 36 加不通过计数、检查小卡 10 内边距）。W09A 使用限制（66:3016）
+// 是同一屏的展开态：限制逐条列出（qualification.ts 的 QUALIFICATION_LIMITS）。
 export interface ChecksAndQualificationProps {
   previews: readonly DrawingPreview[];
   drawingArtifacts: readonly ArtifactRecord[];
@@ -90,7 +90,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
       </section>
       <section className="sc-checks-results">
         <div className="sc-checks-head sc-checks-head--tight">
-          <span className="gj-pane-title">检查结果与资格</span>
+          <span className="gj-pane-title">检查结果</span>
           <span className="gj-spacer" />
           <Tag tone={blocked ? "danger" : latestCheckRun ? "success" : "neutral"}>{latestCheckRun ? (blocked ? `${blocked} 项不通过` : "全部通过") : "未检查"}</Tag>
         </div>
@@ -110,28 +110,36 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
             : qualificationLabel ? `${qualificationLabel}。签发前只能作为待签发成果使用，不能正式交付` : "出图并检查后显示成果状态"}{crossRevisionArtifactCount ? `；另有 ${crossRevisionArtifactCount} 项旧版本成果已隔离` : ""}{signoff ? "" : `。当前成果 ${currentArtifactCount} 项，模型待确认部位 ${unknownCount} 处。`}</p>
         </div>
         <div className="sc-check">
-          <div className="sc-check-head"><span>成果等级</span>{signoff?.l1Eligible ? <Tag tone="success">专业样板</Tag> : <Tag>不作为样板</Tag>}</div>
-          <p>{signoff?.l1Eligible ? "复核认定达到专业样板等级，可作为同类项目的参照" : "不作为专业样板或参照标准使用"}</p>
+          <div className="sc-check-head"><span>成果等级</span>{signoff?.l1Eligible ? <Tag tone="success">专业样板</Tag> : <Tag>{signoff ? "一般成果" : "待评定"}</Tag>}</div>
+          <p>{signoff?.l1Eligible
+            ? "复核认定达到专业样板等级，可作为同类项目的参照"
+            : signoff
+              ? "本项目成果不作为其他项目的参照标准；不影响本项目的正式交付"
+              : "等级由复核签发时评定；签发前不作为专业样板或参照标准使用"}</p>
         </div>
         <div className="sc-check">
           <div className="sc-check-head"><span>能否正式交付</span><Tag tone={blockerCodes.length ? "danger" : "success"}>{blockerCodes.length ? "还不能" : signoff ? "可以" : "签发后可以"}</Tag></div>
-          <p>{blockerSummary(blockerCodes)}</p>
+          <p>{blockerCodes.length === 0 && signoff ? `已由${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}复核签发，可以正式交付。` : blockerSummary(blockerCodes)}</p>
           {showLimits && blockerReasons.length > 0 && (
             <ul className="sc-check-reasons">{blockerReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
           )}
         </div>
-        {showLimits && (
-          <div className="sc-check sc-check--limits">
-            <div className="sc-check-head"><span>使用限制</span><Tag tone="warning">{signoff ? "签发后仍适用的" : "三条"}</Tag></div>
-            {QUALIFICATION_LIMITS.filter((limit) => !signoff || (limit.code === "L1_ELIGIBILITY_FALSE" && !signoff.l1Eligible)).map((limit) => (
-              <div className="sc-check-limit" key={limit.code}>
-                <strong>{limit.layerZh}</strong>
-                <p>{limit.textZh}</p>
-              </div>
-            ))}
-            <p>{signoff ? "图签上的签发状态以签发记录为准。" : "图签同样印有待签发状态，日期栏印的也是未签发。"}</p>
-          </div>
-        )}
+        {showLimits && (() => {
+          const limits = QUALIFICATION_LIMITS.filter((limit) => !signoff || (limit.code === "L1_ELIGIBILITY_FALSE" && !signoff.l1Eligible));
+          return (
+            <div className="sc-check sc-check--limits">
+              <div className="sc-check-head"><span>使用限制</span><Tag tone={limits.length ? "warning" : "success"}>{signoff ? (limits.length ? `签发后仍适用 ${limits.length} 条` : "无") : `${limits.length} 条`}</Tag></div>
+              {limits.map((limit) => (
+                <div className="sc-check-limit" key={limit.code}>
+                  <strong>{limit.layerZh}</strong>
+                  <p>{limit.textZh}</p>
+                </div>
+              ))}
+              {!limits.length && <p>复核签发后没有仍然适用的使用限制。</p>}
+              <p>{signoff ? "图签上的签发状态以签发记录为准。" : "图签同样印有待签发状态，日期栏印的也是未签发。"}</p>
+            </div>
+          );
+        })()}
         <span className="gj-spacer" />
         <div className="gj-actions">
           <Button onClick={() => setShowLimits((value) => !value)} aria-expanded={showLimits}>{showLimits ? "收起使用限制" : "查看使用限制"}</Button>

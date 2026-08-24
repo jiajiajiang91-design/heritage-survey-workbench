@@ -193,7 +193,9 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 projectName={selected.snapshot.project.name}
                 buildingName={selected.snapshot.buildings[0]?.name ?? ""}
                 responsibilityRoles={confirmedTask?.responsibilities.map((item) => item.role) ?? []}
-                artifacts={drawingArtifacts}
+                // 交付清单要与项目卡、助手同口径：当前模型版本的全部成果（图纸加模型与记录），
+                // 只给图纸类会出现清单 12 项、项目卡 20 项两套数
+                artifacts={artifactSetView?.currentArtifacts ?? drawingArtifacts}
                 checkRuns={session.projectCheckRuns}
                 latestCheckRun={latestCheckRun}
                 latestDelivery={latestDelivery}

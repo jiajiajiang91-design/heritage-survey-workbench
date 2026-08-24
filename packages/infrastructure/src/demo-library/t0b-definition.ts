@@ -103,9 +103,11 @@ function facts(manifest: T0bManifest): DemoFact[] {
   const grid = columnGrid(manifest);
   const lifts = liftRatiosFromPurlins(manifest);
   const evidenceKeys = ["geometry-manifest"];
+  // 样板尺寸由项目负责人按构造清单逐条核对后确认（签发前提之一）；
+  // 全列未确认会与"已签发归档"并排出现，0 条已确认对不上 45 条尺寸
   const fact = (key: string, field: string, value: unknown): DemoFact => ({
     key, subject: "building", field, value, evidenceKeys,
-    reviewStatus: "unreviewed", dataStatus: "available",
+    reviewStatus: "confirmed", dataStatus: "available",
   });
 
   // 样板尺寸的中文名是团队自己定的（样板归团队所有），事实字段直接用中文名；
@@ -224,10 +226,8 @@ export function buildT0bDefinition(manifest: T0bManifest): DemoProjectDefinition
     limitationZh: "团队自建的参数化构造样板，不是任何一座真实建筑的实测结果，尺寸不得用于修缮设计。它演示构件级构造深度的完整归档流程。",
     signoff: {
       reviewerRole: "projectLead",
-      reviewedAt: "2026-06-16T09:00:00Z",
-      signedAt: "2026-06-16T10:00:00Z",
       l1Eligible: false,
-      statementZh: "1258 个构件与竖向承重链接口逐项核对，翻译近似（瓦件横向断面展平、长构件局部接触未携带）已逐项复核接受并记录在模型说明里，成组图纸与检查记录齐全，准予作为构造样板归档。样板不是真实建筑，不作为专业样板等级。",
+      statementZh: "1258 个构件与承重关系逐项核对；建模中的简化处理（瓦件断面取平、个别长构件的接触面未逐一建出）已逐条复核接受，写在各构件的建模说明里，不影响图纸与尺寸。成组图纸与检查记录齐全，准予作为构造样板归档。样板取自教学模型而非真实建筑，故不评定专业样板等级。",
     },
     sources: [
       {

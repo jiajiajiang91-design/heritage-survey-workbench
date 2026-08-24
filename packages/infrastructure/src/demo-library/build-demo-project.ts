@@ -4,6 +4,7 @@ import {
   EvidenceSchema,
   FactEnvelopeSchema,
   IssueSchema,
+  ObservationSchema,
   ParseRecordSchema,
   TaskDefinitionSchema,
 } from "@gujian/domain";
@@ -197,6 +198,27 @@ export async function seedDemoProject(input: DemoBuildInput): Promise<SeededDemo
           evidenceRefs: [evidenceRef(item.evidenceKey)],
           reviewStatus: item.reviewStatus ?? "unreviewed",
           dataStatus: item.dataStatus,
+        })),
+      },
+    });
+  }
+
+  // 现状记录：照片上可见的材料与保存状况。归档完成的测绘项目在记录现状这一步要有内容，
+  // 一栏空白会让专业用户质疑成果完整性（独立试用问题清单 B-5）。
+  if (definition.observations?.length) {
+    await commands.execute({
+      commandType: "CommitObservations",
+      commandId: id("cmd/observations"),
+      projectId, actorId, expectedRevisionId: (await head()).revisionId, issuedAt: at,
+      payload: {
+        observations: definition.observations.map((item) => ObservationSchema.parse({
+          id: id(`observation/${item.key}`),
+          subjectRef: buildingId,
+          observationType: item.observationType,
+          text: item.text,
+          producer,
+          evidenceRefs: item.evidenceKeys.map(evidenceRef),
+          dataStatus: "available",
         })),
       },
     });

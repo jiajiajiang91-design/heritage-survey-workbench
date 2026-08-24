@@ -29,9 +29,14 @@ function actorLabel(actorId: string, responsibilities: readonly { role: string; 
   return match ? RESPONSIBILITY_ROLE_LABELS[match.role] ?? match.role : "本机操作人";
 }
 
+// 按本机时区显示。直接裁 ISO 字符串是 UTC，与模型运行页的本地时间差着时区，
+// 同一次操作在两页显示两个钟点，会被当成两次操作
 function timeLabel(iso: string): string {
-  return iso.replace("T", " ").slice(0, 19);
+  const date = new Date(iso);
+  const two = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${two(date.getMonth() + 1)}-${two(date.getDate())} ${two(date.getHours())}:${two(date.getMinutes())}:${two(date.getSeconds())}`;
 }
+
 
 export function ChangeHistory({ entries, responsibilities, back }: ChangeHistoryProps) {
   const [filter, setFilter] = useState<Filter>("all");
@@ -75,7 +80,7 @@ export function ChangeHistory({ entries, responsibilities, back }: ChangeHistory
                   {entry.reasonZh ? `。理由：${entry.reasonZh}` : ""}
                 </span>
                 {impact === null ? (
-                  <span className="sc-history-impact sc-history-impact--unknown">影响：算不出来</span>
+                  <span className="sc-history-impact sc-history-impact--unknown">影响：暂无法计算</span>
                 ) : impact.total > 0 ? (
                   <span className="sc-history-impact">影响：{impact.groups.map((group) => `${group.kind} ${group.count}`).join("、")}</span>
                 ) : (
@@ -83,7 +88,7 @@ export function ChangeHistory({ entries, responsibilities, back }: ChangeHistory
                 )}
               </div>
               {impact?.preserved.length ? <span className="sc-history-note">已交付版本保留：{impact.preserved.map((group) => `${group.kind} ${group.count}`).join("、")}</span> : null}
-              {impact?.coverageGaps.length ? <span className="sc-history-note sc-history-note--warn">这次算不全：{impact.coverageGaps.join("；")}</span> : null}
+              {impact?.coverageGaps.length ? <span className="sc-history-note sc-history-note--warn">影响没有算全：{impact.coverageGaps.join("；")}</span> : null}
             </article>
           );
         }) : <EmptyState>这个项目还没有写入记录。每一次写入都会留在这里，含时间、操作人、改了什么和为什么。</EmptyState>}

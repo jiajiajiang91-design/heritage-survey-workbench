@@ -68,6 +68,7 @@ export function useWorkspaceNav(session: ProjectSession) {
     hasDelivery: session.latestDelivery !== null,
     modelRunCount: session.projectModelRuns.length,
     changeCount: session.changeHistory.length,
+    signedOff: session.dashboard?.signoff != null,
   });
   const journeyState = (views: readonly string[]) => journeyTone(views, activeStage, stageStates);
   const pendingItems = derivePendingItems(session.openIssues);

@@ -35,15 +35,15 @@ export interface ProjectDashboardSummary {
   readonly signoff: ReviewSignoff | null;
 }
 
-// 签发解除哪些不通过项：未经复核与本机不能签发两条随签发解除，只阻断正式资格的项视为已复核接受，
-// L1 只在记录认定时解除。评估记录是签发前写的，不改；显示时按这里过滤。
+// 签发解除哪些不通过项：未经复核与本机不能签发两条随签发解除，只阻断正式资格的项视为已复核接受。
+// 样板等级（L1）只关系到成果能不能当参照样板，不关系到能不能交付——已签发的成果一律可交付，
+// 等级由成果等级一栏单独说明。评估记录是签发前写的，不改；显示时按这里过滤。
 const FORMAL_ONLY = new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", "L1_ELIGIBILITY_FALSE", "PROXY_ONLY"]);
 export function effectiveBlockerCodes(codes: readonly string[], signoff: ReviewSignoff | null, details?: readonly { code: string; blocksProxyOutcome: boolean }[]): string[] {
   if (!signoff) return [...codes];
   const hard = new Set((details ?? []).filter((item) => item.blocksProxyOutcome).map((item) => item.code));
   return codes.filter((code) => {
     const bare = code.replace(/^CHECK_BLOCKED:/, "");
-    if (bare === "L1_ELIGIBILITY_FALSE") return !signoff.l1Eligible;
     if (FORMAL_ONLY.has(bare)) return false;
     if (details?.length) return hard.has(code);
     // 没有明细的来源（几何版本自带的阻断码）按只阻断正式资格处理

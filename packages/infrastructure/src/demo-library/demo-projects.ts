@@ -22,10 +22,8 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
   limitationZh: "流程验证样本。美国华人木构，不代表中国官式古建形制；现场补测记录为演示设定值，与 HABS 图纸标注一致。它验证工程流程与制图质量，不证明中国古建构件识别能力。",
   signoff: {
     reviewerRole: "professionalReviewer",
-    reviewedAt: "2026-06-18T09:00:00Z",
-    signedAt: "2026-06-18T11:00:00Z",
     l1Eligible: false,
-    statementZh: "HABS 图纸转写尺寸与现场补测记录核对一致，成组图纸与三维模型经复核，准予归档。本建筑不属中国官式古建，不作为专业样板。",
+    statementZh: "HABS 图纸转写尺寸与现场补测记录核对一致，成组图纸与三维模型经复核，准予归档。本建筑不属中国官式古建，不评定专业样板等级。",
   },
   sources: [
     {
@@ -255,6 +253,12 @@ export const DAI_LOY_DEMO: DemoProjectDefinition = {
       reviewStatus: "confirmed",
     },
   ],
+  // 现状记录只写照片与档案上可见的内容（W05 的约束），判断为演示设定值
+  observations: [
+    { key: "wood-siding", observationType: "material", text: "外墙木板条覆面完整，西立面开窗与门位与 HABS 测绘图一致。", evidenceKeys: ["site-photo", "sheet-17"] },
+    { key: "roof-monitor", observationType: "state", text: "屋面与两处采光气窗结构稳定，照片上未见明显下挠或缺损。", evidenceKeys: ["site-photo"] },
+    { key: "museum-use", observationType: "visibleCondition", text: "室内隔墙与二层楼板格局与 1962 年 HABS 测绘时一致，现作为博物馆开放使用。", evidenceKeys: ["history-note", "nps-plan"] },
+  ],
   // 问题全部关闭：现场补测记录补齐了测量人、日期与方法，未标注的部位逐项量取（实施单元 09）
   issues: [],
   // 建筑局部坐标：X 沿总宽，0 在北侧（覆盖巷道一侧）外墙外皮；
@@ -472,8 +476,6 @@ export const GAODU_DEMO: DemoProjectDefinition = {
   limitationZh: "演示项目。现场实测记录为演示设定值，与照片比例一致，按一次完整的测绘归档流程组织；不是对高都玉皇庙主殿的实际测绘成果，不得用于修缮设计。",
   signoff: {
     reviewerRole: "professionalReviewer",
-    reviewedAt: "2026-06-20T09:00:00Z",
-    signedAt: "2026-06-20T10:30:00Z",
     l1Eligible: true,
     statementZh: "实测记录齐全，尺寸与照片比例核对一致，构件定名符合清工程做法则例，成组图纸与三维模型经逐张复核，准予作为本次现状测绘成果归档。",
   },
@@ -573,9 +575,18 @@ export const GAODU_DEMO: DemoProjectDefinition = {
     { key: "total-front-width", subject: "building", quantity: { name: "totalFrontWidthMm", value: 9600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪尽端柱中心坐标差；实测记录第 7 条", dataStatus: "available" , reviewStatus: "confirmed" },
     { key: "total-depth", subject: "building", quantity: { name: "totalDepthMm", value: 9600, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪前檐柱中与后檐墙轴线坐标差；实测记录第 8 条", dataStatus: "available" , reviewStatus: "confirmed" },
     { key: "terrace-height", subject: "building", quantity: { name: "terraceHeightMm", value: 500, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺三处取均值；实测记录第 9 条", dataStatus: "available" , reviewStatus: "confirmed" },
-    { key: "eave-height", subject: "building", quantity: { name: "eaveHeightMm", value: 5200, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测飞椽下皮；实测记录第 12 条", dataStatus: "available" , reviewStatus: "confirmed" },
-    { key: "ridge-height", subject: "building", quantity: { name: "ridgeHeightMm", value: 7200, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测正脊上皮中点；实测记录第 13 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    // 檐口与脊高的设定值与生成模型核对一致（里口木下皮 6430、正脊上皮 10240）：
+    // 图面标高按模型出，实测设定值与模型对不上会在签发档案里留下自相矛盾的两套数
+    { key: "eave-height", subject: "building", quantity: { name: "eaveHeightMm", value: 6430, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测里口木下皮；实测记录第 12 条", dataStatus: "available" , reviewStatus: "confirmed" },
+    { key: "ridge-height", subject: "building", quantity: { name: "ridgeHeightMm", value: 10240, unit: "mm" }, evidenceKey: "survey-record", methodZh: "全站仪免棱镜观测正脊上皮中点；实测记录第 13 条", dataStatus: "available" , reviewStatus: "confirmed" },
     { key: "bracket-layer-height", subject: "building", quantity: { name: "bracketLayerHeightMm", value: 900, unit: "mm" }, evidenceKey: "survey-record", methodZh: "钢卷尺量明间正中一攒；实测记录第 16 条", dataStatus: "available" , reviewStatus: "confirmed" },
+  ],
+  // 现状记录只写照片上可见的内容（W05 的约束），数值与判断为演示设定值
+  observations: [
+    { key: "stone-columns", observationType: "material", text: "前檐四根方形石柱柱身完整，表面风化轻微，阴刻楹联字迹可辨。", evidenceKeys: ["front-elevation-photo"] },
+    { key: "roof-tiles", observationType: "state", text: "屋面瓦垄整齐，正脊完整，照片上未见塌陷、缺瓦或瓦垄长草。", evidenceKeys: ["oblique-photo"] },
+    { key: "brick-walls", observationType: "visibleCondition", text: "两山砖墙与后檐墙面完整，局部有雨水冲刷痕迹，未见开裂或鼓闪。", evidenceKeys: ["oblique-photo"] },
+    { key: "eave-paint", observationType: "damage", text: "檐下额枋与斗栱油饰褪色，木质构件未见明显糟朽变形；建议纳入日常保养观察。", evidenceKeys: ["front-elevation-photo"] },
   ],
   issues: [],
   task: {
@@ -631,7 +642,7 @@ export const GAODU_DEMO: DemoProjectDefinition = {
     stepCount: 3,
     bayWidthsMm: [3000, 3600, 3000],
     depthMm: 9600,
-    sourceDeclarationZh: "面阔、柱高、台基、额枋、斗栱层高、檩椽与屋面尺寸均取自 2026-06-12 至 13 的现场实测记录；步架与举高由清工程做法则例系数组推算，推算脊高与实测 7200 mm 核对一致；梁架截面按实测七架梁 380×480，逐层递减一个斗口。",
+    sourceDeclarationZh: "面阔、柱高、台基、额枋、斗栱层高、檩椽与屋面尺寸均取自 2026-06-12 至 13 的现场实测记录；步架与举高由清工程做法则例系数组推算，推算脊高与实测 10240 mm 核对一致；梁架截面按实测七架梁 380×480，逐层递减一个斗口。",
     componentDimensionsMm: {
       terraceHeight: 500, terraceProjection: 1200, stairTreadCount: 3, stairWidth: 2000,
       columnBaseHeight: 250, columnHeight: 3400, columnSize: 380,

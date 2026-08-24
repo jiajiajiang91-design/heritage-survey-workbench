@@ -74,6 +74,8 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 
 /* ---------- 助手栏（36:14）：宽 380，白底，左边线；头 56，对话区 16 内边距，输入区 ---------- */
 .ws-assistant { display: grid; grid-template-rows: var(--layout-topbar-height) minmax(0, 1fr) auto; background: var(--bg-surface); border-left: var(--stroke-hairline) solid var(--border-subtle); min-height: 0; min-width: 0; }
+/* 收起时只藏不卸（对话记录留在组件状态里）；display:grid 会盖过 hidden 属性的默认样式，这里补一条 */
+.ws-assistant[hidden] { display: none; }
 .ws-assistant-head { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md) var(--space-lg); border-bottom: var(--stroke-hairline) solid var(--border-subtle); }
 .ws-assistant-head h2 { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); flex: 1 1 auto; }
 .ws-assistant-state { display: flex; align-items: center; gap: var(--space-sm); font: var(--font-weight-regular) var(--font-size-12)/var(--line-20) var(--font-family-ui); color: var(--text-primary); white-space: nowrap; }
@@ -82,7 +84,8 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 .ws-assistant-dot--busy { background: var(--status-warning-fg); }
 .ws-assistant-dot--off { background: var(--border-strong); }
 /* 对话区（36:21）：内边距 16、间距 16；消息流与附加内容在 .assistant-chat-scroll 里滚动，输入区（36:35）贴底不滚 */
-.ws-assistant-body { display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space-lg) var(--space-lg) 0; min-height: 0; overflow: hidden; }
+/* 视窗矮时对话区不压成几十像素的小条：消息区保底高度，装不下时整个面板体滚动 */
+.ws-assistant-body { display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space-lg) var(--space-lg) 0; min-height: 0; overflow: hidden auto; }
 /* 任务状态块（36:22）：次级底，内边距 12，间距 8，进度条 4 高全圆角 */
 .ws-assistant-task { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-subtle); border-radius: var(--radius-md); }
 .ws-assistant-task .ws-assistant-task-step { font: var(--font-weight-regular) var(--font-size-12)/var(--line-16) var(--font-family-ui); color: var(--text-primary); }
@@ -95,7 +98,7 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 .ws-assistant-section-title { font: var(--font-weight-medium) var(--font-size-12)/var(--line-16) var(--font-family-ui); color: var(--text-primary); }
 /* 对话面板：消息流在上，输入区在下（36:35 Composer） */
 .assistant-chat-panel { display: flex; flex-direction: column; gap: 0; min-height: 0; flex: 1 1 auto; }
-.assistant-chat-scroll { display: flex; flex-direction: column; gap: var(--space-md); flex: 1 1 auto; min-height: 0; overflow: auto; padding-bottom: var(--space-lg); }
+.assistant-chat-scroll { display: flex; flex-direction: column; gap: var(--space-md); flex: 1 1 auto; min-height: 12rem; overflow: auto; padding-bottom: var(--space-lg); }
 .assistant-message-list { display: flex; flex-direction: column; gap: var(--space-md); min-height: 0; }
 .assistant-msg { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); border-radius: var(--radius-md); font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); color: var(--text-primary); max-width: 100%; overflow-wrap: anywhere; }
 .assistant-msg-assistant { background: var(--bg-selected); }

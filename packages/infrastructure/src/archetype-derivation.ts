@@ -107,6 +107,16 @@ export function deriveArchetypeExpectations(spec: ArchetypeSpec): ArchetypeDeriv
 
 // 与实测事实对照：按维度名匹配已确认可用的数值事实；
 // 无匹配实测项时 measuredMm 为 null，不用应然值补齐。
+// 实测尺寸有两种记法：archetype.measured.<中文名> 的裸数值，
+// 和 documentedDimension.<英文量名> 的带单位对象（演示包与转写记录用后者）。
+// 只认前者会让对照表在有实测的项目上整列显示缺实测。
+const DOCUMENTED_DIMENSION_ALIAS: Record<string, string> = {
+  通面阔: "totalFrontWidthMm",
+  通进深: "totalDepthMm",
+  檐柱高: "columnHeightMm",
+  檐柱径: "columnSizeMm",
+};
+
 export function compareWithMeasuredFacts(
   derivation: ArchetypeDerivation,
   facts: readonly FactEnvelope[],
@@ -114,11 +124,24 @@ export function compareWithMeasuredFacts(
   const measured = new Map<string, number>();
   for (const fact of facts) {
     if (fact.reviewStatus !== "confirmed" || fact.dataStatus !== "available") continue;
-    if (typeof fact.value !== "number" || !Number.isFinite(fact.value)) continue;
-    measured.set(fact.field, fact.value);
+    if (typeof fact.value === "number" && Number.isFinite(fact.value)) {
+      measured.set(fact.field, fact.value);
+      continue;
+    }
+    if (fact.value && typeof fact.value === "object" && "value" in fact.value) {
+      const numeric = Number((fact.value as { value: unknown }).value);
+      if (Number.isFinite(numeric)) measured.set(fact.field, numeric);
+    }
   }
+  const lookup = (dimension: string): number | null => {
+    const direct = measured.get(`archetype.measured.${dimension}`);
+    if (direct !== undefined) return direct;
+    const alias = DOCUMENTED_DIMENSION_ALIAS[dimension];
+    const documented = alias ? measured.get(`documentedDimension.${alias}`) : undefined;
+    return documented ?? null;
+  };
   return derivation.expected.map((item) => {
-    const measuredMm = measured.get(`archetype.measured.${item.dimension}`) ?? null;
+    const measuredMm = lookup(item.dimension);
     if (item.valueMm === null || measuredMm === null) {
       return { ...item, measuredMm, deltaMm: null, withinTolerance: null };
     }

@@ -88,6 +88,10 @@ class NativeDxfWriter:
         dim.dxf.dimtxsty = "GJ-TEXT"
         dim.dxf.dimtxt = 125
         dim.dxf.dimasz = 100
+        # 尺寸文字统一毫米整数、小数点分隔；不设的话 ezdxf 按逗号出小数，与标高的小数点两套记法
+        dim.dxf.dimdec = 0
+        dim.dxf.dimrnd = 1
+        dim.dxf.dimdsep = ord(".")
         title = doc.blocks.new("GJ_TITLEBLOCK")
         title.add_lwpolyline([(0, 0), (221, 0), (221, 30), (0, 30), (0, 0)], dxfattribs={"layer": "GJ-FRAME"})
         for tag, point, height in (("PROJECT", (3, 22), 4), ("TITLE", (3, 14), 4), ("NUMBER", (3, 6), 3), ("STATUS", (83, 6), 3), ("REVISION", (145, 6), 3), ("DATE", (178, 6), 3)):
@@ -308,7 +312,7 @@ class NativeDxfWriter:
             insert = layout.add_blockref("GJ_TITLEBLOCK", (width - 226, 5), dxfattribs={"layer": "GJ-FRAME"})
             insert.add_auto_attribs({
                 "PROJECT": self.ir["titleZh"], "TITLE": sheet["displayLabelZh"], "NUMBER": name,
-                "STATUS": "代理成果·未签发", "REVISION": self.ir["revisionLabel"], "DATE": "未签发",
+                "STATUS": "待签发成果", "REVISION": self.ir["revisionLabel"], "DATE": "见签发记录",
             })
             self._register(insert, _cad_id(self.ir["drawingIrSha256"], f"titleblock:{name}"), "system", {"sheetId": sheet["id"], "systemType": "titleBlock"})
             for index, view_id in enumerate(sheet["viewIds"], start=2):

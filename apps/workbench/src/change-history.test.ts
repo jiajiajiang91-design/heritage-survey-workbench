@@ -199,8 +199,8 @@ describe("影响范围", () => {
     const entry = entryFor(["ev-1", "fact-1"]);
     const kinds = entry?.impact?.groups.map((group) => group.kind) ?? [];
     expect(kinds).not.toContain("资料");
-    expect(kinds).not.toContain("事实");
-    expect(kinds.sort()).toEqual(["几何版本", "几何规格", "成果"].sort());
+    expect(kinds).not.toContain("尺寸记录");
+    expect(kinds.sort()).toEqual(["模型版本", "模型规格", "成果"].sort());
   });
 
   it("没给算影响所需记录时是 null，与影响为空区分开", () => {

@@ -6,7 +6,8 @@ import { runClientOp } from "../assistant/client-op-adapter";
 import { buildWorkspaceSnapshot } from "../assistant/workspace-snapshot";
 import { describeFailure } from "../failure-notice";
 import { buildProvenanceGraphView } from "../query-models";
-import { DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS } from "../labels";
+import { DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS, factFieldLabel } from "../labels";
+import { factValueText } from "../screens/MeasurementBaseline";
 import { isStageId, stageLabel } from "../view-registry";
 import type { EvidencePane } from "./useEvidencePane";
 import type { Jobs } from "./useJobs";
@@ -51,6 +52,8 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
       `当前这一步：${stageLabel(nav.activeStage)}。`,
       `资料 ${snapshot.evidences.length} 份：${evidences.join("；") || "无"}。`,
       `尺寸记录 ${snapshot.facts.length} 条，其中已确认 ${snapshot.facts.filter((item) => item.reviewStatus === "confirmed").length} 条，待核实 ${snapshot.facts.filter((item) => item.dataStatus === "uncertain").length} 条。`,
+      // 明细也要给：只给条数的话，用户问通面阔是多少，模型只能答现状里没写
+      `尺寸明细：${snapshot.facts.slice(0, 40).map((item) => `${factFieldLabel(item.field)} ${factValueText(item.value)}`).join("；") || "无"}。`,
       `未关闭的问题 ${openIssues.length} 条${openIssueLines.length ? `：${openIssueLines.join("；")}` : ""}。`,
       `三维模型：${geometry ? `已生成，构件 ${geometrySpec?.objects.length ?? 0} 个，待确认部位 ${geometrySpec?.unknowns.length ?? 0} 处` : "未生成"}。`,
       `成果要求：${views.length ? views.join("、") : "未确认"}；成果文件 ${session.projectArtifacts.length} 项。`,
@@ -136,7 +139,8 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
   useEffect(() => {
     if (!selected || !modelReady) { setSuggestion({ text: "", basis: "", loading: false, key: "" }); return; }
     const controller = new AbortController();
-    setSuggestion((current) => ({ ...current, loading: true, key: suggestionKey }));
+    // 换了屏就先清旧建议：上一屏的建议挂在新屏上，比一句正在整理更误导
+    setSuggestion({ text: "", basis: "", loading: true, key: suggestionKey });
     const timer = setTimeout(() => {
       assistantChatClient.suggest(buildAssistantSnapshot(), controller.signal)
         .then((reply) => { if (!controller.signal.aborted) setSuggestion({ text: reply.source === "model" ? reply.suggestion : "", basis: reply.basis, loading: false, key: suggestionKey }); })

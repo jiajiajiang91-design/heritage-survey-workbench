@@ -49,7 +49,8 @@ export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料�
         )}
       </div>
       {description && <p className="gj-pane-desc">{description}</p>}
-      {evidencePreview ? (
+      {/* 预览只认列表里的资料：调用方筛过的列表（如只列照片）不显示列表外的文件 */}
+      {active && evidencePreview ? (
         evidencePreview.mimeType.startsWith("image/")
           ? (
             <div className="ws-evidence-figure">

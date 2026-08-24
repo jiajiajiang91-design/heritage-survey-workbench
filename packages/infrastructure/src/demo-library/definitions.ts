@@ -102,10 +102,10 @@ export interface DemoTask {
 }
 
 // 正式环境的复核签发（实施单元 09）。随包导入后交付按已签发显示；本机新建的项目没有这一项。
+// 签发时间不在这里定：模型与图纸在构建时生成，签发必须晚于生成，时间由构建流程按当时时刻写入，
+// 否则修改历史里会出现签发早于出图两个月的倒置档案。
 export interface DemoSignoff {
   readonly reviewerRole: "projectLead" | "professionalReviewer";
-  readonly reviewedAt: string;
-  readonly signedAt: string;
   readonly l1Eligible: boolean;
   readonly statementZh: string;
 }
@@ -125,6 +125,9 @@ export interface DemoProjectDefinition {
   readonly sources: readonly DemoLibrarySource[];
   readonly facts: readonly DemoFact[];
   readonly measurements: readonly DemoMeasurement[];
+  // 现状记录：现场照片上可见的材料与保存状况，逐条引用资料。
+  // 一次现状测绘归档不该没有现状记录，缺了它记录现状这一步是空的。
+  readonly observations?: readonly DemoObservation[];
   readonly issues: readonly DemoIssue[];
   readonly task: DemoTask;
   // 形制参数。有它才能由规则推算出尺寸并驱动构件生成，
@@ -133,6 +136,14 @@ export interface DemoProjectDefinition {
   // 实测图纸驱动的木构架参数。没有形制规则可依的项目走这一条，
   // 尺寸全部来自图纸转写或图上量取，不做任何形制推算。
   readonly timberFrame?: DemoTimberFrame;
+}
+
+// 一条现状记录：类型与领域 ObservationSchema 的 observationType 同名
+export interface DemoObservation {
+  readonly key: string;
+  readonly observationType: "visibleCondition" | "material" | "damage" | "state";
+  readonly text: string;
+  readonly evidenceKeys: readonly string[];
 }
 
 // 一条尺寸连同它是怎么来的。drawn 是图纸上写明的标注，scaled 是按图上量取；

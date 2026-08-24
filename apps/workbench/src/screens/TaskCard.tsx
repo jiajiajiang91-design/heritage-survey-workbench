@@ -93,7 +93,11 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
   const views = confirmedTask?.artifactRequirements?.views ?? [];
   const scales = [...new Set(views.map((view) => `1:${view.scaleDenominator}`))];
   const scale = scaleSummary(confirmedTask);
-  const rights = [...new Set(snapshot.evidences.map((item) => item.rightsDeclaration).filter((item): item is string => Boolean(item)))];
+  // 授权说明逐份资料登记，拼行前去掉句尾句号再合并，重复的只留一条
+  const rights = [...new Set(snapshot.evidences
+    .map((item) => item.rightsDeclaration)
+    .filter((item): item is string => Boolean(item))
+    .map((item) => item.replace(/[。；\s]+$/, "")))];
   const roles = confirmedTask?.responsibilities.map((item) => RESPONSIBILITY_ROLE_LABELS[item.role] ?? item.role) ?? [];
   const regulations = confirmedTask?.regulationRefs ?? [];
   const showForm = !confirmedTask || editing;
@@ -133,8 +137,8 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
               />
               <InfoRow
                 label="资料授权"
-                value={rights.length ? rights.join("；") : snapshot.evidences.length ? "资料未登记授权说明" : "尚未上传资料"}
-                trailing={<Tag tone={rights.length ? "warning" : "neutral"}>{rights.length ? "待确认" : "待补"}</Tag>}
+                value={rights.length ? `${rights.join("；")}。` : snapshot.evidences.length ? "资料未登记授权说明" : "尚未上传资料"}
+                trailing={<Tag tone={rights.length ? "success" : "neutral"}>{rights.length ? "已登记" : "待补"}</Tag>}
               />
               <InfoRow
                 label="适用规范"
@@ -163,7 +167,8 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
               // 现场实测记录可能是动作层写的逐条记录，也可能是随包入库的实测记录表（资料类型为测量记录）
               const surveyRecords = snapshot.evidences.filter((item) => item.evidenceType === "measurementRecord" && item.dataStatus === "available");
               if (measuredRecordCount) return `本项目有 ${measuredRecordCount} 条完整的现场实测记录。`;
-              if (surveyRecords.length) return `尺寸来自现场实测记录：${surveyRecords.map((item) => item.title).join("、")}。`;
+              // 资料标题本身多叫"现场实测记录"，句式再带一遍就成了"尺寸来自现场实测记录：现场实测记录"
+              if (surveyRecords.length) return `尺寸依据：${surveyRecords.map((item) => item.title).join("、")}。`;
               return "本项目无现场实测记录，尺寸来自资料转写或形制推算。";
             })()}
             {qualificationLabel ? `成果状态：${qualificationLabel}。` : ""}

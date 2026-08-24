@@ -30,8 +30,8 @@ export interface ImpactGraphInput {
 }
 
 export type ImpactRecordKind =
-  | "资料" | "事实" | "现状" | "实测" | "关系" | "构件"
-  | "几何规格" | "几何版本" | "出图要求" | "成果" | "检查" | "交付评估" | "交付草案";
+  | "资料" | "尺寸记录" | "现状" | "实测" | "记录关联" | "构件"
+  | "模型规格" | "模型版本" | "出图要求" | "成果" | "检查" | "交付评估" | "交付草案";
 
 export interface ImpactGroup {
   readonly kind: ImpactRecordKind;
@@ -86,13 +86,13 @@ function buildIndex(input: ImpactGraphInput): Map<string, RecordIndex> {
     index.set(id, { kind, name, preserved });
   };
   for (const item of snapshot.evidences) put(item.id, "资料", item.title);
-  for (const item of snapshot.facts) put(item.id, "事实", item.field);
+  for (const item of snapshot.facts) put(item.id, "尺寸记录", item.field);
   for (const item of snapshot.observations) put(item.id, "现状", item.text.slice(0, 40));
   for (const item of snapshot.measurements) put(item.id, "实测", item.subjectRef);
-  for (const item of snapshot.relations) put(item.id, "关系", item.relationType);
+  for (const item of snapshot.relations) put(item.id, "记录关联", item.relationType);
   for (const item of snapshot.entities) put(item.id, "构件", item.name);
-  for (const item of snapshot.geometrySpecs) put(item.id, "几何规格", `几何规格 ${item.objects.length} 个对象`);
-  for (const item of snapshot.geometryRevisions) put(item.id, "几何版本", `几何版本 ${item.id.slice(0, 8)}`);
+  for (const item of snapshot.geometrySpecs) put(item.id, "模型规格", `模型规格 ${item.objects.length} 个对象`);
+  for (const item of snapshot.geometryRevisions) put(item.id, "模型版本", `模型版本 ${item.id.slice(0, 8)}`);
   for (const item of input.requirementMatrices) put(item.id, "出图要求", item.titleZh);
   for (const item of input.artifacts) put(item.id, "成果", item.fileName);
   for (const item of input.checkRuns) put(item.id, "检查", `检查 ${item.results.length} 项`);
@@ -256,7 +256,7 @@ export function computeImpact(input: ImpactGraphInput, changedRefs: readonly str
   //
   // 两处只在这次查询确实会被它们影响时才报，即起点里有几何上游那几类记录。
   // 起点是成果或交付时报出来只是噪声：那条断链在它们下游之外，与本次无关。
-  const upstreamOfGeometry: readonly ImpactRecordKind[] = ["资料", "事实", "构件", "实测", "现状", "关系"];
+  const upstreamOfGeometry: readonly ImpactRecordKind[] = ["资料", "尺寸记录", "构件", "实测", "现状", "记录关联"];
   const startsUpstream = [...start].some((ref) => {
     const kind = graph.index.get(ref)?.kind;
     return kind !== undefined && upstreamOfGeometry.includes(kind);
@@ -264,15 +264,15 @@ export function computeImpact(input: ImpactGraphInput, changedRefs: readonly str
 
   const coverageGaps: string[] = [];
   if (startsUpstream && graph.archetypeRefCount > 0) {
-    coverageGaps.push(`形制推算链未留痕，几何有 ${graph.archetypeRefCount} 处引用形制参数而非项目记录，这一段算不出来`);
+    coverageGaps.push(`有 ${graph.archetypeRefCount} 处模型尺寸取自形制推算，推算过程没有逐条记录，这部分的影响范围列不出来`);
   }
   if (startsUpstream && graph.unresolvedRefCount > 0) {
-    coverageGaps.push(`有 ${graph.unresolvedRefCount} 处引用在本项目里找不到对应记录，这一段上游关系算不出来`);
+    coverageGaps.push(`有 ${graph.unresolvedRefCount} 处引用在本项目里找不到对应记录，这部分的影响范围列不出来`);
   }
   // 出图要求记录只指回几何版本，不指回产生它的任务书，任务书那一侧也不存出图要求的 id。
   // 因此改任务要求算不出受影响的图纸，而这正是 F01 要的。数据模型缺一个引用。
   if (changedTaskDefinition && input.requirementMatrices.length > 0) {
-    coverageGaps.push("任务书与出图要求之间没有记录相互引用，改任务要求算不出受影响的图纸");
+    coverageGaps.push("任务书与出图要求之间没有相互引用的记录，改任务要求时受影响的图纸列不出来");
   }
 
   return {

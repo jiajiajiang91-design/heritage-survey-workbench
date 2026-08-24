@@ -162,7 +162,7 @@ describe("下游闭包", () => {
   it("从资料出发走通整条链", () => {
     const result = computeImpact(fullChain(), [uuid(10)]);
     expect(result.groups.map((group) => group.kind).sort())
-      .toEqual(["事实", "交付评估", "交付草案", "几何版本", "几何规格", "成果", "检查"].sort());
+      .toEqual(["尺寸记录", "交付评估", "交付草案", "模型版本", "模型规格", "成果", "检查"].sort());
     expect(result.total).toBe(7);
   });
 
@@ -170,8 +170,8 @@ describe("下游闭包", () => {
     // 从成果出发，闭包里只能有检查与交付，不能有它上游的几何版本、事实、资料
     const result = computeImpact(fullChain(), [uuid(50)]);
     const kinds = result.groups.map((group) => group.kind);
-    expect(kinds).not.toContain("几何版本");
-    expect(kinds).not.toContain("事实");
+    expect(kinds).not.toContain("模型版本");
+    expect(kinds).not.toContain("尺寸记录");
     expect(kinds).not.toContain("资料");
     expect(kinds.sort()).toEqual(["交付草案", "交付评估", "检查"].sort());
   });
@@ -241,7 +241,7 @@ describe("算不全时结果自己说出来", () => {
     });
     const result = computeImpact(input, [uuid(20)]);
     expect(result.coverageGaps).toHaveLength(1);
-    expect(result.coverageGaps[0]).toContain("形制推算链未留痕");
+    expect(result.coverageGaps[0]).toContain("取自形制推算");
   });
 
   it("起点在下游时不报覆盖缺口", () => {

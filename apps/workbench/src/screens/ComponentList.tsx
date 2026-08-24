@@ -9,9 +9,9 @@ import type { EvidencePane as EvidencePaneModel } from "../workbench/useEvidence
 import { FallbackBanner } from "./Dialogs";
 import "./ComponentList.css";
 
-// W04 构件清单（66:1787）：左卡构件对象（标题行带计数标签，每个对象一张小卡：短编号、来源标签、
-// 名称 · 词表首选名），右卡照片证据（图 278、编号与名称 14/22、说明 13/22、稳定键信息行、底部操作）。
-// 短编号按项目内序号生成（裁决记录第三节第 9 条），稳定键留在详情里可查。
+// W04 构件清单（66:1787）：左卡构件（标题行带计数标签，每个构件一张小卡：短编号、来源标签、
+// 名称 · 类型名），右卡对应照片（图 278、编号与名称 14/22、说明 13/22、追溯编号信息行、底部操作）。
+// 短编号按项目内序号生成（裁决记录第三节第 9 条），追溯编号留在详情里可查。
 type Snapshot = ProjectHead["snapshot"];
 type GeometryObject = Snapshot["geometrySpecs"][number]["objects"][number];
 type Entity = Snapshot["entities"][number];
@@ -95,7 +95,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
                   <span className="gj-list-card-title">{code}</span>
                   <SourceTag producerType={object.producer.producerType} />
                 </div>
-                <span className="gj-list-card-sub">{object.displayNameZh} · 词表 {typeLabel(object.componentType, object.conceptRef)}{object.unknownRefs.length ? ` · ${object.unknownRefs.length} 条${signedOff ? "说明" : "待确认"}` : ""}</span>
+                <span className="gj-list-card-sub">{object.displayNameZh} · {typeLabel(object.componentType, object.conceptRef)}{object.unknownRefs.length ? ` · ${object.unknownRefs.length} 条${signedOff ? "说明" : "待确认"}` : ""}</span>
               </button>
             ))}
             {visible.length > shown.length && (
@@ -124,10 +124,11 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
       )}
       aside={(
         <EvidencePane
-          evidences={snapshot.evidences}
+          // 这一栏叫对应照片，就只列照片；把清单 JSON 一类的记录文件整篇灌进来会名不副实
+          evidences={snapshot.evidences.filter((item) => item.evidenceType === "photo")}
           pane={pane}
           title="对应照片"
-          emptyHint="选择资料查看构件对应的照片。"
+          emptyHint={snapshot.evidences.some((item) => item.evidenceType === "photo") ? "选择资料查看构件对应的照片。" : "本项目没有照片资料。构件来源可在下方详情与三维模型里核对。"}
           caption={selected ? (
             <div className="sc-components-caption">
               <strong>{selected.code} · {selected.object.displayNameZh}</strong>
@@ -138,8 +139,8 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
             <>
               {selected && (
                 <div className="gj-card gj-card--compact">
-                  <InfoRow label="编号" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
-                  <InfoRow label="构件类型" value={`${typeLabel(selected.object.componentType, selected.object.conceptRef)}（${selected.object.componentType}）`} />
+                  <InfoRow label="追溯编号" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
+                  <InfoRow label="构件类型" value={typeLabel(selected.object.componentType, selected.object.conceptRef)} />
                   {selectedUnknowns.map((unknown) => (
                     <InfoRow key={unknown.id} label={signedOff ? "建模说明" : "待确认"} value={unknown.description} trailing={signedOff ? <Tag tone="success">复核已接受</Tag> : <Tag tone={unknown.blocksFormalEligibility ? "danger" : "warning"}>{unknown.blocksFormalEligibility ? "签发前要处理" : "不影响签发"}</Tag>} />
                   ))}

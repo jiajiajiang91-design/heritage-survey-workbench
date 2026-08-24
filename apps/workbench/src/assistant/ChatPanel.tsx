@@ -116,6 +116,8 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
       }));
     } finally {
       setBusy(false);
+      // 过程提示（正在理解你的指令）只在回合进行中有意义，留在消息流里会像卡住了
+      setMessages((existing) => existing.filter((message) => message.kind !== "progress"));
     }
   }, [append, buildSnapshot, busy, client, handleEvent, input, selection]);
 
@@ -134,6 +136,7 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
       }));
     } finally {
       setBusy(false);
+      setMessages((existing) => existing.filter((message) => message.kind !== "progress"));
     }
   }, [append, client, handleEvent, pendingConfirm]);
 

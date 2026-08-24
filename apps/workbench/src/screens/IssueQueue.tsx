@@ -44,7 +44,10 @@ function refLabel(ref: string, snapshot: Snapshot, evidenceTitle: (ref: string) 
   if (fact) return `尺寸 ${fact.field}`;
   const building = snapshot.buildings.find((item) => item.id === id);
   if (building) return building.name;
-  return ref;
+  const candidate = snapshot.candidates.find((item) => item.id === id);
+  if (candidate) return "待确认的识别结果";
+  // 认不出的引用不把裸编号亮给用户；名字说不出就说类别
+  return /^[0-9a-f-]{36}$/i.test(id) ? "相关记录" : ref;
 }
 
 export function IssueQueue({ snapshot, openIssues, taskConfirmed, evidenceTitle, humanInterventions, onDecideCandidate, onDecideOption, onGoToTask, onGoToEvidence }: IssueQueueProps) {
@@ -86,8 +89,9 @@ export function IssueQueue({ snapshot, openIssues, taskConfirmed, evidenceTitle,
           {!taskConfirmed && (
             <Alert tone="warning">任务要求尚未确认，成果要求与责任角色缺失。<Button variant="text" compact onClick={onGoToTask}>去任务卡确认</Button></Alert>
           )}
-          {humanInterventions && (
-            <p className="gj-note">缺现场资料 {humanInterventions.missingFieldFacts.length} · 需专业判断 {humanInterventions.professionalChoices.length} · 成组复核 {humanInterventions.groupedReviewRefs.length}</p>
+          {/* 分类计数只在有待处理问题时显示；没有问题时列一行零计数只会让人找不存在的那一条 */}
+          {humanInterventions && visible.length > 0 && (
+            <p className="gj-note">缺现场资料 {humanInterventions.missingFieldFacts.length} · 需专业判断 {humanInterventions.professionalChoices.length}</p>
           )}
           <div className="gj-pane-list">
             {visible.map((issue) => (

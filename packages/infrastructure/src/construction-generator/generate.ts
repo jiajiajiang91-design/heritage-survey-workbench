@@ -655,7 +655,7 @@ function buildEaveDetail(assembly: ConstructionAssembly, form: BuildingForm): vo
       key: "fly-rafter-undetermined",
       subjectRef: "form:eave",
       reasonCode: "FLY_RAFTER_NOT_DETERMINED",
-      descriptionZh: "资料判不出檐口是否用飞椽，本次不生成飞椽与檐口封闭构件。补齐檐口近景照片或檐部做法记录后可重新生成。",
+      descriptionZh: "资料判不出檐口是否用飞椽，本次不生成飞椽与里口木。补齐檐口近景照片或檐部做法记录后可重新生成。",
       requiredEvidence: ["檐口近景照片", "檐部做法的形制定级记录"],
       affectedRefs: ["form:eave"],
     });
@@ -697,7 +697,7 @@ function buildEaveDetail(assembly: ConstructionAssembly, form: BuildingForm): vo
   assembly.add({
     stableKey: "eave-closure",
     componentType: "eaveClosure",
-    displayNameZh: "檐口封闭",
+    displayNameZh: "里口木",
     materialCode: form.materials.flyRafter,
     solid: boxSolid({
       sizeX: width, sizeY: fly.sectionSize.valueMm, sizeZ: fly.eaveClosureHeight.valueMm,

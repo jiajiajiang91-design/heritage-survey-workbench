@@ -74,7 +74,7 @@ describe("三个演示包都能建图", () => {
     const task = input.snapshot.taskDefinitions[0];
     expect(task).toBeDefined();
     const result = computeImpact(input, [task!.id]);
-    expect(result.coverageGaps.join()).toContain("任务书与出图要求之间没有记录相互引用");
+    expect(result.coverageGaps.join()).toContain("任务书与出图要求之间没有相互引用的记录");
   });
 });
 
@@ -82,9 +82,10 @@ describe("从资料出发的闭包（验收第 6 条）", () => {
   // 期望值先用独立脚本在包上算过一遍，再与实现对，不是把实现的输出抄回来当期望。
   // 脚本算出 35 / 33 / 74，实现算出 36 / 34 / 75，差的正好是每个包各一条出图要求记录，
   // 那一类脚本没算进去。差值有出处才认，对不上要回去查而不是改这里。
-  // 实施单元 09 重建演示包后实测：高都第一条资料由识别记录换成正立面照片，闭包 30
+  // 实施单元 09 重建演示包后实测：高都第一条资料由识别记录换成正立面照片，闭包 30；
+  // 复查补入现状记录后 32（石柱、油饰两条现状记录引用正立面照片，各占一条下游）
   const EXPECTED: Record<string, number> = {
-    "gaodu-yuhuang-temple-main-hall": 30,
+    "gaodu-yuhuang-temple-main-hall": 32,
     "dai-loy-habs-ca-2071-w": 34,
     "t0b-construction-sample": 75,
   };
@@ -101,7 +102,7 @@ describe("从资料出发的闭包（验收第 6 条）", () => {
     const input = packages[name] as ImpactGraphInput;
     const result = computeImpact(input, [(input.snapshot.evidences[0] as { id: string }).id]);
     const kinds = [...result.groups, ...result.preserved].map((group) => group.kind);
-    for (const kind of ["事实", "几何规格", "几何版本", "出图要求", "成果", "检查", "交付评估", "交付草案"] as const) {
+    for (const kind of ["尺寸记录", "模型规格", "模型版本", "出图要求", "成果", "检查", "交付评估", "交付草案"] as const) {
       expect(kinds, `${name} 缺 ${kind}`).toContain(kind);
     }
   });
@@ -117,7 +118,7 @@ describe("从事实出发要看是哪条事实（验收第 6a、6b 条）", () =
 
     const withDownstream = computeImpact(input, [referenced!.id]);
     expect(withDownstream.total).toBeGreaterThan(0);
-    expect(withDownstream.groups.map((group) => group.kind)).toContain("几何规格");
+    expect(withDownstream.groups.map((group) => group.kind)).toContain("模型规格");
     expect(withDownstream.groups.map((group) => group.kind)).toContain("成果");
 
     // 闭包为空也是正确结果：这条事实确实没有下游，不是漏算
@@ -129,7 +130,7 @@ describe("从事实出发要看是哪条事实（验收第 6a、6b 条）", () =
     for (const fact of input.snapshot.facts) {
       const result = computeImpact(input, [fact.id]);
       expect(result.total, `${fact.field} 不该有下游`).toBe(0);
-      expect(result.coverageGaps.join()).toContain("形制推算链未留痕");
+      expect(result.coverageGaps.join()).toContain("取自形制推算");
     }
   });
 
