@@ -76,3 +76,6 @@ desktop.ini
 
 # pdf.js 的 worker、wasm、字体与字符映射由 apps/workbench/sync-pdfjs-assets.mjs 从依赖复制，不进仓库
 apps/workbench/public/pdfjs/
+
+# 本机联调时 curl 写的会话 cookie，不进仓库
+gj_cookies.txt
