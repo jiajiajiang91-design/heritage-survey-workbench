@@ -46,6 +46,12 @@ export function App({ bootstrapDemo }: AppProps = {}) {
     ? { items: currentJourney.views.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage, onSelect: (id: string) => goToView(id as StageId) }
     : null;
   const pageTitle = stages.find((stage) => stage.id === activeStage)?.label ?? "";
+  const demoLimitationZh = selected ? session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null : null;
+  const pageDescription = demoLimitationZh && activeStage === "checks"
+    ? "核对自动检查与流程演示签发记录；该记录不构成真实工程签发。"
+    : demoLimitationZh && activeStage === "package"
+      ? "查看图纸、模型、检查结果与来源说明；当前展示归档不构成真实工程交付。"
+      : STAGE_DESCRIPTIONS[activeStage];
   const activeViewIndex = journeyViewOrder.indexOf(activeStage);
   const nextView = activeViewIndex >= 0 ? journeyViewOrder[activeViewIndex + 1] ?? null : null;
 
@@ -92,7 +98,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
       ) : (
         <CenterFrame
           title={pageTitle}
-          description={STAGE_DESCRIPTIONS[activeStage]}
+          description={pageDescription}
           actions={nextView && activeStage !== "tasks" ? <Button onClick={() => nav.advanceStage()}>下一步：{stageLabel(nextView)}</Button> : undefined}
           tabs={currentTabs}
           fill

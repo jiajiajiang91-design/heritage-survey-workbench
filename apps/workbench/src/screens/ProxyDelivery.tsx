@@ -80,7 +80,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
     ["检查", `${checkRuns.length} 次，${checkResults} 条结果`],
     ["评估结果", isDemo ? "展示流程完成，不作为工程交付" : signoff ? "可正式交付" : latestDelivery ? "可作为待签发成果" : deliveryBlockers.length ? "暂不能归档" : "尚未评估"],
     ["签发状态", isDemo && signoff ? `${signoff.signedAt.slice(0, 10)} 流程演示记录` : signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"} ${signoff.signedAt.slice(0, 10)} 签发` : latestDelivery ? "未签发" : "尚无草案"],
-    [signoff ? "签发前的限制条款" : "限制条款", latestDelivery ? `${displayRestrictions(latestDelivery.restrictions).length} 条${signoff ? "，签发后以复核意见为准" : ""}` : "尚无"],
+    [isDemo ? "流程记录中的检查说明" : signoff ? "签发前的限制条款" : "限制条款", latestDelivery ? `${displayRestrictions(latestDelivery.restrictions).length} 条${signoff && !isDemo ? "，签发后以复核意见为准" : ""}` : "尚无"],
     ["责任人", roles.length ? roles.join("、") : "未登记"],
     ...(demoLimitationZh ? [["使用范围", demoLimitationZh] as [string, string]] : []),
   ];
@@ -129,7 +129,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
           const restrictions = displayRestrictions(latestDelivery.restrictions);
           return (
             <div className="gj-card gj-card--compact">
-              <span className="gj-text-label">{signoff ? "签发前的限制条款" : "限制条款"} {restrictions.length} 条{signoff ? "（签发后以复核意见为准）" : ""}</span>
+              <span className="gj-text-label">{isDemo ? "流程记录中的检查说明" : signoff ? "签发前的限制条款" : "限制条款"} {restrictions.length} 条{signoff && !isDemo ? "（签发后以复核意见为准）" : ""}</span>
               <ol className="sc-delivery-restrictions">{restrictions.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ol>
             </div>
           );
