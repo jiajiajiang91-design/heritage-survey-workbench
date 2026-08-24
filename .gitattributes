@@ -3,3 +3,5 @@
 *.glb -diff
 *.pdf -diff
 *.png -diff
+deploy/** text eol=lf
+*.sh text eol=lf
