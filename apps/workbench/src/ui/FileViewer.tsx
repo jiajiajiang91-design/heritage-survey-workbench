@@ -13,9 +13,11 @@ import "./FileViewer.css";
 // pdf.js 按需加载：它在模块顶层就要用 DOMMatrix，测试环境（jsdom）没有；也让主包不带它
 // worker、wasm 解码器（JBIG2、JPX）、标准字体与字符映射由 sync-pdfjs-assets.mjs 复制到 public/pdfjs，同源加载
 const PDFJS_ASSETS = "/pdfjs/";
+// 线上曾以 application/octet-stream 缓存过同名 worker。版本参数让已有访客重新取正确 MIME 的模块。
+const PDFJS_WORKER_VERSION = "6.2.108-mime1";
 async function loadPdfJs() {
   const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = `${PDFJS_ASSETS}pdf.worker.min.mjs`;
+  pdfjs.GlobalWorkerOptions.workerSrc = `${PDFJS_ASSETS}pdf.worker.min.mjs?v=${PDFJS_WORKER_VERSION}`;
   return pdfjs;
 }
 

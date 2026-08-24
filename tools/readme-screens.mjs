@@ -108,6 +108,9 @@ await evaluate(`(() => { const row = [...document.querySelectorAll("button")].fi
 await waitFor(`!!document.querySelector(".gj-viewer-dxf svg")`, 60000);
 await sleep(1200);
 await shot("04-in-browser-dxf-viewer");
+// 同一页再验 PDF。README 选 DXF 作为特色截图，但发布验收不能遗漏 PDF worker。
+await evaluate(`(() => { const row = [...document.querySelectorAll("button")].find((b) => b.textContent.includes(".pdf")); if (row) row.click(); return true; })()`);
+await waitFor(`!!document.querySelector('.gj-viewer canvas[data-rendered="true"]')`, 60000);
 
 // 检查与签发：自动检查通过 + 专业复核签发（产品主张：检查通过不等于复核通过）
 await click("检查签发", `document.querySelector(".ws-stage-nav")`);
