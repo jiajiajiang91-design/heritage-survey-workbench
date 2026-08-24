@@ -155,6 +155,11 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   ]).then(() => undefined);
 
   useEffect(() => {
+    let active = true;
+    // 完整项目包较大。导入期间定时重读，首个项目一完成就可以进入，不必等待第二个包。
+    const progressTimer = globalThis.setInterval(() => {
+      if (active) void refresh().catch(() => undefined);
+    }, 1_500);
     // 小清单先到，首次访问无需等几十 MB 的完整项目包导入完才理解产品与展示内容。
     void readDemoLibraryManifest().then((manifest) => setDemoManifestEntries(manifest?.projects ?? [])).catch(() => setDemoManifestEntries([]));
     void refresh()
@@ -162,8 +167,15 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
       .then(showBootstrapResult)
       .then(refreshDemoUpdates)
       .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")))
-      .finally(() => setInitializing(false));
+      .finally(() => {
+        globalThis.clearInterval(progressTimer);
+        if (active) setInitializing(false);
+      });
     void refreshServerStatus();
+    return () => {
+      active = false;
+      globalThis.clearInterval(progressTimer);
+    };
   }, []);
 
   const chooseProject = async (projectId: string) => {
