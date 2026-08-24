@@ -44,6 +44,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
   } = writes;
   const geometryBlob = useGeometryBlob(geometryRevision);
   const drawingPreviewUrls = useDrawingPreviews(drawingArtifacts);
+  const demoLimitationZh = session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null;
 
   return (
     <>
@@ -55,6 +56,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 objectProducerCounts={(geometrySpec?.objects ?? []).reduce<Record<string, number>>((acc, object) => { acc[object.producer.producerType] = (acc[object.producer.producerType] ?? 0) + 1; return acc; }, {})}
                 measuredRecordCount={measuredRecordCount}
                 qualificationLabel={dashboard?.qualificationLabel ?? null}
+                demoLimitationZh={demoLimitationZh}
                 onSubmitTask={submitTaskSetup}
                 onEnterEvidence={() => goToView("evidence")}
               />
@@ -153,6 +155,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
             {activeStage === "drawings" && (
               <DrawingSet
                 signoff={dashboard?.signoff ?? null}
+                demoLimitationZh={demoLimitationZh}
                 artifacts={drawingArtifacts}
                 previews={drawingPreviewUrls}
                 latestCheckRun={latestCheckRun}
@@ -178,6 +181,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 crossRevisionArtifactCount={artifactSetView?.crossRevisionArtifactCount ?? 0}
                 qualificationLabel={dashboard?.qualificationLabel ?? null}
                 signoff={dashboard?.signoff ?? null}
+                demoLimitationZh={demoLimitationZh}
                 blockerReasons={blockerReasons}
                 blockerCodes={dashboard?.blockerCodes ?? []}
                 generating={drawingRunning}
@@ -202,6 +206,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 latestBlockedDelivery={latestBlockedDelivery}
                 deliveryBlockers={deliveryBlockers}
                 signoff={dashboard?.signoff ?? null}
+                demoLimitationZh={demoLimitationZh}
                 blockerCodes={dashboard?.blockerCodes ?? []}
                 canCreate={Boolean(geometryRevision && latestCheckRun && drawingArtifacts.length && !latestDelivery)}
                 exporting={Boolean(exportProgress)}
@@ -258,6 +263,7 @@ export function ProjectPage({ wb, selected }: { wb: Workbench; selected: Project
           <ModelRuns
             runs={session.projectModelRuns}
             costView={modelCostView}
+            assistantUsage={session.assistantUsage}
             candidates={selected.snapshot.candidates}
             exclusionCount={selected.snapshot.exclusionRecords.length}
             serverModel={serverStatus?.model ?? null}

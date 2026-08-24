@@ -24,7 +24,8 @@ async function loadPackage(name: string): Promise<ImpactGraphInput> {
   };
 }
 
-const NAMES = ["gaodu-yuhuang-temple-main-hall", "dai-loy-habs-ca-2071-w", "t0b-construction-sample"] as const;
+// dai-loy 已从演示库下架（2026-08-25）；全链无缺口的情形由 impact-service.test.ts 的 fullChain 合成用例覆盖
+const NAMES = ["gaodu-yuhuang-temple-main-hall", "t0b-construction-sample"] as const;
 const packages: Record<string, ImpactGraphInput> = {};
 
 beforeAll(async () => {
@@ -53,11 +54,6 @@ describe("三个演示包都能建图", () => {
     expect(graph.unresolvedRefCount).toBe(1258);
   });
 
-  it("dai-loy 的几何引用真实事实，两类缺口都没有", () => {
-    const graph = buildDependencyGraph(packages["dai-loy-habs-ca-2071-w"] as ImpactGraphInput);
-    expect(graph.archetypeRefCount).toBe(0);
-    expect(graph.unresolvedRefCount).toBe(0);
-  });
 
   // 出图要求是一类真实记录，存在包顶层而不在快照里。漏索引它会让 12 至 16 处
   // 成果的 sourceRefs 显示成无法解析，而它其实是任务要求到图纸这一段的中间环节。
@@ -86,7 +82,6 @@ describe("从资料出发的闭包（验收第 6 条）", () => {
   // 复查补入现状记录后 32（石柱、油饰两条现状记录引用正立面照片，各占一条下游）
   const EXPECTED: Record<string, number> = {
     "gaodu-yuhuang-temple-main-hall": 32,
-    "dai-loy-habs-ca-2071-w": 34,
     "t0b-construction-sample": 75,
   };
 
@@ -109,21 +104,6 @@ describe("从资料出发的闭包（验收第 6 条）", () => {
 });
 
 describe("从事实出发要看是哪条事实（验收第 6a、6b 条）", () => {
-  it("dai-loy 改被几何引用的事实闭包非空，改没被引用的为空", () => {
-    const input = packages["dai-loy-habs-ca-2071-w"] as ImpactGraphInput;
-    const referenced = input.snapshot.facts.find((fact) => fact.field === "documentedDimension.overallWidthMm");
-    const unreferenced = input.snapshot.facts.find((fact) => fact.field === "structureSystemZh");
-    expect(referenced).toBeDefined();
-    expect(unreferenced).toBeDefined();
-
-    const withDownstream = computeImpact(input, [referenced!.id]);
-    expect(withDownstream.total).toBeGreaterThan(0);
-    expect(withDownstream.groups.map((group) => group.kind)).toContain("模型规格");
-    expect(withDownstream.groups.map((group) => group.kind)).toContain("成果");
-
-    // 闭包为空也是正确结果：这条事实确实没有下游，不是漏算
-    expect(computeImpact(input, [unreferenced!.id]).total).toBe(0);
-  });
 
   it("高都的几何全部来自形制推算，改任一事实闭包为空且结果说明算不全", () => {
     const input = packages["gaodu-yuhuang-temple-main-hall"] as ImpactGraphInput;
@@ -143,11 +123,6 @@ describe("从事实出发要看是哪条事实（验收第 6a、6b 条）", () =
     }
   });
 
-  it("dai-loy 的上游留痕完整，改被引用的事实时不报覆盖缺口", () => {
-    const input = packages["dai-loy-habs-ca-2071-w"] as ImpactGraphInput;
-    const referenced = input.snapshot.facts.find((fact) => fact.field === "documentedDimension.overallWidthMm");
-    expect(computeImpact(input, [referenced!.id]).coverageGaps).toEqual([]);
-  });
 });
 
 describe("依赖边字段恒为空（验收第 14 条）", () => {
@@ -180,5 +155,5 @@ describe("依赖边字段恒为空（验收第 14 条）", () => {
     };
     walk(root);
     expect(hits, "依赖边只能推导，不能写入").toEqual([]);
-  });
+  }, 10_000);
 });

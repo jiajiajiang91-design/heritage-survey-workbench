@@ -68,7 +68,12 @@ export class AssistantClient {
           ...(input.selection ? { selection: input.selection } : {}),
         }),
       });
-      if (!response.ok) throw new Error(`ASSISTANT_TURN_HTTP_${response.status}`);
+      if (!response.ok) {
+        // 服务端的限额与拒绝带中文说明，要原样带给界面；只报状态码用户看到的是吓人的请求失败
+        const body = await response.json().catch(() => null) as { messageZh?: string } | null;
+        if (body?.messageZh) throw new Error(`ASSISTANT_TURN_REFUSED::${body.messageZh}`);
+        throw new Error(`ASSISTANT_TURN_HTTP_${response.status}`);
+      }
       await readSseStream(response, (event) => input.onEvent(event as AssistantTurnEvent));
     } finally {
       this.#active = false;

@@ -219,7 +219,7 @@ export function buildT0bDefinition(manifest: T0bManifest): DemoProjectDefinition
     locationText: null,
     periodText: null,
     addressText: null,
-    createdAt: "2026-06-02T00:00:00Z",
+    createdAt: "2026-06-15T00:00:00Z",
     // 实施单元 09：团队自建的参数化构造样板，按一次完整的成果归档组织：几何清单与源网格齐全，
     // 构件逐个翻译进本产品的几何契约，图纸齐套，复核签发后归档。翻译近似与未携带的接口
     // 由复核记录逐项接受，保留为模型上的说明，不再作为阻断。

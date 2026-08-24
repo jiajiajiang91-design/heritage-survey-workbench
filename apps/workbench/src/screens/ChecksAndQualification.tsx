@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ArtifactRecord, CheckRun, ReviewSignoff } from "@gujian/domain";
 
 import { QUALIFICATION_LIMITS, checkItemLabel, describeBlocker } from "../qualification";
-import { Button, EmptyState, Tag } from "../ui";
+import { Alert, Button, EmptyState, Tag } from "../ui";
 import { FileViewer } from "../ui/FileViewer";
 import { describePreview, previewLabel, type DrawingPreview, type PreviewRequirements } from "../workbench/useAssetUrls";
 import "./ChecksAndQualification.css";
@@ -20,6 +20,7 @@ export interface ChecksAndQualificationProps {
   qualificationLabel: string | null;
   // 正式环境的复核签发记录；有它时成果按已签发显示（实施单元 09）
   signoff: ReviewSignoff | null;
+  demoLimitationZh: string | null;
   blockerReasons: readonly string[];
   blockerCodes: readonly string[];
   generating: boolean;
@@ -49,7 +50,7 @@ function blockerSummary(codes: readonly string[]): string {
   return `${codes.length} 项不通过：${parts.join("、")}`;
 }
 
-export function ChecksAndQualification({ previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, requirements, signoff }: ChecksAndQualificationProps) {
+export function ChecksAndQualification({ previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, requirements, signoff, demoLimitationZh }: ChecksAndQualificationProps) {
   const [showLimits, setShowLimits] = useState(false);
   const [index, setIndex] = useState(0);
   const preview = previews[Math.min(index, Math.max(0, previews.length - 1))] ?? null;
@@ -59,13 +60,18 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
   const blocked = latestCheckRun?.results.filter((item) => item.outcome !== "passed" && !passedBySignoff(item.code)).length ?? 0;
   const exportables = drawingArtifacts.filter((artifact) => artifact.kind === "dxf" || artifact.kind === "pdf");
   const described = describePreview(preview, requirements);
+  const isDemo = Boolean(demoLimitationZh);
+  const limits = [
+    ...(demoLimitationZh ? [{ code: "DEMO_USE_ONLY", layerZh: "展示数据", textZh: demoLimitationZh }] : []),
+    ...QUALIFICATION_LIMITS.filter((limit) => !signoff || (limit.code === "L1_ELIGIBILITY_FALSE" && !signoff.l1Eligible)),
+  ];
   return (
     <div className="sc-checks">
       <section className="sc-checks-drawing">
         <div className="sc-checks-head">
           <span className="gj-pane-title" title={described.title}>{preview ? described.title : "图纸成果"}</span>
           <span className="gj-spacer" />
-          {latestCheckRun && (signoff ? <Tag tone="success">已签发</Tag> : <Tag tone="warning">已生成，待签发</Tag>)}
+          {latestCheckRun && (signoff ? <Tag tone="success">{isDemo ? "展示流程已复核" : "已签发"}</Tag> : <Tag tone="warning">已生成，待签发</Tag>)}
         </div>
         {preview ? (
           preview.kind === "svg"
@@ -89,6 +95,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
         </div>
       </section>
       <section className="sc-checks-results">
+        {signoff && <Alert tone="info">{isDemo ? "项目包随附由正式构建环境生成的流程演示签发记录，用于展示签发后的页面与数据关系，不构成真实工程签发。" : "这是项目包随附的正式环境复核签发记录。"} 当前本机只能核对记录，不能为新项目或修改后的成果签发。{demoLimitationZh ? ` ${demoLimitationZh}` : ""}</Alert>}
         <div className="sc-checks-head sc-checks-head--tight">
           <span className="gj-pane-title">检查结果</span>
           <span className="gj-spacer" />
@@ -104,31 +111,34 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
           </div>
         )) : <EmptyState>还没有检查结果。出图后自动检查；检查通过不等于复核通过，签发由项目责任人员完成。</EmptyState>}
         <div className="sc-check">
-          <div className="sc-check-head"><span>成果状态</span>{signoff ? <Tag tone="success">已签发</Tag> : <Tag tone="warning">{latestCheckRun ? "已生成，待签发" : "未生成"}</Tag>}</div>
+          <div className="sc-check-head"><span>成果状态</span>{signoff ? <Tag tone="success">{isDemo ? "展示流程已归档" : "已签发"}</Tag> : <Tag tone="warning">{latestCheckRun ? "已生成，待签发" : "未生成"}</Tag>}</div>
           <p>{signoff
-            ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}于 ${signoff.signedAt.slice(0, 10)} 复核签发，可正式交付。${signoff.statementZh}`
+            ? isDemo
+              ? `流程演示签发记录于 ${signoff.signedAt.slice(0, 10)} 生成，仅说明展示链路已完成，不构成真实工程成果签发或交付资格。${signoff.statementZh}`
+              : `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}于 ${signoff.signedAt.slice(0, 10)} 复核签发，可正式交付。${signoff.statementZh}`
             : qualificationLabel ? `${qualificationLabel}。签发前只能作为待签发成果使用，不能正式交付` : "出图并检查后显示成果状态"}{crossRevisionArtifactCount ? `；另有 ${crossRevisionArtifactCount} 项旧版本成果已隔离` : ""}{signoff ? "" : `。当前成果 ${currentArtifactCount} 项，模型待确认部位 ${unknownCount} 处。`}</p>
         </div>
         <div className="sc-check">
-          <div className="sc-check-head"><span>成果等级</span>{signoff?.l1Eligible ? <Tag tone="success">专业样板</Tag> : <Tag>{signoff ? "一般成果" : "待评定"}</Tag>}</div>
-          <p>{signoff?.l1Eligible
+          <div className="sc-check-head"><span>成果等级</span>{isDemo ? <Tag>仅供展示</Tag> : signoff?.l1Eligible ? <Tag tone="success">专业样板</Tag> : <Tag>{signoff ? "一般成果" : "待评定"}</Tag>}</div>
+          <p>{isDemo
+            ? "展示项目不参与真实工程成果等级评定。"
+            : signoff?.l1Eligible
             ? "复核认定达到专业样板等级，可作为同类项目的参照"
             : signoff
               ? "本项目成果不作为其他项目的参照标准；不影响本项目的正式交付"
               : "等级由复核签发时评定；签发前不作为专业样板或参照标准使用"}</p>
         </div>
         <div className="sc-check">
-          <div className="sc-check-head"><span>能否正式交付</span><Tag tone={blockerCodes.length ? "danger" : "success"}>{blockerCodes.length ? "还不能" : signoff ? "可以" : "签发后可以"}</Tag></div>
-          <p>{blockerCodes.length === 0 && signoff ? `已由${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}复核签发，可以正式交付。` : blockerSummary(blockerCodes)}</p>
+          <div className="sc-check-head"><span>能否正式交付</span><Tag tone={isDemo || blockerCodes.length ? "danger" : "success"}>{isDemo ? "不可用于工程交付" : blockerCodes.length ? "还不能" : signoff ? "可以" : "签发后可以"}</Tag></div>
+          <p>{isDemo ? demoLimitationZh : blockerCodes.length === 0 && signoff ? `已由${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}复核签发，可以正式交付。` : blockerSummary(blockerCodes)}</p>
           {showLimits && blockerReasons.length > 0 && (
             <ul className="sc-check-reasons">{blockerReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
           )}
         </div>
         {showLimits && (() => {
-          const limits = QUALIFICATION_LIMITS.filter((limit) => !signoff || (limit.code === "L1_ELIGIBILITY_FALSE" && !signoff.l1Eligible));
           return (
             <div className="sc-check sc-check--limits">
-              <div className="sc-check-head"><span>使用限制</span><Tag tone={limits.length ? "warning" : "success"}>{signoff ? (limits.length ? `签发后仍适用 ${limits.length} 条` : "无") : `${limits.length} 条`}</Tag></div>
+              <div className="sc-check-head"><span>使用限制</span><Tag tone={limits.length ? "warning" : "success"}>{signoff ? (limits.length ? `${limits.length} 条仍适用` : "无") : `${limits.length} 条`}</Tag></div>
               {limits.map((limit) => (
                 <div className="sc-check-limit" key={limit.code}>
                   <strong>{limit.layerZh}</strong>
@@ -136,7 +146,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
                 </div>
               ))}
               {!limits.length && <p>复核签发后没有仍然适用的使用限制。</p>}
-              <p>{signoff ? "图签上的签发状态以签发记录为准。" : "图签同样印有待签发状态，日期栏印的也是未签发。"}</p>
+              <p>{isDemo ? "图签与签发状态属于流程演示内容，不表示真实工程责任人已签发。" : signoff ? "图签上的签发状态以签发记录为准。" : "图签同样印有待签发状态，日期栏印的也是未签发。"}</p>
             </div>
           );
         })()}

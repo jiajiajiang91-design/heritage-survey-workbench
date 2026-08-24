@@ -3,7 +3,7 @@
 // 这个脚本查的三类问题都真实发生过，每次都是靠人工解包比对才发现，构建本身退出码为 0：
 //
 // 一、未解决问题被静默作废。规则核对原来一律把未解决问题标成已被替代，
-//     三个项目共 13 条没人处理过的问题在问题队列与交付阻断里同时消失。
+//     多个项目共 13 条没人处理过的问题在问题队列与交付阻断里同时消失。
 // 二、命令回执没随包走。dist 落后于源码时构建照样成功，包里少了回执，
 //     导入后修改历史全部显示未记录动作类型。
 // 三、清单与包内容对不上。manifest 的计数是构建时另算的，与包里的记录可能脱节。
@@ -14,7 +14,7 @@ import { unzipSync } from "../packages/infrastructure/node_modules/fflate/esm/br
 
 const ROOT = resolve(import.meta.dirname, "..");
 const DEMO_DIR = resolve(ROOT, "apps/workbench/public/demo");
-const NAMES = ["t0b-construction-sample", "dai-loy-habs-ca-2071-w", "gaodu-yuhuang-temple-main-hall"];
+const NAMES = ["t0b-construction-sample", "gaodu-yuhuang-temple-main-hall"];
 
 const manifest = JSON.parse(await readFile(resolve(DEMO_DIR, "manifest.json"), "utf8"));
 const manifestById = new Map(manifest.projects.map((item) => [item.demoId, item]));
@@ -59,7 +59,7 @@ for (const name of NAMES) {
     }
   }
 
-  // 四、实施单元 09 起三个演示项目演示的是归档完成的项目：资料无缺失、问题为零、模型无待确认部位、
+  // 四、实施单元 09 起演示项目演示的是归档完成的项目：资料无缺失、问题为零、模型无待确认部位、
   //     交付草案带正式环境的复核签发记录。缺任何一项即为演示不成立。
   const missingEvidence = snapshot.evidences.filter((item) => item.dataStatus !== "available").length;
   if (missingEvidence) say(`有 ${missingEvidence} 份资料缺原件，演示项目应资料齐全`);
@@ -139,4 +139,4 @@ if (problems.length) {
   for (const line of problems) console.log(`必须修复：${line}`);
   process.exit(1);
 }
-console.log("\n三个演示包内部一致");
+console.log("\n演示包内部一致");

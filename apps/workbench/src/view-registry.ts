@@ -14,7 +14,7 @@ export const stages = [
   { id: "drawings", label: "成组图纸" },
   { id: "checks", label: "检查与签发", icon: ShieldCheck },
   { id: "package", label: "成果归档" },
-  { id: "candidates", label: "模型运行与用量", icon: Activity },
+  { id: "candidates", label: "AI 调用与用量", icon: Activity },
   { id: "history", label: "修改历史", icon: History },
 ] as const;
 
@@ -55,7 +55,7 @@ export const STAGE_DESCRIPTIONS: Record<StageId, string> = {
   drawings: "按任务要求出图，DXF、PDF 与预览图同源。",
   checks: "自动检查的结果和复核签发的状态都在这里。",
   package: "成果包含图纸、模型、检查结果与来源说明；签发后可正式交付。",
-  candidates: "按用量与公开单价算费用。",
+  candidates: "核对 AI 调用次数、token 用量、估算费用与项目内识别结果。",
   history: "每一次写入都留在这里，含时间、操作人、动作和改了什么。",
 };
 

@@ -10,9 +10,15 @@ export interface DemoLibraryEntry {
   readonly demoId: string;
   readonly fileName: string;
   readonly projectName: string;
+  readonly buildingName: string;
   readonly limitationZh: string;
   readonly projectId: string;
   readonly packageSha256: string;
+  readonly packageBytes: number;
+  readonly evidenceCount: number;
+  readonly factCount: number;
+  readonly geometryObjectCount: number;
+  readonly artifactCount: number;
 }
 
 export interface DemoLibraryManifest {
@@ -36,6 +42,11 @@ async function fetchManifest(base: string): Promise<DemoLibraryManifest | null> 
   return value;
 }
 
+// 列表页和任务卡也要说明展示项目的数据边界。复用同一份清单，避免按项目名硬编码。
+export function readDemoLibraryManifest(baseUrl = "/"): Promise<DemoLibraryManifest | null> {
+  return fetchManifest(baseUrl);
+}
+
 // 同一次会话内只跑一次。开发模式下 effect 会执行两遍，两次并发导入同一个包
 // 会在写入时撞键，表现为一半成功一半报错。
 let inFlight: Promise<DemoLoadResult> | null = null;
@@ -50,16 +61,30 @@ function rememberLoaded(demoId: string, sha: string): void {
   try { globalThis.localStorage?.setItem(LOADED_KEY, JSON.stringify({ ...readLoaded(), [demoId]: sha })); } catch { /* 无本机存储时不记 */ }
 }
 
-export interface DemoLibraryUpdate { readonly demoId: string; readonly projectName: string }
+export interface DemoLibraryUpdate {
+  readonly demoId: string;
+  readonly projectName: string;
+  readonly kind: "missing" | "changed";
+}
 
-// 本机已装载的演示项目里，哪些的包已经有新版本
+// 需要提示更新的演示项目：本机已装载但包有新版本的，加上装载残局（清单里的演示项目
+// 只装进来一部分——首次装载在下载中途被关页打断就会这样，空库自动装载不会再跑，
+// 不提示的话残局没有任何修复入口）。只有本机一个演示项目都没有时不提示，
+// 免得对只用自己项目的用户推销清空重装。
 export async function listDemoLibraryUpdates(input: { existingProjectIds: ReadonlySet<string>; baseUrl?: string }): Promise<DemoLibraryUpdate[]> {
   const manifest = await fetchManifest(input.baseUrl ?? "/").catch(() => null);
   if (!manifest) return [];
   const loaded = readLoaded();
+  const demoPresent = manifest.projects.some((entry) => input.existingProjectIds.has(entry.projectId));
   return manifest.projects
-    .filter((entry) => input.existingProjectIds.has(entry.projectId) && loaded[entry.demoId] !== entry.packageSha256)
-    .map((entry) => ({ demoId: entry.demoId, projectName: entry.projectName }));
+    .filter((entry) => input.existingProjectIds.has(entry.projectId)
+      ? loaded[entry.demoId] !== entry.packageSha256
+      : demoPresent)
+    .map((entry) => ({
+      demoId: entry.demoId,
+      projectName: entry.projectName,
+      kind: input.existingProjectIds.has(entry.projectId) ? "changed" as const : "missing" as const,
+    }));
 }
 
 // 已存在的项目不重复导入，也不覆盖：用户在演示项目上做过的操作要保留。
@@ -92,9 +117,7 @@ async function runLoad(input: {
       continue;
     }
     try {
-      const response = await fetch(`${base}demo/${entry.fileName}`);
-      if (!response.ok) throw new Error("DEMO_PACKAGE_DOWNLOAD_FAILED");
-      const bytes = new Uint8Array(await response.arrayBuffer());
+      const bytes = await fetchPackage(`${base}demo/${entry.fileName}`);
       await input.packages.import(bytes, entry.fileName, input.actorId);
       rememberLoaded(entry.demoId, entry.packageSha256);
       loaded.push(entry.demoId);
@@ -103,4 +126,20 @@ async function runLoad(input: {
     }
   }
   return { loaded, skipped, failed };
+}
+
+async function fetchPackage(url: string): Promise<Uint8Array> {
+  const delays = [0, 500, 1_500];
+  let lastReason: unknown = new Error("DEMO_PACKAGE_DOWNLOAD_FAILED");
+  for (const delay of delays) {
+    if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw new Error(`DEMO_PACKAGE_DOWNLOAD_FAILED:${response.status}`);
+      return new Uint8Array(await response.arrayBuffer());
+    } catch (reason) {
+      lastReason = reason;
+    }
+  }
+  throw lastReason;
 }

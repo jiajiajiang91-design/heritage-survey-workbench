@@ -3,7 +3,7 @@ import type { FormEvent } from "react";
 import type { ProjectHead } from "@gujian/application";
 
 import { EVIDENCE_TYPE_LABELS, PRODUCER_LABELS, RESPONSIBILITY_ROLE_LABELS } from "../labels";
-import { Button, Field, InfoRow, Metric, Tag } from "../ui";
+import { Alert, Button, Field, InfoRow, Metric, Tag } from "../ui";
 import { readTaskSetupForm, type TaskSetupValues } from "../workbench/useRecordWrites";
 import "./TaskCard.css";
 
@@ -19,6 +19,7 @@ export interface TaskCardProps {
   objectProducerCounts: Record<string, number>;
   measuredRecordCount: number;
   qualificationLabel: string | null;
+  demoLimitationZh: string | null;
   onSubmitTask: (values: TaskSetupValues) => Promise<void>;
   onEnterEvidence: () => void;
 }
@@ -87,7 +88,7 @@ function TaskSetupForm({ task, onSubmit }: { task: TaskDefinition | null; onSubm
   );
 }
 
-export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerCounts, measuredRecordCount, qualificationLabel, onSubmitTask, onEnterEvidence }: TaskCardProps) {
+export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerCounts, measuredRecordCount, qualificationLabel, demoLimitationZh, onSubmitTask, onEnterEvidence }: TaskCardProps) {
   const [editing, setEditing] = useState(false);
   const building = snapshot.buildings[0];
   const views = confirmedTask?.artifactRequirements?.views ?? [];
@@ -114,6 +115,7 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
         <Metric label="构件" value={`${objectCount} 个`} note={objectNote(objectCount, objectProducerCounts)} />
         <Metric label="成果要求" value={scale.value} note={scale.note} />
       </div>
+      {demoLimitationZh && <Alert tone="info"><strong>展示项目的数据边界：</strong>{demoLimitationZh} 项目包中的签发记录来自正式构建环境，本机只能核对，不能新建签发。</Alert>}
       <div className="sc-task-content">
         <section className="gj-card sc-task-checklist">
           <h3 className="gj-text-section">{showForm ? (confirmedTask ? "更新任务要求" : "确认任务要求") : "启动检查"}</h3>
@@ -171,7 +173,7 @@ export function TaskCard({ snapshot, confirmedTask, objectCount, objectProducerC
               if (surveyRecords.length) return `尺寸依据：${surveyRecords.map((item) => item.title).join("、")}。`;
               return "本项目无现场实测记录，尺寸来自资料转写或形制推算。";
             })()}
-            {qualificationLabel ? `成果状态：${qualificationLabel}。` : ""}
+            {qualificationLabel ? `成果状态：${demoLimitationZh ? "展示流程已归档，仅供体验" : qualificationLabel}。` : ""}
           </p>
         </section>
       </div>

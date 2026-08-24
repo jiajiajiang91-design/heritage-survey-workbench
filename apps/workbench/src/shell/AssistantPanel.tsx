@@ -21,12 +21,19 @@ export interface AssistantPanelProps {
   // 窄屏下面板浮在中栏上，头部给一个收起按钮；宽屏按 v4 不显示
   onCollapse: () => void;
   modelConfigured: boolean;
+  modelName?: string | undefined;
 }
 
-export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evidence, collapsed, onExpand, onCollapse, modelConfigured }: AssistantPanelProps) {
+function displayModelName(modelName: string | undefined): string {
+  if (!modelName) return "AI 已连接";
+  if (modelName.toLowerCase() === "kimi-k2.6") return "Kimi K2.6 已连接";
+  return `${modelName} 已连接`;
+}
+
+export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evidence, collapsed, onExpand, onCollapse, modelConfigured, modelName }: AssistantPanelProps) {
   const stageIndex = journeyStages.findIndex((stage) => (stage.views as readonly string[]).includes(activeStage));
   const busy = jobs.modelRunning || jobs.geometryRunning || jobs.drawingRunning;
-  const stateText = !hasProject ? "未进入项目" : busy ? "处理中" : !modelConfigured ? "识别未连接" : "在线";
+  const stateText = !hasProject ? "未进入项目" : busy ? "处理中" : !modelConfigured ? "AI 未连接" : displayModelName(modelName);
   const dotClass = !hasProject || !modelConfigured ? "ws-assistant-dot ws-assistant-dot--off" : busy ? "ws-assistant-dot ws-assistant-dot--busy" : "ws-assistant-dot";
   const { pendingProposal } = assistant;
   // 收起时只藏不卸：对话记录在 ChatPanel 的组件状态里，卸载再装载会把问答清空
@@ -63,10 +70,13 @@ export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evide
                 <div className="assistant-msg assistant-msg-assistant">
                   <p>{suggestion.text}</p>
                   {suggestion.basis && <small>依据：{suggestion.basis}</small>}
+                  <div className="gj-actions"><Button compact onClick={() => void assistant.requestSuggestion()}>重新获取建议</Button></div>
                 </div>
               ) : (
                 <div className="assistant-msg assistant-msg-assistant">
                   <p>{suggestion.loading ? "正在根据项目现状整理建议" : modelConfigured ? assistant.currentStatusText : "模型服务未连接，建议暂不可用；你仍可以用下方输入切换视图或发起操作。"}</p>
+                  {modelConfigured && !suggestion.loading && <div className="gj-actions"><Button compact onClick={() => void assistant.requestSuggestion()}>获取本步建议</Button></div>}
+                  {modelConfigured && !suggestion.loading && <small>点击后调用 AI，并计入用量统计。</small>}
                 </div>
               )}
             </div>

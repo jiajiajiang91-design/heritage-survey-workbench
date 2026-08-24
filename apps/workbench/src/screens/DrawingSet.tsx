@@ -27,11 +27,12 @@ export interface DrawingSetProps {
   onDownload: (artifact: ArtifactRecord) => void;
   // 有复核签发记录时成果按已签发显示，图面限制与复核类检查结果随之解除（实施单元 09）
   signoff: ReviewSignoff | null;
+  demoLimitationZh: string | null;
 }
 
 const KIND_LABELS: Record<string, string> = { svg: "矢量预览", pdf: "PDF", dxf: "DXF", glb: "GLB", ifc: "IFC", json: "记录", viewGeometry: "视图线稿" };
 
-export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, hasTask, generating, showTask, progressPhase, cancelling, onGenerate, onCancel, onDownload, signoff }: DrawingSetProps) {
+export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, hasTask, generating, showTask, progressPhase, cancelling, onGenerate, onCancel, onDownload, signoff, demoLimitationZh }: DrawingSetProps) {
   const drawings = artifacts.filter((artifact) => ["svg", "pdf", "dxf"].includes(artifact.kind));
   const others = artifacts.filter((artifact) => !["svg", "pdf", "dxf"].includes(artifact.kind));
   // 右卡看选中的那份；默认第一张图幅的 SVG（实施单元 09：DXF 与 PDF 都在页内看）
@@ -44,7 +45,7 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
       <section className="sc-sheet-settings">
         <div className="gj-pane-head">
           <span className="gj-pane-title">成组图纸</span>
-          {artifacts.length > 0 && (signoff ? <Tag tone="success">已签发成果</Tag> : <QualificationChip />)}
+          {artifacts.length > 0 && (signoff ? <Tag tone="success">{demoLimitationZh ? "展示归档成果" : "已签发成果"}</Tag> : <QualificationChip />)}
         </div>
         {showTask && <LongTask labelZh={`正在生成成组图纸：${cadPhaseLabel(progressPhase)}`} onCancel={onCancel} cancelling={cancelling} />}
         {artifacts.length ? (
@@ -61,6 +62,7 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
           <EmptyState>{hasGeometry ? "还没有图纸。按任务要求出图后，图纸会同时导出 DXF、PDF 和预览图。" : "先生成三维模型，再按任务要求出图。"}</EmptyState>
         )}
         {artifacts.length > 0 && !signoff && <DrawingLimitationNote />}
+        {artifacts.length > 0 && signoff && demoLimitationZh && <p className="gj-note">项目包随附流程演示签发记录，用于展示归档后的页面与数据关系，不构成真实工程签发。</p>}
         {latestCheckRun && (
           <div className="sc-sheet-checks">
             <span className="gj-text-label">检查结果</span>

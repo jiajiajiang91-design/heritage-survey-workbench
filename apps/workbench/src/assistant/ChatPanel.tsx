@@ -107,13 +107,21 @@ export function ChatPanel({ client, buildSnapshot, onClientOp, selection, onClea
           : {}),
       });
     } catch (error) {
-      // 助手消息与错误横幅走同一套中文说法，不显示错误码原文（07 界面视觉规范 5.6）。
-      const notice = describeFailure(error, "助手请求失败");
-      append(newMessage({
-        who: "assistant",
-        kind: "risk",
-        text: `${notice.summaryZh}${notice.nextStepZh ? ` ${notice.nextStepZh}` : ""}`,
-      }));
+      // 服务端明确拒绝（如每日额度用完）带中文原话，按普通消息说清楚；
+      // 其余错误走统一中文说法，不显示错误码原文（07 界面视觉规范 5.6）。
+      const refused = error instanceof Error && error.message.startsWith("ASSISTANT_TURN_REFUSED::")
+        ? error.message.slice("ASSISTANT_TURN_REFUSED::".length)
+        : null;
+      if (refused) {
+        append(newMessage({ who: "assistant", kind: "plain", text: refused }));
+      } else {
+        const notice = describeFailure(error, "助手请求失败");
+        append(newMessage({
+          who: "assistant",
+          kind: "risk",
+          text: `${notice.summaryZh}${notice.nextStepZh ? ` ${notice.nextStepZh}` : ""}`,
+        }));
+      }
     } finally {
       setBusy(false);
       // 过程提示（正在理解你的指令）只在回合进行中有意义，留在消息流里会像卡住了

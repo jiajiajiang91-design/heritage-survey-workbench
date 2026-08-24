@@ -19,3 +19,5 @@
 .gj-viewer-table th { position: sticky; top: calc(-1 * var(--space-sm)); background: var(--bg-subtle); font-weight: var(--font-weight-medium); text-align: left; }
 .gj-viewer-table th, .gj-viewer-table td { border: var(--stroke-hairline) solid var(--border-subtle); padding: var(--space-2xs) var(--space-xs); white-space: nowrap; color: var(--text-primary); }
 .gj-viewer-text { margin: 0; font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-meta); color: var(--text-primary); white-space: pre-wrap; word-break: break-all; }
+.gj-viewer-doc-summary { min-height: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-sm); color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); }
+.gj-viewer-doc-summary strong { color: var(--text-primary); font-weight: var(--font-weight-medium); }

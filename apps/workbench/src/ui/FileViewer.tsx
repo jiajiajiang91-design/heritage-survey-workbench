@@ -13,9 +13,11 @@ import "./FileViewer.css";
 // pdf.js 按需加载：它在模块顶层就要用 DOMMatrix，测试环境（jsdom）没有；也让主包不带它
 // worker、wasm 解码器（JBIG2、JPX）、标准字体与字符映射由 sync-pdfjs-assets.mjs 复制到 public/pdfjs，同源加载
 const PDFJS_ASSETS = "/pdfjs/";
+// 线上曾以 application/octet-stream 缓存过同名 worker。版本参数让已有访客重新取正确 MIME 的模块。
+const PDFJS_WORKER_VERSION = "6.2.108-mime1";
 async function loadPdfJs() {
   const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = `${PDFJS_ASSETS}pdf.worker.min.mjs`;
+  pdfjs.GlobalWorkerOptions.workerSrc = `${PDFJS_ASSETS}pdf.worker.min.mjs?v=${PDFJS_WORKER_VERSION}`;
   return pdfjs;
 }
 
@@ -165,9 +167,11 @@ const TEXT_DISPLAY_LIMIT = 300_000;
 
 function TextPane({ blob, fileName, asTable, style }: { blob: Blob; fileName: string; asTable: boolean; style?: React.CSSProperties | undefined }) {
   const [state, setState] = useState<{ text: string; truncated: boolean } | { error: string } | null>(null);
+  const [showStructuredText, setShowStructuredText] = useState(false);
   useEffect(() => {
     let cancelled = false;
     setState(null);
+    setShowStructuredText(false);
     const read = async () => {
       let source = blob;
       if (fileName.toLowerCase().endsWith(".gz")) {
@@ -182,6 +186,7 @@ function TextPane({ blob, fileName, asTable, style }: { blob: Blob; fileName: st
   if (!state) return <div className="gj-viewer gj-viewer--empty" style={style}><span className="gj-viewer-loading">正在读取文件</span></div>;
   if ("error" in state) return <div className="gj-viewer gj-viewer--empty" style={style}><span>文件无法在页内显示：{state.error}</span></div>;
   const rows = asTable ? parseCsv(state.text) : null;
+  const structuredText = !asTable && /\.(?:json|ndjson)(?:\.gz)?$/i.test(fileName);
   return (
     <div className="gj-viewer gj-viewer--doc" style={style}>
       <div className="gj-viewer-doc-scroll">
@@ -190,6 +195,12 @@ function TextPane({ blob, fileName, asTable, style }: { blob: Blob; fileName: st
             <thead><tr>{rows[0]!.map((cell, index) => <th key={index}>{cell}</th>)}</tr></thead>
             <tbody>{rows.slice(1).map((row, rowIndex) => <tr key={rowIndex}>{row.map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)}</tr>)}</tbody>
           </table>
+        ) : structuredText && !showStructuredText ? (
+          <div className="gj-viewer-doc-summary">
+            <strong>结构化资料已完整保存在项目中</strong>
+            <span>为避免代码内容淹没业务信息，默认不展开原文。需要逐字段核对时可在本页查看。</span>
+            <Button compact onClick={() => setShowStructuredText(true)}>查看原文</Button>
+          </div>
         ) : (
           <pre className="gj-viewer-text">{state.text}</pre>
         )}

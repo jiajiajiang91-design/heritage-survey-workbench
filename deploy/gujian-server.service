@@ -1,0 +1,19 @@
+# systemd 服务（放到 /etc/systemd/system/gujian-server.service）
+# systemctl daemon-reload && systemctl enable --now gujian-server
+[Unit]
+Description=Gujian Workbench API Server
+After=network.target
+
+[Service]
+Type=simple
+User=gujian
+WorkingDirectory=/opt/gujian/app/apps/server
+EnvironmentFile=/etc/gujian/server.env
+ExecStart=/usr/local/node/bin/node dist/index.js
+Restart=always
+RestartSec=3
+# CAD 作业峰值内存有限幅，防止把 4G 的机器挤死
+MemoryMax=3G
+
+[Install]
+WantedBy=multi-user.target

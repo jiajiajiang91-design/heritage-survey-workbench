@@ -8,7 +8,8 @@ import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShe
 import { AssistantPanel } from "./shell/AssistantPanel";
 import { StageRail } from "./shell/StageRail";
 import { Topbar } from "./shell/Topbar";
-import { STAGE_DESCRIPTIONS, projectPages, stageLabel, stages, type StageId } from "./view-registry";
+import { STAGE_DESCRIPTIONS, journeyViewOrder, projectPages, stageLabel, stages, type StageId } from "./view-registry";
+import { Button } from "./ui";
 import { useWorkbench, type WorkbenchOptions } from "./workbench/useWorkbench";
 
 // 组合根：状态与命令处理在 workbench/ 的 hook 里，页面在 screens/ 里，这里只按当前视图选屏。
@@ -45,6 +46,14 @@ export function App({ bootstrapDemo }: AppProps = {}) {
     ? { items: currentJourney.views.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage, onSelect: (id: string) => goToView(id as StageId) }
     : null;
   const pageTitle = stages.find((stage) => stage.id === activeStage)?.label ?? "";
+  const demoLimitationZh = selected ? session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null : null;
+  const pageDescription = demoLimitationZh && activeStage === "checks"
+    ? "核对自动检查与流程演示签发记录；该记录不构成真实工程签发。"
+    : demoLimitationZh && activeStage === "package"
+      ? "查看图纸、模型、检查结果与来源说明；当前展示归档不构成真实工程交付。"
+      : STAGE_DESCRIPTIONS[activeStage];
+  const activeViewIndex = journeyViewOrder.indexOf(activeStage);
+  const nextView = activeViewIndex >= 0 ? journeyViewOrder[activeViewIndex + 1] ?? null : null;
 
   return (
     <>
@@ -80,12 +89,21 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           onImport={importProject}
           onClear={() => void clearLibrary()}
           demoUpdates={session.demoUpdates}
+          onRetryDemo={() => void session.retryDemoLibrary()}
           onUpdateDemo={() => void session.updateDemoLibrary()}
+          loading={session.initializing}
+          demoManifestEntries={session.demoManifestEntries}
         />
       ) : onProjectPage ? (
         <ProjectPage wb={wb} selected={selected} />
       ) : (
-        <CenterFrame title={pageTitle} description={STAGE_DESCRIPTIONS[activeStage]} tabs={currentTabs} fill>
+        <CenterFrame
+          title={pageTitle}
+          description={pageDescription}
+          actions={nextView && activeStage !== "tasks" ? <Button onClick={() => nav.advanceStage()}>下一步：{stageLabel(nextView)}</Button> : undefined}
+          tabs={currentTabs}
+          fill
+        >
           <WorkspaceView wb={wb} selected={selected} />
         </CenterFrame>
       )}
@@ -100,6 +118,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           onExpand={() => setAssistantCollapsed(false)}
           onCollapse={() => setAssistantCollapsed(true)}
           modelConfigured={serverStatus?.modelConfigured ?? false}
+          modelName={serverStatus?.model}
         />
       )}
       banners={<Banners error={serviceDown ? null : error} notice={notice} onDismissError={() => setError(null)} onDismissNotice={() => setNotice(null)} />}

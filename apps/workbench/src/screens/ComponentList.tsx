@@ -37,10 +37,10 @@ export function shortCode(index: number): string {
   return `C-${String(index + 1).padStart(3, "0")}`;
 }
 
-function objectDescription(object: GeometryObject, unknownCount: number, signedOff: boolean): string {
+function objectDescription(object: GeometryObject, evidenceTitles: readonly string[], unknownCount: number, signedOff: boolean): string {
   const source = object.producer.producerType;
   const head = source === "rule" ? "由形制规则推算" : source === "demo" ? "来自演示数据" : source === "model" ? "由 AI 识别产生" : source === "human" ? "经人工确认" : PRODUCER_LABELS[source] ?? source;
-  const evidence = object.evidenceRefs.length ? `，依据 ${object.evidenceRefs.length} 份资料` : "，未引用项目资料";
+  const evidence = evidenceTitles.length ? `，依据 ${evidenceTitles.slice(0, 3).join("、")}${evidenceTitles.length > 3 ? `等 ${evidenceTitles.length} 份资料` : ""}` : "，未引用项目资料";
   const unknown = unknownCount ? `，${unknownCount} 条${signedOff ? "建模说明" : "待确认"}` : "";
   return `${head}${evidence}${unknown}。`;
 }
@@ -61,6 +61,9 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
   const shown = visible.slice(0, limit);
   const selected = indexed.find((item) => item.object.id === selectedObjectId) ?? null;
   const selectedUnknowns = selected ? unknowns.filter((item) => selected.object.unknownRefs.includes(item.id)) : [];
+  const selectedEvidenceTitles = selected?.object.evidenceRefs
+    .map((ref) => snapshot.evidences.find((item) => item.id === ref || ref.endsWith(item.id))?.title)
+    .filter((title): title is string => Boolean(title)) ?? [];
   const entities: readonly Entity[] = snapshot.entities;
   // 选构件时右卡切到它引用的第一张能显示的照片（v4 右卡没有切换下拉）；没有引用时保持当前资料
   const showEvidenceOf = (refs: readonly string[]) => {
@@ -132,15 +135,16 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
           caption={selected ? (
             <div className="sc-components-caption">
               <strong>{selected.code} · {selected.object.displayNameZh}</strong>
-              <p>{objectDescription(selected.object, selectedUnknowns.length, signedOff)}{pane.activeEvidenceId ? "" : " 照片原件未随包提供或未选择，无法回溯到图像位置。"}</p>
+              <p>{objectDescription(selected.object, selectedEvidenceTitles, selectedUnknowns.length, signedOff)}{pane.activeEvidenceId ? "" : " 照片原件未随包提供或未选择，无法回溯到图像位置。"}</p>
             </div>
           ) : null}
           detail={(
             <>
               {selected && (
                 <div className="gj-card gj-card--compact">
-                  <InfoRow label="追溯编号" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
+                  <InfoRow label="项目内追溯编号" value={<span className="gj-numeric">{selected.object.stableKey}</span>} trailing={<SourceTag producerType={selected.object.producer.producerType} />} />
                   <InfoRow label="构件类型" value={typeLabel(selected.object.componentType, selected.object.conceptRef)} />
+                  {selectedEvidenceTitles.map((title) => <InfoRow key={title} label="资料来源" value={title} />)}
                   {selectedUnknowns.map((unknown) => (
                     <InfoRow key={unknown.id} label={signedOff ? "建模说明" : "待确认"} value={unknown.description} trailing={signedOff ? <Tag tone="success">复核已接受</Tag> : <Tag tone={unknown.blocksFormalEligibility ? "danger" : "warning"}>{unknown.blocksFormalEligibility ? "签发前要处理" : "不影响签发"}</Tag>} />
                   ))}

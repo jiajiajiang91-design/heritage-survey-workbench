@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 
 import { ProjectPageFrame } from "../shell/AppShell";
-import { Alert, Button, Dialog, Metric, Tag } from "../ui";
+import { Alert, Button, Dialog, EmptyState, Metric, Tag } from "../ui";
 import type { ProjectCard } from "../workbench";
+import type { DemoLibraryEntry, DemoLibraryUpdate } from "../demo-library-loader";
 import "./ProjectList.css";
 
 // P01 项目列表（66:1562）：标题行、三张指标卡、项目卡网格、新建卡。
@@ -14,8 +15,11 @@ export interface ProjectListProps {
   onImport: (file: File) => Promise<void>;
   onClear: () => void;
   // 本机上的演示项目有新版本时提示（实施单元 09）
-  demoUpdates: readonly { demoId: string; projectName: string }[];
+  demoUpdates: readonly DemoLibraryUpdate[];
+  onRetryDemo: () => void;
   onUpdateDemo: () => void;
+  loading: boolean;
+  demoManifestEntries: readonly DemoLibraryEntry[];
 }
 
 function coverText(card: ProjectCard): string {
@@ -28,7 +32,7 @@ function coverText(card: ProjectCard): string {
   return card.photoCount ? parts.join("、") : `${parts.join("、")}，无现场照片`;
 }
 
-export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onUpdateDemo }: ProjectListProps) {
+export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onRetryDemo, onUpdateDemo, loading, demoManifestEntries }: ProjectListProps) {
   const importInput = useRef<HTMLInputElement>(null);
   // 更新与清空都会动本机数据，确认用页面内对话框（内嵌浏览器会把原生弹窗按取消处理）
   const [confirming, setConfirming] = useState<"update" | "clear" | null>(null);
@@ -37,17 +41,24 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
   const pending = cards.reduce((sum, card) => sum + card.pendingCount, 0);
   const signed = cards.filter((card) => card.signedAt !== null).length;
   const shortNames = active.map((card) => card.buildingName).join("、");
+  const missingOnly = demoUpdates.length > 0 && demoUpdates.every((item) => item.kind === "missing");
+  const loadingEntries = loading ? demoManifestEntries.filter((entry) => !cards.some((card) => card.projectId === entry.projectId)) : [];
   return (
     <ProjectPageFrame
       title="项目列表"
-      description="管理单栋建筑任务并进入成果生产链路"
+      description="面向古建测绘与文保成果生产人员，把单栋建筑的资料、实测、模型、图纸和归档成果放进同一条可追溯流程"
       actions={<Button variant="primary" onClick={onCreate}>新建项目</Button>}
     >
       {demoUpdates.length > 0 && (
         <Alert tone="info">
-          演示项目有新版本（{demoUpdates.map((item) => item.projectName).join("、")}）。本机上的是旧数据，更新会清空本机项目后重新装载。
-          <Button variant="text" compact onClick={() => setConfirming("update")}>更新演示项目</Button>
+          {missingOnly
+            ? `有展示项目尚未载入（${demoUpdates.map((item) => item.projectName).join("、")}）。可继续载入，不会改动本机已有项目。`
+            : `展示项目有新版本（${demoUpdates.map((item) => item.projectName).join("、")}）。本机上的是旧数据，更新会清空本机项目后重新装载。`}
+          <Button variant="text" compact onClick={missingOnly ? onRetryDemo : () => setConfirming("update")}>{missingOnly ? "继续载入" : "更新展示项目"}</Button>
         </Alert>
+      )}
+      {(cards.some((card) => card.demoLimitationZh) || loadingEntries.length > 0) && (
+        <Alert tone="info">带展示项目标签的内容用于体验完整流程。项目内的演示实测值和随包签发记录不代表真实工程成果，本机也不能创建正式签发记录。</Alert>
       )}
       {confirming && (
         <Dialog
@@ -70,11 +81,12 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
         </Dialog>
       )}
       <div className="sc-projects-metrics">
-        <Metric label="进行中" value={active.length} note={shortNames || (cards.length ? "全部已归档" : "还没有项目")} />
-        <Metric label="待确认" value={pending} note="问题队列待处理项与识别候选" />
-        <Metric label="已签发归档" value={signed} note={cards.length ? (signed ? `${signed} 个项目已复核签发` : `${cards.length} 个项目待签发`) : "尚无成果"} />
+        <Metric label="进行中" value={loading ? "…" : active.length} note={loading ? "正在载入本机项目" : shortNames || (cards.length ? "全部已归档" : "还没有项目")} />
+        <Metric label="待确认" value={loading ? "…" : pending} note="问题队列待处理项与识别候选" />
+        <Metric label="已归档" value={loading ? "…" : signed} note={loading ? "正在核对项目状态" : cards.length ? (signed ? `${signed} 个项目包含签发记录` : `${cards.length} 个项目待签发`) : "尚无成果"} />
       </div>
       <div className="sc-projects-grid" aria-label="项目列表">
+        {loading && !cards.length && !loadingEntries.length && <EmptyState>正在读取展示项目清单。</EmptyState>}
         {cards.map((card) => (
           <article className="sc-project" key={card.projectId}>
             <div className="sc-project-cover">
@@ -83,7 +95,7 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
             <div className="sc-project-info">
               <div className="sc-project-name">
                 <h3>{card.name}</h3>
-                <Tag tone={card.signedAt ? "success" : card.status === "active" ? "accent" : "neutral"}>{card.signedAt ? "已归档" : card.status === "active" ? "进行中" : "已结束"}</Tag>
+                <span className="gj-row">{card.demoLimitationZh && <Tag title={card.demoLimitationZh}>展示项目</Tag>}<Tag tone={card.signedAt ? "success" : card.status === "active" ? "accent" : "neutral"}>{card.signedAt ? "已归档" : card.status === "active" ? "进行中" : "已结束"}</Tag></span>
               </div>
               <p className="sc-project-sub">
                 {[card.buildingName, card.scaleLabel, card.taskName].filter(Boolean).join(" · ")}
@@ -94,6 +106,20 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
               <div className="gj-actions">
                 <Button variant="primary" onClick={() => onOpen(card.projectId)}>进入任务</Button>
               </div>
+            </div>
+          </article>
+        ))}
+        {loadingEntries.map((entry) => (
+          <article className="sc-project" key={entry.projectId} aria-busy="true">
+            <div className="sc-project-cover"><span>正在载入照片、模型与图纸</span></div>
+            <div className="sc-project-info">
+              <div className="sc-project-name">
+                <h3>{entry.projectName}</h3>
+                <span className="gj-row"><Tag title={entry.limitationZh}>展示项目</Tag><Tag>载入中</Tag></span>
+              </div>
+              <p className="sc-project-sub">{entry.buildingName}</p>
+              <p className="sc-project-counts">资料 {entry.evidenceCount} 份，尺寸 {entry.factCount} 条，构件 {entry.geometryObjectCount} 个，成果 {entry.artifactCount} 项</p>
+              <div className="gj-actions"><Button variant="primary" disabled>正在载入项目内容</Button></div>
             </div>
           </article>
         ))}

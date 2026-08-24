@@ -8,7 +8,7 @@ import {
 } from "@gujian/infrastructure";
 
 import { buildChangeHistory, type ChangeHistoryEntry } from "../change-history";
-import type { DemoLoadResult } from "../demo-library-loader";
+import { readDemoLibraryManifest, type DemoLibraryEntry, type DemoLibraryUpdate, type DemoLoadResult } from "../demo-library-loader";
 import { describeFailure } from "../failure-notice";
 import { describeBlocker } from "../qualification";
 import {
@@ -24,6 +24,14 @@ export interface ServerStatus {
   ready: boolean;
   model: string;
   modelConfigured: boolean;
+}
+
+// 服务器侧今日的助手与生成调用数。助手对话和建议不在项目内留运行记录，
+// 用量页只显示本机的识别与转写会让人误以为模型没接上（线上实测被误读过两次）。
+export interface AssistantUsage {
+  day: string;
+  totals: { assistant: number; suggest: number; jobs: number };
+  tokens: { promptTokens: number; completionTokens: number; cachedTokens: number; totalTokens: number };
 }
 
 export interface CreateProjectValues {
@@ -54,6 +62,9 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const [projectArchetypes, setProjectArchetypes] = useState<readonly ArchetypeSpec[]>([]);
   const [changeHistory, setChangeHistory] = useState<readonly ChangeHistoryEntry[]>([]);
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
+  const [assistantUsage, setAssistantUsage] = useState<AssistantUsage | null>(null);
+  const [initializing, setInitializing] = useState(true);
+  const [demoManifestEntries, setDemoManifestEntries] = useState<readonly DemoLibraryEntry[]>([]);
   const vocabulary = useMemo(() => resolveVocabulary(), []);
 
   // 列表页要的计数随摘要一起读；卡片数据读不出来不影响列表本身
@@ -117,18 +128,54 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     if (result.failed.length) setError(describeFailure(result.failed[0]!.reason, "演示项目载入失败"));
   };
 
-  const refreshServerStatus = () => fetch("/api/status")
-    .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
-    .then(setServerStatus)
-    .catch(() => setServerStatus(null));
+  // 首次载入中途断网时，已成功的项目保留，只补齐缺少的包。外层再尝试一次，
+  // 与单包下载重试共同覆盖短暂网络波动，不需要用户清空项目。
+  const bootstrapDemoStably = async (): Promise<DemoLoadResult | null> => {
+    const first = await bootstrapDemo();
+    if (!first?.failed.length) return first;
+    await refresh();
+    const second = await bootstrapDemo();
+    if (!second) return first;
+    return {
+      loaded: [...new Set([...first.loaded, ...second.loaded])],
+      skipped: [...new Set([...first.skipped, ...second.skipped])],
+      failed: second.failed,
+    };
+  };
+
+  const refreshServerStatus = () => Promise.all([
+    fetch("/api/status")
+      .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
+      .then(setServerStatus)
+      .catch(() => setServerStatus(null)),
+    fetch("/api/assistant/usage")
+      .then(async (response) => response.ok ? response.json() as Promise<AssistantUsage> : Promise.reject(new Error("USAGE_UNAVAILABLE")))
+      .then(setAssistantUsage)
+      .catch(() => setAssistantUsage(null)),
+  ]).then(() => undefined);
 
   useEffect(() => {
+    let active = true;
+    // 完整项目包较大。导入期间定时重读，首个项目一完成就可以进入，不必等待第二个包。
+    const progressTimer = globalThis.setInterval(() => {
+      if (active) void refresh().catch(() => undefined);
+    }, 1_500);
+    // 小清单先到，首次访问无需等几十 MB 的完整项目包导入完才理解产品与展示内容。
+    void readDemoLibraryManifest().then((manifest) => setDemoManifestEntries(manifest?.projects ?? [])).catch(() => setDemoManifestEntries([]));
     void refresh()
-      .then(bootstrapDemo)
+      .then(bootstrapDemoStably)
       .then(showBootstrapResult)
-      .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")));
+      .then(refreshDemoUpdates)
+      .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")))
+      .finally(() => {
+        globalThis.clearInterval(progressTimer);
+        if (active) setInitializing(false);
+      });
     void refreshServerStatus();
-    void refreshDemoUpdates();
+    return () => {
+      active = false;
+      globalThis.clearInterval(progressTimer);
+    };
   }, []);
 
   const chooseProject = async (projectId: string) => {
@@ -172,8 +219,22 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   };
 
   // 演示包有新版本时，列表页提示；更新等于清空本机项目后重新装载（实施单元 09）
-  const [demoUpdates, setDemoUpdates] = useState<readonly { demoId: string; projectName: string }[]>([]);
+  const [demoUpdates, setDemoUpdates] = useState<readonly DemoLibraryUpdate[]>([]);
   const refreshDemoUpdates = () => checkDemoLibraryUpdates().then(setDemoUpdates).catch(() => setDemoUpdates([]));
+  const retryDemoLibrary = async () => {
+    setInitializing(true);
+    setError(null);
+    try {
+      const result = await bootstrapDemoStably();
+      await showBootstrapResult(result);
+      await refresh();
+      await refreshDemoUpdates();
+    } catch (reason) {
+      setError(describeFailure(reason, "展示项目载入失败"));
+    } finally {
+      setInitializing(false);
+    }
+  };
   // 确认在界面对话框里做（内嵌浏览器会拦掉原生弹窗），这里只执行
   const updateDemoLibrary = async () => {
     await projectRepository.clearAllData();
@@ -181,7 +242,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     setProjectModelRuns([]); setProjectRuleRuns([]); setProjectDecisions([]);
     setProjectArtifacts([]); setProjectCheckRuns([]); setProjectDeliveries([]);
     await refresh();
-    const result = await bootstrapDemo();
+    const result = await bootstrapDemoStably();
     await showBootstrapResult(result);
     await refresh();
     setDemoUpdates([]);
@@ -297,15 +358,15 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const blockerReasons = [...new Set((dashboard?.blockerCodes ?? []).map(describeBlocker))];
 
   return {
-    projects, projectCards,
+    projects, projectCards, initializing, demoManifestEntries,
     selected, setSelected,
     projectModelRuns, setProjectModelRuns,
     projectRuleRuns, setProjectRuleRuns,
     projectDecisions, setProjectDecisions,
     projectArtifacts, projectCheckRuns, projectDeliveryEvaluations, projectDeliveries,
-    projectArchetypes, changeHistory, serverStatus, refreshServerStatus,
+    projectArchetypes, changeHistory, serverStatus, assistantUsage, refreshServerStatus,
     refresh, loadProject, chooseProject, exitToProjectList, createProject, importProject, clearLibrary,
-    demoUpdates, updateDemoLibrary,
+    demoUpdates, retryDemoLibrary, updateDemoLibrary,
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues,
     geometryRevision, geometrySpec, latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery,
     geometryGate, dashboard, artifactSetView, modelCostView, humanInterventions, deliveryBlockers,

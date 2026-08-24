@@ -8,18 +8,20 @@ import { loadDemoLibrary, type DemoLibraryManifest } from "./demo-library-loader
 const MANIFEST: DemoLibraryManifest = {
   schemaVersion: "demo-library-1",
   projects: [
-    { demoId: "alpha", fileName: "alpha.zip", projectName: "甲", limitationZh: "示例", packageSha256: "0".repeat(64), projectId: "11111111-1111-4111-8111-111111111111" },
-    { demoId: "beta", fileName: "beta.zip", projectName: "乙", limitationZh: "示例", packageSha256: "0".repeat(64), projectId: "22222222-2222-4222-8222-222222222222" },
+    { demoId: "alpha", fileName: "alpha.zip", projectName: "甲", buildingName: "甲建筑", limitationZh: "示例", packageSha256: "0".repeat(64), packageBytes: 3, evidenceCount: 1, factCount: 2, geometryObjectCount: 3, artifactCount: 4, projectId: "11111111-1111-4111-8111-111111111111" },
+    { demoId: "beta", fileName: "beta.zip", projectName: "乙", buildingName: "乙建筑", limitationZh: "示例", packageSha256: "0".repeat(64), packageBytes: 3, evidenceCount: 1, factCount: 2, geometryObjectCount: 3, artifactCount: 4, projectId: "22222222-2222-4222-8222-222222222222" },
   ],
 };
 
 interface FetchCase {
   manifest?: DemoLibraryManifest | null;
   failPackages?: ReadonlySet<string>;
+  transientFailures?: Readonly<Record<string, number>>;
 }
 
 function stubFetch(options: FetchCase = {}) {
   const calls: string[] = [];
+  const packageAttempts = new Map<string, number>();
   const fetchStub = vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
     calls.push(url);
@@ -28,7 +30,10 @@ function stubFetch(options: FetchCase = {}) {
       return new Response(JSON.stringify(options.manifest ?? MANIFEST), { status: 200 });
     }
     const fileName = url.split("/").at(-1)!;
+    const attempt = (packageAttempts.get(fileName) ?? 0) + 1;
+    packageAttempts.set(fileName, attempt);
     if (options.failPackages?.has(fileName)) return new Response(null, { status: 500 });
+    if (attempt <= (options.transientFailures?.[fileName] ?? 0)) return new Response(null, { status: 503 });
     return new Response(new Uint8Array([1, 2, 3]), { status: 200 });
   });
   vi.stubGlobal("fetch", fetchStub);
@@ -93,6 +98,15 @@ describe("演示项目装载", () => {
     const result = await run([], packages);
     expect(result.loaded).toEqual(["beta"]);
     expect(result.failed.map((item) => item.demoId)).toEqual(["alpha"]);
+  });
+
+  it("单个包短暂下载失败时自动重试，不要求清空已有项目", async () => {
+    const calls = stubFetch({ transientFailures: { "beta.zip": 1 } });
+    const packages = packagesStub();
+    const result = await run([], packages);
+    expect(result.failed).toEqual([]);
+    expect(result.loaded).toEqual(["alpha", "beta"]);
+    expect(calls.filter((url) => url.endsWith("beta.zip"))).toHaveLength(2);
   });
 
   it("并发调用只装载一次", async () => {

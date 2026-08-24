@@ -21,7 +21,26 @@ const port = Number.parseInt(process.env.GUJIAN_SERVER_PORT ?? "8787", 10);
 // 环境变量可覆盖，逗号分隔。
 const defaultAllowedOrigins = (process.env.GUJIAN_ALLOWED_ORIGIN ?? "http://127.0.0.1:5173,http://localhost:5173")
   .split(",").map((value) => value.trim()).filter(Boolean);
+// 公网展示部署：反向代理转发过来的 Host 是站点域名，用环境变量加进放行表。
+// 设了它就视为公网模式，同时启用每日限额与 Secure Cookie；本机开发不设，不受影响。
+const publicHosts = new Set((process.env.GUJIAN_PUBLIC_HOST ?? "").split(",").map((value) => value.trim()).filter(Boolean));
+const publicMode = publicHosts.size > 0;
 const sessionLifetimeMs = 30 * 60 * 1_000;
+// 公网每日限额：助手烧的是模型额度，建模出图烧的是 CPU。超限返回 429，按东八区日期清零。
+const dailyLimitOf = (name: string, fallback: number) => {
+  const value = Number.parseInt(process.env[name] ?? "", 10);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+};
+// 建议是切屏自动触发的背景请求，和用户主动对话分开限：共用一个额度会让浏览几分钟
+// 就把对话额度烧光，之后所有提问被 429 挡回，看起来像助手没接模型。
+const dailyLimits = {
+  assistantPerIp: dailyLimitOf("GUJIAN_DAILY_ASSISTANT_PER_IP", 40),
+  assistantTotal: dailyLimitOf("GUJIAN_DAILY_ASSISTANT_TOTAL", 400),
+  suggestPerIp: dailyLimitOf("GUJIAN_DAILY_SUGGEST_PER_IP", 240),
+  suggestTotal: dailyLimitOf("GUJIAN_DAILY_SUGGEST_TOTAL", 2000),
+  jobsPerIp: dailyLimitOf("GUJIAN_DAILY_JOBS_PER_IP", 8),
+  jobsTotal: dailyLimitOf("GUJIAN_DAILY_JOBS_TOTAL", 40),
+};
 // GeometrySpec 随项目构件数增长（三方项目 1258 实体约 3.7 MB），上限按最大预期项目留余量
 const maxBodyBytes = 32 * 1_024 * 1_024;
 
@@ -153,8 +172,8 @@ export interface ModelGateway {
     tools: Array<{ name: string; description: string; parameters: Record<string, unknown> }>;
     signal: AbortSignal;
   }): Promise<
-    | { kind: "tool_call"; name: string; argumentsJson: string; raw: string }
-    | { kind: "text"; content: string; raw: string }
+    | { kind: "tool_call"; name: string; argumentsJson: string; raw: string; usage?: { promptTokens: number; completionTokens: number; totalTokens: number; cachedTokens: number } }
+    | { kind: "text"; content: string; raw: string; usage?: { promptTokens: number; completionTokens: number; totalTokens: number; cachedTokens: number } }
   >;
 }
 
@@ -299,9 +318,15 @@ export function createWorkbenchServer(options: {
   const assistantRuntime = new AssistantRuntime({
     gateway: {
       get configured() { return gateway.configured && typeof gateway.executeWithTools === "function"; },
-      executeWithTools: (input) => {
+      executeWithTools: async (input) => {
         if (!gateway.executeWithTools) throw new Error("KIMI_TOOLS_UNAVAILABLE");
-        return gateway.executeWithTools(input);
+        const result = await gateway.executeWithTools(input);
+        // 每次真实调用的 token 记进当日累计，供用量页对账
+        dailyUsage.tokens.promptTokens += result.usage?.promptTokens ?? 0;
+        dailyUsage.tokens.completionTokens += result.usage?.completionTokens ?? 0;
+        dailyUsage.tokens.cachedTokens += result.usage?.cachedTokens ?? 0;
+        dailyUsage.tokens.totalTokens += result.usage?.totalTokens ?? 0;
+        return result;
       },
     },
     ledger: new ActionLedger(process.env.NODE_ENV === "test" ? ":memory:" : undefined),
@@ -320,6 +345,44 @@ export function createWorkbenchServer(options: {
       : typeof options.allowedOrigin === "string" ? [options.allowedOrigin] : options.allowedOrigin,
   );
   const sessions = new Map<string, SessionRecord>();
+  // 公网限额的当日用量。进程内计数即可：单机部署、超限只是当天不再服务，不需要持久化
+  const dailyUsage = {
+    day: "",
+    perIp: new Map<string, { assistant: number; suggest: number; jobs: number }>(),
+    totals: { assistant: 0, suggest: 0, jobs: 0 },
+    // 服务器侧模型调用的 token 累计（网关每次应答都带 usage），用量页按它对账
+    tokens: { promptTokens: 0, completionTokens: 0, cachedTokens: 0, totalTokens: 0 },
+  };
+  const rollUsageDay = () => {
+    const day = new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10);
+    if (dailyUsage.day !== day) {
+      dailyUsage.day = day;
+      dailyUsage.perIp.clear();
+      dailyUsage.totals = { assistant: 0, suggest: 0, jobs: 0 };
+      dailyUsage.tokens = { promptTokens: 0, completionTokens: 0, cachedTokens: 0, totalTokens: 0 };
+    }
+  };
+  const clientIpOf = (request: IncomingMessage): string => {
+    const socketIp = request.socket.remoteAddress ?? "unknown";
+    const isLoopback = socketIp === "127.0.0.1" || socketIp === "::1" || socketIp === "::ffff:127.0.0.1";
+    const forwarded = request.headers["x-forwarded-for"];
+    // 只信回环上反代填的转发头；直连伪造的转发头不作数
+    if (isLoopback && typeof forwarded === "string" && forwarded) return forwarded.split(",")[0]!.trim();
+    return socketIp;
+  };
+  const takeDailyQuota = (request: IncomingMessage, kind: "assistant" | "suggest" | "jobs"): string | null => {
+    rollUsageDay();
+    const ip = clientIpOf(request);
+    const mine = dailyUsage.perIp.get(ip) ?? { assistant: 0, suggest: 0, jobs: 0 };
+    const perIpLimit = kind === "assistant" ? dailyLimits.assistantPerIp : kind === "suggest" ? dailyLimits.suggestPerIp : dailyLimits.jobsPerIp;
+    const totalLimit = kind === "assistant" ? dailyLimits.assistantTotal : kind === "suggest" ? dailyLimits.suggestTotal : dailyLimits.jobsTotal;
+    if (dailyUsage.totals[kind] >= totalLimit) return "今日演示总额度已用完，明天再来。";
+    if (mine[kind] >= perIpLimit) return kind === "assistant" ? "你今天的助手对话额度已用完，明天再来。" : kind === "suggest" ? "今日建议额度已用完。" : "你今天的生成额度已用完，明天再来。";
+    mine[kind] += 1;
+    dailyUsage.perIp.set(ip, mine);
+    dailyUsage.totals[kind] += 1;
+    return null;
+  };
   const activeRuns = new Map<string, ActiveRun>();
   const activeCadJobs = new Map<string, ActiveCadJob>();
   const activeDrawingJobs = new Map<string, ActiveDrawingJob>();
@@ -328,7 +391,7 @@ export function createWorkbenchServer(options: {
   const server = createServer((request, response) => {
     void (async () => {
       const requestHost = request.headers.host ?? "";
-      if (!/^(127\.0\.0\.1|localhost):\d+$/.test(requestHost)) {
+      if (!/^(127\.0\.0\.1|localhost):\d+$/.test(requestHost) && !publicHosts.has(requestHost)) {
         return writeJson(response, 403, { error: "HOST_NOT_ALLOWED" });
       }
       const origin = request.headers.origin;
@@ -347,6 +410,18 @@ export function createWorkbenchServer(options: {
       }
 
       const url = new URL(request.url ?? "/", `http://${requestHost}`);
+      // 公网模式的每日限额闸：写操作按助手与生成两类计数，超限 429
+      if (publicMode && request.method === "POST") {
+        const quotaKind = url.pathname === "/api/assistant/suggest"
+          ? "suggest" as const
+          : url.pathname.startsWith("/api/assistant/")
+            ? "assistant" as const
+            : ["/api/model-runs", "/api/cad-jobs", "/api/drawing-jobs"].includes(url.pathname) ? "jobs" as const : null;
+        if (quotaKind) {
+          const denied = takeDailyQuota(request, quotaKind);
+          if (denied) return writeJson(response, 429, { error: "DAILY_LIMIT_REACHED", messageZh: denied }, origin);
+        }
+      }
       const cadAssetMatch = url.pathname.match(/^\/api\/cad-jobs\/([0-9a-f-]+)\/assets\/([^/]+)$/i);
       const drawingAssetMatch = url.pathname.match(/^\/api\/drawing-jobs\/([0-9a-f-]+)\/assets\/(.+)$/i);
       if (request.method === "GET" && url.pathname === "/api/status") {
@@ -361,6 +436,17 @@ export function createWorkbenchServer(options: {
         }, origin);
       }
 
+      // 服务器侧今日调用数（进程内计数，重启起算）。助手对话与建议不在项目里留运行记录，
+      // 用量页拿这个数来显示，免得本机的 0 被读成模型没接上
+      if (request.method === "GET" && url.pathname === "/api/assistant/usage") {
+        rollUsageDay();
+        return writeJson(response, 200, {
+          day: dailyUsage.day,
+          totals: dailyUsage.totals,
+          tokens: dailyUsage.tokens,
+        }, origin);
+      }
+
       if (request.method === "GET" && url.pathname === "/api/session") {
         const sessionId = randomToken();
         const record: SessionRecord = {
@@ -371,7 +457,8 @@ export function createWorkbenchServer(options: {
           expiresAt: Date.now() + sessionLifetimeMs, lastRunStartedAt: 0,
         };
         sessions.set(sessionId, record);
-        response.setHeader("set-cookie", `gujian_session=${sessionId}; HttpOnly; SameSite=Strict; Path=/api; Max-Age=1800`);
+        // Secure 只在确实经 https 进来时加：绑证书前用 IP 走 http 验收，加了浏览器会拒收会话
+        response.setHeader("set-cookie", `gujian_session=${sessionId}; HttpOnly; SameSite=Strict; Path=/api; Max-Age=1800${publicMode && request.headers["x-forwarded-proto"] === "https" ? "; Secure" : ""}`);
         return writeJson(response, 200, {
           csrfToken: record.csrfToken,
           capabilityToken: record.capabilityToken,

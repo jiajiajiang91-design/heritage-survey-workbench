@@ -22,6 +22,7 @@ export interface ProxyDeliveryProps {
   latestBlockedDelivery: DeliveryEvaluation | null;
   deliveryBlockers: readonly string[];
   signoff: ReviewSignoff | null;
+  demoLimitationZh: string | null;
   blockerCodes: readonly string[];
   canCreate: boolean;
   exporting: boolean;
@@ -64,22 +65,24 @@ function displayRestrictions(items: readonly string[]): string[] {
 }
 
 export function ProxyDelivery(props: ProxyDeliveryProps) {
-  const { projectName, buildingName, responsibilityRoles, artifacts, checkRuns, latestCheckRun, latestDelivery, latestBlockedDelivery, deliveryBlockers, blockerCodes, signoff, canCreate, exporting, showExportTask, exportPhase, exportCancelling, roundTripReceipt, onCreate, onRecordBlocked, onExport, onCancelExport, onVerifyRoundTrip, onDownload } = props;
+  const { projectName, buildingName, responsibilityRoles, artifacts, checkRuns, latestCheckRun, latestDelivery, latestBlockedDelivery, deliveryBlockers, blockerCodes, signoff, demoLimitationZh, canCreate, exporting, showExportTask, exportPhase, exportCancelling, roundTripReceipt, onCreate, onRecordBlocked, onExport, onCancelExport, onVerifyRoundTrip, onDownload } = props;
   const [showRestrictions, setShowRestrictions] = useState(false);
   const [previewing, setPreviewing] = useState<ArtifactRecord | null>(null);
   const delivered = latestDelivery ? artifacts.filter((artifact) => latestDelivery.artifactRefs.includes(artifact.id)) : artifacts;
   const kinds = new Set(delivered.map((artifact) => artifact.kind));
   const checkResults = checkRuns.reduce((sum, run) => sum + run.results.length, 0);
   const roles = responsibilityRoles.map((role) => RESPONSIBILITY_ROLE_LABELS[role] ?? role);
+  const isDemo = Boolean(demoLimitationZh);
   const summary: [string, string][] = [
     ["项目", projectName],
     ["对象", buildingName],
     ["成果", `${delivered.length} 项，${kinds.size} 种`],
     ["检查", `${checkRuns.length} 次，${checkResults} 条结果`],
-    ["评估结果", signoff ? "可正式交付" : latestDelivery ? "可作为待签发成果" : deliveryBlockers.length ? "暂不能归档" : "尚未评估"],
-    ["签发状态", signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"} ${signoff.signedAt.slice(0, 10)} 签发` : latestDelivery ? "未签发" : "尚无草案"],
-    [signoff ? "签发前的限制条款" : "限制条款", latestDelivery ? `${displayRestrictions(latestDelivery.restrictions).length} 条${signoff ? "，签发后以复核意见为准" : ""}` : "尚无"],
+    ["评估结果", isDemo ? "展示流程完成，不作为工程交付" : signoff ? "可正式交付" : latestDelivery ? "可作为待签发成果" : deliveryBlockers.length ? "暂不能归档" : "尚未评估"],
+    ["签发状态", isDemo && signoff ? `${signoff.signedAt.slice(0, 10)} 流程演示记录` : signoff ? `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"} ${signoff.signedAt.slice(0, 10)} 签发` : latestDelivery ? "未签发" : "尚无草案"],
+    [isDemo ? "流程记录中的检查说明" : signoff ? "签发前的限制条款" : "限制条款", latestDelivery ? `${displayRestrictions(latestDelivery.restrictions).length} 条${signoff && !isDemo ? "，签发后以复核意见为准" : ""}` : "尚无"],
     ["责任人", roles.length ? roles.join("、") : "未登记"],
+    ...(demoLimitationZh ? [["使用范围", demoLimitationZh] as [string, string]] : []),
   ];
 
   return (
@@ -97,7 +100,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
               <button type="button" className="sc-delivery-file" key={artifact.id} onClick={() => previewable(artifact) ? setPreviewing(artifact) : onDownload(artifact)} title={previewable(artifact) ? "在页内查看这份成果" : "下载这份成果"}>
                 <div className="sc-delivery-file-head">
                   <span>{ARTIFACT_KIND_LABELS[artifact.kind] ?? artifact.kind}{/^[A-Za-z]+-\d+/.test(artifact.fileName) ? ` ${artifact.fileName.replace(/\.[a-z0-9]+$/i, "")}` : ""}</span>
-                  {signoff ? <Tag tone="success">已签发</Tag> : <Tag tone="warning">待签发</Tag>}
+                  {signoff ? <Tag tone="success">{isDemo ? "展示归档" : "已签发"}</Tag> : <Tag tone="warning">待签发</Tag>}
                 </div>
                 <small className="gj-numeric">{artifact.fileName} · {sizeLabel(artifact.byteLength)}</small>
               </button>
@@ -110,14 +113,14 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
       <section className="sc-delivery-summary">
         <span className="gj-pane-title">交付草案</span>
         <div className="gj-row">
-          {signoff ? <Tag tone="success">已签发归档</Tag> : <Tag tone="warning">{latestDelivery ? "未签发" : "尚无草案"}</Tag>}
+          {signoff ? <Tag tone="success">{isDemo ? "展示流程已归档" : "已签发归档"}</Tag> : <Tag tone="warning">{latestDelivery ? "未签发" : "尚无草案"}</Tag>}
         </div>
         <ul className="sc-delivery-lines">
           {summary.map(([label, value]) => <li key={label}>{label}：{value}</li>)}
         </ul>
         <div className="gj-card gj-card--compact sc-delivery-blockers">
-          <span className="gj-text-label">{blockerCodes.length ? `${blockerCodes.length} 项还不能正式交付的原因` : signoff ? "复核意见" : "没有不通过的项"}</span>
-          <p>{blockerCodes.length ? `${deliveryBlockers.slice(0, 3).join("；")}${deliveryBlockers.length > 3 ? "；等" : ""}。${latestDelivery ? "不影响作为待签发成果使用。" : ""}` : signoff ? signoff.statementZh : "可以建立归档草案。"}</p>
+          <span className="gj-text-label">{isDemo ? "流程演示记录" : blockerCodes.length ? `${blockerCodes.length} 项还不能正式交付的原因` : signoff ? "复核意见" : "没有不通过的项"}</span>
+          <p>{isDemo ? `${signoff?.statementZh ?? "展示流程已完成"} ${demoLimitationZh}` : blockerCodes.length ? `${deliveryBlockers.slice(0, 3).join("；")}${deliveryBlockers.length > 3 ? "；等" : ""}。${latestDelivery ? "不影响作为待签发成果使用。" : ""}` : signoff ? signoff.statementZh : "可以建立归档草案。"}</p>
           {!latestDelivery && deliveryBlockers.length > 0 && (
             <Button compact disabled={Boolean(latestBlockedDelivery)} onClick={onRecordBlocked}>{latestBlockedDelivery ? "已记录原因" : "记录无法交付的原因"}</Button>
           )}
@@ -126,7 +129,7 @@ export function ProxyDelivery(props: ProxyDeliveryProps) {
           const restrictions = displayRestrictions(latestDelivery.restrictions);
           return (
             <div className="gj-card gj-card--compact">
-              <span className="gj-text-label">{signoff ? "签发前的限制条款" : "限制条款"} {restrictions.length} 条{signoff ? "（签发后以复核意见为准）" : ""}</span>
+              <span className="gj-text-label">{isDemo ? "流程记录中的检查说明" : signoff ? "签发前的限制条款" : "限制条款"} {restrictions.length} 条{signoff && !isDemo ? "（签发后以复核意见为准）" : ""}</span>
               <ol className="sc-delivery-restrictions">{restrictions.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ol>
             </div>
           );

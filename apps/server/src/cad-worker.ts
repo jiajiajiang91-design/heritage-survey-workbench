@@ -5,7 +5,9 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
-const pythonPath = resolve(projectRoot, "workers/cad/.venv/Scripts/python.exe");
+// venv 里的解释器路径分平台（Windows 在 Scripts、Linux 在 bin）；部署环境可用环境变量直接指定
+const pythonPath = process.env.GUJIAN_PYTHON
+  ?? resolve(projectRoot, process.platform === "win32" ? "workers/cad/.venv/Scripts/python.exe" : "workers/cad/.venv/bin/python");
 const stagingRoot = resolve(projectRoot, "apps/server/.data/cad-staging");
 
 function sha256(data: Buffer): string {
