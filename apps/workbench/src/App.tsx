@@ -92,6 +92,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           onRetryDemo={() => void session.retryDemoLibrary()}
           onUpdateDemo={() => void session.updateDemoLibrary()}
           loading={session.initializing}
+          demoManifestEntries={session.demoManifestEntries}
         />
       ) : onProjectPage ? (
         <ProjectPage wb={wb} selected={selected} />

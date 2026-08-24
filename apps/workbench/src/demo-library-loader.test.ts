@@ -8,8 +8,8 @@ import { loadDemoLibrary, type DemoLibraryManifest } from "./demo-library-loader
 const MANIFEST: DemoLibraryManifest = {
   schemaVersion: "demo-library-1",
   projects: [
-    { demoId: "alpha", fileName: "alpha.zip", projectName: "甲", limitationZh: "示例", packageSha256: "0".repeat(64), projectId: "11111111-1111-4111-8111-111111111111" },
-    { demoId: "beta", fileName: "beta.zip", projectName: "乙", limitationZh: "示例", packageSha256: "0".repeat(64), projectId: "22222222-2222-4222-8222-222222222222" },
+    { demoId: "alpha", fileName: "alpha.zip", projectName: "甲", buildingName: "甲建筑", limitationZh: "示例", packageSha256: "0".repeat(64), packageBytes: 3, evidenceCount: 1, factCount: 2, geometryObjectCount: 3, artifactCount: 4, projectId: "11111111-1111-4111-8111-111111111111" },
+    { demoId: "beta", fileName: "beta.zip", projectName: "乙", buildingName: "乙建筑", limitationZh: "示例", packageSha256: "0".repeat(64), packageBytes: 3, evidenceCount: 1, factCount: 2, geometryObjectCount: 3, artifactCount: 4, projectId: "22222222-2222-4222-8222-222222222222" },
   ],
 };
 

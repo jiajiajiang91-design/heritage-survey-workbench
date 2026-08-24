@@ -10,9 +10,15 @@ export interface DemoLibraryEntry {
   readonly demoId: string;
   readonly fileName: string;
   readonly projectName: string;
+  readonly buildingName: string;
   readonly limitationZh: string;
   readonly projectId: string;
   readonly packageSha256: string;
+  readonly packageBytes: number;
+  readonly evidenceCount: number;
+  readonly factCount: number;
+  readonly geometryObjectCount: number;
+  readonly artifactCount: number;
 }
 
 export interface DemoLibraryManifest {

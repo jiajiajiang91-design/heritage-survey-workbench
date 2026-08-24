@@ -8,7 +8,7 @@ import {
 } from "@gujian/infrastructure";
 
 import { buildChangeHistory, type ChangeHistoryEntry } from "../change-history";
-import type { DemoLibraryUpdate, DemoLoadResult } from "../demo-library-loader";
+import { readDemoLibraryManifest, type DemoLibraryEntry, type DemoLibraryUpdate, type DemoLoadResult } from "../demo-library-loader";
 import { describeFailure } from "../failure-notice";
 import { describeBlocker } from "../qualification";
 import {
@@ -64,6 +64,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
   const [assistantUsage, setAssistantUsage] = useState<AssistantUsage | null>(null);
   const [initializing, setInitializing] = useState(true);
+  const [demoManifestEntries, setDemoManifestEntries] = useState<readonly DemoLibraryEntry[]>([]);
   const vocabulary = useMemo(() => resolveVocabulary(), []);
 
   // 列表页要的计数随摘要一起读；卡片数据读不出来不影响列表本身
@@ -154,6 +155,8 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   ]).then(() => undefined);
 
   useEffect(() => {
+    // 小清单先到，首次访问无需等几十 MB 的完整项目包导入完才理解产品与展示内容。
+    void readDemoLibraryManifest().then((manifest) => setDemoManifestEntries(manifest?.projects ?? [])).catch(() => setDemoManifestEntries([]));
     void refresh()
       .then(bootstrapDemoStably)
       .then(showBootstrapResult)
@@ -343,7 +346,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const blockerReasons = [...new Set((dashboard?.blockerCodes ?? []).map(describeBlocker))];
 
   return {
-    projects, projectCards, initializing,
+    projects, projectCards, initializing, demoManifestEntries,
     selected, setSelected,
     projectModelRuns, setProjectModelRuns,
     projectRuleRuns, setProjectRuleRuns,
