@@ -21,7 +21,22 @@ const port = Number.parseInt(process.env.GUJIAN_SERVER_PORT ?? "8787", 10);
 // 环境变量可覆盖，逗号分隔。
 const defaultAllowedOrigins = (process.env.GUJIAN_ALLOWED_ORIGIN ?? "http://127.0.0.1:5173,http://localhost:5173")
   .split(",").map((value) => value.trim()).filter(Boolean);
+// 公网展示部署：反向代理转发过来的 Host 是站点域名，用环境变量加进放行表。
+// 设了它就视为公网模式，同时启用每日限额与 Secure Cookie；本机开发不设，不受影响。
+const publicHosts = new Set((process.env.GUJIAN_PUBLIC_HOST ?? "").split(",").map((value) => value.trim()).filter(Boolean));
+const publicMode = publicHosts.size > 0;
 const sessionLifetimeMs = 30 * 60 * 1_000;
+// 公网每日限额：助手烧的是模型额度，建模出图烧的是 CPU。超限返回 429，按东八区日期清零。
+const dailyLimitOf = (name: string, fallback: number) => {
+  const value = Number.parseInt(process.env[name] ?? "", 10);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+};
+const dailyLimits = {
+  assistantPerIp: dailyLimitOf("GUJIAN_DAILY_ASSISTANT_PER_IP", 40),
+  assistantTotal: dailyLimitOf("GUJIAN_DAILY_ASSISTANT_TOTAL", 400),
+  jobsPerIp: dailyLimitOf("GUJIAN_DAILY_JOBS_PER_IP", 8),
+  jobsTotal: dailyLimitOf("GUJIAN_DAILY_JOBS_TOTAL", 40),
+};
 // GeometrySpec 随项目构件数增长（三方项目 1258 实体约 3.7 MB），上限按最大预期项目留余量
 const maxBodyBytes = 32 * 1_024 * 1_024;
 
@@ -320,6 +335,30 @@ export function createWorkbenchServer(options: {
       : typeof options.allowedOrigin === "string" ? [options.allowedOrigin] : options.allowedOrigin,
   );
   const sessions = new Map<string, SessionRecord>();
+  // 公网限额的当日用量。进程内计数即可：单机部署、超限只是当天不再服务，不需要持久化
+  const dailyUsage = { day: "", perIp: new Map<string, { assistant: number; jobs: number }>(), totals: { assistant: 0, jobs: 0 } };
+  const clientIpOf = (request: IncomingMessage): string => {
+    const socketIp = request.socket.remoteAddress ?? "unknown";
+    const isLoopback = socketIp === "127.0.0.1" || socketIp === "::1" || socketIp === "::ffff:127.0.0.1";
+    const forwarded = request.headers["x-forwarded-for"];
+    // 只信回环上反代填的转发头；直连伪造的转发头不作数
+    if (isLoopback && typeof forwarded === "string" && forwarded) return forwarded.split(",")[0]!.trim();
+    return socketIp;
+  };
+  const takeDailyQuota = (request: IncomingMessage, kind: "assistant" | "jobs"): string | null => {
+    const day = new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10);
+    if (dailyUsage.day !== day) { dailyUsage.day = day; dailyUsage.perIp.clear(); dailyUsage.totals = { assistant: 0, jobs: 0 }; }
+    const ip = clientIpOf(request);
+    const mine = dailyUsage.perIp.get(ip) ?? { assistant: 0, jobs: 0 };
+    const perIpLimit = kind === "assistant" ? dailyLimits.assistantPerIp : dailyLimits.jobsPerIp;
+    const totalLimit = kind === "assistant" ? dailyLimits.assistantTotal : dailyLimits.jobsTotal;
+    if (dailyUsage.totals[kind] >= totalLimit) return "今日演示总额度已用完，明天再来。";
+    if (mine[kind] >= perIpLimit) return kind === "assistant" ? "你今天的助手对话额度已用完，明天再来。" : "你今天的生成额度已用完，明天再来。";
+    mine[kind] += 1;
+    dailyUsage.perIp.set(ip, mine);
+    dailyUsage.totals[kind] += 1;
+    return null;
+  };
   const activeRuns = new Map<string, ActiveRun>();
   const activeCadJobs = new Map<string, ActiveCadJob>();
   const activeDrawingJobs = new Map<string, ActiveDrawingJob>();
@@ -328,7 +367,7 @@ export function createWorkbenchServer(options: {
   const server = createServer((request, response) => {
     void (async () => {
       const requestHost = request.headers.host ?? "";
-      if (!/^(127\.0\.0\.1|localhost):\d+$/.test(requestHost)) {
+      if (!/^(127\.0\.0\.1|localhost):\d+$/.test(requestHost) && !publicHosts.has(requestHost)) {
         return writeJson(response, 403, { error: "HOST_NOT_ALLOWED" });
       }
       const origin = request.headers.origin;
@@ -347,6 +386,16 @@ export function createWorkbenchServer(options: {
       }
 
       const url = new URL(request.url ?? "/", `http://${requestHost}`);
+      // 公网模式的每日限额闸：写操作按助手与生成两类计数，超限 429
+      if (publicMode && request.method === "POST") {
+        const quotaKind = url.pathname.startsWith("/api/assistant/")
+          ? "assistant" as const
+          : ["/api/model-runs", "/api/cad-jobs", "/api/drawing-jobs"].includes(url.pathname) ? "jobs" as const : null;
+        if (quotaKind) {
+          const denied = takeDailyQuota(request, quotaKind);
+          if (denied) return writeJson(response, 429, { error: "DAILY_LIMIT_REACHED", messageZh: denied }, origin);
+        }
+      }
       const cadAssetMatch = url.pathname.match(/^\/api\/cad-jobs\/([0-9a-f-]+)\/assets\/([^/]+)$/i);
       const drawingAssetMatch = url.pathname.match(/^\/api\/drawing-jobs\/([0-9a-f-]+)\/assets\/(.+)$/i);
       if (request.method === "GET" && url.pathname === "/api/status") {
@@ -371,7 +420,7 @@ export function createWorkbenchServer(options: {
           expiresAt: Date.now() + sessionLifetimeMs, lastRunStartedAt: 0,
         };
         sessions.set(sessionId, record);
-        response.setHeader("set-cookie", `gujian_session=${sessionId}; HttpOnly; SameSite=Strict; Path=/api; Max-Age=1800`);
+        response.setHeader("set-cookie", `gujian_session=${sessionId}; HttpOnly; SameSite=Strict; Path=/api; Max-Age=1800${publicMode ? "; Secure" : ""}`);
         return writeJson(response, 200, {
           csrfToken: record.csrfToken,
           capabilityToken: record.capabilityToken,

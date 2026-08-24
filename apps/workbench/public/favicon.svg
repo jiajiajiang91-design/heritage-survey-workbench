@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 站点图标：深绿底加"建"字，与顶栏品牌方块同色 -->
+  <rect width="32" height="32" rx="7" fill="#173f35"/>
+  <text x="16" y="22" font-family="'Noto Sans SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#f5f1e8" text-anchor="middle">建</text>
+</svg>
