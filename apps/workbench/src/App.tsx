@@ -8,7 +8,8 @@ import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShe
 import { AssistantPanel } from "./shell/AssistantPanel";
 import { StageRail } from "./shell/StageRail";
 import { Topbar } from "./shell/Topbar";
-import { STAGE_DESCRIPTIONS, projectPages, stageLabel, stages, type StageId } from "./view-registry";
+import { STAGE_DESCRIPTIONS, journeyViewOrder, projectPages, stageLabel, stages, type StageId } from "./view-registry";
+import { Button } from "./ui";
 import { useWorkbench, type WorkbenchOptions } from "./workbench/useWorkbench";
 
 // 组合根：状态与命令处理在 workbench/ 的 hook 里，页面在 screens/ 里，这里只按当前视图选屏。
@@ -45,6 +46,8 @@ export function App({ bootstrapDemo }: AppProps = {}) {
     ? { items: currentJourney.views.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage, onSelect: (id: string) => goToView(id as StageId) }
     : null;
   const pageTitle = stages.find((stage) => stage.id === activeStage)?.label ?? "";
+  const activeViewIndex = journeyViewOrder.indexOf(activeStage);
+  const nextView = activeViewIndex >= 0 ? journeyViewOrder[activeViewIndex + 1] ?? null : null;
 
   return (
     <>
@@ -81,11 +84,18 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           onClear={() => void clearLibrary()}
           demoUpdates={session.demoUpdates}
           onUpdateDemo={() => void session.updateDemoLibrary()}
+          loading={session.initializing}
         />
       ) : onProjectPage ? (
         <ProjectPage wb={wb} selected={selected} />
       ) : (
-        <CenterFrame title={pageTitle} description={STAGE_DESCRIPTIONS[activeStage]} tabs={currentTabs} fill>
+        <CenterFrame
+          title={pageTitle}
+          description={STAGE_DESCRIPTIONS[activeStage]}
+          actions={nextView && activeStage !== "tasks" ? <Button onClick={() => nav.advanceStage()}>下一步：{stageLabel(nextView)}</Button> : undefined}
+          tabs={currentTabs}
+          fill
+        >
           <WorkspaceView wb={wb} selected={selected} />
         </CenterFrame>
       )}
@@ -100,6 +110,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           onExpand={() => setAssistantCollapsed(false)}
           onCollapse={() => setAssistantCollapsed(true)}
           modelConfigured={serverStatus?.modelConfigured ?? false}
+          modelName={serverStatus?.model}
         />
       )}
       banners={<Banners error={serviceDown ? null : error} notice={notice} onDismissError={() => setError(null)} onDismissNotice={() => setNotice(null)} />}

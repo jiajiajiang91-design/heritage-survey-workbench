@@ -46,7 +46,7 @@ for (const name of projects) {
     const r = await send("Page.captureScreenshot", { format: "jpeg", quality: 70 });
     writeFileSync(join(outDir, `${name.slice(0, 8)}_${code}.jpg`), Buffer.from(r.data, "base64"));
   }
-  for (const page of ["模型运行与用量", "修改历史"]) {
+  for (const page of ["AI 调用与用量", "修改历史"]) {
     await click(page, `(document.querySelector(".ws-topbar") ?? document)`); await sleep(500);
     const info = await evaluate(`(() => { const c = document.querySelector("main, .ws-page, .ws-body"); const text = c ? c.innerText : document.body.innerText; return { title: document.querySelector(".ws-page-title")?.textContent, chars: text.length, bad: (text.match(${BAD.toString()}g) || []).slice(0, 3) }; })()`);
     entry.views.push({ code: page, ...info });

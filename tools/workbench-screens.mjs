@@ -109,7 +109,7 @@ for (const [stage, tab, name] of views) {
   }
 }
 // 项目级页面
-await click("运行与用量", `document.querySelector(".ws-topbar")`); await sleep(600); await shot("P02_模型运行与用量");
+await click("AI 调用与用量", `document.querySelector(".ws-topbar")`); await sleep(600); await shot("P02_AI调用与用量");
 await click("修改历史", `document.querySelector(".ws-topbar")`); await sleep(600); await shot("P03_修改历史");
 // 回项目列表开新建对话框
 await click("项目列表", `document.querySelector(".ws-topbar")`); await sleep(600);

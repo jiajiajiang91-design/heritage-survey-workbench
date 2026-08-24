@@ -63,6 +63,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const [changeHistory, setChangeHistory] = useState<readonly ChangeHistoryEntry[]>([]);
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
   const [assistantUsage, setAssistantUsage] = useState<AssistantUsage | null>(null);
+  const [initializing, setInitializing] = useState(true);
   const vocabulary = useMemo(() => resolveVocabulary(), []);
 
   // 列表页要的计数随摘要一起读；卡片数据读不出来不影响列表本身
@@ -141,7 +142,8 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     void refresh()
       .then(bootstrapDemo)
       .then(showBootstrapResult)
-      .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")));
+      .catch((reason: unknown) => setError(describeFailure(reason, "载入项目列表失败")))
+      .finally(() => setInitializing(false));
     void refreshServerStatus();
     void refreshDemoUpdates();
   }, []);
@@ -312,7 +314,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const blockerReasons = [...new Set((dashboard?.blockerCodes ?? []).map(describeBlocker))];
 
   return {
-    projects, projectCards,
+    projects, projectCards, initializing,
     selected, setSelected,
     projectModelRuns, setProjectModelRuns,
     projectRuleRuns, setProjectRuleRuns,

@@ -55,6 +55,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 objectProducerCounts={(geometrySpec?.objects ?? []).reduce<Record<string, number>>((acc, object) => { acc[object.producer.producerType] = (acc[object.producer.producerType] ?? 0) + 1; return acc; }, {})}
                 measuredRecordCount={measuredRecordCount}
                 qualificationLabel={dashboard?.qualificationLabel ?? null}
+                demoLimitationZh={session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null}
                 onSubmitTask={submitTaskSetup}
                 onEnterEvidence={() => goToView("evidence")}
               />
@@ -178,6 +179,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 crossRevisionArtifactCount={artifactSetView?.crossRevisionArtifactCount ?? 0}
                 qualificationLabel={dashboard?.qualificationLabel ?? null}
                 signoff={dashboard?.signoff ?? null}
+                demoLimitationZh={session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null}
                 blockerReasons={blockerReasons}
                 blockerCodes={dashboard?.blockerCodes ?? []}
                 generating={drawingRunning}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ArtifactRecord, CheckRun, ReviewSignoff } from "@gujian/domain";
 
 import { QUALIFICATION_LIMITS, checkItemLabel, describeBlocker } from "../qualification";
-import { Button, EmptyState, Tag } from "../ui";
+import { Alert, Button, EmptyState, Tag } from "../ui";
 import { FileViewer } from "../ui/FileViewer";
 import { describePreview, previewLabel, type DrawingPreview, type PreviewRequirements } from "../workbench/useAssetUrls";
 import "./ChecksAndQualification.css";
@@ -20,6 +20,7 @@ export interface ChecksAndQualificationProps {
   qualificationLabel: string | null;
   // 正式环境的复核签发记录；有它时成果按已签发显示（实施单元 09）
   signoff: ReviewSignoff | null;
+  demoLimitationZh: string | null;
   blockerReasons: readonly string[];
   blockerCodes: readonly string[];
   generating: boolean;
@@ -49,7 +50,7 @@ function blockerSummary(codes: readonly string[]): string {
   return `${codes.length} 项不通过：${parts.join("、")}`;
 }
 
-export function ChecksAndQualification({ previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, requirements, signoff }: ChecksAndQualificationProps) {
+export function ChecksAndQualification({ previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, requirements, signoff, demoLimitationZh }: ChecksAndQualificationProps) {
   const [showLimits, setShowLimits] = useState(false);
   const [index, setIndex] = useState(0);
   const preview = previews[Math.min(index, Math.max(0, previews.length - 1))] ?? null;
@@ -89,6 +90,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
         </div>
       </section>
       <section className="sc-checks-results">
+        {signoff && <Alert tone="info">这是项目包随附的正式环境复核签发记录。当前本机只能核对记录，不能为新项目或修改后的成果签发。{demoLimitationZh ? ` ${demoLimitationZh}` : ""}</Alert>}
         <div className="sc-checks-head sc-checks-head--tight">
           <span className="gj-pane-title">检查结果</span>
           <span className="gj-spacer" />

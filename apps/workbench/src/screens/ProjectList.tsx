@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
 import { ProjectPageFrame } from "../shell/AppShell";
-import { Alert, Button, Dialog, Metric, Tag } from "../ui";
+import { Alert, Button, Dialog, EmptyState, Metric, Tag } from "../ui";
 import type { ProjectCard } from "../workbench";
 import "./ProjectList.css";
 
@@ -16,6 +16,7 @@ export interface ProjectListProps {
   // 本机上的演示项目有新版本时提示（实施单元 09）
   demoUpdates: readonly { demoId: string; projectName: string }[];
   onUpdateDemo: () => void;
+  loading: boolean;
 }
 
 function coverText(card: ProjectCard): string {
@@ -28,7 +29,7 @@ function coverText(card: ProjectCard): string {
   return card.photoCount ? parts.join("、") : `${parts.join("、")}，无现场照片`;
 }
 
-export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onUpdateDemo }: ProjectListProps) {
+export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUpdates, onUpdateDemo, loading }: ProjectListProps) {
   const importInput = useRef<HTMLInputElement>(null);
   // 更新与清空都会动本机数据，确认用页面内对话框（内嵌浏览器会把原生弹窗按取消处理）
   const [confirming, setConfirming] = useState<"update" | "clear" | null>(null);
@@ -48,6 +49,9 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
           演示项目有新版本（{demoUpdates.map((item) => item.projectName).join("、")}）。本机上的是旧数据，更新会清空本机项目后重新装载。
           <Button variant="text" compact onClick={() => setConfirming("update")}>更新演示项目</Button>
         </Alert>
+      )}
+      {cards.some((card) => card.demoLimitationZh) && (
+        <Alert tone="info">带展示项目标签的内容用于体验完整流程。项目内的演示实测值和随包签发记录不代表真实工程成果，本机也不能创建正式签发记录。</Alert>
       )}
       {confirming && (
         <Dialog
@@ -70,12 +74,13 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
         </Dialog>
       )}
       <div className="sc-projects-metrics">
-        <Metric label="进行中" value={active.length} note={shortNames || (cards.length ? "全部已归档" : "还没有项目")} />
-        <Metric label="待确认" value={pending} note="问题队列待处理项与识别候选" />
-        <Metric label="已签发归档" value={signed} note={cards.length ? (signed ? `${signed} 个项目已复核签发` : `${cards.length} 个项目待签发`) : "尚无成果"} />
+        <Metric label="进行中" value={loading ? "…" : active.length} note={loading ? "正在载入本机项目" : shortNames || (cards.length ? "全部已归档" : "还没有项目")} />
+        <Metric label="待确认" value={loading ? "…" : pending} note="问题队列待处理项与识别候选" />
+        <Metric label="已签发归档" value={loading ? "…" : signed} note={loading ? "正在核对项目状态" : cards.length ? (signed ? `${signed} 个项目包含复核签发记录` : `${cards.length} 个项目待签发`) : "尚无成果"} />
       </div>
       <div className="sc-projects-grid" aria-label="项目列表">
-        {cards.map((card) => (
+        {loading && <EmptyState>正在载入项目与展示内容。</EmptyState>}
+        {!loading && cards.map((card) => (
           <article className="sc-project" key={card.projectId}>
             <div className="sc-project-cover">
               {card.coverUrl ? <img src={card.coverUrl} alt={`${card.buildingName} 照片`} /> : <span>{coverText(card)}</span>}
@@ -83,7 +88,7 @@ export function ProjectList({ cards, onOpen, onCreate, onImport, onClear, demoUp
             <div className="sc-project-info">
               <div className="sc-project-name">
                 <h3>{card.name}</h3>
-                <Tag tone={card.signedAt ? "success" : card.status === "active" ? "accent" : "neutral"}>{card.signedAt ? "已归档" : card.status === "active" ? "进行中" : "已结束"}</Tag>
+                <span className="gj-row">{card.demoLimitationZh && <Tag title={card.demoLimitationZh}>展示项目</Tag>}<Tag tone={card.signedAt ? "success" : card.status === "active" ? "accent" : "neutral"}>{card.signedAt ? "已归档" : card.status === "active" ? "进行中" : "已结束"}</Tag></span>
               </div>
               <p className="sc-project-sub">
                 {[card.buildingName, card.scaleLabel, card.taskName].filter(Boolean).join(" · ")}

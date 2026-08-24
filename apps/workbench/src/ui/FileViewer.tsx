@@ -165,9 +165,11 @@ const TEXT_DISPLAY_LIMIT = 300_000;
 
 function TextPane({ blob, fileName, asTable, style }: { blob: Blob; fileName: string; asTable: boolean; style?: React.CSSProperties | undefined }) {
   const [state, setState] = useState<{ text: string; truncated: boolean } | { error: string } | null>(null);
+  const [showStructuredText, setShowStructuredText] = useState(false);
   useEffect(() => {
     let cancelled = false;
     setState(null);
+    setShowStructuredText(false);
     const read = async () => {
       let source = blob;
       if (fileName.toLowerCase().endsWith(".gz")) {
@@ -182,6 +184,7 @@ function TextPane({ blob, fileName, asTable, style }: { blob: Blob; fileName: st
   if (!state) return <div className="gj-viewer gj-viewer--empty" style={style}><span className="gj-viewer-loading">正在读取文件</span></div>;
   if ("error" in state) return <div className="gj-viewer gj-viewer--empty" style={style}><span>文件无法在页内显示：{state.error}</span></div>;
   const rows = asTable ? parseCsv(state.text) : null;
+  const structuredText = !asTable && /\.(?:json|ndjson)(?:\.gz)?$/i.test(fileName);
   return (
     <div className="gj-viewer gj-viewer--doc" style={style}>
       <div className="gj-viewer-doc-scroll">
@@ -190,6 +193,12 @@ function TextPane({ blob, fileName, asTable, style }: { blob: Blob; fileName: st
             <thead><tr>{rows[0]!.map((cell, index) => <th key={index}>{cell}</th>)}</tr></thead>
             <tbody>{rows.slice(1).map((row, rowIndex) => <tr key={rowIndex}>{row.map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)}</tr>)}</tbody>
           </table>
+        ) : structuredText && !showStructuredText ? (
+          <div className="gj-viewer-doc-summary">
+            <strong>结构化资料已完整保存在项目中</strong>
+            <span>为避免代码内容淹没业务信息，默认不展开原文。需要逐字段核对时可在本页查看。</span>
+            <Button compact onClick={() => setShowStructuredText(true)}>查看原文</Button>
+          </div>
         ) : (
           <pre className="gj-viewer-text">{state.text}</pre>
         )}

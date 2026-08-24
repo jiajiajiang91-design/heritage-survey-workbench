@@ -1,4 +1,4 @@
-// README 用的六张精选截图：无头 Chrome 打公网站点，1440×900、设备像素比 2，存 PNG。
+// README 用的产品截图：无头 Chrome 打公网站点，1440×900、设备像素比 2，存 PNG。
 // 用法：node tools/readme-screens.mjs [输出目录] [站点地址]
 // 助手问答一张要真连模型，站点侧有每日限额，脚本一次只问一句。
 import { spawn } from "node:child_process";
@@ -72,45 +72,52 @@ const click = async (text, scope = "document") =>
 await send("Page.enable");
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 2, mobile: false });
 await send("Page.navigate", { url: site });
-// 首次装载要下载三个演示包，公网给足时间
+// 首次装载要下载两个演示包，公网给足时间
 await waitFor(`document.querySelectorAll("article.sc-project").length >= 2`, 300000);
 await evaluate(`document.fonts.ready.then(() => true)`);
 await sleep(1000);
-// 关掉装载完成的提示条再截
-await evaluate(`(() => { [...document.querySelectorAll("button")].filter((b) => b.textContent.trim() === "×" || b.getAttribute("aria-label") === "关闭").forEach((b) => b.click()); return true; })()`);
+// 关掉装载完成的提示条再截，避免提示覆盖页面底部操作。
+await evaluate(`(() => { [...document.querySelectorAll("button[aria-label='关闭提示']")].forEach((b) => b.click()); return true; })()`);
 await sleep(400);
-await shot("01_项目列表");
+await shot("01-project-overview");
 
 // 进高都
 await evaluate(`(() => { const card = [...document.querySelectorAll("article.sc-project")].find((c) => c.textContent.includes("高都")); [...card.querySelectorAll("button")].find((b) => b.textContent.includes("进入")).click(); return true; })()`);
 await waitFor(`!!document.querySelector(".ws-stage-nav")`);
 await sleep(800);
 
-// 三维模型（等画布出模型）
+// 实测基准：实测记录 18 条已确认 + 基准线（行业特色：形制推算与实测对照）
+await click("核对实测", `document.querySelector(".ws-stage-nav")`);
+await sleep(1200);
+await shot("02-survey-data-traceability");
+
+// 三维模型：1186 个构件、中文构件树、来源可回溯
 await click("核对构件", `document.querySelector(".ws-stage-nav")`);
 await sleep(400);
 await click("三维模型", `(document.querySelector("[aria-label='工作区视图']") ?? document)`);
 await waitFor(`!!document.querySelector(".sc-model-canvas canvas")`, 60000);
 await sleep(2500);
-await shot("02_三维模型");
+await shot("03-traceable-3d-model");
 
-// 成组图纸（默认第一张 SVG 预览）
+// 成组图纸：点 DXF 行，展示页内 DXF 查看器（特色：不用装 CAD 软件）
 await click("生成图纸", `document.querySelector(".ws-stage-nav")`);
 await sleep(400);
 await click("成组图纸", `(document.querySelector("[aria-label='工作区视图']") ?? document)`);
 await waitFor(`!!document.querySelector(".gj-viewer img, .gj-viewer canvas, .gj-viewer-dxf")`, 30000);
+await evaluate(`(() => { const row = [...document.querySelectorAll("button")].find((b) => b.textContent.includes(".dxf")); if (row) row.click(); return true; })()`);
+await waitFor(`!!document.querySelector(".gj-viewer-dxf svg")`, 60000);
 await sleep(1200);
-await shot("03_成组图纸");
+await shot("04-in-browser-dxf-viewer");
 
-// 检查与签发
+// 检查与签发：自动检查通过 + 专业复核签发（产品主张：检查通过不等于复核通过）
 await click("检查签发", `document.querySelector(".ws-stage-nav")`);
 await sleep(1500);
-await shot("04_检查与签发");
+await shot("05-review-and-signoff");
 
-// 实测基准（含形制对照表）
-await click("核对实测", `document.querySelector(".ws-stage-nav")`);
+// 交付归档：成果清单、签发状态、限制条款
+await click("交付归档", `document.querySelector(".ws-stage-nav")`);
 await sleep(1200);
-await shot("05_实测基准");
+await shot("06-deliverable-archive");
 
 // 助手问答：真连模型，问一句等回答
 await evaluate(`(() => {
@@ -124,7 +131,25 @@ await sleep(300);
 await evaluate(`(() => { [...document.querySelectorAll(".assistant-input-row button")].find((b) => b.textContent.includes("发送")).click(); return true; })()`);
 await waitFor(`(document.querySelector(".ws-assistant")?.innerText ?? "").includes("9600")`, 60000);
 await sleep(600);
-await shot("06_AI助手");
+await shot("07-grounded-ai-assistant");
+
+// AI 调用与用量：服务器侧调用次数、token 与费用对账（透明计费）
+await evaluate(`(() => { [...document.querySelectorAll("button, a")].find((b) => b.textContent.trim() === "AI 调用与用量").click(); return true; })()`);
+await sleep(1200);
+await evaluate(`(() => { [...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "刷新状态")?.click(); return true; })()`);
+await sleep(1500);
+// 在独立截图项目里真实运行一次资料整理，使页面同时展示调用总量和项目内运行明细。
+await evaluate(`window.__readmeRunCount = document.querySelectorAll(".sc-runs-row").length`);
+await evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "整理资料要点"); if (!button || button.disabled) return false; button.click(); return true; })()`);
+await waitFor(`document.querySelectorAll(".sc-runs-row").length > window.__readmeRunCount`, 120000);
+await click("刷新状态");
+await sleep(1600);
+await shot("08-ai-token-usage-and-cost");
+
+// 修改历史：全程留痕与影响范围（产品核心主张：可追溯）
+await evaluate(`(() => { [...document.querySelectorAll("button, a")].find((b) => b.textContent.trim() === "修改历史").click(); return true; })()`);
+await sleep(1500);
+await shot("09-audit-history-and-impact");
 
 ws.close();
 chrome.kill();

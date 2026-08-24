@@ -37,7 +37,8 @@ fi
 
 echo "== 6/7 构建（前端 + 服务端）与 Python CAD 环境"
 cd "${APP_DIR}"
-sudo -u gujian bash -lc "cd ${APP_DIR} && pnpm config set registry https://registry.npmmirror.com && pnpm install --frozen-lockfile && pnpm run build"
+sudo -u gujian env HOME=/home/gujian PATH=/usr/local/bin:/usr/bin:/bin \
+  bash -c "cd ${APP_DIR} && pnpm config set registry https://registry.npmmirror.com && pnpm install --frozen-lockfile && pnpm run build"
 if [ ! -x "${APP_DIR}/workers/cad/.venv/bin/python" ]; then
   sudo -u gujian python3.11 -m venv "${APP_DIR}/workers/cad/.venv"
 fi

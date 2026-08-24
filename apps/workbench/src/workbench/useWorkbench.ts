@@ -32,7 +32,8 @@ export function useWorkbench({ bootstrapDemo = bootstrapDemoProjects }: Workbenc
   const chooseProject = async (projectId: string) => {
     jobs.resetModelProgress();
     nav.setSelectedGeometryEntityId(null);
-    if (nav.onProjectPage) nav.setActiveStage("evidence");
+    // 第一次进入必须从任务卡开始，先理解对象、范围和数据边界，再沿八阶段查看。
+    nav.setActiveStage("tasks");
     await session.chooseProject(projectId);
   };
 

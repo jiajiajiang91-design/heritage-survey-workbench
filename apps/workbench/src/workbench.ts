@@ -4,7 +4,7 @@ import {
   IndexedDbProjectRepository, LocalAuthorization, ProjectPackageService, WorkflowService,
 } from "@gujian/infrastructure";
 
-import { listDemoLibraryUpdates, loadDemoLibrary, type DemoLibraryUpdate, type DemoLoadResult } from "./demo-library-loader";
+import { listDemoLibraryUpdates, loadDemoLibrary, readDemoLibraryManifest, type DemoLibraryUpdate, type DemoLoadResult } from "./demo-library-loader";
 import { ModelRunClient } from "./model-run-client";
 
 export const projectRepository = new IndexedDbProjectRepository();
@@ -115,12 +115,18 @@ export interface ProjectCard {
   readonly artifactCount: number;
   readonly pendingCount: number;
   readonly checkedArtifactCount: number;
+  // 演示库清单里的适用边界；普通本机项目为 null。
+  readonly demoLimitationZh: string | null;
   // 有可用照片时给封面用的对象地址；没有照片时为 null，卡片改显示资料构成
   readonly coverUrl: string | null;
 }
 
 export async function listProjectCards(): Promise<readonly ProjectCard[]> {
-  const summaries = await listLocalProjects();
+  const [summaries, demoManifest] = await Promise.all([
+    listLocalProjects(),
+    readDemoLibraryManifest().catch(() => null),
+  ]);
+  const demoByProject = new Map((demoManifest?.projects ?? []).map((entry) => [entry.projectId, entry]));
   const cards = await Promise.all(summaries.map(async (summary) => {
     const [head, artifacts, checkRuns] = await Promise.all([
       projectRepository.getProjectHead(summary.projectId),
@@ -162,6 +168,7 @@ export async function listProjectCards(): Promise<readonly ProjectCard[]> {
       pendingCount: (snapshot?.issues.filter((item) => item.status === "open").length ?? 0)
         + (snapshot?.candidates.filter((item) => item.reviewStatus === "unreviewed").length ?? 0),
       checkedArtifactCount: artifacts.filter((item) => checkedIds.has(item.id)).length,
+      demoLimitationZh: demoByProject.get(summary.projectId)?.limitationZh ?? null,
       coverUrl,
     };
   }));

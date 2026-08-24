@@ -8,7 +8,7 @@ import { ProjectPageFrame } from "../shell/AppShell";
 import { Alert, Button, EmptyState, Metric, SourceTag, Tag } from "../ui";
 import "./ModelRuns.css";
 
-// P02 模型运行与用量（66:3172）：三张指标卡（真实调用、累计用量、费用合计）、运行表（表头 40、行 56，
+// P02 AI 调用与用量（66:3172）：三张指标卡（真实调用、累计用量、费用合计）、运行表（表头 40、行 56，
 // 五列运行内容/发起时间/耗时/用量与费用/结果）、识别候选区。费用按用量与公开单价算得（PRD 附录 A.4）。
 type Candidate = ProjectHead["snapshot"]["candidates"][number];
 
@@ -76,7 +76,7 @@ export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusio
     : serverCost ?? costView.totalCost;
   return (
     <ProjectPageFrame
-      title="模型运行与用量"
+      title="AI 调用与用量"
       description={`${assistantUsage ? `今天服务器上的助手调用：对话 ${assistantUsage.totals.assistant} 次、建议 ${assistantUsage.totals.suggest} 次、生成作业 ${assistantUsage.totals.jobs} 次（点右上角刷新状态更新）。` : ""}下表只列项目内的识别与转写运行，助手的对话和建议不进项目记录。${costView.priceSourcesZh.length ? `费用按用量与公开单价算得，单价取自${costView.priceSourcesZh.join("；")}，缓存命中的输入单独计价。` : "单价表里没有本次用到的模型时如实写明暂无法计算。"}${serverModel ? `当前使用的模型是 ${serverModel}。` : ""}`}
       actions={<Button onClick={onRefreshStatus}>刷新状态</Button>}
       back={back}
@@ -121,7 +121,12 @@ export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusio
             <div className="gj-row"><SourceTag producerType="model" /><Tag>{REVIEW_LABELS[candidate.reviewStatus] ?? candidate.reviewStatus}</Tag></div>
             <strong>{candidate.structured?.summary ?? "模型返回的原文（未按固定格式整理，内容如下，由你判断是否采用）"}</strong>
             {/* 没整理成结构的回答也要给人看原文：只写一句"未结构化"等于让用户对着空气做接受或驳回的决定 */}
-            {!candidate.structured && <p className="sc-runs-candidate-raw">{candidate.contentText.slice(0, 2_000)}{candidate.contentText.length > 2_000 ? "……（更长的部分略）" : ""}</p>}
+            {!candidate.structured && (
+              <details className="sc-runs-candidate-raw">
+                <summary>查看模型返回的原文</summary>
+                <pre>{candidate.contentText.slice(0, 2_000)}{candidate.contentText.length > 2_000 ? "\n……完整内容已保留在项目记录中" : ""}</pre>
+              </details>
+            )}
             {candidate.structured?.kind === "evidenceSummary" && candidate.structured.findings.length > 0 && (
               <ul>{candidate.structured.findings.map((item) => <li key={item}>{item}</li>)}</ul>
             )}

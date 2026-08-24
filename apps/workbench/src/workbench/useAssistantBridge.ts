@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { ModificationProposal } from "../assistant/action-executors";
 import { AssistantClient } from "../assistant/assistant-client";
@@ -132,23 +132,27 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
     setNotice("修改建议已拒绝，未生效");
   };
 
-  // 助手建议（实施单元 09）：进项目或换阶段时向模型要一条建议；换得快时只认最后一次
+  // 助手建议由用户明确发起。浏览阶段不应在后台累计模型调用和费用。
   const [suggestion, setSuggestion] = useState<{ text: string; basis: string; loading: boolean; key: string }>({ text: "", basis: "", loading: false, key: "" });
+  const suggestionRequest = useRef(0);
   const suggestionKey = selected ? `${selected.projectId}:${selected.revisionId}:${nav.activeStage}` : "";
   const modelReady = session.serverStatus?.modelConfigured === true;
   useEffect(() => {
-    if (!selected || !modelReady) { setSuggestion({ text: "", basis: "", loading: false, key: "" }); return; }
+    suggestionRequest.current += 1;
+    setSuggestion({ text: "", basis: "", loading: false, key: suggestionKey });
+  }, [suggestionKey]);
+  const requestSuggestion = async () => {
+    if (!selected || !modelReady || suggestion.loading) return;
     const controller = new AbortController();
-    // 换了屏就先清旧建议：上一屏的建议挂在新屏上，比一句正在整理更误导
+    const request = ++suggestionRequest.current;
     setSuggestion({ text: "", basis: "", loading: true, key: suggestionKey });
-    const timer = setTimeout(() => {
-      assistantChatClient.suggest(buildAssistantSnapshot(), controller.signal)
-        .then((reply) => { if (!controller.signal.aborted) setSuggestion({ text: reply.source === "model" ? reply.suggestion : "", basis: reply.basis, loading: false, key: suggestionKey }); })
-        .catch(() => { if (!controller.signal.aborted) setSuggestion({ text: "", basis: "", loading: false, key: suggestionKey }); });
-    }, 400);
-    return () => { clearTimeout(timer); controller.abort(); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [suggestionKey, modelReady]);
+    try {
+      const reply = await assistantChatClient.suggest(buildAssistantSnapshot(), controller.signal);
+      if (request === suggestionRequest.current) setSuggestion({ text: reply.source === "model" ? reply.suggestion : "", basis: reply.basis, loading: false, key: suggestionKey });
+    } catch {
+      if (request === suggestionRequest.current) setSuggestion({ text: "", basis: "", loading: false, key: suggestionKey });
+    }
+  };
 
   // 当前状态条（05 表 3）：说明系统正在做什么与进度，不用静态文案顶替
   const currentStatusText = (() => {
@@ -183,7 +187,7 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
 
   return {
     assistantChatClient, pendingProposal, buildAssistantSnapshot, handleAssistantClientOp,
-    adoptProposal, rejectProposal, currentStatusText, provenance, chatSelection, suggestion,
+    adoptProposal, rejectProposal, currentStatusText, provenance, chatSelection, suggestion, requestSuggestion,
   };
 }
 

@@ -469,7 +469,8 @@ export const GAODU_DEMO: DemoProjectDefinition = {
   periodText: "清代（据院内碑记，演示设定）",
   addressText: "山西省晋城市泽州县高都镇玉皇庙",
   // 列表按项目建立时间升序，三个演示项目的建立日期就是它们的显示顺序
-  createdAt: "2026-06-01T00:00:00Z",
+  // 项目建档在 6 月 11 至 13 日的识别、外业记录之后，修改历史保持时间顺序一致。
+  createdAt: "2026-06-14T00:00:00Z",
   // 实施单元 09：演示的是一次归档完成的测绘。尺寸来自现场实测记录，照片随包，
   // 问题全部关闭，模型无未知项，图纸齐套，复核签发后归档。实测记录的数值是
   // 按常规测绘做法设定的演示值，与照片比例一致，不是对该建筑的实际测绘成果。
@@ -679,7 +680,6 @@ export const GAODU_DEMO: DemoProjectDefinition = {
   },
 };
 
-// 列表顺序：高都（真实古建、归档完成）在前，Dai Loy（流程验证样本）在后；团队样板由构建脚本插在两者之间
 // 演示库只放两个中国古建项目（2026-08-25 JIAJIA 定）：赌馆博物馆不属真正的古建，
 // 从演示库下架。定义与素材保留：它仍是第三项目泛化验证（T12）与 HABS 图纸转写链路的测试素材。
 export const DEMO_PROJECTS: readonly DemoProjectDefinition[] = [GAODU_DEMO];

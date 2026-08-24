@@ -36,6 +36,11 @@ async function fetchManifest(base: string): Promise<DemoLibraryManifest | null> 
   return value;
 }
 
+// 列表页和任务卡也要说明展示项目的数据边界。复用同一份清单，避免按项目名硬编码。
+export function readDemoLibraryManifest(baseUrl = "/"): Promise<DemoLibraryManifest | null> {
+  return fetchManifest(baseUrl);
+}
+
 // 同一次会话内只跑一次。开发模式下 effect 会执行两遍，两次并发导入同一个包
 // 会在写入时撞键，表现为一半成功一半报错。
 let inFlight: Promise<DemoLoadResult> | null = null;
