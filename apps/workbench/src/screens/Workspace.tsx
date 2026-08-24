@@ -258,6 +258,7 @@ export function ProjectPage({ wb, selected }: { wb: Workbench; selected: Project
           <ModelRuns
             runs={session.projectModelRuns}
             costView={modelCostView}
+            assistantUsage={session.assistantUsage}
             candidates={selected.snapshot.candidates}
             exclusionCount={selected.snapshot.exclusionRecords.length}
             serverModel={serverStatus?.model ?? null}

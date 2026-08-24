@@ -31,9 +31,13 @@ const dailyLimitOf = (name: string, fallback: number) => {
   const value = Number.parseInt(process.env[name] ?? "", 10);
   return Number.isFinite(value) && value > 0 ? value : fallback;
 };
+// 建议是切屏自动触发的背景请求，和用户主动对话分开限：共用一个额度会让浏览几分钟
+// 就把对话额度烧光，之后所有提问被 429 挡回，看起来像助手没接模型。
 const dailyLimits = {
   assistantPerIp: dailyLimitOf("GUJIAN_DAILY_ASSISTANT_PER_IP", 40),
   assistantTotal: dailyLimitOf("GUJIAN_DAILY_ASSISTANT_TOTAL", 400),
+  suggestPerIp: dailyLimitOf("GUJIAN_DAILY_SUGGEST_PER_IP", 240),
+  suggestTotal: dailyLimitOf("GUJIAN_DAILY_SUGGEST_TOTAL", 2000),
   jobsPerIp: dailyLimitOf("GUJIAN_DAILY_JOBS_PER_IP", 8),
   jobsTotal: dailyLimitOf("GUJIAN_DAILY_JOBS_TOTAL", 40),
 };
@@ -336,7 +340,7 @@ export function createWorkbenchServer(options: {
   );
   const sessions = new Map<string, SessionRecord>();
   // 公网限额的当日用量。进程内计数即可：单机部署、超限只是当天不再服务，不需要持久化
-  const dailyUsage = { day: "", perIp: new Map<string, { assistant: number; jobs: number }>(), totals: { assistant: 0, jobs: 0 } };
+  const dailyUsage = { day: "", perIp: new Map<string, { assistant: number; suggest: number; jobs: number }>(), totals: { assistant: 0, suggest: 0, jobs: 0 } };
   const clientIpOf = (request: IncomingMessage): string => {
     const socketIp = request.socket.remoteAddress ?? "unknown";
     const isLoopback = socketIp === "127.0.0.1" || socketIp === "::1" || socketIp === "::ffff:127.0.0.1";
@@ -345,15 +349,15 @@ export function createWorkbenchServer(options: {
     if (isLoopback && typeof forwarded === "string" && forwarded) return forwarded.split(",")[0]!.trim();
     return socketIp;
   };
-  const takeDailyQuota = (request: IncomingMessage, kind: "assistant" | "jobs"): string | null => {
+  const takeDailyQuota = (request: IncomingMessage, kind: "assistant" | "suggest" | "jobs"): string | null => {
     const day = new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10);
-    if (dailyUsage.day !== day) { dailyUsage.day = day; dailyUsage.perIp.clear(); dailyUsage.totals = { assistant: 0, jobs: 0 }; }
+    if (dailyUsage.day !== day) { dailyUsage.day = day; dailyUsage.perIp.clear(); dailyUsage.totals = { assistant: 0, suggest: 0, jobs: 0 }; }
     const ip = clientIpOf(request);
-    const mine = dailyUsage.perIp.get(ip) ?? { assistant: 0, jobs: 0 };
-    const perIpLimit = kind === "assistant" ? dailyLimits.assistantPerIp : dailyLimits.jobsPerIp;
-    const totalLimit = kind === "assistant" ? dailyLimits.assistantTotal : dailyLimits.jobsTotal;
+    const mine = dailyUsage.perIp.get(ip) ?? { assistant: 0, suggest: 0, jobs: 0 };
+    const perIpLimit = kind === "assistant" ? dailyLimits.assistantPerIp : kind === "suggest" ? dailyLimits.suggestPerIp : dailyLimits.jobsPerIp;
+    const totalLimit = kind === "assistant" ? dailyLimits.assistantTotal : kind === "suggest" ? dailyLimits.suggestTotal : dailyLimits.jobsTotal;
     if (dailyUsage.totals[kind] >= totalLimit) return "今日演示总额度已用完，明天再来。";
-    if (mine[kind] >= perIpLimit) return kind === "assistant" ? "你今天的助手对话额度已用完，明天再来。" : "你今天的生成额度已用完，明天再来。";
+    if (mine[kind] >= perIpLimit) return kind === "assistant" ? "你今天的助手对话额度已用完，明天再来。" : kind === "suggest" ? "今日建议额度已用完。" : "你今天的生成额度已用完，明天再来。";
     mine[kind] += 1;
     dailyUsage.perIp.set(ip, mine);
     dailyUsage.totals[kind] += 1;
@@ -388,9 +392,11 @@ export function createWorkbenchServer(options: {
       const url = new URL(request.url ?? "/", `http://${requestHost}`);
       // 公网模式的每日限额闸：写操作按助手与生成两类计数，超限 429
       if (publicMode && request.method === "POST") {
-        const quotaKind = url.pathname.startsWith("/api/assistant/")
-          ? "assistant" as const
-          : ["/api/model-runs", "/api/cad-jobs", "/api/drawing-jobs"].includes(url.pathname) ? "jobs" as const : null;
+        const quotaKind = url.pathname === "/api/assistant/suggest"
+          ? "suggest" as const
+          : url.pathname.startsWith("/api/assistant/")
+            ? "assistant" as const
+            : ["/api/model-runs", "/api/cad-jobs", "/api/drawing-jobs"].includes(url.pathname) ? "jobs" as const : null;
         if (quotaKind) {
           const denied = takeDailyQuota(request, quotaKind);
           if (denied) return writeJson(response, 429, { error: "DAILY_LIMIT_REACHED", messageZh: denied }, origin);
@@ -407,6 +413,15 @@ export function createWorkbenchServer(options: {
           modelConfigured: gateway.configured,
           projectStorage: "browser-indexeddb-v3",
           cadWorker: "cadquery-2.8.0/ocp-7.9.3.1.1",
+        }, origin);
+      }
+
+      // 服务器侧今日调用数（进程内计数，重启起算）。助手对话与建议不在项目里留运行记录，
+      // 用量页拿这个数来显示，免得本机的 0 被读成模型没接上
+      if (request.method === "GET" && url.pathname === "/api/assistant/usage") {
+        return writeJson(response, 200, {
+          day: dailyUsage.day || new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10),
+          totals: dailyUsage.totals,
         }, origin);
       }
 

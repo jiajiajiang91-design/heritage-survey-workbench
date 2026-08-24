@@ -26,6 +26,13 @@ export interface ServerStatus {
   modelConfigured: boolean;
 }
 
+// 服务器侧今日的助手与生成调用数。助手对话和建议不在项目内留运行记录，
+// 用量页只显示本机的识别与转写会让人误以为模型没接上（线上实测被误读过两次）。
+export interface AssistantUsage {
+  day: string;
+  totals: { assistant: number; suggest: number; jobs: number };
+}
+
 export interface CreateProjectValues {
   name: string;
   buildingName: string;
@@ -54,6 +61,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const [projectArchetypes, setProjectArchetypes] = useState<readonly ArchetypeSpec[]>([]);
   const [changeHistory, setChangeHistory] = useState<readonly ChangeHistoryEntry[]>([]);
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
+  const [assistantUsage, setAssistantUsage] = useState<AssistantUsage | null>(null);
   const vocabulary = useMemo(() => resolveVocabulary(), []);
 
   // 列表页要的计数随摘要一起读；卡片数据读不出来不影响列表本身
@@ -117,10 +125,16 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     if (result.failed.length) setError(describeFailure(result.failed[0]!.reason, "演示项目载入失败"));
   };
 
-  const refreshServerStatus = () => fetch("/api/status")
-    .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
-    .then(setServerStatus)
-    .catch(() => setServerStatus(null));
+  const refreshServerStatus = () => Promise.all([
+    fetch("/api/status")
+      .then(async (response) => response.ok ? response.json() as Promise<ServerStatus> : Promise.reject(new Error("SERVER_STATUS_FAILED")))
+      .then(setServerStatus)
+      .catch(() => setServerStatus(null)),
+    fetch("/api/assistant/usage")
+      .then(async (response) => response.ok ? response.json() as Promise<AssistantUsage> : Promise.reject(new Error("USAGE_UNAVAILABLE")))
+      .then(setAssistantUsage)
+      .catch(() => setAssistantUsage(null)),
+  ]).then(() => undefined);
 
   useEffect(() => {
     void refresh()
@@ -303,7 +317,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     projectRuleRuns, setProjectRuleRuns,
     projectDecisions, setProjectDecisions,
     projectArtifacts, projectCheckRuns, projectDeliveryEvaluations, projectDeliveries,
-    projectArchetypes, changeHistory, serverStatus, refreshServerStatus,
+    projectArchetypes, changeHistory, serverStatus, assistantUsage, refreshServerStatus,
     refresh, loadProject, chooseProject, exitToProjectList, createProject, importProject, clearLibrary,
     demoUpdates, updateDemoLibrary,
     parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues,

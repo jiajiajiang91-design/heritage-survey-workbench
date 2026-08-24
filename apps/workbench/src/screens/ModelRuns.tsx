@@ -15,6 +15,8 @@ type Candidate = ProjectHead["snapshot"]["candidates"][number];
 export interface ModelRunsProps {
   runs: readonly ModelRun[];
   costView: ModelRunCostView;
+  // 服务器侧今日的助手调用数（对话与建议不在项目里留运行记录，靠它对账）
+  assistantUsage: { day: string; totals: { assistant: number; suggest: number; jobs: number } } | null;
   candidates: readonly Candidate[];
   exclusionCount: number;
   serverModel: string | null;
@@ -52,7 +54,7 @@ function tokenLabel(total: number): string {
   return total >= 10_000 ? `约 ${(total / 10_000).toFixed(1)} 万 token` : `${total} token`;
 }
 
-export function ModelRuns({ runs, costView, candidates, exclusionCount, serverModel, modelConfigured, canRun, running, hasReadableDrawings, evidenceTitle, onRun, onRefreshStatus, onConfirmComponents, onConfirmDimensions, back }: ModelRunsProps) {
+export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusionCount, serverModel, modelConfigured, canRun, running, hasReadableDrawings, evidenceTitle, onRun, onRefreshStatus, onConfirmComponents, onConfirmDimensions, back }: ModelRunsProps) {
   const byTask = new Map<string, number>();
   for (const run of runs) byTask.set(run.taskType, (byTask.get(run.taskType) ?? 0) + 1);
   const priced = costView.rows.filter((row) => row.cost).length;
@@ -60,7 +62,7 @@ export function ModelRuns({ runs, costView, candidates, exclusionCount, serverMo
   return (
     <ProjectPageFrame
       title="模型运行与用量"
-      description={`本页只统计项目内的识别与转写运行，右侧助手的对话和建议不计入。${costView.priceSourcesZh.length ? `费用按用量与公开单价算得，单价取自${costView.priceSourcesZh.join("；")}，缓存命中的输入单独计价。` : "单价表里没有本次用到的模型时如实写明暂无法计算。"}${serverModel ? `当前使用的模型是 ${serverModel}。` : ""}`}
+      description={`${assistantUsage ? `今天服务器上的助手调用：对话 ${assistantUsage.totals.assistant} 次、建议 ${assistantUsage.totals.suggest} 次、生成作业 ${assistantUsage.totals.jobs} 次（点右上角刷新状态更新）。` : ""}下表只列项目内的识别与转写运行，助手的对话和建议不进项目记录。${costView.priceSourcesZh.length ? `费用按用量与公开单价算得，单价取自${costView.priceSourcesZh.join("；")}，缓存命中的输入单独计价。` : "单价表里没有本次用到的模型时如实写明暂无法计算。"}${serverModel ? `当前使用的模型是 ${serverModel}。` : ""}`}
       actions={<Button onClick={onRefreshStatus}>刷新状态</Button>}
       back={back}
     >
