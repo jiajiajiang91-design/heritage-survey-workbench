@@ -4,13 +4,14 @@
 // 前提：开发服务器已起（默认 http://localhost:5173），本机装有 Chrome。
 // 出处：实施单元 08 收口，证据见 文档/05_验证证据/17_十九屏重做/十九屏对照与实测.md
 import { spawn } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 const outDir = process.argv[2];
 const origin = process.argv[3] ?? "http://localhost:5173";
 if (!outDir) { console.error("用法：node tools/workbench-sweep.mjs <输出目录> [开发服务器地址]"); process.exit(2); }
 mkdirSync(outDir, { recursive: true });
 const profile = join(process.env.TEMP ?? ".", "gj-shoot-profile");
+rmSync(profile, { recursive: true, force: true });
 const port = 9336;
 const chrome = spawn(process.env.CHROME_PATH ?? "C:/Program Files/Google/Chrome/Application/chrome.exe", ["--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, "--window-size=1440,900", "--no-first-run", "--disable-gpu", "about:blank"], { stdio: "ignore" });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -24,16 +25,22 @@ const waitFor = async (expr, timeout = 30000) => { const t = Date.now(); while (
 const click = (text, scope = "document") => evaluate(`(() => { const nodes = [...(${scope}).querySelectorAll("button, [role=tab], a, label")]; const el = nodes.find((n) => n.textContent.trim() === ${JSON.stringify(text)}) ?? nodes.find((n) => n.textContent.includes(${JSON.stringify(text)})); if (!el) return false; el.click(); return true; })()`);
 await send("Page.enable"); await send("Runtime.enable");
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+const navigationStartedAt = Date.now();
 await send("Page.navigate", { url: origin + "/" });
-await waitFor(`document.querySelectorAll("article.sc-project").length >= 3`, 60000);
+await waitFor(`document.querySelectorAll("article.sc-project").length >= 2`, 30000);
+const firstMeaningfulMs = Date.now() - navigationStartedAt;
+await waitFor(`document.querySelectorAll("article.sc-project:not([aria-busy='true'])").length >= 1`, 300000);
+const firstActionableMs = Date.now() - navigationStartedAt;
+await waitFor(`document.querySelectorAll("article.sc-project:not([aria-busy='true'])").length >= 2`, 300000);
+const fullyLoadedMs = Date.now() - navigationStartedAt;
 const fonts = await evaluate(`document.fonts.ready.then(() => ({ noto: document.fonts.check("13px 'Noto Sans SC Variable'"), geist: document.fonts.check("13px 'Geist Variable'"), loaded: [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family) }))`);
 const projects = await evaluate(`[...document.querySelectorAll("article.sc-project .sc-project-name")].map((n) => n.textContent.trim())`);
 const views = [["建立任务", null, "W01"], ["整理资料", null, "W02"], ["核对实测", null, "W03"], ["核对构件", "构件清单", "W04"], ["核对构件", "三维模型", "W06"], ["记录现状", "现状记录", "W05"], ["记录现状", "问题队列", "W07"], ["生成图纸", "图纸样式", "W08"], ["生成图纸", "成组图纸", "W08b"], ["检查签发", null, "W09"], ["交付归档", null, "W10"]];
-const report = { fonts, projects: [], consoleErrors: [] };
+const report = { firstMeaningfulMs, firstActionableMs, fullyLoadedMs, fonts, projects: [], consoleErrors: [] };
 const BAD = /undefined|NaN|\[object Object\]|null\b/;
 for (const name of projects) {
   await click("项目列表", `(document.querySelector(".ws-topbar") ?? document)`); await sleep(300);
-  await waitFor(`document.querySelectorAll("article.sc-project").length >= 3`);
+  await waitFor(`document.querySelectorAll("article.sc-project:not([aria-busy='true'])").length >= 2`);
   await evaluate(`(() => { const card = [...document.querySelectorAll("article.sc-project")].find((c) => c.querySelector(".sc-project-name").textContent.trim() === ${JSON.stringify(name)}); [...card.querySelectorAll("button")].find((b) => b.textContent.includes("进入")).click(); return true; })()`);
   await waitFor(`!!document.querySelector(".ws-stage-nav")`); await sleep(800);
   const entry = { name, views: [] };
@@ -68,6 +75,6 @@ report.styles = await evaluate(`(() => { const g = (sel, props) => { const el = 
   assistant: g(".ws-assistant", ["width"]), body: g("body", ["fontFamily"]), numeric: g(".gj-numeric", ["fontFamily"]),
 }; })()`);
 writeFileSync(join(outDir, "巡检结果.json"), JSON.stringify(report, null, 2));
-console.log(JSON.stringify(report.fonts)); for (const p of report.projects) for (const v of p.views) if (v.bad.length || v.empty) console.log("异常", p.name, v.code, v.bad, v.empty);
+console.log(JSON.stringify({ firstMeaningfulMs, firstActionableMs, fullyLoadedMs, fonts: report.fonts })); for (const p of report.projects) for (const v of p.views) if (v.bad.length || v.empty) console.log("异常", p.name, v.code, v.bad, v.empty);
 console.log("控制台错误", report.consoleErrors.length); console.log(JSON.stringify(report.styles, null, 1));
 ws.close(); chrome.kill(); process.exit(0);

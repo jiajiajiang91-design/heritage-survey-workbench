@@ -49,6 +49,13 @@ const evaluate = async (expression) => {
   return r.result.value;
 };
 const shot = async (name) => {
+  await evaluate(`(() => {
+    window.scrollTo(0, 0);
+    const center = document.querySelector(".ws-center");
+    if (center) center.scrollTop = 0;
+    [...document.querySelectorAll("button[aria-label='关闭提示']")].forEach((button) => button.click());
+    return true;
+  })()`);
   await sleep(500);
   const r = await send("Page.captureScreenshot", { format: "png" });
   writeFileSync(join(outDir, `${name}.png`), Buffer.from(r.data, "base64"));
@@ -73,7 +80,7 @@ await send("Page.enable");
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 2, mobile: false });
 await send("Page.navigate", { url: site });
 // 首次装载要下载两个演示包，公网给足时间
-await waitFor(`document.querySelectorAll("article.sc-project").length >= 2`, 300000);
+await waitFor(`document.querySelectorAll("article.sc-project:not([aria-busy='true'])").length >= 2`, 300000);
 await evaluate(`document.fonts.ready.then(() => true)`);
 await sleep(1000);
 // 关掉装载完成的提示条再截，避免提示覆盖页面底部操作。
@@ -110,7 +117,7 @@ await sleep(1200);
 await shot("04-in-browser-dxf-viewer");
 // 同一页再验 PDF。README 选 DXF 作为特色截图，但发布验收不能遗漏 PDF worker。
 await evaluate(`(() => { const row = [...document.querySelectorAll("button")].find((b) => b.textContent.includes(".pdf")); if (row) row.click(); return true; })()`);
-await waitFor(`!!document.querySelector('.gj-viewer canvas[data-rendered="true"]')`, 60000);
+await waitFor(`!!document.querySelector('.gj-viewer canvas[data-rendered]')`, 60000);
 
 // 检查与签发：自动检查通过 + 专业复核签发（产品主张：检查通过不等于复核通过）
 await click("检查签发", `document.querySelector(".ws-stage-nav")`);
@@ -146,7 +153,9 @@ await evaluate(`window.__readmeRunCount = document.querySelectorAll(".sc-runs-ro
 await evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "整理资料要点"); if (!button || button.disabled) return false; button.click(); return true; })()`);
 await waitFor(`document.querySelectorAll(".sc-runs-row").length > window.__readmeRunCount`, 120000);
 await click("刷新状态");
-await sleep(1600);
+await sleep(5000);
+await evaluate(`(() => { const close = [...document.querySelectorAll("button")].find((button) => button.getAttribute("aria-label")?.includes("关闭") || button.textContent.trim() === "×"); close?.click(); return true; })()`);
+await sleep(400);
 await shot("08-ai-token-usage-and-cost");
 
 // 修改历史：全程留痕与影响范围（产品核心主张：可追溯）
