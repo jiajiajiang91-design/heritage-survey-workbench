@@ -6,8 +6,10 @@ set -euo pipefail
 
 BRANCH="${1:-main}"
 APP_DIR="/opt/gujian/app"
-ARCHIVE_URL="https://github.com/jiajiajiang91-design/heritage-survey-workbench/archive/refs/heads/${BRANCH}.tar.gz"
+ARCHIVE_URL="https://codeload.github.com/jiajiajiang91-design/heritage-survey-workbench/tar.gz/refs/heads/${BRANCH}"
 RELEASE_DIR="$(mktemp -d /tmp/gujian-release.XXXXXX)"
+ARCHIVE_PATH="$RELEASE_DIR/source.tar.gz"
+SOURCE_DIR="$RELEASE_DIR/source"
 
 cleanup() {
   rm -rf -- "$RELEASE_DIR"
@@ -19,15 +21,21 @@ if [[ "$APP_DIR" != "/opt/gujian/app" || ! -d "$APP_DIR" ]]; then
   exit 1
 fi
 
-curl --fail --location --silent --show-error "$ARCHIVE_URL" \
-  | tar -xz --strip-components=1 -C "$RELEASE_DIR"
+mkdir -p "$SOURCE_DIR"
+curl --http1.1 --fail --location --silent --show-error \
+  --connect-timeout 15 --max-time 600 \
+  --retry 5 --retry-delay 3 --retry-all-errors \
+  --speed-time 30 --speed-limit 1024 \
+  --output "$ARCHIVE_PATH" "$ARCHIVE_URL"
+tar -tzf "$ARCHIVE_PATH" >/dev/null
+tar -xzf "$ARCHIVE_PATH" --strip-components=1 -C "$SOURCE_DIR"
 
 rsync -a --delete \
   --exclude .git \
   --exclude node_modules \
   --exclude .venv \
   --exclude apps/server/.data \
-  "$RELEASE_DIR/" "$APP_DIR/"
+  "$SOURCE_DIR/" "$APP_DIR/"
 
 chown -R gujian:gujian "$APP_DIR"
 sudo -u gujian env HOME=/home/gujian PATH=/usr/local/bin:/usr/bin:/bin \
