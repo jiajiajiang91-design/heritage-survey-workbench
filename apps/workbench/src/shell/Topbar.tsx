@@ -1,4 +1,4 @@
-import { PanelRightOpen } from "lucide-react";
+import { ArrowLeft, PanelRightOpen } from "lucide-react";
 
 import { Button } from "../ui";
 
@@ -11,12 +11,19 @@ export interface TopbarProps {
   pagesEnabled: boolean;
   onProjectList: () => void;
   onSelectPage: (id: string) => void;
+  portfolioReturnHref?: string | null;
   assistantToggle?: { collapsed: boolean; onToggle: () => void } | null;
 }
 
-export function Topbar({ breadcrumb, pages, projectListActive, pagesEnabled, onProjectList, onSelectPage, assistantToggle }: TopbarProps) {
+export function Topbar({ breadcrumb, pages, projectListActive, pagesEnabled, onProjectList, onSelectPage, portfolioReturnHref, assistantToggle }: TopbarProps) {
   return (
     <header className="ws-topbar">
+      {portfolioReturnHref && (
+        <a className="ws-portfolio-return" href={portfolioReturnHref} aria-label="返回作品集中的产品案例">
+          <ArrowLeft size={14} aria-hidden="true" />
+          <span>返回产品案例</span>
+        </a>
+      )}
       <div className="ws-brand">
         <span className="ws-brand-mark" aria-hidden="true">建</span>
         <h1 className="ws-brand-name">古建保护成果工作台</h1>

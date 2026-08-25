@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { CreateTaskDialog } from "./screens/CreateTaskDialog";
+import { portfolioReturnHref } from "./portfolio-return";
 import { ProjectPage, WorkspaceView } from "./screens/Workspace";
 import { ServiceRecoveryDialog } from "./screens/Dialogs";
 import { ProjectList } from "./screens/ProjectList";
@@ -25,6 +26,7 @@ export type AppProps = WorkbenchOptions;
 
 export function App({ bootstrapDemo }: AppProps = {}) {
   const wb = useWorkbench(bootstrapDemo ? { bootstrapDemo } : {});
+  const returnHref = portfolioReturnHref(window.location.search, window.location.hostname);
   const { notices, session, nav, evidence, jobs, assistant } = wb;
   const { error, notice, setError, setNotice } = notices;
   const { selected, serverStatus, exitToProjectList, clearLibrary, confirmedTask, drawingArtifacts, latestCheckRun } = session;
@@ -68,6 +70,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           projectListActive={!selected}
           onProjectList={exitToProjectList}
           onSelectPage={(id) => goToView(id as StageId)}
+          portfolioReturnHref={returnHref}
           assistantToggle={selected && !onProjectPage && assistantCollapsed ? { collapsed: true, onToggle: () => setAssistantCollapsed(false) } : null}
         />
       )}
