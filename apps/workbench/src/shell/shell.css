@@ -10,6 +10,8 @@
 
 /* ---------- 顶栏（35:14）：高 56，白底，下边线，内边距 10/20，间距 16 ---------- */
 .ws-topbar { display: flex; align-items: center; gap: var(--space-lg); height: var(--layout-topbar-height); padding: var(--space-10) var(--space-xl); background: var(--bg-surface); border-bottom: var(--stroke-hairline) solid var(--border-subtle); min-width: 0; }
+.ws-portfolio-return { display: flex; align-items: center; gap: var(--space-xs); padding-right: var(--space-lg); border-right: var(--stroke-hairline) solid var(--border-subtle); color: var(--text-link); font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); text-decoration: none; white-space: nowrap; flex: none; }
+.ws-portfolio-return:hover { text-decoration: underline; text-underline-offset: var(--space-2xs); }
 .ws-brand { display: flex; align-items: center; gap: var(--space-md); flex: none; }
 .ws-brand-mark { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: var(--radius-md); background: var(--action-primary-bg); color: var(--action-primary-fg); font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
 .ws-brand-name { font: var(--font-weight-medium) var(--font-size-14)/var(--line-22) var(--font-family-ui); color: var(--text-primary); white-space: nowrap; }
