@@ -10,7 +10,7 @@ import { demoSeededUuid, exportDemoProject, seedDemoProject, type DemoBuildResul
 import type { DemoDrawingView, DemoProjectDefinition } from "./definitions.js";
 
 // 演示项目的完整链路：从任务书一路跑到交付草案，走产品自身的命令服务与
-// 真实作业进程，不为演示另做一套。08 演示项目定义要求每个环节都有产出，
+// 真实作业进程，不为演示另做一套。04 演示项目定义要求每个环节都有产出，
 // 任一环节空缺即为演示不成立。
 
 export interface DemoPipeline {

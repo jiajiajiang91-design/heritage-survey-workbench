@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { DEMO_MATRIX_STEPS, evaluateDemoMatrix } from "./demo-matrix.js";
 
-// 08 演示项目定义表 3：任一格演不出内容即为演示不成立。
+// 04 演示项目定义 §6：任一格演不出内容即为演示不成立。
 // 这份测试锁的是判定规则本身；对真实演示包逐格核对由 tools/check-demo-matrix.mjs 做，
 // 它要读几十兆的包，不适合放进单元测试。
 

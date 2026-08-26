@@ -1,6 +1,6 @@
 import type { DemoProjectDefinition } from "./definitions.js";
 
-// 08 演示项目定义表 1 的两个演示项目。
+// 04 演示项目定义 §4 的两个演示项目。
 // 一个演示资料充分时能产出什么，一个演示资料不足时会阻断什么，两个都用真实项目。
 
 const HABS_RIGHTS = "美国历史建筑调查（HABS）成果，美国国家公园管理局说明属公共领域，可用于公开展示。";

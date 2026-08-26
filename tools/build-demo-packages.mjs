@@ -210,7 +210,7 @@ try {
   const manifest = {
     schemaVersion: "demo-library-1",
     generatedFrom: "tools/build-demo-packages.mjs",
-    // 08 演示项目定义表 1 的顺序：专业深度、完整链路、阻断行为
+    // 项目顺序：专业深度、完整链路、阻断行为（04 演示项目定义 §1）
     projects: entries,
   };
   const manifestBytes = new TextEncoder().encode(`${JSON.stringify(manifest, null, 2)}\n`);

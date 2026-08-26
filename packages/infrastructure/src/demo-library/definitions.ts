@@ -120,7 +120,7 @@ export interface DemoProjectDefinition {
   readonly periodText: string | null;
   readonly addressText: string | null;
   readonly createdAt: string;
-  // 一句话说清适用边界，随包进界面（08 演示项目定义 2）
+  // 一句话说清适用边界，随包进界面（04 演示项目定义 2）
   readonly limitationZh: string;
   readonly sources: readonly DemoLibrarySource[];
   readonly facts: readonly DemoFact[];
@@ -131,7 +131,7 @@ export interface DemoProjectDefinition {
   readonly issues: readonly DemoIssue[];
   readonly task: DemoTask;
   // 形制参数。有它才能由规则推算出尺寸并驱动构件生成，
-  // 08 演示项目定义表 3 的实测基准这一格也靠它才有内容。
+  // 04 演示项目定义 §6 的实测基准这一格也靠它才有内容。
   readonly archetype?: DemoArchetype;
   // 实测图纸驱动的木构架参数。没有形制规则可依的项目走这一条，
   // 尺寸全部来自图纸转写或图上量取，不做任何形制推算。

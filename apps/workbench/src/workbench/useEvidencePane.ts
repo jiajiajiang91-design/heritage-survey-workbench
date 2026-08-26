@@ -17,7 +17,7 @@ export interface ImageSelection {
   rectNormalized: NormalizedRect;
 }
 
-// 证据半区（05 界面与交互形态 §三）：中栏右半区显示选中资料原件，数据与证据并置。
+// 证据半区（03 界面与交互形态 §三）：中栏右半区显示选中资料原件，数据与证据并置。
 export function useEvidencePane(session: ProjectSession) {
   const { selected } = session;
   const [activeEvidenceId, setActiveEvidenceId] = useState<string | null>(null);

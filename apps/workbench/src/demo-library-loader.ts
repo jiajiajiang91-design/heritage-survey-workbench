@@ -1,7 +1,7 @@
 import type { ProjectPackageService } from "@gujian/infrastructure";
 
 // 首次打开时装载演示项目。走的是用户导入项目包的同一条路径，
-// 不另建代码分支，也不在界面里临时构造数据（08 演示项目定义 4、6）。
+// 不另建代码分支，也不在界面里临时构造数据（04 演示项目定义 4、6）。
 //
 // 清单与包由 tools/build-demo-library.mjs 生成，前端不认识任何具体项目名，
 // 项目名、限制说明都从清单读（技术架构 8.1）。

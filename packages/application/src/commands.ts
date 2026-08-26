@@ -59,7 +59,7 @@ export const CommitFactsCommandSchema = CommandHeaderSchema.extend({
   }).strict(),
 }).strict();
 
-// 现状记录（05 界面与交互形态 表 2）：可见残损、材料与状态判断，每条必须带证据引用
+// 现状记录（03 界面与交互形态表 2）：可见残损、材料与状态判断，每条必须带证据引用
 export const CommitObservationsCommandSchema = CommandHeaderSchema.extend({
   commandType: z.literal("CommitObservations"),
   expectedRevisionId: UuidSchema,

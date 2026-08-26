@@ -16,10 +16,10 @@ import { ProjectPackageService } from "../project-package-service.js";
 import type { DemoDrawingView, DemoProjectDefinition } from "./definitions.js";
 
 // 演示项目包的生成路径。走真实命令服务与真实导出，不另做一套写入口，
-// 因此包里带完整操作记录链，导入后与用户自己建的项目没有区别（08 演示项目定义 6）。
+// 因此包里带完整操作记录链，导入后与用户自己建的项目没有区别（04 演示项目定义 6）。
 //
 // 全过程不用 crypto.randomUUID 与当前时间：同一份输入必须得到同一份字节，
-// 否则 08 第 2 节的可复现标准不成立。
+// 否则 04 第 2 节的可复现标准不成立。
 
 // 演示项目的标识全部由 demoId 与键名确定性推出。构建脚本要引用其中的
 // 资料标识（几何翻译的 evidenceRefs 指向它），因此对外暴露同一套算法，

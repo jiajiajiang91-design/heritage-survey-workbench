@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { DEMO_PROJECTS } from "./demo-projects.js";
 
-// 08 演示项目定义第 8 节：只有项目名标明这是演示项目，进入项目后
+// 04 演示项目定义第 8 节：只有项目名标明这是演示项目，进入项目后
 // 任务书、构件、尺寸、图纸、报告的内容都按真实业务写。
 // 观看者知道这是演示案例，不需要在每个环节被提醒一次。
 //

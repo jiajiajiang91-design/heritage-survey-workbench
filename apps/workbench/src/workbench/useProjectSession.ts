@@ -117,7 +117,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     }));
   };
 
-  // 首次打开装载演示项目（08 演示项目定义 3.3：不生成空白项目）。
+  // 首次打开装载演示项目（04 演示项目定义 §3：不生成空白项目）。
   // 装载策略由组合根注入，组件只负责把结果显示出来。
   const showBootstrapResult = async (result: DemoLoadResult | null) => {
     if (!result) return;

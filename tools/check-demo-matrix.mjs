@@ -1,4 +1,4 @@
-// 对已构建的演示包逐格核对 08 演示项目定义表 3。
+// 对已构建的演示包逐格核对 04 演示项目定义 §6。
 // 判定规则在 packages/infrastructure/src/demo-library/demo-matrix.ts，
 // 这里只负责读包与排版，因为包有几十兆，不适合放进单元测试。
 

@@ -100,7 +100,7 @@ export function buildArchetypeGeometrySpec(input: ArchetypeGeometryInput): Proje
     ridgeHeight: sourced("ridgeHeight", requireDimension(archetype, "ridgeHeight")),
     enclosure: archetype.enclosure,
     // 山面与飞椽由形制判断记录声明。判不出的项传 null，生成器记未知项，
-    // 不按常见做法默认补一种（08 演示项目定义第 8 节：不隐藏来源、不把推算显示为实测）。
+    // 不按常见做法默认补一种（04 演示项目定义第 8 节：不隐藏来源、不把推算显示为实测）。
     gable: archetype.gable
       ? {
         roofFormZh: archetype.gable.roofFormZh,
