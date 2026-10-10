@@ -1,0 +1,283 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/screens/GeometryComponentEditor.test.tsx (11 tests | 2 failed | 9 skipped) 132ms
+   ↓ 普通构件表单 > 选择已采用尺寸后显示只读数值与资料，候选保留待核对标记
+   ↓ 普通构件表单 > 无效长度定位到字段并阻止写入，取消不保存
+   ↓ 普通构件表单 > 保存中阻止重复提交，失败及异常保留全部草稿
+   ↓ 普通构件表单 > 可切换圆柱和逐点挤出表单，长度不自动补齐
+   ↓ 普通构件表单 > 同一构件记录变化时锁定旧草稿，取消后可重开
+   ↓ 普通构件表单 > 展示模型没有输入时不提供新增或反写入口
+   ↓ 普通构件表单 > 预览、选择来源和修改保持草稿，不保存事实且旧形体立即失效
+   ↓ 普通构件表单 > raw 候选可修正并通过原子保存入口提交，清来源恢复普通入口
+   ↓ 普通构件表单 > 快照来源改变即隐藏旧预览，重新预览列明失效引用，缺项保留输入
+   × 普通构件表单 > 仅解析记录变化时 candidate 来源旧形体立即失效且草稿保留 100ms
+     → expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <section
+  aria-label="待核对形体预览"
+  class="sc-draft-preview"
+>
+  <div
+    class="gj-row"
+  >
+    <strong>
+      内部测试墙
+    </strong>
+    <span
+      class="gj-tag"
+    >
+      待核对形体
+    </span>
+    <span
+      class="gj-tag"
+    >
+      材料：
+      brick
+    </span>
+  </div>
+  <p
+    class="gj-note"
+  >
+    本形体用于核对当前参数。核对保存后，再进入现有模型制作。
+  </p>
+  <button
+    type="button"
+  >
+    选择待核对形体
+  </button>
+  <div
+    aria-label="预览参数来源"
+    class="sc-draft-preview__sources"
+    tabindex="-1"
+  >
+    <strong>
+      参数与来源
+    </strong>
+    <div
+      class="sc-draft-preview__source"
+    >
+      <strong>
+        X 向长度
+      </strong>
+      <span>
+        当前值：
+        4200
+         mm
+      </span>
+      <span>
+        原标注：
+        4200
+        ；来源：
+        待核对候选
+      </span>
+      <span>
+        总深
+         · 测试记录第 2 行
+      </span>
+      <button
+        class="gj-btn gj-btn--secondary gj-btn--compact"
+        type="button"
+      >
+        查看参数原件：
+        内部测试尺寸.txt
+      </button>
+    </div>
+    <div
+      class="sc-draft-preview__source"
+    >
+      <strong>
+        Y 向长度
+      </strong>
+      <span>
+        当前值：
+        240
+         mm
+      </span>
+      <span>
+        原标注：
+        240
+        ；来源：
+        人工填写
+      </span>
+      <span>
+        Y 向长度
+         · 内部测试资料第 1 行
+      </span>
+      <button
+        class="gj-btn gj-btn--secondary gj-btn--compact"
+        type="button"
+      >
+        查看参数原件：
+        内部测试尺寸.txt
+      </button>
+    </div>
+    <div
+      class="sc-draft-preview__source"
+    >
+      <strong>
+        Z 向长度
+      </strong>
+      <span>
+        当前值：
+        3000
+         mm
+      </span>
+      <span>
+        原标注：
+        3000
+        ；来源：
+        人工填写
+      </span>
+      <span>
+        Z 向长度
+         · 内部测试资料第 1 行
+      </span>
+      <button
+        class="gj-btn gj-btn--secondary gj-btn--compact"
+        type="button"
+      >
+        查看参数原件：
+        内部测试尺寸.txt
+      </button>
+    </div>
+  </div>
+</section> instead
+   × 普通构件表单 > 仅解析记录变化时 adopted 来源旧形体立即失效且草稿保留 32ms
+     → expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <section
+  aria-label="待核对形体预览"
+  class="sc-draft-preview"
+>
+  <div
+    class="gj-row"
+  >
+    <strong>
+      内部测试墙
+    </strong>
+    <span
+      class="gj-tag"
+    >
+      待核对形体
+    </span>
+    <span
+      class="gj-tag"
+    >
+      材料：
+      brick
+    </span>
+  </div>
+  <p
+    class="gj-note"
+  >
+    本形体用于核对当前参数。核对保存后，再进入现有模型制作。
+  </p>
+  <button
+    type="button"
+  >
+    选择待核对形体
+  </button>
+  <div
+    aria-label="预览参数来源"
+    class="sc-draft-preview__sources"
+    tabindex="-1"
+  >
+    <strong>
+      参数与来源
+    </strong>
+    <div
+      class="sc-draft-preview__source"
+    >
+      <strong>
+        X 向长度
+      </strong>
+      <span>
+        当前值：
+        6000
+         mm
+      </span>
+      <span>
+        原标注：
+        6000
+        ；来源：
+        已采用尺寸
+      </span>
+      <span>
+        总宽
+         · 测试记录第 1 行
+      </span>
+      <button
+        class="gj-btn gj-btn--secondary gj-btn--compact"
+        type="button"
+      >
+        查看参数原件：
+        内部测试尺寸.txt
+      </button>
+    </div>
+    <div
+      class="sc-draft-preview__source"
+    >
+      <strong>
+        Y 向长度
+      </strong>
+      <span>
+        当前值：
+        240
+         mm
+      </span>
+      <span>
+        原标注：
+        240
+        ；来源：
+        人工填写
+      </span>
+      <span>
+        Y 向长度
+         · 内部测试资料第 1 行
+      </span>
+      <button
+        class="gj-btn gj-btn--secondary gj-btn--compact"
+        type="button"
+      >
+        查看参数原件：
+        内部测试尺寸.txt
+      </button>
+    </div>
+    <div
+      class="sc-draft-preview__source"
+    >
+      <strong>
+        Z 向长度
+      </strong>
+      <span>
+        当前值：
+        3000
+         mm
+      </span>
+      <span>
+        原标注：
+        3000
+        ；来源：
+        人工填写
+      </span>
+      <span>
+        Z 向长度
+         · 内部测试资料第 1 行
+      </span>
+      <button
+        class="gj-btn gj-btn--secondary gj-btn--compact"
+        type="button"
+      >
+        查看参数原件：
+        内部测试尺寸.txt
+      </button>
+    </div>
+  </div>
+</section> instead
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 9 skipped (11)
+   Start at  16:21:45
+   Duration  2.00s (transform 320ms, setup 225ms, collect 1.10s, tests 132ms, environment 343ms, prepare 62ms)
+

@@ -33,6 +33,7 @@ export function viewerKindOf(mimeType: string, fileName: string): ViewerKind {
   // DXF 的 MIME 常写成 image/vnd.dxf，要先于图片判断
   if (extension === "dxf" || mimeType === "image/vnd.dxf" || mimeType === "application/dxf") return "dxf";
   if (mimeType === "image/svg+xml" || extension === "svg") return "svg";
+  if (/\.tiff?$/i.test(fileName) || mimeType === "image/tiff") return "unsupported";
   if (mimeType.startsWith("image/")) return "image";
   if (mimeType === "application/pdf" || extension === "pdf") return "pdf";
   if (extension === "glb" || mimeType === "model/gltf-binary") return "glb";

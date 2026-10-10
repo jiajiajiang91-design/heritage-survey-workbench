@@ -1,0 +1,77 @@
+test_build_is_deterministic_for_frozen_input (workers.cad.project_geometry.test_project_geometry.ProjectGeometryTests.test_build_is_deterministic_for_frozen_input) ... ok
+test_contract_rejects_wrong_units_and_arbitrary_external_inputs (workers.cad.project_geometry.test_project_geometry.ProjectGeometryTests.test_contract_rejects_wrong_units_and_arbitrary_external_inputs) ... ok
+test_interface_gap_and_overlap_are_geometry_failures (workers.cad.project_geometry.test_project_geometry.ProjectGeometryTests.test_interface_gap_and_overlap_are_geometry_failures) ... ok
+test_two_different_project_specs_build_complete_revision_packages (workers.cad.project_geometry.test_project_geometry.ProjectGeometryTests.test_two_different_project_specs_build_complete_revision_packages) ... ok
+test_independent_verifier_accepts_complete_package (workers.cad.project_geometry.test_verify_job.ProjectGeometryVerifierTests.test_independent_verifier_accepts_complete_package) ... ok
+test_verifier_rejects_glb_source_and_qualification_tampering (workers.cad.project_geometry.test_verify_job.ProjectGeometryVerifierTests.test_verifier_rejects_glb_source_and_qualification_tampering) ... ok
+test_ifc_physical_vertices_and_glb_metres_for_three_units (workers.cad.project_geometry.test_output_units.GeometryOutputUnitTests.test_ifc_physical_vertices_and_glb_metres_for_three_units) ... ok
+test_independent_ifc_verifier_rejects_each_unit_and_vertex_tamper_after_rehash (workers.cad.project_geometry.test_output_units.GeometryOutputUnitTests.test_independent_ifc_verifier_rejects_each_unit_and_vertex_tamper_after_rehash) ... ok
+test_optional_unit_preserves_old_hash_and_validates_finite_values (workers.cad.project_geometry.test_output_units.GeometryOutputUnitTests.test_optional_unit_preserves_old_hash_and_validates_finite_values) ... ok
+test_contract_rejects_internal_labels_fake_dates_and_overlaps (workers.cad.project_drawings.test_project_drawings.ProjectDrawingTests.test_contract_rejects_internal_labels_fake_dates_and_overlaps) ... ok
+test_same_inputs_build_byte_identical_packages (workers.cad.project_drawings.test_project_drawings.ProjectDrawingTests.test_same_inputs_build_byte_identical_packages) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_two_different_task_matrices_generate_native_cross_format_artifacts (workers.cad.project_drawings.test_project_drawings.ProjectDrawingTests.test_two_different_task_matrices_generate_native_cross_format_artifacts) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_current_autocad_summary_schema_binds_the_canonical_dxf_hash (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_current_autocad_summary_schema_binds_the_canonical_dxf_hash) ... ok
+test_current_package_passes (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_current_package_passes) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_current_qcad_summary_schema_binds_source_and_print_layouts (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_current_qcad_summary_schema_binds_source_and_print_layouts) ... ok
+test_png_dimension_tamper_is_detected (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_png_dimension_tamper_is_detected) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_source_line_tamper_is_detected_after_rehash (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_source_line_tamper_is_detected_after_rehash) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+test_optional_matrix_unit_is_not_injected_and_invalid_values_fail (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_optional_matrix_unit_is_not_injected_and_invalid_values_fail) ... ok
+test_rehashed_single_file_tampers_are_rejected_and_restored (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_rehashed_single_file_tampers_are_rejected_and_restored) ... D:\Claude_jiajia\06_古建保护归档\workers\cad\project_drawings\test_output_units.py:143: DeprecationWarning: Calling `PageObject.replace_contents()` for pages not assigned to a writer is deprecated and will be removed in pypdf 7.0.0. Attach the page to the writer first or use `PdfWriter(clone_from=...)` directly. The existing approach has proved being unreliable.
+  page.replace_contents(content)
+ok
+test_three_native_units_dimensions_text_and_paper_scale (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_three_native_units_dimensions_text_and_paper_scale) ... ok
+test_omit_的构件不出线其余不受影响 (workers.cad.project_drawings.test_detail_levels.DetailLevelTests.test_omit_的构件不出线其余不受影响) ... ok
+test_不给规则时与简化前完全一致 (workers.cad.project_drawings.test_detail_levels.DetailLevelTests.test_不给规则时与简化前完全一致) ... ok
+test_去掉分缝线只减少不新增 (workers.cad.project_drawings.test_detail_levels.DetailLevelTests.test_去掉分缝线只减少不新增) ... ok
+test_外轮廓比逐构件出线少 (workers.cad.project_drawings.test_detail_levels.DetailLevelTests.test_外轮廓比逐构件出线少) ... ok
+test_每条图线都带源构件 (workers.cad.project_drawings.test_detail_levels.DetailLevelTests.test_每条图线都带源构件) ... ok
+test_规则只作用在自己声明的构件类型上 (workers.cad.project_drawings.test_detail_levels.DetailLevelTests.test_规则只作用在自己声明的构件类型上) ... ok
+test_视图产物记录实际执行的规则与丢弃组数 (workers.cad.project_drawings.test_detail_levels.DetailLevelTests.test_视图产物记录实际执行的规则与丢弃组数) ... ok
+test_只取用到的字不另维护清单 (workers.cad.project_drawings.test_detail_levels.SvgFontSubsetTests.test_只取用到的字不另维护清单) ... ok
+test_同样的字集裁出同样的字节 (workers.cad.project_drawings.test_detail_levels.SvgFontSubsetTests.test_同样的字集裁出同样的字节) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_缺字直接报错不静默出豆腐块 (workers.cad.project_drawings.test_detail_levels.SvgFontSubsetTests.test_缺字直接报错不静默出豆腐块) ... ok
+test_裁剪后的字体远小于整份 (workers.cad.project_drawings.test_detail_levels.SvgFontSubsetTests.test_裁剪后的字体远小于整份) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_转义字符按原文计入 (workers.cad.project_drawings.test_detail_levels.SvgFontSubsetTests.test_转义字符按原文计入) ... ok
+test_俯视时剖切面以上的构件移除 (workers.cad.project_drawings.test_section_sampling.BeyondPlaneTests.test_俯视时剖切面以上的构件移除) ... ok
+test_俯视时剖切面以下的构件保留 (workers.cad.project_drawings.test_section_sampling.BeyondPlaneTests.test_俯视时剖切面以下的构件保留) ... ok
+test_跨过剖切面的构件保留 (workers.cad.project_drawings.test_section_sampling.BeyondPlaneTests.test_跨过剖切面的构件保留) ... ok
+test_circle_segment_count_follows_chord_height_not_arc_length (workers.cad.project_drawings.test_section_sampling.SectionSamplingTests.test_circle_segment_count_follows_chord_height_not_arc_length) ... ok
+test_sampled_polyline_stays_within_the_declared_chord_height (workers.cad.project_drawings.test_section_sampling.SectionSamplingTests.test_sampled_polyline_stays_within_the_declared_chord_height) ... ok
+test_段数随容差放宽而减少 (workers.cad.project_drawings.test_section_sampling.SectionSamplingTests.test_段数随容差放宽而减少) ... ok
+test_直线剖切边仍然只出一段 (workers.cad.project_drawings.test_section_sampling.SectionSamplingTests.test_直线剖切边仍然只出一段) ... ok
+test_blocking_does_not_change_result (workers.cad.project_drawings.test_visibility_intervals.VisibilityIntervalTests.test_blocking_does_not_change_result)
+分块只改内存策略。同一输入下小块与整块必须给出同样的可见区间。 ... ok
+test_five_millimetre_occluder_splits_visible_line (workers.cad.project_drawings.test_visibility_intervals.VisibilityIntervalTests.test_five_millimetre_occluder_splits_visible_line) ... ok
+
+----------------------------------------------------------------------
+Ran 41 tests in 39.105s
+
+OK

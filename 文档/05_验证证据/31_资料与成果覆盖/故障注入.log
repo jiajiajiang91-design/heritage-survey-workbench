@@ -1,0 +1,114 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/material-coverage.test.ts (6 tests | 3 failed) 60ms
+   × 资料与成果覆盖 > 按所选成果改变要求，旧任务未设置目标时不推断 4ms
+     → expected [ 'plan' ] to deeply equal []
+   × 资料与成果覆盖 > 可读文件不自动登记，同文件多个用途经真实命令保存并清空 22ms
+     → expected [ { purpose: 'plan', …(1) }, …(1) ] to deeply equal []
+   ✓ 资料与成果覆盖 > 无位置、重复类别和错误资料不能写入 6ms
+   × 资料与成果覆盖 > 新登记失效不退回旧值，最新读取失败或原件缺失均排除 5ms
+     → expected [ { purpose: 'plan', …(1) }, …(1) ] to deeply equal []
+   ✓ 资料与成果覆盖 > 层级不改变覆盖，目标增加后显示新增缺项，错误建筑不回退 4ms
+   ✓ 资料与成果覆盖 > 独立数据库回导保留原件及多用途登记 18ms
+ ❯ src/screens/MaterialCoverage.test.tsx (2 tests | 1 failed) 85ms
+   × 资料覆盖操作 > 先核对原件再登记，空位置保留输入；真实保存、重开及清空 57ms
+     → expected "spy" to be called once, but got 0 times
+   ✓ 资料覆盖操作 > 保存失败保留输入，汇总可以定位原件 27ms
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 4 passed (8)
+   Start at  16:55:10
+   Duration  1.85s (transform 543ms, setup 428ms, collect 1.80s, tests 145ms, environment 345ms, prepare 206ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/material-coverage.test.ts src/screens/MaterialCoverage.test.tsx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/material-coverage.test.ts > 资料与成果覆盖 > 按所选成果改变要求，旧任务未设置目标时不推断
+AssertionError: expected [ 'plan' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "plan",
++ ]
+
+ ❯ src/material-coverage.test.ts:14:38
+     12| describe("资料与成果覆盖", () => {
+     13|   it("按所选成果改变要求，旧任务未设置目标时不推断", () => {
+     14|     expect(coverageRequirements([])).toEqual([]); expect(coverageRequi…
+       |                                      ^
+     15|     expect(coverageRequirements(["model", "elevation", "section"])).to…
+     16|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/material-coverage.test.ts > 资料与成果覆盖 > 可读文件不自动登记，同文件多个用途经真实命令保存并清空
+AssertionError: expected [ { purpose: 'plan', …(1) }, …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "purpose": "plan",
++     "sourceLocation": "内部第 1 页，首层",
++   },
++   {
++     "purpose": "scale",
++     "sourceLocation": "内部总宽 6000 mm 标注",
++   },
++ ]
+
+ ❯ src/material-coverage.test.ts:22:51
+     20|     const { head, evidenceId: id } = await saved(); expect(coverageEnt…
+     21|     const cleared = await commitMaterialCoverage({ head, evidenceId: i…
+     22|     expect(coverageEntries(cleared.snapshot, id)).toEqual([]); expect(…
+       |                                                   ^
+     23|   });
+     24|   it("无位置、重复类别和错误资料不能写入", async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/material-coverage.test.ts > 资料与成果覆盖 > 新登记失效不退回旧值，最新读取失败或原件缺失均排除
+AssertionError: expected [ { purpose: 'plan', …(1) }, …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "purpose": "plan",
++     "sourceLocation": "内部第 1 页，首层",
++   },
++   {
++     "purpose": "scale",
++     "sourceLocation": "内部总宽 6000 mm 标注",
++   },
++ ]
+
+ ❯ src/material-coverage.test.ts:36:53
+     34|       if (state === "failed") snapshot.parseRecords.push({ ...snapshot…
+     35|       if (state === "missing") snapshot.evidences[0]!.dataStatus = "mi…
+     36|       expect(coverageEntries(snapshot, evidenceId)).toEqual([]);
+       |                                                     ^
+     37|     }
+     38|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/screens/MaterialCoverage.test.tsx > 资料覆盖操作 > 先核对原件再登记，空位置保留输入；真实保存、重开及清空
+AssertionError: expected "spy" to be called once, but got 0 times
+ ❯ src/screens/MaterialCoverage.test.tsx:14:85
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+

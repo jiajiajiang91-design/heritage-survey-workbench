@@ -1,0 +1,51 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档
+
+ ❯ packages/infrastructure/src/geometry-spec-builder.test.ts (17 tests | 1 failed) 31ms
+   ✓ 事实派生采用任务单位 mm，内部长度和来源保持毫米 13ms
+   ✓ 事实派生采用任务单位 cm，内部长度和来源保持毫米 1ms
+   ✓ 事实派生采用任务单位 m，内部长度和来源保持毫米 1ms
+   × evidence-bound geometry spec > 仅模型任务不要求出图配置，保留单位与逐构件依据 4ms
+     → expected false to be true // Object.is equality
+   ✓ evidence-bound geometry spec > 逐构件只继承其具体事实和证据，不扩散到全部资料 1ms
+   ✓ evidence-bound geometry spec > 仅有五个总尺寸时阻断，不推导墙厚、出檐和构造层 1ms
+   ✓ 构件尺寸引用 > 实际生成规格使用采用值及其资料，修订时取最新值且旧规格不变 6ms
+   ✓ 构件尺寸引用 > 最新处置为 reject 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 stale 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 missing 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 unit 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 zero 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 nonfinite 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 圆柱与轮廓挤出使用相同的引用规则 1ms
+   ✓ 构件尺寸引用 > 圆柱与轮廓挤出使用相同的引用规则 1ms
+   ✓ 构件尺寸引用 > 不允许不匹配的长度字段、重复引用或失效资料 1ms
+   ✓ 构件尺寸引用 > 很小的长度不使用科学计数法，也不丢失原组件参数 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/infrastructure/src/geometry-spec-builder.test.ts > evidence-bound geometry spec > 仅模型任务不要求出图配置，保留单位与逐构件依据
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ packages/infrastructure/src/geometry-spec-builder.test.ts:75:50
+     73|     delete task.artifactRequirements;
+     74|     task.productionSetup = { buildingId: current.snapshot.buildings[0]…
+     75|     expect(geometryPrerequisites(current).ready).toBe(true);
+       |                                                  ^
+     76|     const spec = buildProjectGeometrySpec(current, crypto.randomUUID()…
+     77|     expect(spec.outputUnit).toBe("cm");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 passed (17)
+   Start at  22:42:45
+   Duration  686ms (transform 94ms, setup 0ms, collect 362ms, tests 31ms, environment 0ms, prepare 94ms)
+

@@ -1,0 +1,47 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/draft-geometry.test.ts (13 tests | 1 failed | 12 skipped) 17ms
+   × 待核对形体数据 > 纯预览使用草稿当前值、稳定键与候选原文，不写项目事实或几何版本 17ms
+     → expected '{"schemaVersion":"3.0","project":{"id…' to be '{"schemaVersion":"3.0","project":{"id…' // Object.is equality
+   ↓ 待核对形体数据 > 已采用与直接输入的来源可区分，材料未知不推断且形体形式保持
+   ↓ 待核对形体数据 > 候选长度在圆柱及轮廓挤出中保留轴向、毫米坐标和原形体参数
+   ↓ 待核对形体数据 > 候选列表只包含当前项目可读可用且待核对的正长度，并保留类型未定
+   ↓ 待核对形体数据 > 无长度、无坐标或明确位置依据、规则位置均不形成预览
+   ↓ 待核对形体数据 > 候选拒绝、替代、单行驳回、不可读和已失效引用不退回手填值
+   ↓ 待核对形体数据 > 同一字段不能同时绑定两种来源，同一候选跨字段必须使用同一修正值
+   ↓ 待核对形体数据 > 修正或同名异值保存前需要说明，预览允许修正且失败不写任何事实
+   ↓ 待核对形体数据 > 同名异值来源保留冲突，缺说明不采用，说明明确后保留候选原文
+   ↓ 待核对形体数据 > 尺寸采用和构件通过同一 CommitFacts 原子写入，保持稳定身份及来源
+   ↓ 待核对形体数据 > 命令提交失败保持零写入，保存读回失败不会重复执行
+   ↓ 待核对形体数据 > 项目版本改变时原子命令失败，不产生半份尺寸或构件
+   ↓ 待核对形体数据 > 已保存输入 ZIP 导出后独立仓储恢复引用、稳定键、材料未知和原资料
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 纯预览使用草稿当前值、稳定键与候选原文，不写项目事实或几何版本
+AssertionError: expected '{"schemaVersion":"3.0","project":{"id…' to be '{"schemaVersion":"3.0","project":{"id…' // Object.is equality
+
+Expected: "{"schemaVersion":"3.0","project":{"id":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","name":"单元13尺寸核对内部测试","status":"active","locationText":null,"createdAt":"2026-10-02T15:15:38.337Z"},"buildings":[{"id":"f9e800a8-7577-464a-93b8-01c9807b72c1","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","name":"内部测试建筑","periodText":null,"addressText":null,"status":"existing"}],"taskDefinitions":[],"evidences":[{"id":"6997b10f-136a-4ae3-954a-5cd212b81d56","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","assetId":"b1a60283-bc73-475f-ae28-6a4bd0973c93","evidenceType":"document","title":"内部测试尺寸.txt","rightsDeclaration":null,"intendedUse":"项目资料整理与候选提取","recordedAt":"2026-10-02T15:15:38.343Z","relatedEntityRefs":["f9e800a8-7577-464a-93b8-01c9807b72c1"],"dataStatus":"available"}],"parseRecords":[{"id":"cfae9a03-0c37-43e7-9914-6f2018658072","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","assetId":"b1a60283-bc73-475f-ae28-6a4bd0973c93","evidenceId":"6997b10f-136a-4ae3-954a-5cd212b81d56","parser":"utf8-text","parserVersion":"1.0.0","status":"parsed","extractedText":"内部测试资料，不是实测记录。\n总宽 6000 mm\n总深 4200 mm\n层高 3?00 mm\n","readability":"readable","readableAs":"text","warnings":[],"createdAt":"2026-10-02T15:15:38.343Z"}],"entities":[],"exclusionRecords":[],"relations":[],"observations":[],"measurements":[],"facts":[],"candidates":[{"id":"fbf7146f-a06e-4c88-980f-d228defb72de","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","runId":"e662e6b1-309f-4d9f-a954-7e6a7a393590","inputRevisionId":"2532cd17-2e12-436e-8750-fab71a031747","taskType":"measurement-transcription","contentText":"内部交互测试候选，非真实模型运行","structured":{"kind":"measurementTranscription","summary":"内部测试：总宽、总深及不确定高度","dimensions":[{"valueText":"6000","valueMm":"6000","partZh":"总宽","evidenceRef":"6997b10f-136a-4ae3-954a-5cd212b81d56","locationZh":"测试记录第 1 行","certainty":"certain","noteZh":"内部测试数值"},{"valueText":"4200","valueMm":"4200","partZh":"总深","evidenceRef":"6997b10f-136a-4ae3-954a-5cd212b81d56","locationZh":"测试记录第 2 行","certainty":"certain","noteZh":null},{"valueText":"3?00","valueMm":null,"partZh":"层高","evidenceRef":"6997b10f-136a-4ae3-954a-5cd212b81d56","locationZh":"测试记录第 3 行","certainty":"uncertain","noteZh":"原资料须补充，不能按猜测采用"}],"missingInformation":["本文件仅用于交互测试，不用于建筑制作"]},"producer":{"producerType":"model","runId":"e662e6b1-309f-4d9f-a954-7e6a7a393590"},"evidenceRefs":["6997b10f-136a-4ae3-954a-5cd212b81d56"],"reviewStatus":"unreviewed","createdAt":"2026-10-02T15:15:38.346Z"}],"issues":[],"dependencyEdges":[],"geometrySpecs":[],"geometryRevisions":[],"reviewSignoffs":[],"adoptedRecordRefs":[]}"
+Received: "{"schemaVersion":"3.0","project":{"id":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","name":"单元13尺寸核对内部测试","status":"active","locationText":null,"createdAt":"2026-10-02T15:15:38.337Z"},"buildings":[{"id":"f9e800a8-7577-464a-93b8-01c9807b72c1","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","name":"内部测试建筑","periodText":null,"addressText":null,"status":"existing"}],"taskDefinitions":[],"evidences":[{"id":"6997b10f-136a-4ae3-954a-5cd212b81d56","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","assetId":"b1a60283-bc73-475f-ae28-6a4bd0973c93","evidenceType":"document","title":"内部测试尺寸.txt","rightsDeclaration":null,"intendedUse":"项目资料整理与候选提取","recordedAt":"2026-10-02T15:15:38.343Z","relatedEntityRefs":["f9e800a8-7577-464a-93b8-01c9807b72c1"],"dataStatus":"available"}],"parseRecords":[{"id":"cfae9a03-0c37-43e7-9914-6f2018658072","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","assetId":"b1a60283-bc73-475f-ae28-6a4bd0973c93","evidenceId":"6997b10f-136a-4ae3-954a-5cd212b81d56","parser":"utf8-text","parserVersion":"1.0.0","status":"parsed","extractedText":"内部测试资料，不是实测记录。\n总宽 6000 mm\n总深 4200 mm\n层高 3?00 mm\n","readability":"readable","readableAs":"text","warnings":[],"createdAt":"2026-10-02T15:15:38.343Z"}],"entities":[],"exclusionRecords":[],"relations":[],"observations":[],"measurements":[],"facts":[],"candidates":[{"id":"fbf7146f-a06e-4c88-980f-d228defb72de","projectId":"e4e7978f-f1c8-4e15-8d52-547d62cb9101","runId":"e662e6b1-309f-4d9f-a954-7e6a7a393590","inputRevisionId":"2532cd17-2e12-436e-8750-fab71a031747","taskType":"measurement-transcription","contentText":"内部交互测试候选，非真实模型运行","structured":{"kind":"measurementTranscription","summary":"内部测试：总宽、总深及不确定高度","dimensions":[{"valueText":"6000","valueMm":"6000","partZh":"总宽","evidenceRef":"6997b10f-136a-4ae3-954a-5cd212b81d56","locationZh":"测试记录第 1 行","certainty":"certain","noteZh":"内部测试数值"},{"valueText":"4200","valueMm":"4200","partZh":"总深","evidenceRef":"6997b10f-136a-4ae3-954a-5cd212b81d56","locationZh":"测试记录第 2 行","certainty":"certain","noteZh":null},{"valueText":"3?00","valueMm":null,"partZh":"层高","evidenceRef":"6997b10f-136a-4ae3-954a-5cd212b81d56","locationZh":"测试记录第 3 行","certainty":"uncertain","noteZh":"原资料须补充，不能按猜测采用"}],"missingInformation":["本文件仅用于交互测试，不用于建筑制作"]},"producer":{"producerType":"model","runId":"e662e6b1-309f-4d9f-a954-7e6a7a393590"},"evidenceRefs":["6997b10f-136a-4ae3-954a-5cd212b81d56"],"reviewStatus":"unreviewed","createdAt":"2026-10-02T15:15:38.346Z"}],"issues":[],"dependencyEdges":[],"geometrySpecs":[],"geometryRevisions":[],"reviewSignoffs":[],"adoptedRecordRefs":["fault-preview-write","fault-preview-write"]}"
+
+ ❯ src/draft-geometry.test.ts:34:51
+     32|     context.draft.lengths.sizeX = "6100.5";
+     33|     expect(draftGeometryPreview(context.head.snapshot, context.draft).…
+     34|     expect(JSON.stringify(context.head.snapshot)).toBe(original);
+       |                                                   ^
+     35|     const persisted = (await projectRepository.getProjectHead(context.…
+     36|     expect(persisted.revisionId).toBe(context.head.revisionId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 skipped (13)
+   Start at  16:15:36
+   Duration  1.53s (transform 287ms, setup 219ms, collect 1.01s, tests 17ms, environment 0ms, prepare 87ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/draft-geometry.test.ts -t "纯预览使用"

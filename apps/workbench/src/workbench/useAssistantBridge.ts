@@ -5,9 +5,11 @@ import { AssistantClient } from "../assistant/assistant-client";
 import { runClientOp } from "../assistant/client-op-adapter";
 import { buildWorkspaceSnapshot } from "../assistant/workspace-snapshot";
 import { describeFailure } from "../failure-notice";
-import { buildProvenanceGraphView } from "../query-models";
+import { buildProvenanceGraphView, currentUnitArtifacts } from "../query-models";
+import { geometryOutputUnitMatches } from "@gujian/domain";
 import { DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS, factFieldLabel } from "../labels";
 import { factValueText } from "../screens/MeasurementBaseline";
+import { dimensionRecordFacts, reviewedDimension } from "../dimension-review";
 import { isStageId, stageLabel } from "../view-registry";
 import type { EvidencePane } from "./useEvidencePane";
 import type { Jobs } from "./useJobs";
@@ -37,9 +39,11 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
   const contextZh = (() => {
     if (!selected) return "";
     const snapshot = selected.snapshot;
+    const dimensionFacts = dimensionRecordFacts(snapshot.facts);
     const task = session.confirmedTask;
     const geometry = snapshot.geometryRevisions.at(-1) ?? null;
-    const signoff = geometry ? snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometry.id) ?? null : null;
+    const signoff = session.dashboard?.signoff ?? null;
+    const currentArtifacts = currentUnitArtifacts({ head: selected, artifacts: session.projectArtifacts, requirementMatrices: session.projectRequirementMatrices });
     const demoLimitationZh = session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null;
     const evidences = snapshot.evidences.map((item) => `${item.title}（${EVIDENCE_TYPE_LABELS[item.evidenceType] ?? item.evidenceType}，${DATA_STATUS_LABELS[item.dataStatus] ?? item.dataStatus}）`);
     const openIssueLines = openIssues.slice(0, 6).map((item) => item.description.slice(0, 60));
@@ -52,14 +56,14 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
       `项目：${snapshot.project.name}；建筑：${snapshot.buildings[0]?.name ?? "未登记"}；地点：${snapshot.project.locationText ?? "未登记"}。`,
       `当前这一步：${stageLabel(nav.activeStage)}。`,
       `资料 ${snapshot.evidences.length} 份：${evidences.join("；") || "无"}。`,
-      `尺寸记录 ${snapshot.facts.length} 条，其中已确认 ${snapshot.facts.filter((item) => item.reviewStatus === "confirmed").length} 条，待核实 ${snapshot.facts.filter((item) => item.dataStatus === "uncertain").length} 条。`,
+      `尺寸记录 ${dimensionFacts.length} 条，其中已确认 ${dimensionFacts.filter((item) => item.reviewStatus === "confirmed").length} 条，待核实 ${dimensionFacts.filter((item) => item.dataStatus === "uncertain").length} 条。`,
       // 明细也要给：只给条数的话，用户问通面阔是多少，模型只能答现状里没写
-      `尺寸明细：${snapshot.facts.slice(0, 40).map((item) => `${factFieldLabel(item.field)} ${factValueText(item.value)}`).join("；") || "无"}。`,
+      `尺寸明细：${dimensionFacts.slice(0, 40).map((item) => `${reviewedDimension(item)?.name ?? factFieldLabel(item.field)} ${factValueText(item.value)}`).join("；") || "无"}。`,
       `未关闭的问题 ${openIssues.length} 条${openIssueLines.length ? `：${openIssueLines.join("；")}` : ""}。`,
-      `三维模型：${geometry ? `已生成，构件 ${geometrySpec?.objects.length ?? 0} 个，待确认部位 ${geometrySpec?.unknowns.length ?? 0} 处` : "未生成"}。`,
-      `成果要求：${views.length ? views.join("、") : "未确认"}；成果文件 ${session.projectArtifacts.length} 项。`,
+      `三维模型：${geometry ? `已生成，构件 ${geometrySpec?.objects.length ?? 0} 个，待确认部位 ${geometrySpec?.unknowns.length ?? 0} 处${geometryOutputUnitMatches(snapshot) ? "" : "；输出单位已变化，模型文件待重新生成"}` : "未生成"}。`,
+      `成果要求：${views.length ? views.join("、") : "未确认"}；当前适用成果文件 ${currentArtifacts.length} 项，历史文件共 ${session.projectArtifacts.length} 项。`,
       `检查：${check ? (blocked ? `已检查 ${check.results.length} 项，${blocked} 项不通过` : `已检查 ${check.results.length} 项，全部通过`) : "未检查"}。`,
-      `签发与归档：${signoff ? demoLimitationZh ? `流程演示签发记录于 ${signoff.signedAt.slice(0, 10)} 生成，展示归档已完成，但不构成真实工程签发或交付资格；使用范围：${demoLimitationZh}；复核意见：${signoff.statementZh}` : `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}已于 ${signoff.signedAt.slice(0, 10)} 复核签发，成果可正式交付，归档已完成；复核意见：${signoff.statementZh}` : session.projectDeliveries.length ? "有归档草案，未签发" : "无归档草案"}。`,
+      `签发与归档：${signoff ? demoLimitationZh ? `流程演示签发记录于 ${signoff.signedAt.slice(0, 10)} 生成，展示归档已完成，但不构成真实工程签发或交付资格；使用范围：${demoLimitationZh}；复核意见：${signoff.statementZh}` : `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}已于 ${signoff.signedAt.slice(0, 10)} 复核签发，成果可正式交付，归档已完成；复核意见：${signoff.statementZh}` : session.latestDelivery ? "有当前归档草案，未签发" : session.projectDeliveries.length ? "历史归档草案已保留，当前要求尚未完成" : "无归档草案"}。`,
     ].join("\n");
   })();
 
@@ -69,9 +73,9 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
     contextZh,
     openIssueCount: openIssues.length,
     entityCount: (geometrySpec?.objects.length ?? 0) + (selected?.snapshot.entities.length ?? 0),
-    geometryRevisionCount: selected?.snapshot.geometryRevisions.length ?? 0,
-    artifactCount: session.projectArtifacts.length,
-    deliveryCount: session.projectDeliveries.length,
+    geometryRevisionCount: selected && geometryOutputUnitMatches(selected.snapshot) ? selected.snapshot.geometryRevisions.length : 0,
+    artifactCount: selected ? currentUnitArtifacts({ head: selected, artifacts: session.projectArtifacts, requirementMatrices: session.projectRequirementMatrices }).length : 0,
+    deliveryCount: session.latestDelivery ? 1 : 0,
     serverModelConfigured: session.serverStatus?.modelConfigured ?? false,
     unparsedEvidenceCount: Math.max(0, (selected?.snapshot.evidences.length ?? 0) - session.parsedEvidenceCount),
     hasImageSelection: evidence.imageSelection !== null,
@@ -166,6 +170,7 @@ export function useAssistantBridge({ session, nav, jobs, evidence, writes, notic
   })();
 
   const readModelInput = selected ? {
+    requirementMatrices: session.projectRequirementMatrices,
     head: selected,
     modelRuns: session.projectModelRuns,
     ruleRuns: session.projectRuleRuns,

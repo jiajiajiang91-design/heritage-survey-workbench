@@ -1,0 +1,153 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/application
+
+ ❯ src/project-command-service.test.ts (19 tests | 6 failed) 32ms
+   ✓ ProjectCommandService > 通过唯一事务入口建立初始项目版本 4ms
+   ✓ ProjectCommandService > 相同 commandId 重试返回原回执且不重复写入 0ms
+   ✓ ProjectCommandService > 版本冲突在提交前失败 1ms
+   ✓ ProjectCommandService > 提交失败不留下项目头或命令回执 1ms
+   ✓ ProjectCommandService > 服务端权威身份覆盖客户端 actorId 0ms
+   ✓ ProjectCommandService > 未授权命令不会开启仓储事务 0ms
+   ✓ ProjectCommandService > 新增事实保留模型来源并拒绝重复事实 ID 1ms
+   ✓ ProjectCommandService > 构件记录写入后可按 id 修订，修订不存在的记录被拒 1ms
+   ✓ ProjectCommandService > 现状记录写入人工来源并拒绝无证据引用的记录 1ms
+   ✓ ProjectCommandService > 规则核对只作废本轮重新提出的问题，没提的保持未解决 3ms
+   ✓ ProjectCommandService > 复核签发记录追加进快照，几何版本不存在或重复签发被拒 1ms
+   × delivery output unit commands > 任务单位改变后直接提交 proxy-ready 评估不能绕过模型和图纸单位校验 6ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   × delivery output unit commands > 新单位图纸可以基于旧毫米几何独立交付，加入旧单位 IFC 后拒绝 1ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   × delivery output unit commands > 已保存的 mm proxy-ready 评估不能用于当前米单位草案 2ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   × delivery output unit commands > 已保存的 cm proxy-ready 评估不能用于当前米单位草案 1ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   × delivery output unit commands > 按实际图纸矩阵校验，不能使用最新矩阵使旧图纸适用 1ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   ✓ delivery output unit commands > 单位改变不阻止旧成果技术检查和 blocked 评估保存 1ms
+   × delivery output unit commands > 签发按明确几何版本校验单位，最新模型不能覆盖旧版 1ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   ✓ delivery output unit commands > 旧毫米记录仍可交付并保留缺省字段，历史包当前单位不同也可导入 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 任务单位改变后直接提交 proxy-ready 评估不能绕过模型和图纸单位校验
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "auditEventId": "10000000-0000-4000-8000-000000000002",
++   "commandId": "71151c47-2242-4e92-b18c-47e82e9453ef",
++   "commandType": "EvaluateDelivery",
++   "committedAt": "2026-10-01T00:00:00Z",
++   "projectId": "00000000-0000-4000-8000-000000000001",
++   "revisionId": "00000000-0000-4000-8000-000000000002",
+  }
+
+ ❯ src/project-command-service.test.ts:531:114
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 新单位图纸可以基于旧毫米几何独立交付，加入旧单位 IFC 后拒绝
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "auditEventId": "10000000-0000-4000-8000-000000000002",
++   "commandId": "322dcdf0-253a-4357-abff-a07c450e42d6",
++   "commandType": "EvaluateDelivery",
++   "committedAt": "2026-10-01T00:00:00Z",
++   "projectId": "00000000-0000-4000-8000-000000000001",
++   "revisionId": "00000000-0000-4000-8000-000000000002",
+  }
+
+ ❯ src/project-command-service.test.ts:538:114
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 已保存的 mm proxy-ready 评估不能用于当前米单位草案
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 已保存的 cm proxy-ready 评估不能用于当前米单位草案
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "auditEventId": "10000000-0000-4000-8000-000000000003",
++   "commandId": "5debd920-d906-47e5-8304-aa78899f6300",
++   "commandType": "CreateDeliveryDraft",
++   "committedAt": "2026-10-01T00:00:00Z",
++   "projectId": "00000000-0000-4000-8000-000000000001",
++   "revisionId": "00000000-0000-4000-8000-000000000003",
+  }
+
+ ❯ src/project-command-service.test.ts:550:103
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 按实际图纸矩阵校验，不能使用最新矩阵使旧图纸适用
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "auditEventId": "10000000-0000-4000-8000-000000000002",
++   "commandId": "682da7d9-bf30-4292-8ccd-e99ab991a7bc",
++   "commandType": "EvaluateDelivery",
++   "committedAt": "2026-10-01T00:00:00Z",
++   "projectId": "00000000-0000-4000-8000-000000000001",
++   "revisionId": "00000000-0000-4000-8000-000000000002",
+  }
+
+ ❯ src/project-command-service.test.ts:560:114
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 签发按明确几何版本校验单位，最新模型不能覆盖旧版
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "auditEventId": "10000000-0000-4000-8000-000000000002",
++   "commandId": "259f5f0d-1669-4f19-89e9-c06682336f2d",
++   "commandType": "RecordReviewSignoff",
++   "committedAt": "2026-10-01T00:00:00Z",
++   "projectId": "00000000-0000-4000-8000-000000000001",
++   "revisionId": "00000000-0000-4000-8000-000000000002",
+  }
+
+ ❯ src/project-command-service.test.ts:578:94
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 13 passed (19)
+   Start at  20:32:00
+   Duration  665ms (transform 115ms, setup 0ms, collect 367ms, tests 32ms, environment 0ms, prepare 101ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\application:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/project-command-service.test.ts

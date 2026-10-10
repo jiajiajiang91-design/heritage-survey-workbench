@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-03T03:27:37.786Z",
+  "glb": {
+    "source": "D:/Downloads/单元26合成测试建筑.glb",
+    "byteLength": 1260,
+    "sha256": "3fc5144b62d0c1f122d78a5d2e069929380600415fe90e5e1c8494c10efb4222",
+    "matchesCurrentModel": true
+  },
+  "json": {
+    "source": "D:/Downloads/单元26仅模型内部界面检查.project.json",
+    "byteLength": 103739,
+    "sha256": "ca446694c651500df1b453c6d49f47775bf5fa9a551cf99d47a7ddb46717bc5e",
+    "snapshotChecksDraftsAndRulesMatchZip": true,
+    "containsAssetBytes": false
+  }
+}

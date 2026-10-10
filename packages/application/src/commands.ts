@@ -48,6 +48,7 @@ export const CreateProjectCommandSchema = CommandHeaderSchema.extend({
   payload: z.object({
     project: ProjectSchema,
     building: BuildingSchema,
+    taskDefinition: TaskDefinitionSchema.optional(),
   }).strict(),
 }).strict();
 
@@ -104,6 +105,7 @@ export const ReplaceTaskDefinitionCommandSchema = CommandHeaderSchema.extend({
   expectedRevisionId: UuidSchema,
   payload: z.object({
     taskDefinition: TaskDefinitionSchema,
+    building: BuildingSchema.optional(),
     supersedesTaskDefinitionId: UuidSchema,
   }).strict(),
 }).strict();
@@ -162,6 +164,17 @@ export const ImportEvidenceCommandSchema = CommandHeaderSchema.extend({
   }).strict(),
 }).strict();
 
+export const ProcessEvidenceCommandSchema = CommandHeaderSchema.extend({
+  commandType: z.literal("ProcessEvidence"),
+  expectedRevisionId: UuidSchema,
+  payload: z.object({
+    evidence: EvidenceSchema,
+    parseRecord: ParseRecordSchema,
+    derivedAsset: AssetRecordSchema.optional(),
+    stagingSessionId: UuidSchema.optional(),
+  }).strict().refine((value) => Boolean(value.derivedAsset) === Boolean(value.stagingSessionId), "derived asset requires staging"),
+}).strict();
+
 export const CommitModelRunResultCommandSchema = CommandHeaderSchema.extend({
   commandType: z.literal("CommitModelRunResult"),
   expectedRevisionId: UuidSchema,
@@ -174,7 +187,7 @@ export const CommitModelRunResultCommandSchema = CommandHeaderSchema.extend({
 export const ConfirmTaskSetupCommandSchema = CommandHeaderSchema.extend({
   commandType: z.literal("ConfirmTaskSetup"),
   expectedRevisionId: UuidSchema,
-  payload: z.object({ taskDefinition: TaskDefinitionSchema }).strict(),
+  payload: z.object({ taskDefinition: TaskDefinitionSchema, building: BuildingSchema.optional() }).strict(),
 }).strict();
 
 export const CommitRuleEvaluationCommandSchema = CommandHeaderSchema.extend({
@@ -313,6 +326,7 @@ export const ProjectCommandSchema = z.discriminatedUnion("commandType", [
   ReplaceTaskDefinitionCommandSchema,
   ImportProjectSnapshotCommandSchema,
   ImportEvidenceCommandSchema,
+  ProcessEvidenceCommandSchema,
   CommitModelRunResultCommandSchema,
   ConfirmTaskSetupCommandSchema,
   CommitRuleEvaluationCommandSchema,

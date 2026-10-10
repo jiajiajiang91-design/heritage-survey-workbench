@@ -1,0 +1,67 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ❯ src/project-package-service.test.ts (10 tests | 2 failed | 8 skipped) 102ms
+   × ProjectPackageService > 单元23：cm 单位真实仓储 ZIP 独立库回导保留单位、内部毫米、文件和旧记录哈希 71ms
+     → expected undefined to be 'cm' // Object.is equality
+   × ProjectPackageService > 单元23：m 单位真实仓储 ZIP 独立库回导保留单位、内部毫米、文件和旧记录哈希 30ms
+     → expected undefined to be 'm' // Object.is equality
+   ↓ ProjectPackageService > JSON 与 ZIP 均可在空库回导并保留来源版本和审计前缀
+   ↓ ProjectPackageService > ZIP 空库回导保留模型运行和未审核候选
+   ↓ ProjectPackageService > 导出再导入后每条历史事件仍能对回自己的动作名
+   ↓ ProjectPackageService > 拒绝携带未知动作名的回执
+   ↓ ProjectPackageService > 拒绝 ZIP 路径穿越和未支持的文件类型
+   ↓ ProjectPackageService > 哈希篡改后拒绝导入
+   ↓ ProjectPackageService > 兼容尚未包含运行与决定数组的早期 v3 JSON 包
+   ↓ ProjectPackageService > ZIP 空库回导保留几何、成果、检查、交付和真实成果文件
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/project-package-service.test.ts > ProjectPackageService > 单元23：cm 单位真实仓储 ZIP 独立库回导保留单位、内部毫米、文件和旧记录哈希
+AssertionError: expected undefined to be 'cm' // Object.is equality
+
+- Expected: 
+"cm"
+
++ Received: 
+undefined
+
+ ❯ src/project-package-service.test.ts:200:107
+    198|     const zip = await source.packages.exportZip(source.projectId);
+    199|     const parsed = source.packages.parse(zip, "unit23.gujian.zip");
+    200|     expect(parsed.snapshot.geometrySpecs.find((item) => item.id === ne…
+       |                                                                                                           ^
+    201|     expect(parsed.artifactRequirementMatrices.find((item) => item.id =…
+    202|     expect(recordHash(parsed.snapshot.geometrySpecs.find((item) => ite…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/project-package-service.test.ts > ProjectPackageService > 单元23：m 单位真实仓储 ZIP 独立库回导保留单位、内部毫米、文件和旧记录哈希
+AssertionError: expected undefined to be 'm' // Object.is equality
+
+- Expected: 
+"m"
+
++ Received: 
+undefined
+
+ ❯ src/project-package-service.test.ts:200:107
+    198|     const zip = await source.packages.exportZip(source.projectId);
+    199|     const parsed = source.packages.parse(zip, "unit23.gujian.zip");
+    200|     expect(parsed.snapshot.geometrySpecs.find((item) => item.id === ne…
+       |                                                                                                           ^
+    201|     expect(parsed.artifactRequirementMatrices.find((item) => item.id =…
+    202|     expect(recordHash(parsed.snapshot.geometrySpecs.find((item) => ite…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 skipped (10)
+   Start at  20:47:03
+   Duration  883ms (transform 149ms, setup 0ms, collect 500ms, tests 102ms, environment 0ms, prepare 95ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\infrastructure:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/project-package-service.test.ts -t "单元23"

@@ -1,0 +1,1309 @@
+注入错误：把读取失败和未支持均显示为可读。
+退出码：1
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/wording.test.ts (1 test) 14ms
+ ✓ src/no-hardcoded-project-data.test.ts (3 tests) 18ms
+ ✓ src/visual-spec.test.ts (22 tests) 14ms
+ ✓ src/failure-notice.test.ts (15 tests) 7ms
+ ✓ src/assistant/assistant-ui.test.tsx (4 tests) 153ms
+ ✓ src/label-coverage.test.ts (11 tests) 5ms
+ ✓ src/screens/ProjectList.test.tsx (3 tests) 219ms
+ ✓ src/change-history.test.ts (15 tests) 5ms
+ ✓ src/screens/CreateTaskDialog.test.tsx (3 tests) 284ms
+ ❯ src/screens/EvidenceList.test.tsx (2 tests | 2 failed) 150ms
+   × 资料处理页面 > 按最新记录显示结果、层级与具体失败，重试同一资料 40ms
+     → Found multiple elements with the text: 可读
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<span>[39m
+  [0m可读[0m
+[36m</span>[39m
+
+Ignored nodes: comments, script, style
+[36m<span>[39m
+  [0m可读[0m
+[36m</span>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"gj-split"[39m
+      [33mstyle[39m=[32m"--split-ratio: 50%;"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"gj-split-data"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料准备[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m2 份资料，2 份可读。可读表示能够提供图像或文字输入，内容仍需核对。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m必需资料[0m
+            [36m</strong>[39m
+            [0m · [0m
+            [0m平面图或可读草图，尺度与位置依据；主体模型还需高度依据。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m建议资料[0m
+            [36m</strong>[39m
+            [0m · 其他方向照片、历史图纸与说明。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m额外补充[0m
+            [36m</strong>[39m
+            [0m · 详图、节点照片、局部尺寸。[0m
+          [36m</p>[39m
+          [36m<label>[39m
+            [0m添加到 [0m
+            [36m<select[39m
+              [33maria-label[39m=[32m"资料层级"[39m
+            [36m>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"required"[39m
+              [36m>[39m
+                [0m必需资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"recommended"[39m
+              [36m>[39m
+                [0m建议资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"additional"[39m
+              [36m>[39m
+                [0m额外补充[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</label>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-list"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m图纸.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m可读[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m必需资料[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 图纸.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m失败图.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m可读[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m额外补充[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 失败图.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-pane-desc"[39m
+            [36m>[39m
+              [0m本机服务未连接，请重试。[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m从图纸读尺寸[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m上传原始资料[0m
+          [36m</button>[39m
+          [36m<input[39m
+            [33maria-label[39m=[32m"上传原始资料文件"[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mmultiple[39m=[32m""[39m
+            [33mtype[39m=[32m"file"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+        [33maria-orientation[39m=[32m"vertical"[39m
+        [33maria-valuemax[39m=[32m"70"[39m
+        [33maria-valuemin[39m=[32m"30"[39m
+        [33maria-valuenow[39m=[32m"50"[39m
+        [33mclass[39m=[32m"gj-split-divider"[39m
+        [33mrole[39m=[32m"separator"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m/>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"资料区"[39m
+        [33mclass[39m=[32m"gj-split-aside"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料原件[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m对照可读原件或同坐标派生图，核对后再采用候选。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+        [36m>[39m
+          [0m选择左侧资料查看。[0m
+        [36m</div>[39m
+      [36m</aside>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × 资料处理页面 > 上传记录所选资料层级，清空文件控件且处理期间禁止重复 109ms
+     → Unable to find an accessible element with the role "button" and name "重试读取 失败图.tif"
+
+Here are the accessible roles:
+
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  combobox:
+
+  Name "资料层级":
+  [36m<select[39m
+    [33maria-label[39m=[32m"资料层级"[39m
+    [33mdisabled[39m=[32m""[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  option:
+
+  Name "必需资料":
+  [36m<option[39m
+    [33mvalue[39m=[32m"required"[39m
+  [36m/>[39m
+
+  Name "建议资料":
+  [36m<option[39m
+    [33mvalue[39m=[32m"recommended"[39m
+  [36m/>[39m
+
+  Name "额外补充":
+  [36m<option[39m
+    [33mvalue[39m=[32m"additional"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "图纸.tif 可读 必需资料 · 图纸":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-list-card"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "失败图.tif 正在处理 额外补充 · 图纸":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-list-card"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "从图纸读尺寸":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "上传原始资料":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  checkbox:
+
+  Name "用于本次读取 图纸.tif":
+  [36m<input[39m
+    [33maria-label[39m=[32m"用于本次读取 图纸.tif"[39m
+    [33mchecked[39m=[32m""[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "用于本次读取 失败图.tif":
+  [36m<input[39m
+    [33maria-label[39m=[32m"用于本次读取 失败图.tif"[39m
+    [33mchecked[39m=[32m""[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  separator:
+
+  Name "调整数据区与资料区的宽度":
+  [36m<div[39m
+    [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+    [33maria-orientation[39m=[32m"vertical"[39m
+    [33maria-valuemax[39m=[32m"70"[39m
+    [33maria-valuemin[39m=[32m"30"[39m
+    [33maria-valuenow[39m=[32m"50"[39m
+    [33mclass[39m=[32m"gj-split-divider"[39m
+    [33mrole[39m=[32m"separator"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  complementary:
+
+  Name "资料区":
+  [36m<aside[39m
+    [33maria-label[39m=[32m"资料区"[39m
+    [33mclass[39m=[32m"gj-split-aside"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"gj-split"[39m
+      [33mstyle[39m=[32m"--split-ratio: 50%;"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"gj-split-data"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料准备[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m2 份资料，2 份可读。可读表示能够提供图像或文字输入，内容仍需核对。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m必需资料[0m
+            [36m</strong>[39m
+            [0m · [0m
+            [0m平面图或可读草图，尺度与位置依据；主体模型还需高度依据。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m建议资料[0m
+            [36m</strong>[39m
+            [0m · 其他方向照片、历史图纸与说明。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m额外补充[0m
+            [36m</strong>[39m
+            [0m · 详图、节点照片、局部尺寸。[0m
+          [36m</p>[39m
+          [36m<label>[39m
+            [0m添加到 [0m
+            [36m<select[39m
+              [33maria-label[39m=[32m"资料层级"[39m
+              [33mdisabled[39m=[32m""[39m
+            [36m>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"required"[39m
+              [36m>[39m
+                [0m必需资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"recommended"[39m
+              [36m>[39m
+                [0m建议资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"additional"[39m
+              [36m>[39m
+                [0m额外补充[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</label>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-list"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m图纸.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m可读[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m必需资料[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 图纸.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m失败图.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m正在处理[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m额外补充[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 失败图.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-pane-desc"[39m
+            [36m>[39m
+              [0m本机服务未连接，请重试。[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m从图纸读尺寸[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m上传原始资料[0m
+          [36m</button>[39m
+          [36m<input[39m
+            [33maria-label[39m=[32m"上传原始资料文件"[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mmultiple[39m=[32m""[39m
+            [33mtype[39m=[32m"file"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+        [33maria-orientation[39m=[32m"vertical"[39m
+        [33maria-valuemax[39m=[32m"70"[39m
+        [33maria-valuemin[39m=[32m"30"[39m
+        [33maria-valuenow[39m=[32m"50"[39m
+        [33mclass[39m=[32m"gj-split-divider"[39m
+        [33mrole[39m=[32m"separator"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m/>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"资料区"[39m
+        [33mclass[39m=[32m"gj-split-aside"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料原件[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m对照可读原件或同坐标派生图，核对后再采用候选。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+        [36m>[39m
+          [0m选择左侧资料查看。[0m
+        [36m</div>[39m
+      [36m</aside>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ✓ src/model-run-client.test.ts (7 tests) 17ms
+ ✓ src/assistant/marquee-correction.test.ts (9 tests) 7ms
+ ✓ src/project-progress.test.ts (5 tests) 35ms
+ ✓ src/assistant/assistant-core.test.ts (25 tests) 10ms
+ ✓ src/qualification.test.ts (21 tests) 4ms
+ ✓ src/workbench/component-writes.test.tsx (3 tests) 65ms
+ ✓ src/workbench/task-writes.test.tsx (5 tests) 71ms
+ ✓ src/workbench/dimension-writes.test.tsx (3 tests) 76ms
+ ✓ src/component-input.test.ts (18 tests) 174ms
+ ✓ src/stage-map.test.ts (6 tests) 4ms
+ ✓ src/query-models.test.ts (5 tests) 4ms
+ ✓ src/assistant/action-delivery.test.ts (5 tests) 4ms
+ ✓ src/screens/DimensionCandidateReview.test.tsx (5 tests) 406ms
+ ✓ src/portfolio-return.test.ts (1 test) 2ms
+ ✓ src/screens/GeometryComponentEditor.test.tsx (6 tests) 460ms
+ ✓ src/task-requirements.test.ts (14 tests) 69ms
+ ✓ src/exclusion-filter.test.ts (7 tests) 2ms
+ ✓ src/screens/TaskSetupForm.test.tsx (9 tests) 862ms
+ ✓ src/production-task.test.ts (5 tests) 41ms
+ ✓ src/dimension-review.test.ts (14 tests) 62ms
+ ✓ src/component-package.test.ts (1 test) 40ms
+ ✓ src/App.test.tsx (2 tests) 395ms
+   ✓ App > 建立项目后显示当前建筑和版本  394ms
+ ❯ src/evidence-processing.test.ts (7 tests | 2 failed) 187ms
+   ✓ 原始资料处理 > 派生关联经命令保存，原件保持，回导可恢复且模型使用实际派生图 29ms
+   × 原始资料处理 > 失败保存原件，重试不重建资料，最新成功结果用于提取 8ms
+     → expected { state: 'readable', …(1) } to match object { state: 'failed', …(1) }
+   ✓ 原始资料处理 > 错误项目、原资产和原件哈希不允许写入派生关联 4ms
+   × 原始资料处理 > 混合文件继续处理，失败项不静默参与请求，也不调用模型 4ms
+     → expected [] to have a length of 2 but got +0
+   ✓ 原始资料处理 > 无文字层 PDF 明确未支持，不伪装文字输入 132ms
+   ✓ 原始资料处理 > 长中文文本截断不误判 UTF-8，大图不挡住可读小图 10ms
+   ✓ 原始资料处理 > 图像解码失败与有效文字有明确状态，空白文字未支持 0ms
+ ✓ src/demo-library-loader.test.ts (6 tests) 2538ms
+   ✓ 演示项目装载 > 单个包失败不影响其余，失败逐条留下  2014ms
+   ✓ 演示项目装载 > 单个包短暂下载失败时自动重试，不要求清空已有项目  517ms
+
+ Test Files  2 failed | 32 passed (34)
+      Tests  4 failed | 264 passed (268)
+   Start at  09:01:29
+   Duration  4.43s (transform 3.19s, setup 16.86s, collect 23.56s, tests 6.40s, environment 21.87s, prepare 4.26s)
+
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @gujian/workbench@0.0.0 test: `vitest run "--" "src/evidence-processing.test.ts"`
+Exit status 1
+$ vitest run "--" "src/evidence-processing.test.ts"
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/evidence-processing.test.ts > 原始资料处理 > 失败保存原件，重试不重建资料，最新成功结果用于提取
+AssertionError: expected { state: 'readable', …(1) } to match object { state: 'failed', …(1) }
+
+- Expected
++ Received
+
+  {
+    "detail": StringContaining "本机图像处理程序不可用",
+-   "state": "failed",
++   "state": "readable",
+  }
+
+ ❯ src/evidence-processing.test.ts:40:51
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/evidence-processing.test.ts > 原始资料处理 > 混合文件继续处理，失败项不静默参与请求，也不调用模型
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ src/evidence-processing.test.ts:65:89
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/screens/EvidenceList.test.tsx > 资料处理页面 > 按最新记录显示结果、层级与具体失败，重试同一资料
+TestingLibraryElementError: Found multiple elements with the text: 可读
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<span>[39m
+  [0m可读[0m
+[36m</span>[39m
+
+Ignored nodes: comments, script, style
+[36m<span>[39m
+  [0m可读[0m
+[36m</span>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"gj-split"[39m
+      [33mstyle[39m=[32m"--split-ratio: 50%;"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"gj-split-data"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料准备[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m2 份资料，2 份可读。可读表示能够提供图像或文字输入，内容仍需核对。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m必需资料[0m
+            [36m</strong>[39m
+            [0m · [0m
+            [0m平面图或可读草图，尺度与位置依据；主体模型还需高度依据。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m建议资料[0m
+            [36m</strong>[39m
+            [0m · 其他方向照片、历史图纸与说明。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m额外补充[0m
+            [36m</strong>[39m
+            [0m · 详图、节点照片、局部尺寸。[0m
+          [36m</p>[39m
+          [36m<label>[39m
+            [0m添加到 [0m
+            [36m<select[39m
+              [33maria-label[39m=[32m"资料层级"[39m
+            [36m>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"required"[39m
+              [36m>[39m
+                [0m必需资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"recommended"[39m
+              [36m>[39m
+                [0m建议资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"additional"[39m
+              [36m>[39m
+                [0m额外补充[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</label>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-list"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m图纸.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m可读[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m必需资料[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 图纸.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m失败图.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m可读[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m额外补充[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 失败图.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-pane-desc"[39m
+            [36m>[39m
+              [0m本机服务未连接，请重试。[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m从图纸读尺寸[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m上传原始资料[0m
+          [36m</button>[39m
+          [36m<input[39m
+            [33maria-label[39m=[32m"上传原始资料文件"[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mmultiple[39m=[32m""[39m
+            [33mtype[39m=[32m"file"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+        [33maria-orientation[39m=[32m"vertical"[39m
+        [33maria-valuemax[39m=[32m"70"[39m
+        [33maria-valuemin[39m=[32m"30"[39m
+        [33maria-valuenow[39m=[32m"50"[39m
+        [33mclass[39m=[32m"gj-split-divider"[39m
+        [33mrole[39m=[32m"separator"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m/>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"资料区"[39m
+        [33mclass[39m=[32m"gj-split-aside"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料原件[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m对照可读原件或同坐标派生图，核对后再采用候选。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+        [36m>[39m
+          [0m选择左侧资料查看。[0m
+        [36m</div>[39m
+      [36m</aside>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/screens/EvidenceList.test.tsx:20:19
+     18|   it("按最新记录显示结果、层级与具体失败，重试同一资料",()=>{
+     19|     const p=props();render(<EvidenceList {...p}/>);
+     20|     expect(screen.getByText("可读")).toBeInTheDocument();expect(screen.g…
+       |                   ^
+     21|     fireEvent.click(screen.getByRole("button",{name:"重试读取 失败图.tif"}));…
+     22|     fireEvent.click(screen.getByRole("button",{name:"从图纸读尺寸"}));expect…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/screens/EvidenceList.test.tsx > 资料处理页面 > 上传记录所选资料层级，清空文件控件且处理期间禁止重复
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "重试读取 失败图.tif"
+
+Here are the accessible roles:
+
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  combobox:
+
+  Name "资料层级":
+  [36m<select[39m
+    [33maria-label[39m=[32m"资料层级"[39m
+    [33mdisabled[39m=[32m""[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  option:
+
+  Name "必需资料":
+  [36m<option[39m
+    [33mvalue[39m=[32m"required"[39m
+  [36m/>[39m
+
+  Name "建议资料":
+  [36m<option[39m
+    [33mvalue[39m=[32m"recommended"[39m
+  [36m/>[39m
+
+  Name "额外补充":
+  [36m<option[39m
+    [33mvalue[39m=[32m"additional"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "图纸.tif 可读 必需资料 · 图纸":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-list-card"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "失败图.tif 正在处理 额外补充 · 图纸":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-list-card"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "从图纸读尺寸":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "上传原始资料":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  checkbox:
+
+  Name "用于本次读取 图纸.tif":
+  [36m<input[39m
+    [33maria-label[39m=[32m"用于本次读取 图纸.tif"[39m
+    [33mchecked[39m=[32m""[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "用于本次读取 失败图.tif":
+  [36m<input[39m
+    [33maria-label[39m=[32m"用于本次读取 失败图.tif"[39m
+    [33mchecked[39m=[32m""[39m
+    [33mdisabled[39m=[32m""[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  separator:
+
+  Name "调整数据区与资料区的宽度":
+  [36m<div[39m
+    [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+    [33maria-orientation[39m=[32m"vertical"[39m
+    [33maria-valuemax[39m=[32m"70"[39m
+    [33maria-valuemin[39m=[32m"30"[39m
+    [33maria-valuenow[39m=[32m"50"[39m
+    [33mclass[39m=[32m"gj-split-divider"[39m
+    [33mrole[39m=[32m"separator"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  complementary:
+
+  Name "资料区":
+  [36m<aside[39m
+    [33maria-label[39m=[32m"资料区"[39m
+    [33mclass[39m=[32m"gj-split-aside"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"gj-split"[39m
+      [33mstyle[39m=[32m"--split-ratio: 50%;"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"gj-split-data"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料准备[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m2 份资料，2 份可读。可读表示能够提供图像或文字输入，内容仍需核对。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m必需资料[0m
+            [36m</strong>[39m
+            [0m · [0m
+            [0m平面图或可读草图，尺度与位置依据；主体模型还需高度依据。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m建议资料[0m
+            [36m</strong>[39m
+            [0m · 其他方向照片、历史图纸与说明。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0m额外补充[0m
+            [36m</strong>[39m
+            [0m · 详图、节点照片、局部尺寸。[0m
+          [36m</p>[39m
+          [36m<label>[39m
+            [0m添加到 [0m
+            [36m<select[39m
+              [33maria-label[39m=[32m"资料层级"[39m
+              [33mdisabled[39m=[32m""[39m
+            [36m>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"required"[39m
+              [36m>[39m
+                [0m必需资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"recommended"[39m
+              [36m>[39m
+                [0m建议资料[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"additional"[39m
+              [36m>[39m
+                [0m额外补充[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</label>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-list"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m图纸.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m可读[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m必需资料[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 图纸.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-list-card"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-list-card-head"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-list-card-title"[39m
+                [36m>[39m
+                  [0m失败图.tif[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m正在处理[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-list-card-sub"[39m
+              [36m>[39m
+                [0m额外补充[0m
+                [0m · [0m
+                [0m图纸[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<label>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"用于本次读取 失败图.tif"[39m
+                [33mchecked[39m=[32m""[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0m 用于本次读取[0m
+            [36m</label>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-pane-desc"[39m
+            [36m>[39m
+              [0m本机服务未连接，请重试。[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m从图纸读尺寸[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m上传原始资料[0m
+          [36m</button>[39m
+          [36m<input[39m
+            [33maria-label[39m=[32m"上传原始资料文件"[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mmultiple[39m=[32m""[39m
+            [33mtype[39m=[32m"file"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+        [33maria-orientation[39m=[32m"vertical"[39m
+        [33maria-valuemax[39m=[32m"70"[39m
+        [33maria-valuemin[39m=[32m"30"[39m
+        [33maria-valuenow[39m=[32m"50"[39m
+        [33mclass[39m=[32m"gj-split-divider"[39m
+        [33mrole[39m=[32m"separator"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m/>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"资料区"[39m
+        [33mclass[39m=[32m"gj-split-aside"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m资料原件[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m对照可读原件或同坐标派生图，核对后再采用候选。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+        [36m>[39m
+          [0m选择左侧资料查看。[0m
+        [36m</div>[39m
+      [36m</aside>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/screens/EvidenceList.test.tsx:31:72
+     29|     await waitFor(()=>expect(p.onUpload).toHaveBeenCalledWith([file],"…
+     30|     rerender(<EvidenceList {...p} processingEvidenceId={p.snapshot.evi…
+     31|     expect(screen.getByText("正在处理")).toBeInTheDocument();expect(screen…
+       |                                                                        ^
+     32|   });
+     33| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+

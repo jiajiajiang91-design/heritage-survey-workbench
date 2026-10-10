@@ -1,0 +1,128 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/draft-geometry.test.ts (13 tests | 4 failed) 83ms
+   ✓ 待核对形体数据 > 纯预览使用草稿当前值、稳定键与候选原文，不写项目事实或几何版本 14ms
+   ✓ 待核对形体数据 > 已采用与直接输入的来源可区分，材料未知不推断且形体形式保持 10ms
+   ✓ 待核对形体数据 > 候选长度在圆柱及轮廓挤出中保留轴向、毫米坐标和原形体参数 3ms
+   × 待核对形体数据 > 候选列表只包含当前项目可读可用且待核对的正长度，并保留类型未定 6ms
+     → expected [] to have a length of 2 but got +0
+   × 待核对形体数据 > 无长度、无坐标或明确位置依据、规则位置均不形成预览 4ms
+     → expected { …(11) } to be null
+   × 待核对形体数据 > 候选拒绝、替代、单行驳回、不可读和已失效引用不退回手填值 3ms
+     → the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+   × 待核对形体数据 > 同一字段不能同时绑定两种来源，同一候选跨字段必须使用同一修正值 2ms
+     → the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+   ✓ 待核对形体数据 > 修正或同名异值保存前需要说明，预览允许修正且失败不写任何事实 6ms
+   ✓ 待核对形体数据 > 同名异值来源保留冲突，缺说明不采用，说明明确后保留候选原文 8ms
+   ✓ 待核对形体数据 > 尺寸采用和构件通过同一 CommitFacts 原子写入，保持稳定身份及来源 4ms
+   ✓ 待核对形体数据 > 命令提交失败保持零写入，保存读回失败不会重复执行 4ms
+   ✓ 待核对形体数据 > 项目版本改变时原子命令失败，不产生半份尺寸或构件 3ms
+   ✓ 待核对形体数据 > 已保存输入 ZIP 导出后独立仓储恢复引用、稳定键、材料未知和原资料 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 候选列表只包含当前项目可读可用且待核对的正长度，并保留类型未定
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ src/draft-geometry.test.ts:62:56
+     60|   it("候选列表只包含当前项目可读可用且待核对的正长度，并保留类型未定", async () => {
+     61|     const context = await rawFixture();
+     62|     expect(candidateDimensions(context.head.snapshot)).toHaveLength(2);
+       |                                                        ^
+     63|     expect(candidateDimensions(context.head.snapshot)[0]).toMatchObjec…
+     64|     const snapshot = structuredClone(context.head.snapshot);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 无长度、无坐标或明确位置依据、规则位置均不形成预览
+AssertionError: expected { …(11) } to be null
+
+- Expected: 
+null
+
++ Received: 
+{
+  "componentType": "wall",
+  "displayNameZh": "内部测试墙",
+  "evidenceRefs": [
+    "4c7710aa-94c5-474f-8ccf-9c4dab9591a6",
+  ],
+  "materialCode": "unknown",
+  "parameters": [],
+  "parentStableKey": null,
+  "positionBasis": "rule",
+  "solid": {
+    "centerMm": [
+      3000,
+      120,
+      1500,
+    ],
+    "kind": "box",
+    "sizeX": "6000",
+    "sizeY": "240",
+    "sizeZ": "3000",
+  },
+  "sourceLocation": "内部资料的人工定位记录",
+  "stableKey": "a2474fbb-0ce9-40c3-8402-e261f8f4179c",
+  "unknowns": [
+    {
+      "affectedStableKeys": [
+        "a2474fbb-0ce9-40c3-8402-e261f8f4179c",
+      ],
+      "blocksFormalEligibility": true,
+      "blocksProxyOutcome": false,
+      "description": "构件材料尚未确认，需补充材料调查记录。",
+      "reasonCode": "material-unknown",
+      "requiredEvidence": [
+        "材料调查记录",
+      ],
+    },
+  ],
+}
+
+ ❯ src/draft-geometry.test.ts:82:103
+     80|       { lengths: { ...context.draft.lengths, sizeX: "" } }, { coordina…
+     81|       { sourceLocation: "" }, { positionBasis: "rule" as const }, { po…
+     82|     ]) expect(draftGeometryPreview(context.head.snapshot, { ...context…
+       |                                                                                                       ^
+     83|     const relative = structuredClone(context.head.snapshot);
+     84|     if (relative.candidates[0]!.structured?.kind === "measurementTrans…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 候选拒绝、替代、单行驳回、不可读和已失效引用不退回手填值
+AssertionError: the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+ ❯ src/draft-geometry.test.ts:92:74
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 同一字段不能同时绑定两种来源，同一候选跨字段必须使用同一修正值
+AssertionError: the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+ ❯ src/draft-geometry.test.ts:112:79
+    110|     const context = await rawFixture();
+    111|     const doubled = { ...context.draft, bindings: { sizeX: crypto.rand…
+    112|     expect(draftGeometryPreview(context.head.snapshot, doubled).errors…
+       |                                                                               ^
+    113|     context.draft.candidateBindings!.sizeY = context.draft.candidateBi…
+    114|     expect(draftGeometryPreview(context.head.snapshot, context.draft).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 9 passed (13)
+   Start at  16:15:26
+   Duration  1.57s (transform 286ms, setup 225ms, collect 965ms, tests 83ms, environment 0ms, prepare 87ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/draft-geometry.test.ts

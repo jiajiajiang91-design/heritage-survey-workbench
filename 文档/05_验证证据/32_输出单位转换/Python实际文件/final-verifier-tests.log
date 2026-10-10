@@ -1,0 +1,27 @@
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+test_optional_matrix_unit_is_not_injected_and_invalid_values_fail (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_optional_matrix_unit_is_not_injected_and_invalid_values_fail) ... ok
+test_rehashed_single_file_tampers_are_rejected_and_restored (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_rehashed_single_file_tampers_are_rejected_and_restored) ... D:\Claude_jiajia\06_古建保护归档\workers\cad\project_drawings\test_output_units.py:143: DeprecationWarning: Calling `PageObject.replace_contents()` for pages not assigned to a writer is deprecated and will be removed in pypdf 7.0.0. Attach the page to the writer first or use `PdfWriter(clone_from=...)` directly. The existing approach has proved being unreliable.
+  page.replace_contents(content)
+ok
+test_three_native_units_dimensions_text_and_paper_scale (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_three_native_units_dimensions_text_and_paper_scale) ... ok
+test_current_autocad_summary_schema_binds_the_canonical_dxf_hash (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_current_autocad_summary_schema_binds_the_canonical_dxf_hash) ... ok
+test_current_package_passes (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_current_package_passes) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_current_qcad_summary_schema_binds_source_and_print_layouts (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_current_qcad_summary_schema_binds_source_and_print_layouts) ... ok
+test_png_dimension_tamper_is_detected (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_png_dimension_tamper_is_detected) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+test_source_line_tamper_is_detected_after_rehash (workers.cad.project_drawings.test_verify_package.DrawingPackageVerifierTests.test_source_line_tamper_is_detected_after_rehash) ... 'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 32.090s
+
+OK

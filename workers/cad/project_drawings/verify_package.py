@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import argparse
+import bisect
 import gzip
 import hashlib
 import json
 import math
 import re
 import xml.etree.ElementTree as ET
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +16,7 @@ import ezdxf
 import cadquery as cq
 import numpy as np
 import trimesh
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from fontTools.ttLib import TTFont
 from pypdf import PdfReader
 from shapely.geometry import LineString, MultiPoint, Point, Polygon, box
@@ -445,6 +447,144 @@ def _visible_dxf_text(doc) -> list[str]:
     return values
 
 
+def _converted_text(value_mm: float, unit: str) -> str:
+    value = Decimal(str(value_mm)) / Decimal({"mm": "1", "cm": "10", "m": "1000"}[unit])
+    text = format(value, "f")
+    return text.rstrip("0").rstrip(".") if "." in text else text
+
+
+def _expected_dimensions(matrix: dict[str, Any], ir: dict[str, Any]) -> dict[str, tuple[float, str]]:
+    unit = matrix.get("outputUnit", "mm")
+    expected: dict[str, tuple[float, str]] = {}
+    for view in ir["views"]:
+        view_id = view["viewId"]
+        value = round(view["boundsMm"][1][0] - view["boundsMm"][0][0], 3)
+        expected[f"dimension:{view_id}"] = value, f"{_horizontal_label_for(matrix, view_id)} {_converted_text(value, unit)} {unit}"
+        requirement = next(item for item in matrix["views"] if item["id"] == view_id)
+        axes = (requirement.get("annotationPlan") or {}).get("axes", [])
+        for along in ("u", "v"):
+            family = sorted((item for item in axes if item["along"] == along), key=lambda item: item["positionMm"])
+            for first, second in zip(family, family[1:]):
+                span = second["positionMm"] - first["positionMm"]
+                if span > 0:
+                    expected[f"chain:{view_id}:{first['label']}-{second['label']}"] = span, f"{_converted_text(span, unit)} {unit}"
+    return expected
+
+
+def _native_unit_checks(doc, matrix: dict[str, Any], ir: dict[str, Any], sidecar_rows: list[dict[str, Any]]) -> tuple[bool, bool, bool, bool]:
+    expected_unit = matrix.get("outputUnit", "mm")
+    divisor = {"mm": 1.0, "cm": 10.0, "m": 1000.0}[expected_unit]
+    declared_divisor = {4: 1.0, 5: 10.0, 6: 1000.0}.get(doc.header.get("$INSUNITS"), 0.0)
+    stages: dict[str, tuple[float, float]] = {}
+    cursor = 0.0
+    for view in sorted(ir["views"], key=lambda item: item["viewId"]):
+        stages[view["viewId"]] = cursor - view["boundsMm"][0][0], -view["boundsMm"][0][1]
+        cursor += max(view["boundsMm"][1][0] - view["boundsMm"][0][0], 1.0) + 2000.0
+    view_by_id = {item["viewId"]: item for item in ir["views"]}
+    handles = {entity.dxf.handle: entity for layout in doc.layouts for entity in layout if entity.dxf.handle}
+    actual: dict[str, list[tuple]] = {view_id: [] for view_id in view_by_id}
+    geometry_ok = declared_divisor == divisor
+    viewport_ok = declared_divisor == divisor
+    for row in sidecar_rows:
+        entity = handles.get(row["handle"])
+        if entity is None:
+            continue
+        view_id = row.get("viewId")
+        if row["objectClass"] == "structure" and view_id in stages:
+            if entity.dxftype() != "LINE":
+                geometry_ok = False
+                continue
+            offset = stages[view_id]
+            points = [[float(point[0]) * declared_divisor - offset[0], float(point[1]) * declared_divisor - offset[1]] for point in (entity.dxf.start, entity.dxf.end)]
+            actual[view_id].append(_segment_key(row["sourceEntityId"], points))
+        if entity.dxftype() == "VIEWPORT" and view_id in stages:
+            requirement = next(item for item in matrix["views"] if item["id"] == view_id)
+            view = view_by_id[view_id]
+            offset = stages[view_id]
+            expected_center = [(view["boundsMm"][0][axis] + view["boundsMm"][1][axis]) / 2 + offset[axis] for axis in (0, 1)]
+            viewport_ok = viewport_ok and all(abs(entity.dxf.view_center_point[axis] * declared_divisor - expected_center[axis]) <= 0.001 for axis in (0, 1))
+            rect = requirement["viewportRectMm"]
+            viewport_ok = viewport_ok and abs(entity.dxf.height - rect[3]) < 1e-6 and abs(entity.dxf.width - rect[2]) < 1e-6
+            viewport_ok = viewport_ok and abs(entity.dxf.view_height * declared_divisor - rect[3] * requirement["scaleDenominator"]) <= 0.001
+    for view_id, view in view_by_id.items():
+        expected = [_segment_key(line["sourceEntityId"], line["pointsMm"]) for line in view["lines"]]
+        geometry_ok = geometry_ok and len(actual[view_id]) == len(expected)
+        for source_id in {item[0] for item in actual[view_id] + expected}:
+            actual_lines = [LineString(item[1:]) for item in actual[view_id] if item[0] == source_id]
+            expected_lines = [LineString(item[1:]) for item in expected if item[0] == source_id]
+            actual_union, expected_union = unary_union(actual_lines), unary_union(expected_lines)
+            geometry_ok = geometry_ok and len(actual_lines) == len(expected_lines) and actual_union.hausdorff_distance(expected_union) <= 0.001
+            geometry_ok = geometry_ok and abs(sum(line.length for line in actual_lines) - sum(line.length for line in expected_lines)) <= 0.001
+    dimensions = _expected_dimensions(matrix, ir)
+    dimension_rows = [row for row in sidecar_rows if row.get("kind") in {"overallDimension", "axisDimensionChain"}]
+    dimension_ok = len(dimension_rows) == len(dimensions)
+    for row in dimension_rows:
+        entity = handles.get(row["handle"])
+        expected = dimensions.get(row.get("requirementId"))
+        if entity is None or entity.dxftype() != "DIMENSION" or expected is None:
+            dimension_ok = False
+            continue
+        value_mm, _ = expected
+        overrides = entity.override()
+        dimension_ok = dimension_ok and abs(float(entity.get_measurement()) * declared_divisor - value_mm) <= 0.001
+        dimension_ok = dimension_ok and overrides.get("dimlfac", 1.0) == 1.0 and overrides.get("dimrnd", 0.0) == 0.0 and overrides.get("dimpost") == f"<> {expected_unit}"
+        dimension_ok = dimension_ok and entity.dxf.get("text", "<>") in {"<>", ""}
+        rendered = [item.plain_text() if item.dxftype() == "MTEXT" else item.dxf.text for item in entity.virtual_entities() if item.dxftype() in {"TEXT", "MTEXT"}]
+        expected_display = f"{_converted_text(value_mm, expected_unit)} {expected_unit}"
+        dimension_ok = dimension_ok and rendered == [expected_display]
+    dimstyle = doc.dimstyles.get("GJ-DIM")
+    parameters_ok = all(abs(getattr(dimstyle.dxf, name) * divisor - value) < 1e-6 for name, value in (("dimtxt", 125), ("dimasz", 100), ("dimexo", 0.625), ("dimexe", 1.25), ("dimgap", 0.625), ("dimdli", 3.75), ("dimfxl", 2.5), ("dimcen", 2.5)))
+    parameters_ok = parameters_ok and all(abs(hatch.dxf.pattern_scale * divisor - 80) < 1e-6 for hatch in doc.modelspace().query("HATCH"))
+    for name, expected in (("GJ-DASHED", (18, 12, -6)), ("GJ-CENTER", (39, 24, -6, 3, -6))):
+        values = [float(tag.value) * divisor for tag in doc.linetypes.get(name).pattern_tags.tags if tag.code in {40, 49}]
+        parameters_ok = parameters_ok and len(values) == len(expected) and all(abs(left - right) < 1e-6 for left, right in zip(values, expected))
+    for row in sidecar_rows:
+        entity = handles.get(row["handle"])
+        view = view_by_id.get(row.get("viewId"))
+        if entity is None or view is None or "kind" not in row:
+            continue
+        if entity.dxftype() in {"TEXT", "MTEXT"}:
+            actual_height = entity.dxf.height if entity.dxftype() == "TEXT" else entity.dxf.char_height
+            parameters_ok = parameters_ok and abs(actual_height * divisor - row["paperTextHeightMm"] * view["scaleDenominator"]) < 1e-6
+        if entity.dxftype() == "CIRCLE" and row["kind"] in {"axisGrid", "detailIndex"}:
+            parameters_ok = parameters_ok and abs(entity.dxf.radius * divisor - 3.5 * view["scaleDenominator"]) < 1e-6
+    parameters_ok = parameters_ok and all(abs(circle.dxf.radius * divisor - 120) < 1e-6 for circle in doc.blocks["GJ_CONDITION_MARK"].query("CIRCLE"))
+    return geometry_ok, viewport_ok, dimension_ok, parameters_ok
+
+
+def _pdf_paper_scale_matches(reader: PdfReader, matrix: dict[str, Any], ir: dict[str, Any]) -> bool:
+    for page, sheet in zip(reader.pages, matrix["sheets"], strict=True):
+        lengths: list[float] = []
+        previous = None
+        transform = np.eye(3)
+        stack = []
+        for operands, operator in page.get_contents().operations:
+            if operator == b"q":
+                stack.append(transform.copy())
+            elif operator == b"Q":
+                transform = stack.pop() if stack else np.eye(3)
+            elif operator == b"cm":
+                a, b, c, d, e, f = [float(value) for value in operands]
+                transform = transform @ np.array([[a, c, e], [b, d, f], [0, 0, 1]])
+            elif operator == b"m":
+                previous = (transform @ np.array([float(operands[0]), float(operands[1]), 1]))[:2]
+            elif operator == b"l" and previous is not None:
+                point = (transform @ np.array([float(operands[0]), float(operands[1]), 1]))[:2]
+                lengths.append(math.dist(previous, point) * 25.4 / 72)
+                previous = point
+            elif operator in {b"n", b"S", b"f", b"f*", b"B", b"B*"}:
+                previous = None
+        lengths.sort()
+        for view in (item for item in ir["views"] if item["viewId"] in sheet["viewIds"]):
+            for line in view["lines"]:
+                expected = math.dist(*line["pointsMm"]) / view["scaleDenominator"]
+                position = bisect.bisect_left(lengths, expected - 0.001)
+                if position >= len(lengths) or abs(lengths[position] - expected) > 0.001:
+                    return False
+                lengths.pop(position)
+    return True
+
+
 def _font_programs(reader: PdfReader) -> list[dict[str, Any]]:
     fonts: list[dict[str, Any]] = []
     for page in reader.pages:
@@ -534,7 +674,9 @@ def verify(
     layout_names = [name for name in doc.layouts.names() if name != "Model"]
     expected_layouts = [sheet["drawingNumber"] for sheet in matrix["sheets"]]
     user_viewports = [entity for name in layout_names for entity in doc.layouts.get(name).query("VIEWPORT") if entity.dxf.id > 1]
-    _check(not audit.errors and doc.header["$INSUNITS"] == 4 and doc.dxfversion == "AC1032", "native-dxf-baseline", "DXF 为 R2018、毫米、ezdxf 审计零错误", checks)
+    expected_unit = matrix.get("outputUnit", "mm")
+    expected_unit_code = {"mm": 4, "cm": 5, "m": 6}[expected_unit]
+    _check(not audit.errors and doc.header["$INSUNITS"] == expected_unit_code and doc.dxfversion == "AC1032", "native-dxf-baseline", "DXF 为 R2018、任务输出单位、ezdxf 审计零错误", checks)
     requires_hatch = any(view.get("materialRegions") for view in ir["views"])
     native_types_ok = {"LINE", "DIMENSION", "TEXT", "MTEXT", "INSERT"}.issubset(native_types)
     native_types_ok = native_types_ok and (not requires_hatch or "HATCH" in native_types)
@@ -561,6 +703,11 @@ def verify(
         if row["objectClass"] == "structure":
             sidecar_ok = sidecar_ok and row["sourceEntityId"] in entity_ids and row["geometryRevisionId"] == manifest["geometryRevisionId"]
     _check(sidecar_ok, "cad-provenance", "CAD XDATA 与来源映射逐对象闭合", checks)
+    geometry_ok, viewport_ok, dimension_ok, parameters_ok = _native_unit_checks(doc, matrix, ir, sidecar_rows)
+    _check(geometry_ok, "native-output-coordinates", "原生结构线按文件单位恢复毫米后与内部视图逐线一致", checks)
+    _check(viewport_ok, "native-paper-scale", "纸面毫米与模型单位同步换算，视口物理比例和中心一致", checks)
+    _check(dimension_ok, "native-dimension-display", "原生 DIMENSION 测量、有效样式和实际显示文字对应任务单位", checks)
+    _check(parameters_ok, "native-length-parameters", "模型空间尺寸样式、线型、字高、圆圈和填充长度参数同步换算", checks)
 
     visible_text = "\n".join(_visible_dxf_text(doc))
     forbidden_visible = ["targetViewId", "generated-not-qualified", "proxy-unissued", "2000-01-01"]
@@ -612,11 +759,43 @@ def verify(
 
     cross_format_text = all(value in svg_text and value in pdf_text and value in visible_text for value in required_text)
     # 尺寸名称随视图横轴在模型里的方向定，与 sheet_writer 的规则一致
-    dimension_texts = [
-        f"{_horizontal_label_for(matrix, view['viewId'])} {view['boundsMm'][1][0] - view['boundsMm'][0][0]:.0f} mm"
-        for view in ir["views"]
-    ]
-    _check(cross_format_text and all(value in svg_text and value in pdf_text for value in dimension_texts), "cross-format-text", "图名、图号、资格状态和同源尺寸跨格式一致", checks)
+    expected_dimensions = _expected_dimensions(matrix, ir)
+    dimension_texts = [item[1] for item in expected_dimensions.values()]
+    ir_dimensions = {item["requirementId"]: item for item in ir["annotations"] if item["kind"] in {"overallDimension", "axisDimensionChain"}}
+    ir_text_ok = ir.get("outputUnit", "mm") == expected_unit and set(ir_dimensions) == set(expected_dimensions)
+    ir_text_ok = ir_text_ok and all(ir_dimensions[key]["text"] == value[1] and abs(ir_dimensions[key]["valueMm"] - value[0]) < 1e-8 for key, value in expected_dimensions.items())
+    level_texts = [f"{level['label']} {level['elevationMm'] / 1000:.3f} m" for view in matrix["views"] for level in (view.get("annotationPlan") or {}).get("levels", [])]
+    _check(cross_format_text and ir_text_ok and all(value in svg_text and value in pdf_text for value in dimension_texts + level_texts), "cross-format-text", "图名、图号、资格状态、保留小数的长度与米标高跨格式一致", checks)
+    png_text_ok = True
+    svg_scale_ok = True
+    for sheet in matrix["sheets"]:
+        root = ET.parse(output_dir / f"{sheet['drawingNumber']}.svg").getroot()
+        for view in (item for item in ir["views"] if item["viewId"] in sheet["viewIds"]):
+            group = next(item for item in root.iter(f"{SVG_NS}g") if item.attrib.get("data-view-ref") == view["drawingRef"])
+            rendered_lines = [item for item in group.iter(f"{SVG_NS}line") if item.attrib.get("data-source-entity")]
+            for rendered, source in zip(rendered_lines, view["lines"], strict=True):
+                length_paper = math.hypot(float(rendered.attrib["x2"]) - float(rendered.attrib["x1"]), float(rendered.attrib["y2"]) - float(rendered.attrib["y1"]))
+                svg_scale_ok = svg_scale_ok and abs(length_paper * view["scaleDenominator"] - math.dist(*source["pointsMm"])) < 0.05
+        with Image.open(output_dir / f"{sheet['drawingNumber']}.png") as raster:
+            image = np.asarray(raster.convert("L"))
+            for node in root.iter(f"{SVG_NS}text"):
+                text = "".join(node.itertext())
+                if text not in dimension_texts + level_texts:
+                    continue
+                font = ImageFont.truetype(str(font_path), round(float(node.attrib["font-size"]) * 300 / 25.4))
+                mask = Image.new("L", raster.size, 0)
+                draw = ImageDraw.Draw(mask)
+                box = draw.textbbox((0, 0), text, font=font)
+                span = box[2] - box[0]
+                anchor = node.attrib.get("text-anchor")
+                x = float(node.attrib["x"]) * 300 / 25.4 - (span / 2 if anchor == "middle" else span if anchor == "end" else 0)
+                y = float(node.attrib["y"]) * 300 / 25.4 - (box[3] - box[1]) - 1.5 * 300 / 25.4
+                draw.text((x, y), text, fill=255, font=font)
+                core = np.asarray(mask) > 192
+                png_text_ok = png_text_ok and bool(np.any(core)) and float(np.mean(image[core] < 150)) >= 0.995
+    _check(svg_scale_ok, "svg-paper-scale", "SVG 逐条结构线的纸面物理长度符合任务比例", checks)
+    _check(_pdf_paper_scale_matches(reader, matrix, ir), "pdf-paper-scale", "PDF 实际矢量路径的纸面物理长度符合任务比例", checks)
+    _check(png_text_ok, "png-dimension-text", "PNG 长度与标高文字的实际字形像素符合独立期望", checks)
 
     font_manifest = json.loads((font_path.parent / "font-manifest.json").read_text(encoding="utf-8"))
     bound_font_ok = _hash(font_path) == font_manifest["sha256"] and font_manifest["instance"]["usWeightClass"] == 400

@@ -67,6 +67,7 @@ export interface ProjectTransaction {
   getProjectHead(): Promise<ProjectHead | null>;
   getCadJob(jobId: string): Promise<CadJob | null>;
   getArtifactRequirementMatrix(matrixId: string): Promise<ArtifactRequirementMatrix | null>;
+  getAssetRecord(assetId: string): Promise<AssetRecord | null>;
   getArtifact(artifactId: string): Promise<ArtifactRecord | null>;
   getCheckRun(checkRunId: string): Promise<CheckRun | null>;
   getDeliveryEvaluation(evaluationId: string): Promise<DeliveryEvaluation | null>;

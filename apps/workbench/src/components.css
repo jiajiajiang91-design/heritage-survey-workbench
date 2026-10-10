@@ -177,7 +177,7 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 .gj-field { display: flex; flex-direction: column; gap: var(--space-xs); min-width: 0; }
 .gj-field > span { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); }
 .gj-field[data-required="true"] > span::after { content: " *"; color: var(--text-danger); }
-.gj-input, .gj-field input, .gj-field select, .gj-field textarea {
+.gj-input, .gj-field input, select, .gj-field textarea {
   width: 100%; min-height: var(--size-control-md); padding: 0 var(--space-md);
   border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md);
   background: var(--bg-surface); color: var(--text-primary);
@@ -185,9 +185,29 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 }
 .gj-field textarea, textarea.gj-input { min-height: 46px; padding: var(--space-sm) var(--space-md); resize: vertical; line-height: var(--line-22); }
 .gj-input:focus-visible, .gj-field input:focus-visible, .gj-field select:focus-visible, .gj-field textarea:focus-visible { border-color: var(--border-focus); outline: var(--stroke-emphasis) solid var(--border-focus); outline-offset: 0; }
-.gj-field[data-invalid="true"] input, .gj-field[data-invalid="true"] textarea { border-color: var(--status-danger-fg); }
+.gj-field[data-invalid="true"] input, .gj-field[data-invalid="true"] textarea, .gj-field[data-invalid="true"] select { border-color: var(--status-danger-fg); }
 .gj-field-error { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--status-danger-fg); }
-.gj-field input:disabled, .gj-field textarea:disabled { background: var(--action-disabled-bg); color: var(--text-disabled); }
+.gj-field input:disabled, .gj-field textarea:disabled, select:disabled { background: var(--action-disabled-bg); color: var(--text-disabled); }
+select { min-width: 0; max-width: 100%; cursor: pointer; }
+select:disabled { cursor: not-allowed; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--action-primary-bg); flex: none; }
+summary { cursor: pointer; min-height: var(--size-control-sm); padding-block: var(--space-xs); color: var(--text-secondary); font: var(--font-weight-medium) var(--font-size-13)/var(--line-20) var(--font-family-ui); overflow-wrap: anywhere; }
+summary::marker { color: var(--icon-secondary); }
+summary:hover { color: var(--text-primary); }
+summary:focus-visible { outline: var(--stroke-emphasis) solid var(--border-focus); outline-offset: var(--space-2xs); border-radius: var(--radius-sm); }
+details[open] > summary { margin-bottom: var(--space-sm); }
+@supports (appearance: base-select) {
+  @media (hover: hover) {
+    select, select::picker(select) { appearance: base-select; }
+    select { align-items: center; gap: var(--space-sm); }
+    select::picker-icon { color: var(--icon-secondary); margin-inline-start: auto; }
+    select::picker(select) { margin-block: var(--space-xs); padding: var(--space-xs); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-primary); min-inline-size: anchor-size(width); max-inline-size: min(40rem, calc(100vw - var(--space-2xl))); max-block-size: 20rem; overflow-y: auto; font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
+    select option { min-height: var(--size-control-md); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); white-space: normal; overflow-wrap: anywhere; }
+    select option:hover, select option:focus-visible { background: var(--bg-hover); outline: none; }
+    select option:checked { background: var(--bg-selected); font-weight: var(--font-weight-medium); }
+    select option:disabled { color: var(--text-disabled); }
+  }
+}
 .gj-check { display: flex; align-items: center; gap: var(--space-sm); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
 .gj-check input { width: var(--size-icon-sm); height: var(--size-icon-sm); margin: 0; }
 
@@ -216,7 +236,7 @@ button.gj-list-card[aria-current="true"], .gj-list-card[aria-selected="true"] { 
 .gj-split { display: grid; grid-template-columns: calc(var(--split-ratio, 50%) - var(--space-xs)) var(--space-md) minmax(0, 1fr); min-height: 0; flex: 1 1 auto; }
 .gj-split-data, .gj-split-aside { display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; min-height: 0; overflow: visible; padding: var(--space-lg); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
 /* 卡底操作行在列表很长时贴住卡底，不随列表滚走（v4 卡内列表都装得下，真实项目装不下） */
-.gj-split-data > .gj-actions:last-child, .gj-split-aside > .gj-actions:last-child { position: sticky; bottom: var(--space-lg); padding-top: var(--space-sm); background: var(--bg-surface); }
+.gj-split-data > .gj-actions:last-child, .gj-split-aside > .gj-actions:last-child { padding-top: var(--space-sm); background: var(--bg-surface); }
 .gj-split-divider { cursor: col-resize; position: relative; }
 .gj-split-divider::before { content: ""; position: absolute; top: var(--space-lg); bottom: var(--space-lg); left: 50%; width: var(--stroke-hairline); background: transparent; }
 .gj-split-divider:hover::before, .gj-split-divider:focus-visible::before { width: var(--stroke-emphasis); background: var(--border-strong); }

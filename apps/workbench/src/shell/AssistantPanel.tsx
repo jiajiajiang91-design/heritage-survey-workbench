@@ -25,6 +25,7 @@ export interface AssistantPanelProps {
 }
 
 function displayModelName(modelName: string | undefined): string {
+  if (modelName?.startsWith("internal-")) return "内部交互测试（未联网）";
   if (!modelName) return "AI 已连接";
   if (modelName.toLowerCase() === "kimi-k2.6") return "Kimi K2.6 已连接";
   return `${modelName} 已连接`;
@@ -95,10 +96,10 @@ export function AssistantPanel({ hasProject, activeStage, assistant, jobs, evide
                   </div>
                 </div>
               )}
-              {jobs.modelProgress && (
+              {jobs.modelRunning && (
                 <div className="ws-assistant-run">
                   <strong>助手正在识别</strong>
-                  <p>{jobs.modelProgress.streamedText || "正在建立受控运行……"}</p>
+                  <p>正在读取所选资料，完成后可在工作区查看结果。</p>
                   {jobs.modelRunning && <Button compact onClick={jobs.cancelModel}>停止识别</Button>}
                 </div>
               )}

@@ -1,0 +1,13 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/component-package.test.ts (1 test) 42ms
+ ✓ src/draft-geometry.test.ts (13 tests) 96ms
+ ✓ src/component-input.test.ts (19 tests) 79ms
+
+ Test Files  3 passed (3)
+      Tests  33 passed (33)
+   Start at  16:11:53
+   Duration  2.06s (transform 593ms, setup 728ms, collect 2.94s, tests 217ms, environment 392ms, prepare 291ms)
+

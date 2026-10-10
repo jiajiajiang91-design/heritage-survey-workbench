@@ -1,0 +1,102 @@
+{
+  "buildingDisplayNameZh": "测试对象",
+  "createdAt": "2026-08-13T12:00:00.000Z",
+  "geometryRevisionId": "da1008d7-f2ee-5d7c-ac5d-ef110ef271fd",
+  "id": "940b01ec-6e63-5f2d-869a-7be6346848f2",
+  "issueDate": null,
+  "issueState": "proxy-unissued",
+  "observationCandidates": [
+    {
+      "displayLabelZh": "表面状态待现场核对",
+      "id": "38b3e749-1bff-5acc-bfc7-229b15eb4d18",
+      "producerType": "demo",
+      "reviewStatus": "unreviewed",
+      "targetEntityId": "a62f1527-adf5-5081-8167-395579e2deba"
+    }
+  ],
+  "outputUnit": "m",
+  "projectId": "9527b3cb-ab1b-549c-8df1-32664f7a1dd6",
+  "projectRevisionId": "a9667ee8-2627-504b-89bf-50569182082c",
+  "revisionLabel": "P01",
+  "schemaVersion": "1.0",
+  "sheets": [
+    {
+      "displayLabelZh": "平面与立面",
+      "drawingNumber": "P-01",
+      "id": "6bab98c3-b3c0-5a31-b128-a431416f3e81",
+      "pageMm": [
+        594,
+        420
+      ],
+      "viewIds": [
+        "3377312d-33b8-5577-972e-2006a993370c"
+      ]
+    }
+  ],
+  "titleZh": "项目驱动代理成果",
+  "views": [
+    {
+      "annotationPlan": {
+        "axes": [
+          {
+            "along": "u",
+            "basisZh": "单位转换合成测试",
+            "label": "1",
+            "positionMm": -2800,
+            "sourceEntityIds": [
+              "a62f1527-adf5-5081-8167-395579e2deba"
+            ]
+          },
+          {
+            "along": "u",
+            "basisZh": "单位转换合成测试",
+            "label": "2",
+            "positionMm": 3300.5,
+            "sourceEntityIds": [
+              "a62f1527-adf5-5081-8167-395579e2deba"
+            ]
+          }
+        ],
+        "levels": [
+          {
+            "basisZh": "单位转换合成测试",
+            "elevationMm": 1500.5,
+            "label": "测试标高",
+            "sourceEntityIds": [
+              "a62f1527-adf5-5081-8167-395579e2deba"
+            ]
+          }
+        ]
+      },
+      "direction": [
+        0,
+        1,
+        0
+      ],
+      "displayLabelZh": "正立面图",
+      "drawingRef": "立-01",
+      "id": "3377312d-33b8-5577-972e-2006a993370c",
+      "key": "elevation",
+      "kind": "elevation",
+      "right": [
+        1,
+        0,
+        0
+      ],
+      "scaleDenominator": 50,
+      "sheetId": "6bab98c3-b3c0-5a31-b128-a431416f3e81",
+      "sourceTypes": [],
+      "up": [
+        0,
+        0,
+        1
+      ],
+      "viewportRectMm": [
+        20,
+        80,
+        540,
+        280
+      ]
+    }
+  ]
+}

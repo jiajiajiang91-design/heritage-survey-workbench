@@ -36,6 +36,7 @@ const COMMAND_LABELS: Record<string, string> = {
   CreateProject: "建立项目",
   ImportProjectSnapshot: "导入项目包",
   ImportEvidence: "上传资料",
+  ProcessEvidence: "处理原始资料",
   ConfirmTaskSetup: "确认任务要求",
   ReplaceTaskDefinition: "更换任务书",
   CommitFacts: "写入尺寸记录",

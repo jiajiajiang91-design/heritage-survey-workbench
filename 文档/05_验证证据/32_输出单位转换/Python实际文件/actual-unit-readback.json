@@ -1,0 +1,47 @@
+[
+  {
+    "outputUnit": "mm",
+    "ifcPrefix": "MILLI",
+    "ifcCoordinateLength": 6100.5,
+    "dxfInsunits": 4,
+    "nativeDimensionMeasured": 6100.5,
+    "nativeDimensionDisplayed": [
+      "6100.5 mm"
+    ],
+    "glbLengthMetres": 6.100499868392944,
+    "paperDimensionLengthMmAt1To50": 122.01,
+    "drawingChecks": 28,
+    "drawingFailedChecks": 0,
+    "geometryFailedChecks": 0
+  },
+  {
+    "outputUnit": "cm",
+    "ifcPrefix": "CENTI",
+    "ifcCoordinateLength": 610.05,
+    "dxfInsunits": 5,
+    "nativeDimensionMeasured": 610.0500000000001,
+    "nativeDimensionDisplayed": [
+      "610.05 cm"
+    ],
+    "glbLengthMetres": 6.100499868392944,
+    "paperDimensionLengthMmAt1To50": 122.01000000000002,
+    "drawingChecks": 28,
+    "drawingFailedChecks": 0,
+    "geometryFailedChecks": 0
+  },
+  {
+    "outputUnit": "m",
+    "ifcPrefix": null,
+    "ifcCoordinateLength": 6.1005,
+    "dxfInsunits": 6,
+    "nativeDimensionMeasured": 6.1005,
+    "nativeDimensionDisplayed": [
+      "6.1005 m"
+    ],
+    "glbLengthMetres": 6.100499868392944,
+    "paperDimensionLengthMmAt1To50": 122.01,
+    "drawingChecks": 28,
+    "drawingFailedChecks": 0,
+    "geometryFailedChecks": 0
+  }
+]

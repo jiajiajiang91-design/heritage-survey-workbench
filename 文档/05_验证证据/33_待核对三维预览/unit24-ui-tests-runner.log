@@ -1,0 +1,5 @@
+'vitest' is not recognized as an internal or external command,
+operable program or batch file.
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/draft-geometry-mesh.test.ts src/screens/GeometryComponentEditor.test.tsx --configLoader runner --maxWorkers 1 --no-file-parallelism

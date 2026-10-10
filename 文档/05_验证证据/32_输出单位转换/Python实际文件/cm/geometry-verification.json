@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "status": "passed-project-geometry-technical-only",
+  "qualification": "generated-not-qualified",
+  "l1Eligible": false,
+  "formalEligibility": false,
+  "geometryRevisionId": "521d402b-249a-502b-a9f5-2b75679f2dae",
+  "inputHash": "a9e7baa2cad9f7c1709a3a6c5bfafc49579c632afdb365256490fe2e82737d78",
+  "entityCount": 1,
+  "interfaceCount": 0,
+  "outputUnit": "cm",
+  "checks": 10,
+  "failedChecks": 0,
+  "failures": []
+}

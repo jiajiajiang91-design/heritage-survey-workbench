@@ -13,6 +13,7 @@
 
 # 本地临时与构建产物
 .tmp/
+.tmp-*.log
 tmp/
 .codex_staging/
 .codex_staging*/
@@ -70,6 +71,8 @@ desktop.ini
 
 # 辅导截图为私有内容
 文档/03_辅导笔记/截图/
+文档/03_辅导笔记/辅导13要点笔记_260905.md
+文档/03_辅导笔记/参考：用户沟通红线.txt
 文档/05_验证证据/04_T0_CAD可行性与资产保全/*preview*.png
 文档/05_验证证据/04_T0_CAD可行性与资产保全/t0b-v3-outputs/previews/*.png
 文档/05_验证证据/04_T0_CAD可行性与资产保全/t0b-v2-outputs/geometry-manifest.json

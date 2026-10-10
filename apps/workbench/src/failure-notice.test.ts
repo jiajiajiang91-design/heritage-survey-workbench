@@ -126,3 +126,18 @@ describe("嵌套错误码", () => {
     expect(notice.summaryZh).toContain("平面图缺少轴线");
   });
 });
+
+describe("本机冲突与服务断线", () => {
+  it("命令上的版本冲突码优先于英文消息，不能被归为服务断线", () => {
+    const error = Object.assign(new Error("expected revision does not match project head"), { code: "REVISION_CONFLICT" });
+    expect(describeFailure(error, "保存失败")).toEqual({
+      summaryZh: "项目已由另一窗口修改，本次草稿没有写入。",
+      nextStepZh: "保留草稿，重新打开项目核对最新值后再保存。",
+    });
+  });
+  it("只有明确的服务断线提示带恢复对话框标记", () => {
+    expect(describeFailure(new Error("SSE_DISCONNECTED"), "运行失败").kind).toBe("serviceUnavailable");
+    expect(inputError("尺寸不能为空").kind).toBeUndefined();
+    expect(describeFailure(new Error("WRITE_FAILED"), "保存失败").kind).toBeUndefined();
+  });
+});

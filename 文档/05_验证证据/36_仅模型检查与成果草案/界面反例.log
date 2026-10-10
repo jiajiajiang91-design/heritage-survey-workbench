@@ -1,0 +1,117 @@
+coaching27-ui-entry-red.log
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/delivery-readiness.test.ts (1 test) 3ms
+ ❯ src/screens/ChecksAndQualification.test.tsx (2 tests | 1 failed) 62ms
+   × 仅模型检查页面 > 已有模型直接显示且检查与返回不要求出图，下载当前Blob 47ms
+     → expected "spy" to be called once, but got 0 times
+   ✓ 仅模型检查页面 > 旧图纸检查不冒充模型检查，已检查模型的输入变化后提示更新 15ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 2 passed (3)
+   Start at  03:39:50
+   Duration  1.95s (transform 320ms, setup 473ms, collect 1.30s, tests 66ms, environment 716ms, prepare 213ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/screens/ChecksAndQualification.test.tsx src/delivery-readiness.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/screens/ChecksAndQualification.test.tsx > 仅模型检查页面 > 已有模型直接显示且检查与返回不要求出图，下载当前Blob
+AssertionError: expected "spy" to be called once, but got 0 times
+ ❯ src/screens/ChecksAndQualification.test.tsx:33:93
+     31|     expect(screen.queryByRole("button", { name: "重新出图并检查" })).not.toBe…
+     32|     expect(screen.queryByRole("button", { name: "导出 DXF 与 PDF" })).not…
+     33|     fireEvent.click(screen.getByRole("button", { name: "检查模型文件" })); e…
+       |                                                                                             ^
+     34|     fireEvent.click(screen.getByRole("button", { name: "返回三维模型" })); e…
+     35|     fireEvent.click(screen.getByRole("button", { name: "下载 GLB 模型" }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+coaching27-ui-old-check-red.log
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/delivery-readiness.test.ts (1 test) 3ms
+ ❯ src/screens/ChecksAndQualification.test.tsx (2 tests | 1 failed) 55ms
+   ✓ 仅模型检查页面 > 已有模型直接显示且检查与返回不要求出图，下载当前Blob 47ms
+   × 仅模型检查页面 > 旧图纸检查不冒充模型检查，已检查模型的输入变化后提示更新 7ms
+     → expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <span
+  class="gj-tag gj-tag--success"
+>
+  文件检查通过
+</span> instead
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 2 passed (3)
+   Start at  03:39:53
+   Duration  1.96s (transform 322ms, setup 468ms, collect 1.32s, tests 58ms, environment 721ms, prepare 198ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/screens/ChecksAndQualification.test.tsx src/delivery-readiness.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/screens/ChecksAndQualification.test.tsx > 仅模型检查页面 > 旧图纸检查不冒充模型检查，已检查模型的输入变化后提示更新
+Error: expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <span
+  class="gj-tag gj-tag--success"
+>
+  文件检查通过
+</span> instead
+ ❯ src/screens/ChecksAndQualification.test.tsx:40:46
+     38|   it("旧图纸检查不冒充模型检查，已检查模型的输入变化后提示更新", () => {
+     39|     const p = props(); const view = render(<ChecksAndQualification {..…
+     40|     expect(screen.queryByText("文件检查通过")).not.toBeInTheDocument();
+       |                                              ^
+     41|     expect(screen.getByText("模型已生成，待检查")).toBeInTheDocument();
+     42|     view.rerender(<ChecksAndQualification {...p} latestCheckRun={check…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+coaching27-ui-targets-red.log
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/delivery-readiness.test.ts (1 test | 1 failed) 6ms
+   × 当前目标的草案条件 > 新增图纸目标不复用模型检查，改成仅模型也不借图纸检查放行 6ms
+     → expected true to be false // Object.is equality
+ ✓ src/screens/ChecksAndQualification.test.tsx (2 tests) 63ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 2 passed (3)
+   Start at  03:39:55
+   Duration  1.94s (transform 315ms, setup 469ms, collect 1.31s, tests 69ms, environment 694ms, prepare 199ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/screens/ChecksAndQualification.test.tsx src/delivery-readiness.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/delivery-readiness.test.ts > 当前目标的草案条件 > 新增图纸目标不复用模型检查，改成仅模型也不借图纸检查放行
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/delivery-readiness.test.ts:12:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

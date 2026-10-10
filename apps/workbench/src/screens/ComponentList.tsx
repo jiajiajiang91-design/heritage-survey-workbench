@@ -1,12 +1,15 @@
 import { useMemo, useState } from "react";
 import type { ProjectHead } from "@gujian/application";
 
+import { candidateComponent, type ComponentCandidateSelection, type ComponentDraft, type ComponentInput } from "../component-input";
+import { validPreviewRegion } from "../preview-read-model";
+import { ComponentInputPanel } from "./GeometryComponentEditor";
 import { ENTITY_ORIGIN_LABELS, PRODUCER_LABELS } from "../labels";
 import { EvidencePane } from "../shell/EvidencePane";
 import { Button, EmptyState, InfoRow, SourceTag, Tag } from "../ui";
 import { SplitPane } from "../ui/SplitPane";
 import type { EvidencePane as EvidencePaneModel } from "../workbench/useEvidencePane";
-import { FallbackBanner } from "./Dialogs";
+
 import "./ComponentList.css";
 
 // W04 构件清单（66:1787）：左卡构件（标题行带计数标签，每个构件一张小卡：短编号、来源标签、
@@ -15,6 +18,7 @@ import "./ComponentList.css";
 type Snapshot = ProjectHead["snapshot"];
 type GeometryObject = Snapshot["geometrySpecs"][number]["objects"][number];
 type Entity = Snapshot["entities"][number];
+type Region = { x: number; y: number; width: number; height: number };
 
 const PAGE_SIZE = 60;
 
@@ -27,10 +31,13 @@ export interface ComponentListProps {
   selectedObjectId: string | null;
   onSelectObject: (id: string | null) => void;
   onOpenInModel: (id: string) => void;
-  // 模型服务未配置凭证时在顶部给一条警示（B03），识别不会运行
-  modelConfigured: boolean;
+
   // 有复核签发记录时，待确认项按复核已接受的建模说明显示（实施单元 09）
   signedOff: boolean;
+  onSaveComponent: (value: ComponentInput) => Promise<boolean>;
+  onSaveDraftComponent?: (draft: ComponentDraft, base?: ComponentInput) => Promise<boolean>;
+  candidateSelection?: ComponentCandidateSelection | null;
+  onCandidateSelectionHandled?: () => void;
 }
 
 export function shortCode(index: number): string {
@@ -45,11 +52,14 @@ function objectDescription(object: GeometryObject, evidenceTitles: readonly stri
   return `${head}${evidence}${unknown}。`;
 }
 
-export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, selectedObjectId, onSelectObject, onOpenInModel, modelConfigured, signedOff }: ComponentListProps) {
+export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, selectedObjectId, onSelectObject, onOpenInModel, signedOff, onSaveComponent, onSaveDraftComponent, candidateSelection, onCandidateSelectionHandled }: ComponentListProps) {
   const [typeFilter, setTypeFilter] = useState("all");
-  const [fallbackDismissed, setFallbackDismissed] = useState(false);
+
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [hint, setHint] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState<ComponentCandidateSelection | null>(null);
+  const [parameterRegion, setParameterRegion] = useState<{ evidenceId: string; region: Region } | null>(null);
+  const candidateRow = selectedCandidate ? candidateComponent(snapshot, selectedCandidate) : null;
 
   const typeCounts = useMemo(() => {
     const counts = new Map<string, number>();
@@ -67,6 +77,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
   const entities: readonly Entity[] = snapshot.entities;
   // 选构件时右卡切到它引用的第一张能显示的照片（v4 右卡没有切换下拉）；没有引用时保持当前资料
   const showEvidenceOf = (refs: readonly string[]) => {
+    setParameterRegion(null);
     const candidates = refs.map((ref) => snapshot.evidences.find((item) => item.id === ref)).filter((item): item is Snapshot["evidences"][number] => item !== undefined && item.dataStatus === "available");
     const target = candidates.find((item) => item.evidenceType === "photo") ?? candidates[0];
     if (target) pane.setActiveEvidenceId(target.id);
@@ -74,7 +85,7 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
 
   return (
     <>
-    {!modelConfigured && !fallbackDismissed && <FallbackBanner onDismiss={() => setFallbackDismissed(true)} />}
+
     <SplitPane
       data={(
         <>
@@ -82,6 +93,10 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
             <span className="gj-pane-title">构件</span>
             <Tag>{objects.length} 个对象{entities.length ? ` · ${entities.length} 条构件记录` : ""}</Tag>
           </div>
+          <ComponentInputPanel snapshot={snapshot} onSave={onSaveComponent} onSaveDraft={onSaveDraftComponent}
+            onShowEvidence={(ref, region) => { pane.setActiveEvidenceId(ref); setParameterRegion(region && validPreviewRegion(region) ? { evidenceId: ref, region } : null); }}
+            selection={candidateSelection} onSelectionHandled={onCandidateSelectionHandled}
+            onSelectCandidate={(source) => { setSelectedCandidate(source); setParameterRegion(null); onSelectObject(null); pane.setImageSelection(null); }} />
           {typeCounts.length > 1 && (
             <select className="sc-components-filter" aria-label="按构件类型筛选" value={typeFilter} onChange={(event) => { setTypeFilter(event.target.value); setLimit(PAGE_SIZE); }}>
               <option value="all">全部类型（{objects.length}）</option>
@@ -89,11 +104,11 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
             </select>
           )}
           {objects.length === 0 && entities.length === 0 && (
-            <EmptyState>还没有构件。构件只能来自本项目的资料，或本项目已核对过的三维模型。</EmptyState>
+            <EmptyState>还没有生成构件模型。请先按资料准备上方的构件制作输入。</EmptyState>
           )}
           <div className="gj-pane-list">
             {shown.map(({ object, code }) => (
-              <button type="button" className="gj-list-card" key={object.id} aria-current={object.id === selectedObjectId ? "true" : undefined} onClick={() => { onSelectObject(object.id); showEvidenceOf(object.evidenceRefs); }}>
+              <button type="button" className="gj-list-card" key={object.id} aria-current={object.id === selectedObjectId ? "true" : undefined} onClick={() => { setSelectedCandidate(null); onSelectObject(object.id); showEvidenceOf(object.evidenceRefs); }}>
                 <div className="gj-list-card-head">
                   <span className="gj-list-card-title">{code}</span>
                   <SourceTag producerType={object.producer.producerType} />
@@ -127,17 +142,19 @@ export function ComponentList({ snapshot, objects, unknowns, pane, typeLabel, se
       )}
       aside={(
         <EvidencePane
-          // 这一栏叫对应照片，就只列照片；把清单 JSON 一类的记录文件整篇灌进来会名不副实
-          evidences={snapshot.evidences.filter((item) => item.evidenceType === "photo")}
+          // 构件参数可以来自图纸、测量表或照片。
+          evidences={snapshot.evidences}
           pane={pane}
-          title="对应照片"
-          emptyHint={snapshot.evidences.some((item) => item.evidenceType === "photo") ? "选择资料查看构件对应的照片。" : "本项目没有照片资料。构件来源可在下方详情与三维模型里核对。"}
+          title="对应资料"
+          location={parameterRegion && pane.activeEvidenceId === parameterRegion.evidenceId ? parameterRegion.region
+            : candidateRow && pane.activeEvidenceId === candidateRow.evidenceRef && validPreviewRegion(candidateRow.region) ? candidateRow.region : null}
+          emptyHint={snapshot.evidences.length ? "选择构件引用的资料，核对尺寸和位置。" : "请先添加本项目资料。"}
           caption={selected ? (
             <div className="sc-components-caption">
               <strong>{selected.code} · {selected.object.displayNameZh}</strong>
               <p>{objectDescription(selected.object, selectedEvidenceTitles, selectedUnknowns.length, signedOff)}{pane.activeEvidenceId ? "" : " 照片原件未随包提供或未选择，无法回溯到图像位置。"}</p>
             </div>
-          ) : null}
+          ) : candidateRow ? <div className="sc-components-caption"><strong>{candidateRow.nameZh}</strong><p>原图候选位置，制作参数仍需结合原件核对。</p>{candidateRow.noteZh && <p>{candidateRow.noteZh}</p>}</div> : null}
           detail={(
             <>
               {selected && (

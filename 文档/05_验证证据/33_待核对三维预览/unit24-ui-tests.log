@@ -1,0 +1,26 @@
+$ vitest run "--" "src/draft-geometry-mesh.test.ts" "src/screens/GeometryComponentEditor.test.tsx"
+failed to load config from D:\Claude_jiajia\06_古建保护归档\apps\workbench\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: EPERM: operation not permitted, open 'D:\Claude_jiajia\06_古建保护归档\apps\workbench\node_modules\.vite-temp\vitest.config.ts.timestamp-1790953700735-58df529daf19d.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.writeFile (node:internal/fs/promises:1239:14)
+    at async loadConfigFromBundledFile (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35994:3)
+    at async bundleAndLoadConfigFile (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35884:17)
+    at async loadConfigFromFile (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35851:42)
+    at async resolveConfig (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35500:22)
+    at async _createServer (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:25441:67)
+    at async createViteServer (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vitest@3.2.4_@types+node@24.2.1_jsdom@26.1.0/node_modules/vitest/dist/chunks/cli-api.BkDphVBG.js:6911:17)
+    at async createVitest (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vitest@3.2.4_@types+node@24.2.1_jsdom@26.1.0/node_modules/vitest/dist/chunks/cli-api.BkDphVBG.js:10202:17)
+    at async prepareVitest (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vitest@3.2.4_@types+node@24.2.1_jsdom@26.1.0/node_modules/vitest/dist/chunks/cli-api.BkDphVBG.js:10541:14) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'open',
+  path: 'D:\\Claude_jiajia\\06_古建保护归档\\apps\\workbench\\node_modules\\.vite-temp\\vitest.config.ts.timestamp-1790953700735-58df529daf19d.mjs'
+}
+
+
+
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @gujian/workbench@0.0.0 test: `vitest run "--" "src/draft-geometry-mesh.test.ts" "src/screens/GeometryComponentEditor.test.tsx"`
+Exit status 1

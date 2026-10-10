@@ -1,0 +1,27 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+stdout | src/test/coaching24-fixture.tmp.test.ts > 生成明确合成的单元24内部浏览器资料包
+{
+  projectId: '7d46c050-0ebd-41e4-ae30-0d948c17cb46',
+  evidenceRef: '01fe9914-08eb-41d4-ad4f-beb93cea7e4a',
+  candidates: [
+    {
+      id: '7691b370-1e2f-4b52-843a-a65eba9965b7',
+      type: 'measurement-transcription'
+    },
+    {
+      id: '2cab858d-64b0-42a8-9288-9b9daadac342',
+      type: 'component-recognition'
+    }
+  ]
+}
+
+ ✓ src/test/coaching24-fixture.tmp.test.ts (1 test) 36ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  16:16:53
+   Duration  1.93s (transform 286ms, setup 216ms, collect 990ms, tests 36ms, environment 343ms, prepare 83ms)
+

@@ -1,0 +1,59 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/workbench/component-writes.test.tsx (6 tests | 2 failed) 56ms
+   ✓ 构件写入反馈 > 写入失败返回 false，保留项目原记录 27ms
+   ✓ 构件写入反馈 > 读回失败报告已保存，避免误导再次提交 7ms
+   ✓ 构件写入反馈 > 刷新失败仍保留已保存项目，尺寸引用进入真实仓储 6ms
+   × 构件写入反馈 > 核对草稿经真实入口一次保存尺寸与构件，不产生几何成果 7ms
+     → expected false to be true // Object.is equality
+   ✓ 构件写入反馈 > 核对草稿失败返回false且尺寸与构件均未写入 4ms
+   × 构件写入反馈 > 核对草稿已提交而读回失败时仍报告已保存，避免重复采用 4ms
+     → expected false to be true // Object.is equality
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  16:12:07
+   Duration  1.88s (transform 312ms, setup 206ms, collect 1.09s, tests 56ms, environment 330ms, prepare 63ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/workbench/component-writes.test.tsx > 构件写入反馈 > 核对草稿经真实入口一次保存尺寸与构件，不产生几何成果
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/workbench/component-writes.test.tsx:53:16
+     51|     let ok = false;
+     52|     await act(async () => { ok = await test.result.current.confirmDraf…
+     53|     expect(ok).toBe(true); expect(execute).toHaveBeenCalledOnce();
+       |                ^
+     54|     expect(execute.mock.calls[0]![0]).toMatchObject({ commandType: "Co…
+     55|     const saved = (await projectRepository.getProjectHead(test.head.pr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/workbench/component-writes.test.tsx > 构件写入反馈 > 核对草稿已提交而读回失败时仍报告已保存，避免重复采用
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/workbench/component-writes.test.tsx:81:16
+     79|     let ok = false;
+     80|     await act(async () => { ok = await test.result.current.confirmDraf…
+     81|     expect(ok).toBe(true);
+       |                ^
+     82|     expect(test.notices.setNotice).toHaveBeenCalledWith("尺寸核对与构件输入已保存，…
+     83|     expect(test.notices.setError.mock.calls.filter(([value]) => value …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

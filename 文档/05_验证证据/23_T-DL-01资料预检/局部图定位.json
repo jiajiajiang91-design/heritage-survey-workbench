@@ -1,0 +1,74 @@
+[
+  {
+    "source": "highres_00016a.tif",
+    "preview": "16_顶部尺寸链.png",
+    "boxPx": [
+      1400,
+      560,
+      5850,
+      1380
+    ]
+  },
+  {
+    "source": "highres_00016a.tif",
+    "preview": "16_二层总宽.png",
+    "boxPx": [
+      7500,
+      540,
+      10450,
+      1140
+    ]
+  },
+  {
+    "source": "highres_00016a.tif",
+    "preview": "16_纵向尺寸.png",
+    "boxPx": [
+      10300,
+      700,
+      11850,
+      8240
+    ]
+  },
+  {
+    "source": "highres_00017a.tif",
+    "preview": "17_标高.png",
+    "boxPx": [
+      12640,
+      1750,
+      13400,
+      4280
+    ]
+  },
+  {
+    "source": "highres_00018a.tif",
+    "preview": "18_标高.png",
+    "boxPx": [
+      12650,
+      4170,
+      13420,
+      6660
+    ]
+  },
+  {
+    "source": "highres_00016a.tif",
+    "preview": "16_前部纵向尺寸读数.png",
+    "boxPx": [
+      11180,
+      1040,
+      11730,
+      1990
+    ],
+    "rotateDegrees": -90
+  },
+  {
+    "source": "highres_00016a.tif",
+    "preview": "16_主体进深读数.png",
+    "boxPx": [
+      11180,
+      4420,
+      11730,
+      5480
+    ],
+    "rotateDegrees": -90
+  }
+]

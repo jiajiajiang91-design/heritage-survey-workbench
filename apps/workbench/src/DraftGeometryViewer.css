@@ -1,0 +1,3 @@
+.draft-geometry-viewer { width: 100%; min-width: 0; }
+.draft-geometry-viewer__canvas { width: 100%; height: 320px; overflow: hidden; border-radius: var(--radius-md); background: var(--bg-subtle); }
+.draft-geometry-viewer__canvas canvas { display: block; width: 100%; height: 100%; }

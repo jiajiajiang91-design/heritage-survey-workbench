@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { isModelOnlyTask } from "./delivery-readiness";
 
 import { CreateTaskDialog } from "./screens/CreateTaskDialog";
 import { portfolioReturnHref } from "./portfolio-return";
@@ -9,7 +10,7 @@ import { AppShell, Banners, CenterFrame, ProjectPageFrame } from "./shell/AppShe
 import { AssistantPanel } from "./shell/AssistantPanel";
 import { StageRail } from "./shell/StageRail";
 import { Topbar } from "./shell/Topbar";
-import { STAGE_DESCRIPTIONS, journeyViewOrder, projectPages, stageLabel, stages, type StageId } from "./view-registry";
+import { STAGE_DESCRIPTIONS, projectPages, stageLabel, stages, type StageId } from "./view-registry";
 import { Button } from "./ui";
 import { useWorkbench, type WorkbenchOptions } from "./workbench/useWorkbench";
 
@@ -43,9 +44,9 @@ export function App({ bootstrapDemo }: AppProps = {}) {
       : [selected.snapshot.project.name, [selected.snapshot.buildings[0]?.name, confirmedTask?.artifactRequirements?.views[0] ? `1:${confirmedTask.artifactRequirements.views[0].scaleDenominator}` : null].filter(Boolean).join(" ")].join(" / ");
   const single = !selected || onProjectPage;
   // 服务中断时只出 B04 对话框，不再同时压一条错误横幅（v4 66:4120 只有对话框）
-  const serviceDown = Boolean(error && serverStatus === null && selected);
+  const serviceDown = Boolean(error?.kind === "serviceUnavailable" && serverStatus === null && selected);
   const currentTabs = currentJourney
-    ? { items: currentJourney.views.map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage, onSelect: (id: string) => goToView(id as StageId) }
+    ? { items: currentJourney.views.filter((id) => id !== "measurements").map((id) => ({ id, label: stages.find((stage) => stage.id === id)?.label ?? id })), activeId: activeStage === "measurements" ? "preview" : activeStage, onSelect: (id: string) => goToView(id as StageId) }
     : null;
   const pageTitle = stages.find((stage) => stage.id === activeStage)?.label ?? "";
   const demoLimitationZh = selected ? session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null : null;
@@ -54,8 +55,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
     : demoLimitationZh && activeStage === "package"
       ? "查看图纸、模型、检查结果与来源说明；当前展示归档不构成真实工程交付。"
       : STAGE_DESCRIPTIONS[activeStage];
-  const activeViewIndex = journeyViewOrder.indexOf(activeStage);
-  const nextView = activeViewIndex >= 0 ? journeyViewOrder[activeViewIndex + 1] ?? null : null;
+  const nextView = nav.nextView;
 
   return (
     <>
@@ -68,7 +68,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           pages={pages}
           pagesEnabled={Boolean(selected)}
           projectListActive={!selected}
-          onProjectList={exitToProjectList}
+          onProjectList={() => { setError(null); setNotice(null); exitToProjectList(); }}
           onSelectPage={(id) => goToView(id as StageId)}
           portfolioReturnHref={returnHref}
           assistantToggle={selected && !onProjectPage && assistantCollapsed ? { collapsed: true, onToggle: () => setAssistantCollapsed(false) } : null}
@@ -81,13 +81,14 @@ export function App({ bootstrapDemo }: AppProps = {}) {
           activeStage={activeStage}
           journeyState={journeyState}
           pendingItems={pendingItems}
+          modelOnly={isModelOnlyTask(confirmedTask)}
           onGoTo={goToView}
         />
       )}
       center={!selected ? (
         <ProjectList
           cards={session.projectCards}
-          onOpen={(id) => void wb.chooseProject(id)}
+          onOpen={(id, showExample) => void wb.chooseProject(id, showExample)}
           onCreate={() => setShowCreate(true)}
           onImport={importProject}
           onClear={() => void clearLibrary()}
@@ -103,7 +104,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
         <CenterFrame
           title={pageTitle}
           description={pageDescription}
-          actions={nextView && activeStage !== "tasks" ? <Button onClick={() => nav.advanceStage()}>下一步：{stageLabel(nextView)}</Button> : undefined}
+          actions={<div className="gj-actions">{activeStage === "preview" && <Button variant="text" onClick={() => { nav.setDimensionCandidateSelection(null); nav.setDimensionReturnView("preview"); goToView("measurements"); }}>批量核对尺寸</Button>}{nextView && <Button onClick={() => nav.advanceStage()}>前往{stageLabel(nextView)}</Button>}</div>}
           tabs={currentTabs}
           fill
         >
@@ -137,7 +138,7 @@ export function App({ bootstrapDemo }: AppProps = {}) {
     {showCreate && (
       <CreateTaskDialog
         onClose={() => setShowCreate(false)}
-        onSubmit={async (values) => { const created = await wb.createProject(values); if (created) setShowCreate(false); return created; }}
+        onSubmit={async (values, files, destination) => { const created = await wb.createProject(values, files, destination); if (created) setShowCreate(false); return created; }}
       />
     )}
     </>

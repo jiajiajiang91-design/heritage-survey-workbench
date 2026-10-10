@@ -27,6 +27,8 @@ export const BuildingSchema = z.object({
   projectId: UuidSchema,
   name: z.string().min(1).max(200),
   periodText: z.string().max(200).nullable(),
+  buildingType: z.string().max(200).nullable().optional(),
+  mainStructure: z.string().max(200).nullable().optional(),
   addressText: z.string().max(500).nullable(),
   status: z.enum(["existing", "lost", "uncertain"]),
 }).strict();
@@ -87,6 +89,16 @@ export const TaskArtifactRequirementsSchema = z.object({
   }
 });
 
+export const ProductionSetupSchema = z.object({
+  buildingId: UuidSchema,
+  purpose: z.literal("existingSurvey"),
+  outputUnit: z.enum(["mm", "cm", "m"]),
+  targets: z.array(z.enum(["model", "floorPlan", "elevation", "section"])).min(1).max(4)
+    .refine((items) => new Set(items).size === items.length, "targets must be unique"),
+  projectGroup: z.string().max(200).nullable(),
+}).strict();
+export type ProductionSetup = z.infer<typeof ProductionSetupSchema>;
+
 export const TaskDefinitionSchema = z.object({
   id: UuidSchema,
   name: z.string().min(1).max(200),
@@ -96,8 +108,19 @@ export const TaskDefinitionSchema = z.object({
   responsibilities: z.array(ResponsibilitySchema).min(1).max(100),
   automationPolicyRef: NonEmptyRefSchema.nullable(),
   artifactRequirements: TaskArtifactRequirementsSchema.optional(),
+  productionSetup: ProductionSetupSchema.optional(),
   confirmedAt: IsoDateTimeSchema.nullable(),
 }).strict();
+
+export const ImageDerivativeSchema = z.object({
+  assetId: UuidSchema,
+  originalSha256: z.string().regex(/^[a-f0-9]{64}$/),
+  sourceSizePixels: z.tuple([z.number().int().positive(), z.number().int().positive()]),
+  derivedSizePixels: z.tuple([z.number().int().positive(), z.number().int().positive()]),
+  mode: z.string().min(1).max(20),
+  pixelSha256: z.string().regex(/^[a-f0-9]{64}$/),
+  coordinateMapping: z.literal("identity"),
+}).strict().refine((item) => item.sourceSizePixels[0] === item.derivedSizePixels[0] && item.sourceSizePixels[1] === item.derivedSizePixels[1], "identity mapping requires matching image sizes");
 
 export const EvidenceSchema = z.object({
   id: UuidSchema,
@@ -116,6 +139,8 @@ export const EvidenceSchema = z.object({
   title: z.string().min(1).max(300),
   rightsDeclaration: z.string().max(1_000).nullable(),
   intendedUse: z.string().max(1_000).nullable(),
+  preparationLevel: z.enum(["required", "recommended", "additional"]).optional(),
+  imageDerivative: ImageDerivativeSchema.optional(),
   recordedAt: IsoDateTimeSchema.nullable(),
   relatedEntityRefs: z.array(NonEmptyRefSchema).max(5_000),
   dataStatus: DataStatusSchema,
@@ -141,6 +166,8 @@ export const ParseRecordSchema = z.object({
   parserVersion: z.string().min(1).max(80),
   status: z.enum(["parsed", "metadataOnly", "pending", "failed"]),
   extractedText: z.string().max(200_000).nullable(),
+  readability: z.enum(["readable", "unsupported", "failed"]).optional(),
+  readableAs: z.enum(["text", "image"]).optional(),
   warnings: z.array(z.string().min(1).max(500)).max(100),
   createdAt: IsoDateTimeSchema,
 }).strict();
@@ -296,6 +323,11 @@ export const ProjectSnapshotSchema = z.object({
   reviewSignoffs: z.array(ReviewSignoffSchema).default([]),
   adoptedRecordRefs: z.array(NonEmptyRefSchema),
 }).strict().superRefine((value, context) => {
+  for (const task of value.taskDefinitions) {
+    if (task.productionSetup && !value.buildings.some((building) => building.id === task.productionSetup!.buildingId)) {
+      context.addIssue({ code: "custom", message: "task building must belong to project", path: ["taskDefinitions"] });
+    }
+  }
   if (value.buildings.some((building) => building.projectId !== value.project.id)) {
     context.addIssue({ code: "custom", message: "building projectId must match project", path: ["buildings"] });
   }

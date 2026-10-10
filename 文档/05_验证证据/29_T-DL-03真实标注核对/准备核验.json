@@ -1,0 +1,40 @@
+{
+  "task": "T-DL-03",
+  "checkedAt": "2026-10-01T09:06:42.524Z",
+  "scope": "仅核验仓库中的五份原件；浏览器派生关联、模型调用和输出恢复尚未在本单元验收",
+  "manifest": "../23_T-DL-01资料预检/原始输入清单.json",
+  "externalTransferApproval": "pending",
+  "realModelRun": "not-started",
+  "files": [
+    {
+      "file": "highres_00016a.tif",
+      "bytes": 829016,
+      "sha256": "3edc5e5bc884dcb0b3aa2e7fbc886e2abd1b56c3f849c6793c723c051ab7fd58",
+      "matchesFrozenManifest": true
+    },
+    {
+      "file": "highres_00017a.tif",
+      "bytes": 1311550,
+      "sha256": "aee0075f67496324937064842c0048008930be5afb3062b0745b3450db32ab1f",
+      "matchesFrozenManifest": true
+    },
+    {
+      "file": "highres_00018a.tif",
+      "bytes": 975004,
+      "sha256": "5fa0825b4e7a1b81050881da0f72b1a14f1b035bd4e4c8abfdd90bdf95f97c63",
+      "matchesFrozenManifest": true
+    },
+    {
+      "file": "06_Dai_Loy历史与建筑说明.pdf",
+      "bytes": 106004,
+      "sha256": "ba074f12a802aabd663052b9f487f0c8a87795807d720699297dd5abe5c83a06",
+      "matchesFrozenManifest": true
+    },
+    {
+      "file": "01_现场照片.png",
+      "bytes": 791585,
+      "sha256": "491d2ef21d2511c6c74273f37cd61eddcfcdc1541ec3ff88e3424a4e49cdcc1b",
+      "matchesFrozenManifest": true
+    }
+  ]
+}

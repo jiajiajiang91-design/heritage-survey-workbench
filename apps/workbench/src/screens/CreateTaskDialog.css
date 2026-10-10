@@ -1,7 +1,26 @@
-/* B01 新建任务（66:3851）：对话框 720 宽内边距 24 间距 12；步骤条 40 高，步骤片 32 高圆角 8 */
-.sc-create { width: 100%; max-width: 720px; max-height: 100%; overflow: auto; display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-2xl); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-create { width: 100%; max-width: calc(var(--space-2xl) * 48); max-height: 100%; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-2xl); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); }
+.sc-create-heading { flex: none; display: flex; flex-direction: column; gap: var(--space-sm); }
+.sc-create-content { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.sc-create-footer { flex: none; display: flex; flex-direction: column; gap: var(--space-md); padding-top: var(--space-md); border-top: var(--stroke-hairline) solid var(--border-default); }
+.sc-create-footer .gj-dialog-actions { flex-wrap: wrap; }
 .sc-create-title { font: var(--font-weight-medium) var(--font-size-18)/var(--line-26) var(--font-family-ui); color: var(--text-primary); }
 .sc-create-note { font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); color: var(--text-secondary); }
-.sc-create-steps { display: flex; gap: var(--space-sm); min-height: var(--size-control-lg); align-items: flex-start; }
-.sc-create-step { display: inline-flex; align-items: center; height: var(--size-control-sm); padding: 0 var(--space-md); border-radius: var(--radius-md); background: var(--bg-subtle); color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
-.sc-create-step.is-active { background: var(--bg-selected); color: var(--text-primary); font-weight: var(--font-weight-medium); }
+.sc-create-columns { display: flex; flex-wrap: wrap; gap: var(--space-2xl); padding: 0; border: 0; min-width: 0; }
+.sc-production-fields, .sc-create-materials { display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; flex: 1 1 calc(var(--space-2xl) * 16); }
+.sc-production-fields { padding: 0; border: 0; }
+.sc-production-row { display: flex; gap: var(--space-md); flex-wrap: wrap; }
+.sc-production-row > * { flex: 1; }
+.sc-production-targets { border: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-md); }
+.sc-production-targets legend { margin-bottom: var(--space-sm); font-weight: var(--font-weight-medium); }
+.sc-production-targets label { display: flex; align-items: center; gap: var(--space-xs); }
+.sc-production-targets input { width: auto; }
+.sc-production-extra { display: flex; flex-direction: column; gap: var(--space-md); }
+.sc-production-extra > .gj-field + .gj-field { margin-top: var(--space-md); }
+.sc-production-extra summary { margin-bottom: var(--space-md); cursor: pointer; color: var(--text-secondary); }
+.sc-create-level { border-top: var(--stroke-hairline) solid var(--border-default); padding-top: var(--space-md); display: flex; flex-direction: column; gap: var(--space-sm); }
+.sc-create-file { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
+.sc-create-file span { min-width: 0; overflow-wrap: anywhere; }
+.sc-create-file small { display: block; color: var(--text-secondary); }
+.sc-create-upload { display: flex; flex-direction: column; gap: var(--space-xs); color: var(--text-primary); font-size: var(--font-size-13); }
+.sc-create-upload input { max-width: 100%; font-size: var(--font-size-13); }
+.sc-production-form { display: flex; flex-direction: column; gap: var(--space-md); }

@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ProjectHead, ProjectSummary } from "@gujian/application";
 import type {
-  ArchetypeSpec, ArtifactRecord, CheckRun, Decision, DeliveryDraft, DeliveryEvaluation, ModelRun, RuleRun,
+  ArchetypeSpec, ArtifactRecord, ArtifactRequirementMatrix, CheckRun, Decision, DeliveryDraft, DeliveryEvaluation, ModelRun, RuleRun,
 } from "@gujian/domain";
+import { artifactOutputUnitMatches, outputUnitUpdateState } from "@gujian/domain";
 import {
-  compareWithMeasuredFacts, conceptLabel, deriveArchetypeExpectations, geometryPrerequisites, resolveVocabulary,
+  compareWithMeasuredFacts, conceptLabel, deriveArchetypeExpectations, geometryGenerationGate, resolveVocabulary,
 } from "@gujian/infrastructure";
 
+import { evidenceReadability } from "../evidence-readability";
 import { buildChangeHistory, type ChangeHistoryEntry } from "../change-history";
 import { readDemoLibraryManifest, type DemoLibraryEntry, type DemoLibraryUpdate, type DemoLoadResult } from "../demo-library-loader";
 import { describeFailure } from "../failure-notice";
@@ -38,6 +40,7 @@ export interface CreateProjectValues {
   name: string;
   buildingName: string;
   locationText: string;
+  production?: import("../production-task").ProductionTaskValues;
 }
 
 interface SessionDeps {
@@ -56,6 +59,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
   const [projectRuleRuns, setProjectRuleRuns] = useState<readonly RuleRun[]>([]);
   const [projectDecisions, setProjectDecisions] = useState<readonly Decision[]>([]);
   const [projectArtifacts, setProjectArtifacts] = useState<readonly ArtifactRecord[]>([]);
+  const [projectRequirementMatrices, setProjectRequirementMatrices] = useState<readonly ArtifactRequirementMatrix[]>([]);
   const [projectCheckRuns, setProjectCheckRuns] = useState<readonly CheckRun[]>([]);
   const [projectDeliveryEvaluations, setProjectDeliveryEvaluations] = useState<readonly DeliveryEvaluation[]>([]);
   const [projectDeliveries, setProjectDeliveries] = useState<readonly DeliveryDraft[]>([]);
@@ -92,6 +96,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     setProjectRuleRuns(rules);
     setProjectDecisions(decisions);
     setProjectArtifacts(artifacts);
+    setProjectRequirementMatrices(matrices);
     setProjectCheckRuns(checks);
     setProjectDeliveryEvaluations(deliveryEvaluations);
     setProjectDeliveries(deliveryRecords);
@@ -115,6 +120,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
         deliveries: deliveryRecords,
       } : null,
     }));
+    return head;
   };
 
   // 首次打开装载演示项目（04 演示项目定义 §3：不生成空白项目）。
@@ -180,7 +186,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
 
   const chooseProject = async (projectId: string) => {
     setError(null);
-    await loadProject(projectId);
+    return loadProject(projectId);
   };
 
   // 退出当前项目回到列表页。左栏按钮与助手走同一处，行为不分叉。
@@ -262,11 +268,14 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
 
   // 以下派生数据每次渲染重算。快照在内存里，算的都是过滤与查找，不值得缓存。
   const snapshot = selected?.snapshot ?? null;
-  const parsedEvidenceCount = snapshot?.parseRecords.filter((record) => record.status === "parsed" && record.extractedText?.trim()).length ?? 0;
+  const [chosenModelEvidenceIds, setChosenModelEvidenceIds] = useState<readonly string[] | null>(null);
+  useEffect(() => { setChosenModelEvidenceIds(null); }, [selected?.projectId]);
+  const selectedModelEvidenceIds = (chosenModelEvidenceIds ?? snapshot?.evidences.map((item) => item.id) ?? []).filter((id) => snapshot && evidenceReadability(snapshot, id).state === "readable");
+  const parsedEvidenceCount = snapshot?.evidences.filter((item) => evidenceReadability(snapshot!, item.id).state === "readable" && evidenceReadability(snapshot!, item.id).kind === "text").length ?? 0;
   // 可读图的资料：图纸类且文件在本机。是不是图像格式由运行侧按资料本体判定，
   // 界面不重复一份格式清单。
   const readableDrawingEvidenceIds = snapshot?.evidences
-    .filter((item) => item.evidenceType === "drawing" && item.dataStatus === "available")
+    .filter((item) => evidenceReadability(snapshot!, item.id).state === "readable" && evidenceReadability(snapshot!, item.id).kind === "image")
     .map((item) => item.id) ?? [];
   const confirmedTask = snapshot?.taskDefinitions.find((task) => task.confirmedAt !== null) ?? null;
   const openIssues = snapshot?.issues.filter((issue) => issue.status === "open") ?? [];
@@ -278,13 +287,13 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
       : snapshot.geometrySpecs.at(-1) ?? null)
     : null;
   const latestCheckRun = projectCheckRuns
-    .filter((item) => item.geometryRevisionId === geometryRevision?.id)
+    .filter((item) => item.geometryRevisionId === geometryRevision?.id && snapshot && item.artifactRefs.every((ref) => projectArtifacts.some((artifact) => artifact.id === ref && artifactOutputUnitMatches(snapshot, artifact, projectRequirementMatrices))))
     .sort((left, right) => left.completedAt.localeCompare(right.completedAt))
     .at(-1) ?? null;
   const latestCheckedArtifactIds = new Set(latestCheckRun?.artifactRefs ?? []);
-  const drawingArtifacts = projectArtifacts.filter((item) => item.geometryRevisionId === geometryRevision?.id && latestCheckedArtifactIds.has(item.id));
+  const drawingArtifacts = projectArtifacts.filter((item) => item.geometryRevisionId === geometryRevision?.id && latestCheckedArtifactIds.has(item.id) && snapshot && artifactOutputUnitMatches(snapshot, item, projectRequirementMatrices));
   const latestDeliveryEvaluationIds = new Set(projectDeliveryEvaluations
-    .filter((item) => item.geometryRevisionId === geometryRevision?.id && latestCheckRun && item.checkRunRefs.includes(latestCheckRun.id))
+    .filter((item) => item.geometryRevisionId === geometryRevision?.id && latestCheckRun && item.checkRunRefs.includes(latestCheckRun.id) && snapshot && item.artifactRefs.every((ref) => projectArtifacts.some((artifact) => artifact.id === ref && artifactOutputUnitMatches(snapshot, artifact, projectRequirementMatrices))))
     .map((item) => item.id));
   const latestDelivery = projectDeliveries
     .filter((item) => item.geometryRevisionId === geometryRevision?.id && latestDeliveryEvaluationIds.has(item.evaluationId))
@@ -296,9 +305,10 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     .at(-1) ?? null;
   // 项目自带 GeometrySpec 时走 existingGeometrySpec 重绑路径，不要求逐构件事实
   const geometryGate = selected
-    ? (selected.snapshot.geometrySpecs.length ? { ready: true, missing: [] as string[] } : geometryPrerequisites(selected))
+    ? geometryGenerationGate(selected)
     : null;
   const readModelInput = selected ? {
+    requirementMatrices: projectRequirementMatrices,
     head: selected,
     modelRuns: projectModelRuns,
     ruleRuns: projectRuleRuns,
@@ -309,6 +319,7 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     deliveries: projectDeliveries,
   } : null;
   const dashboard = readModelInput ? buildProjectDashboardSummary(readModelInput) : null;
+  const unitUpdate = snapshot ? outputUnitUpdateState(snapshot, projectArtifacts, projectRequirementMatrices) : { model: false, drawings: false };
   const artifactSetView = readModelInput ? buildArtifactSetView(readModelInput) : null;
   const modelCostView = buildModelRunCostView(projectModelRuns);
   const humanInterventions = readModelInput ? buildHumanInterventionView(readModelInput) : null;
@@ -363,13 +374,13 @@ export function useProjectSession({ bootstrapDemo, notices }: SessionDeps) {
     projectModelRuns, setProjectModelRuns,
     projectRuleRuns, setProjectRuleRuns,
     projectDecisions, setProjectDecisions,
-    projectArtifacts, projectCheckRuns, projectDeliveryEvaluations, projectDeliveries,
+    projectArtifacts, projectRequirementMatrices, projectCheckRuns, projectDeliveryEvaluations, projectDeliveries,
     projectArchetypes, changeHistory, serverStatus, assistantUsage, refreshServerStatus,
     refresh, loadProject, chooseProject, exitToProjectList, createProject, importProject, clearLibrary,
     demoUpdates, retryDemoLibrary, updateDemoLibrary,
-    parsedEvidenceCount, readableDrawingEvidenceIds, confirmedTask, openIssues,
+    parsedEvidenceCount, readableDrawingEvidenceIds, selectedModelEvidenceIds, setChosenModelEvidenceIds, confirmedTask, openIssues,
     geometryRevision, geometrySpec, latestCheckRun, drawingArtifacts, latestDelivery, latestBlockedDelivery,
-    geometryGate, dashboard, artifactSetView, modelCostView, humanInterventions, deliveryBlockers,
+    geometryGate, dashboard, unitUpdate, artifactSetView, modelCostView, humanInterventions, deliveryBlockers,
     archetypeDifferences, typeLabel, evidenceTitle, basisCounts, measuredRecordCount, blockerReasons,
   };
 }

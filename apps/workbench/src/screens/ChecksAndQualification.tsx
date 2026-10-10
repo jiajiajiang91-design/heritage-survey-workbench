@@ -1,3 +1,5 @@
+import { GlbViewer } from "../GlbViewer";
+import { triggerDownload } from "../workbench/download";
 import { useState } from "react";
 import type { ArtifactRecord, CheckRun, ReviewSignoff } from "@gujian/domain";
 
@@ -11,6 +13,14 @@ import "./ChecksAndQualification.css";
 // 右卡检查结果（头 36 加不通过计数、检查小卡 10 内边距）。W09A 使用限制（66:3016）
 // 是同一屏的展开态：限制逐条列出（qualification.ts 的 QUALIFICATION_LIMITS）。
 export interface ChecksAndQualificationProps {
+  modelOnly?: boolean;
+  hasModel?: boolean;
+  modelBlob?: Blob | null;
+  modelFileName?: string;
+  modelChecking?: boolean;
+  modelNeedsUpdate?: boolean;
+  onCheckModel?: () => void;
+  onOpenModel?: () => void;
   previews: readonly DrawingPreview[];
   drawingArtifacts: readonly ArtifactRecord[];
   latestCheckRun: CheckRun | null;
@@ -50,14 +60,19 @@ function blockerSummary(codes: readonly string[]): string {
   return `${codes.length} 项不通过：${parts.join("、")}`;
 }
 
-export function ChecksAndQualification({ previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, requirements, signoff, demoLimitationZh }: ChecksAndQualificationProps) {
+const ignoreModelSelection = () => undefined;
+
+export function ChecksAndQualification({ modelOnly = false, hasModel = false, modelBlob = null, modelFileName = "model.glb", modelChecking = false, modelNeedsUpdate = false, onCheckModel, onOpenModel, previews, drawingArtifacts, latestCheckRun, unknownCount, currentArtifactCount, crossRevisionArtifactCount, qualificationLabel, blockerReasons, blockerCodes, generating, canRegenerate, onRegenerate, onDownload, requirements, signoff, demoLimitationZh }: ChecksAndQualificationProps) {
   const [showLimits, setShowLimits] = useState(false);
+  const currentCheckRun = modelOnly && (modelNeedsUpdate || !latestCheckRun?.results.some((result) => result.code === "MODEL_OUTPUT_HASH_CLOSURE" && result.outcome === "passed")) ? null : latestCheckRun;
   const [index, setIndex] = useState(0);
   const preview = previews[Math.min(index, Math.max(0, previews.length - 1))] ?? null;
   // 签发后，检查里"需专业复核"一类的结果由签发记录解除，按通过显示
   const FORMAL_CODES = new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", "L1_ELIGIBILITY_FALSE"]);
   const passedBySignoff = (code: string) => Boolean(signoff) && FORMAL_CODES.has(code) && (code !== "L1_ELIGIBILITY_FALSE" || signoff!.l1Eligible);
-  const blocked = latestCheckRun?.results.filter((item) => item.outcome !== "passed" && !passedBySignoff(item.code)).length ?? 0;
+  const visibleResults = currentCheckRun?.results.filter((item) => !FORMAL_CODES.has(item.code)) ?? [];
+  const blocked = visibleResults.filter((item) => item.outcome !== "passed" && !passedBySignoff(item.code)).length;
+  const modelChecked = Boolean(currentCheckRun && !blocked);
   const exportables = drawingArtifacts.filter((artifact) => artifact.kind === "dxf" || artifact.kind === "pdf");
   const described = describePreview(preview, requirements);
   const isDemo = Boolean(demoLimitationZh);
@@ -69,54 +84,65 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
     <div className="sc-checks">
       <section className="sc-checks-drawing">
         <div className="sc-checks-head">
-          <span className="gj-pane-title" title={described.title}>{preview ? described.title : "图纸成果"}</span>
+          <span className="gj-pane-title" title={described.title}>{modelOnly ? "模型成果" : preview ? described.title : "图纸成果"}</span>
           <span className="gj-spacer" />
-          {latestCheckRun && (signoff ? <Tag tone="success">{isDemo ? "展示流程已复核" : "已签发"}</Tag> : <Tag tone="warning">已生成，待签发</Tag>)}
+          {currentCheckRun && (signoff ? <Tag tone="success">{isDemo ? "展示流程已复核" : "已签发"}</Tag> : <Tag tone="warning">已生成，待签发</Tag>)}
         </div>
-        {preview ? (
+        {modelOnly ? (
+          modelBlob ? <div className="sc-checks-figure sc-checks-figure--model"><GlbViewer blob={modelBlob} onSelect={ignoreModelSelection} /></div>
+            : <div className="sc-checks-figure sc-checks-figure--empty">{hasModel ? "模型已生成，可返回三维模型查看。" : "尚未生成模型，请返回三维模型页完成制作。"}</div>
+        ) : preview ? (
           preview.kind === "svg"
             ? <div className="sc-checks-figure"><img src={preview.url} alt={`${preview.label} 图面`} /></div>
             : <FileViewer blob={preview.url} mimeType="application/pdf" fileName={preview.label} height={480} />
         ) : (
-          <div className="sc-checks-figure sc-checks-figure--empty">{latestCheckRun ? "本次检查没有可预览的图面。" : "还没有检查记录。出图后自动检查，检查通过不等于专业复核通过。"}</div>
+          <div className="sc-checks-figure sc-checks-figure--empty">{currentCheckRun ? "本次检查没有可预览的图面。" : "还没有检查记录。出图后自动检查，检查通过不等于专业复核通过。"}</div>
         )}
-        {previews.length > 1 && (
+        {!modelOnly && previews.length > 1 && (
           <div className="sc-checks-switch" role="tablist" aria-label="切换图面">
             {previews.map((item, position) => (
               <button key={item.id} type="button" role="tab" aria-current={position === index ? "true" : undefined} onClick={() => setIndex(position)}>{previewLabel(item)}</button>
             ))}
           </div>
         )}
-        {described.caption && <p className="sc-checks-caption">{described.caption}</p>}
+        {!modelOnly && described.caption && <p className="sc-checks-caption">{described.caption}</p>}
         <span className="gj-spacer" />
         <div className="gj-actions">
+          {modelOnly ? <>
+            <Button onClick={onOpenModel}>返回三维模型</Button>
+            <Button disabled={!modelBlob} onClick={() => modelBlob && triggerDownload(modelBlob, modelFileName)}>下载 GLB 模型</Button>
+            <Button variant="primary" loadable busy={modelChecking} disabled={!hasModel || modelNeedsUpdate || modelChecking} onClick={onCheckModel}>检查模型文件</Button>
+          </> : <>
           <Button disabled={!exportables.length} onClick={() => exportables.forEach((artifact) => onDownload(artifact))}>导出 DXF 与 PDF</Button>
           <Button variant="primary" loadable busy={generating} disabled={!canRegenerate} onClick={onRegenerate}>重新出图并检查</Button>
+          </>}
         </div>
       </section>
       <section className="sc-checks-results">
-        {signoff && <Alert tone="info">{isDemo ? "项目包随附由正式构建环境生成的流程演示签发记录，用于展示签发后的页面与数据关系，不构成真实工程签发。" : "这是项目包随附的正式环境复核签发记录。"} 当前本机只能核对记录，不能为新项目或修改后的成果签发。{demoLimitationZh ? ` ${demoLimitationZh}` : ""}</Alert>}
         <div className="sc-checks-head sc-checks-head--tight">
-          <span className="gj-pane-title">检查结果</span>
+          <span className="gj-pane-title">文件检查结果</span>
           <span className="gj-spacer" />
-          <Tag tone={blocked ? "danger" : latestCheckRun ? "success" : "neutral"}>{latestCheckRun ? (blocked ? `${blocked} 项不通过` : "全部通过") : "未检查"}</Tag>
+          <Tag tone={blocked ? "danger" : currentCheckRun ? "success" : "neutral"}>{currentCheckRun ? (blocked ? `${blocked} 项不通过` : modelOnly ? "文件检查通过" : "全部通过") : "未检查"}</Tag>
         </div>
-        {latestCheckRun ? latestCheckRun.results.map((result) => (
+        {currentCheckRun ? visibleResults.map((result) => (
           <div className="sc-check" key={result.code}>
             <div className="sc-check-head">
               <span>{checkItemLabel(result.code)}</span>
               <Tag tone={result.outcome === "passed" || passedBySignoff(result.code) ? "success" : "danger"}>{result.outcome === "passed" ? "通过" : passedBySignoff(result.code) ? "已复核" : "不通过"}</Tag>
             </div>
-            <p>{passedBySignoff(result.code) ? `已由${signoff!.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}于 ${signoff!.signedAt.slice(0, 10)} 复核签发。` : result.message}</p>
+            <p>{modelOnly && result.code === "MODEL_OUTPUT_HASH_CLOSURE" ? "模型与生成记录对应，文件完整，输出单位与当前任务一致。" : passedBySignoff(result.code) ? `已由${signoff!.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}于 ${signoff!.signedAt.slice(0, 10)} 复核签发。` : result.message}</p>
           </div>
-        )) : <EmptyState>还没有检查结果。出图后自动检查；检查通过不等于复核通过，签发由项目责任人员完成。</EmptyState>}
+        )) : <EmptyState>{modelOnly ? modelNeedsUpdate ? "构件、采用尺寸或其来源已改变，请返回三维模型重新生成。旧模型可继续下载或随项目包保存。" : "检查当前模型文件与生成记录是否对应。文件检查不判断建筑测绘精度，专业复核状态单独保留。" : "还没有检查结果。出图后自动检查；检查通过不等于复核通过，签发由项目责任人员完成。"}</EmptyState>}
+        <p className="gj-note">{isDemo ? "预置展示案例，仅用于了解操作与成果形式。" : signoff ? "专业复核状态见随附签发记录。" : "当前成果未签发，可下载用于核对。"}{unknownCount ? ` 模型还有 ${unknownCount} 处待确认部位。` : ""}</p>
+        <details><summary>专业复核与使用说明</summary>
+        {signoff && <Alert tone="info">{isDemo ? "项目包中的签发记录用于展示流程，不构成真实工程签发。" : "项目包随附正式环境的复核签发记录。"}{demoLimitationZh}</Alert>}
         <div className="sc-check">
-          <div className="sc-check-head"><span>成果状态</span>{signoff ? <Tag tone="success">{isDemo ? "展示流程已归档" : "已签发"}</Tag> : <Tag tone="warning">{latestCheckRun ? "已生成，待签发" : "未生成"}</Tag>}</div>
+          <div className="sc-check-head"><span>成果状态</span>{signoff ? <Tag tone="success">{isDemo ? "展示流程已归档" : "已签发"}</Tag> : <Tag tone="warning">{modelOnly ? modelNeedsUpdate ? "模型待更新" : modelChecked ? "模型已检查，待专业复核" : hasModel ? "模型已生成，待检查" : "未生成模型" : currentCheckRun ? "已生成，待签发" : "未生成"}</Tag>}</div>
           <p>{signoff
             ? isDemo
               ? `流程演示签发记录于 ${signoff.signedAt.slice(0, 10)} 生成，仅说明展示链路已完成，不构成真实工程成果签发或交付资格。${signoff.statementZh}`
               : `${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}于 ${signoff.signedAt.slice(0, 10)} 复核签发，可正式交付。${signoff.statementZh}`
-            : qualificationLabel ? `${qualificationLabel}。签发前只能作为待签发成果使用，不能正式交付` : "出图并检查后显示成果状态"}{crossRevisionArtifactCount ? `；另有 ${crossRevisionArtifactCount} 项旧版本成果已隔离` : ""}{signoff ? "" : `。当前成果 ${currentArtifactCount} 项，模型待确认部位 ${unknownCount} 处。`}</p>
+            : qualificationLabel ? `${qualificationLabel}。签发前只能作为待签发成果使用，不能正式交付` : "出图并检查后显示成果状态"}{crossRevisionArtifactCount ? `；另有 ${crossRevisionArtifactCount} 项旧版本成果已隔离` : ""}{signoff ? "" : modelOnly ? `。模型待确认部位 ${unknownCount} 处。` : `。当前成果 ${currentArtifactCount} 项，模型待确认部位 ${unknownCount} 处。`}</p>
         </div>
         <div className="sc-check">
           <div className="sc-check-head"><span>成果等级</span>{isDemo ? <Tag>仅供展示</Tag> : signoff?.l1Eligible ? <Tag tone="success">专业样板</Tag> : <Tag>{signoff ? "一般成果" : "待评定"}</Tag>}</div>
@@ -130,7 +156,7 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
         </div>
         <div className="sc-check">
           <div className="sc-check-head"><span>能否正式交付</span><Tag tone={isDemo || blockerCodes.length ? "danger" : "success"}>{isDemo ? "不可用于工程交付" : blockerCodes.length ? "还不能" : signoff ? "可以" : "签发后可以"}</Tag></div>
-          <p>{isDemo ? demoLimitationZh : blockerCodes.length === 0 && signoff ? `已由${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}复核签发，可以正式交付。` : blockerSummary(blockerCodes)}</p>
+          <p>{isDemo ? demoLimitationZh : blockerCodes.length === 0 && signoff ? `已由${signoff.reviewerRole === "projectLead" ? "项目负责人" : "专业复核人"}复核签发，可以正式交付。` : modelOnly && blockerCodes.every((code) => FORMAL_CODES.has(code) || FORMAL_CODES.has(code.replace(/^CHECK_BLOCKED:/, "")) || code.startsWith("UNKNOWN:")) ? "尚待专业复核与正式签发。" : blockerSummary(blockerCodes)}</p>
           {showLimits && blockerReasons.length > 0 && (
             <ul className="sc-check-reasons">{blockerReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
           )}
@@ -153,10 +179,8 @@ export function ChecksAndQualification({ previews, drawingArtifacts, latestCheck
         <span className="gj-spacer" />
         <div className="gj-actions">
           <Button onClick={() => setShowLimits((value) => !value)} aria-expanded={showLimits}>{showLimits ? "收起使用限制" : "查看使用限制"}</Button>
-          {signoff
-            ? <Button variant="primary" disabled title="已签发，复核记录随项目包导入">已复核签发</Button>
-            : <Button variant="primary" disabled title="本机身份不具备签发资格，签发须由项目责任人员在正式环境完成">提交复核</Button>}
         </div>
+        </details>
       </section>
     </div>
   );

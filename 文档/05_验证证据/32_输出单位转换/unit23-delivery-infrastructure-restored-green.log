@@ -1,0 +1,11 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ✓ src/delivery-service.test.ts (7 tests) 8ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  20:34:50
+   Duration  767ms (transform 146ms, setup 0ms, collect 484ms, tests 8ms, environment 0ms, prepare 105ms)
+

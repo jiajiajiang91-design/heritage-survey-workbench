@@ -233,6 +233,17 @@ describe("下游闭包", () => {
 });
 
 describe("算不全时结果自己说出来", () => {
+  it("覆盖记录独立分类，登记覆盖不报告模型影响缺口", () => {
+    const input = withSnapshot({
+      evidences: [evidence(uuid(10))],
+      facts: [{ ...fact(uuid(20), [uuid(10)]), subjectRef: uuid(10), field: "evidence.coverage." + uuid(2), value: { kind: "materialCoverage", buildingId: uuid(2), entries: [] } }],
+      geometrySpecs: [spec(uuid(30), [geometryObject(["archetype:qing-gongcheng-zuofa:columnHeight", "missing-ref"], [])])],
+    });
+    const result = computeImpact(input, [uuid(20)]);
+    expect(result.total).toBe(0); expect(result.coverageGaps).toEqual([]);
+    const downstream = computeImpact(input, [uuid(10)]);
+    expect(downstream.groups).toEqual([{ kind: "资料覆盖记录", count: 1, names: ["资料覆盖：资料 10"] }]);
+  });
   // 起点是几何上游那几类记录时才报，起点在下游时那条断链与本次无关，报出来只是噪声
   it("起点是事实且有 archetype 引用时给出覆盖缺口说明", () => {
     const input = withSnapshot({

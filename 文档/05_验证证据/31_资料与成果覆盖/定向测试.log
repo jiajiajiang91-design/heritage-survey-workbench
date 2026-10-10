@@ -1,0 +1,12 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/material-coverage.test.ts (6 tests) 53ms
+ ✓ src/screens/MaterialCoverage.test.tsx (2 tests) 109ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  16:55:07
+   Duration  1.86s (transform 553ms, setup 423ms, collect 1.83s, tests 162ms, environment 342ms, prepare 193ms)
+

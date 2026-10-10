@@ -7,7 +7,9 @@ import {
   type ModelRun,
   type ModelRunEvent,
 } from "@gujian/domain";
-import { IndexedDbProjectRepository, parseEvidenceFile } from "@gujian/infrastructure";
+import { IndexedDbProjectRepository, sha256Hex } from "@gujian/infrastructure";
+
+import { evidenceReadability, latestParse } from "./evidence-readability";
 
 interface SessionResponse {
   csrfToken: string;
@@ -81,6 +83,34 @@ async function blobToBase64(blob: Blob): Promise<string> {
     binary += String.fromCharCode(...bytes.subarray(offset, offset + 8_192));
   }
   return btoa(binary);
+}
+
+export async function readModelInputs(head: ProjectHead, repository: IndexedDbProjectRepository, evidenceIds: readonly string[], imageOnly: boolean) {
+  const assets = new Map((await repository.getProjectAssets(head.projectId)).map((asset) => [asset.record.id, asset]));
+  const inputs: ({ evidenceId: string; assetSha256: string; processedAssetSha256?: string; mediaType: string; base64: string; titleZh: string } | { evidenceId: string; assetSha256: string; text: string; titleZh: string })[] = [];
+  const failures: string[] = [];
+  for (const evidenceId of new Set(evidenceIds)) {
+    const evidence = head.snapshot.evidences.find((item) => item.id === evidenceId);
+    const original = evidence ? assets.get(evidence.assetId) : undefined;
+    const readable = evidenceReadability(head.snapshot, evidenceId);
+    if (!evidence || !original || !original.content || original.record.contentStatus !== "available" || readable.state !== "readable") {
+      failures.push((evidence?.title ?? evidenceId) + "：" + (readable.detail || "没有可用原件")); continue;
+    }
+    const image = evidence.imageDerivative ? assets.get(evidence.imageDerivative.assetId) : original;
+    if (image && IMAGE_MEDIA_TYPES.includes(image.record.mimeType) && image.content) {
+      if (image.content.size > 12 * 1024 * 1024) { failures.push(evidence.title + "：图像超过单次输入大小"); continue; }
+      if (evidence.imageDerivative && (evidence.imageDerivative.originalSha256 !== original.record.sha256 || sha256Hex(new Uint8Array(await image.content.arrayBuffer())) !== image.record.sha256 || sha256Hex(new Uint8Array(await original.content.arrayBuffer())) !== original.record.sha256)) {
+        failures.push(evidence.title + "：原件或派生图哈希不匹配"); continue;
+      }
+      inputs.push({ evidenceId, assetSha256: original.record.sha256, ...(evidence.imageDerivative ? { processedAssetSha256: image.record.sha256 } : {}), mediaType: image.record.mimeType, base64: await blobToBase64(image.content), titleZh: evidence.title.slice(0, 200) });
+    } else {
+      const parsed = latestParse(head.snapshot, evidenceId);
+      if (imageOnly || parsed?.status !== "parsed" || !parsed.extractedText?.trim()) { failures.push(evidence.title + "：此任务需要可读图像"); continue; }
+      inputs.push({ evidenceId, assetSha256: original.record.sha256, text: parsed.extractedText.slice(0, 200_000), titleZh: evidence.title.slice(0, 200) });
+    }
+  }
+  if (failures.length) throw new Error("以下资料未参与提取：" + failures.join("；") + "。请重试处理或仅选择可读资料再运行。");
+  return inputs;
 }
 
 // 导出供测试直接调用：这条解析路径决定一份识别结果是全留、部分留还是全丢
@@ -215,39 +245,7 @@ export class ModelRunClient {
   ): Promise<ModelRunOutcome> {
     if (this.#active) throw new Error("MODEL_RUN_ALREADY_ACTIVE");
     if (!evidenceIds.length) throw new Error("NO_DRAWING_EVIDENCE_SELECTED");
-    const projectAssets = await this.#repository.getProjectAssets(head.projectId);
-    const assetById = new Map(projectAssets.map((asset) => [asset.record.id, asset]));
-    // 按资料本体分派：图像走图像项，其余交给产品自己的解析器取文字。
-    // 一次运行里既有实测图纸也有文字记录是常态，两种混传。
-    const evidences: (
-      | { evidenceId: string; assetSha256: string; mediaType: string; base64: string; titleZh: string }
-      | { evidenceId: string; assetSha256: string; text: string; titleZh: string }
-    )[] = [];
-    for (const evidenceId of evidenceIds) {
-      const evidence = head.snapshot.evidences.find((item) => item.id === evidenceId);
-      const asset = evidence ? assetById.get(evidence.assetId) : undefined;
-      if (!evidence || !asset || asset.record.contentStatus !== "available" || !asset.content) continue;
-      if (IMAGE_MEDIA_TYPES.includes(asset.record.mimeType)) {
-        evidences.push({
-          evidenceId: evidence.id,
-          assetSha256: asset.record.sha256,
-          mediaType: asset.record.mimeType,
-          base64: await blobToBase64(asset.content),
-          titleZh: evidence.title,
-        });
-        continue;
-      }
-      const parsed = await parseEvidenceFile(
-        new File([asset.content], asset.record.fileName, { type: asset.record.mimeType }),
-      );
-      if (parsed.status !== "parsed" || !parsed.extractedText?.trim()) continue;
-      evidences.push({
-        evidenceId: evidence.id,
-        assetSha256: asset.record.sha256,
-        text: parsed.extractedText.slice(0, 200_000),
-        titleZh: evidence.title,
-      });
-    }
+    const evidences = await readModelInputs(head, this.#repository, evidenceIds, false);
     if (!evidences.length) throw new Error("NO_READABLE_DRAWING_FOR_MODEL");
     return this.#run(head, actorId, "measurement-transcription", evidences, onProgress);
   }
@@ -256,11 +254,15 @@ export class ModelRunClient {
     head: ProjectHead,
     actorId: string,
     onProgress: (progress: ModelRunProgress) => void,
+    selectedIds?: readonly string[],
   ): Promise<ModelRunOutcome> {
     if (this.#active) throw new Error("MODEL_RUN_ALREADY_ACTIVE");
     const projectAssets = await this.#repository.getProjectAssets(head.projectId);
     const assetById = new Map(projectAssets.map((asset) => [asset.record.id, asset.record]));
-    const evidences = head.snapshot.parseRecords.flatMap((parseRecord) => {
+    const evidences = head.snapshot.evidences.flatMap((source) => {
+      if (selectedIds && !selectedIds.includes(source.id)) return [];
+      const parseRecord = latestParse(head.snapshot, source.id);
+      if (!parseRecord) return [];
       if (parseRecord.status !== "parsed" || !parseRecord.extractedText?.trim()) return [];
       const evidence = head.snapshot.evidences.find((item) => item.id === parseRecord.evidenceId);
       const asset = evidence ? assetById.get(evidence.assetId) : undefined;
@@ -285,22 +287,7 @@ export class ModelRunClient {
   ): Promise<ModelRunOutcome> {
     if (this.#active) throw new Error("MODEL_RUN_ALREADY_ACTIVE");
     if (!evidenceIds.length) throw new Error("NO_IMAGE_EVIDENCE_SELECTED");
-    const projectAssets = await this.#repository.getProjectAssets(head.projectId);
-    const assetById = new Map(projectAssets.map((asset) => [asset.record.id, asset]));
-    const evidences: { evidenceId: string; assetSha256: string; mediaType: string; base64: string; titleZh: string }[] = [];
-    for (const evidenceId of evidenceIds) {
-      const evidence = head.snapshot.evidences.find((item) => item.id === evidenceId);
-      const asset = evidence ? assetById.get(evidence.assetId) : undefined;
-      if (!evidence || !asset || asset.record.contentStatus !== "available" || !asset.content) continue;
-      if (!IMAGE_MEDIA_TYPES.includes(asset.record.mimeType)) continue;
-      evidences.push({
-        evidenceId: evidence.id,
-        assetSha256: asset.record.sha256,
-        mediaType: asset.record.mimeType,
-        base64: await blobToBase64(asset.content),
-        titleZh: evidence.title,
-      });
-    }
+    const evidences = await readModelInputs(head, this.#repository, evidenceIds, true);
     if (!evidences.length) throw new Error("NO_IMAGE_EVIDENCE_FOR_MODEL");
     return this.#run(head, actorId, "component-recognition", evidences, onProgress);
   }

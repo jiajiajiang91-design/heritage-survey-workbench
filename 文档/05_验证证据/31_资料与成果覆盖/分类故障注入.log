@@ -1,0 +1,1189 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/material-coverage.test.ts (7 tests | 1 failed) 61ms
+   × 资料与成果覆盖 > 保存和清空覆盖均不增加尺寸与来源图的尺寸记录 21ms
+     → expected 2 to be 1 // Object.is equality
+   ✓ 资料与成果覆盖 > 按所选成果改变要求，旧任务未设置目标时不推断 0ms
+   ✓ 资料与成果覆盖 > 可读文件不自动登记，同文件多个用途经真实命令保存并清空 9ms
+   ✓ 资料与成果覆盖 > 无位置、重复类别和错误资料不能写入 5ms
+   ✓ 资料与成果覆盖 > 新登记失效不退回旧值，最新读取失败或原件缺失均排除 4ms
+   ✓ 资料与成果覆盖 > 层级不改变覆盖，目标增加后显示新增缺项，错误建筑不回退 6ms
+   ✓ 资料与成果覆盖 > 独立数据库回导保留原件及多用途登记 15ms
+ ❯ src/workbench/useAssistantBridge.test.tsx (1 test | 1 failed) 28ms
+   × 助手实际快照只将尺寸记录写入尺寸上下文 27ms
+     → expected '项目：单元13尺寸核对内部测试；建筑：内部测试建筑；地点：未登记。\n当前…' to contain '尺寸记录 1 条'
+ ❯ src/screens/MeasurementBaseline.test.tsx (1 test | 1 failed) 49ms
+   × 资料覆盖及清空保留在资料页，不进入尺寸表 48ms
+     → Unable to find an element with the text: 尺寸与记录 · 1 条. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"gj-split "[39m
+      [33mstyle[39m=[32m"--split-ratio: 50%;"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"gj-split-data"[39m
+      [36m>[39m
+        [36m<section[39m
+          [33mclass[39m=[32m"sc-dimension-review"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m核对尺寸候选[0m
+          [36m</span>[39m
+          [36m<form[39m
+            [33maria-label[39m=[32m"尺寸候选核对"[39m
+            [33mclass[39m=[32m"sc-dimension-review"[39m
+            [33mnovalidate[39m=[32m""[39m
+          [36m>[39m
+            [36m<strong>[39m
+              [0m内部测试：总宽、总深及不确定高度[0m
+            [36m</strong>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-pane-desc"[39m
+            [36m>[39m
+              [0m核对原资料后逐条选择。模型的确定度仅供参考，未知尺寸需要补充依据。[0m
+            [36m</p>[39m
+            [36m<fieldset>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"sc-dimension-review-row"[39m
+                [33mid[39m=[32m"dimension-9eee3c89-2a63-4490-84ab-06250132e8cc-0"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"gj-row"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0m1[0m
+                    [0m. [0m
+                    [0m总宽[0m
+                  [36m</strong>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag"[39m
+                  [36m>[39m
+                    [0m模型读数待核对[0m
+                  [36m</span>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+                  [36m>[39m
+                    [0m已采用[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原标注：[0m
+                  [0m6000[0m
+                  [0m；原候选：[0m
+                  [0m6000 mm[0m
+                  [0m；测试记录第 1 行[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m查看资料：[0m
+                  [0m内部原件[0m
+                [36m</button>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m内部测试数值[0m
+                [36m</p>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m总宽[0m
+                  [0m · [0m
+                  [0m长度[0m
+                  [0m · [0m
+                  [0m6000 mm[0m
+                  [0m · 资料转写[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m重新核对第 [0m
+                  [0m1[0m
+                  [0m 条[0m
+                [36m</button>[39m
+              [36m</article>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"sc-dimension-review-row"[39m
+                [33mid[39m=[32m"dimension-9eee3c89-2a63-4490-84ab-06250132e8cc-1"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"gj-row"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0m2[0m
+                    [0m. [0m
+                    [0m总深[0m
+                  [36m</strong>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag"[39m
+                  [36m>[39m
+                    [0m模型读数待核对[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原标注：[0m
+                  [0m4200[0m
+                  [0m；原候选：[0m
+                  [0m4200 mm[0m
+                  [0m；测试记录第 2 行[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m查看资料：[0m
+                  [0m内部原件[0m
+                [36m</button>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m第 2 条处置[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 2 条处置"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"pending"[39m
+                    [36m>[39m
+                      [0m暂不处理[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"adopt"[39m
+                    [36m>[39m
+                      [0m采用[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"reject"[39m
+                    [36m>[39m
+                      [0m驳回[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m标注类型[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 2 条标注类型"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"length"[39m
+                    [36m>[39m
+                      [0m长度[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"relativeElevation"[39m
+                    [36m>[39m
+                      [0m相对标高[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+              [36m</article>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"sc-dimension-review-row"[39m
+                [33mid[39m=[32m"dimension-9eee3c89-2a63-4490-84ab-06250132e8cc-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"gj-row"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0m3[0m
+                    [0m. [0m
+                    [0m层高[0m
+                  [36m</strong>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag gj-tag--warning"[39m
+                  [36m>[39m
+                    [0m模型读数待核实[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原标注：[0m
+                  [0m3?00[0m
+                  [0m；原候选：[0m
+                  [0m数值未知[0m
+                  [0m；测试记录第 3 行[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m查看资料：[0m
+                  [0m内部原件[0m
+                [36m</button>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原资料须补充，不能按猜测采用[0m
+                [36m</p>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m第 3 条处置[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 3 条处置"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"pending"[39m
+                    [36m>[39m
+                      [0m暂不处理[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"adopt"[39m
+                    [36m>[39m
+                      [0m采用[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"reject"[39m
+                    [36m>[39m
+                      [0m驳回[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m标注类型[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 3 条标注类型"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"length"[39m
+                    [36m>[39m
+                      [0m长度[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"relativeElevation"[39m
+                    [36m>[39m
+                      [0m相对标高[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+              [36m</article>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"gj-note"[39m
+              [36m>[39m
+                [0m本次采用 [0m
+                [0m0[0m
+                [0m 条，驳回 [0m
+                [0m0[0m
+                [0m 条。其余保持原状态。[0m
+              [36m</p>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-actions"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+                  [33mdisabled[39m=[32m""[39m
+                  [33mtype[39m=[32m"submit"[39m
+                [36m>[39m
+                  [0m保存所选尺寸处置[0m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</fieldset>[39m
+          [36m</form>[39m
+        [36m</section>[39m
+        [0m          [0m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m尺寸与记录 · [0m
+          [0m2[0m
+          [0m 条[0m
+        [36m</span>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m2 条记录里 2 条已确认、0 条待核实、0 条已驳回。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-measure-table"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-measure-head"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m项目[0m
+            [36m</span>[39m
+            [36m<span>[39m
+              [0m数值[0m
+            [36m</span>[39m
+            [36m<span>[39m
+              [0m来源[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"sc-measure-row"[39m
+            [33mrole[39m=[32m"button"[39m
+            [33mtabindex[39m=[32m"0"[39m
+            [33mtitle[39m=[32m"资料转写；原标注 6000；测试记录第 1 行"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-name gj-numeric"[39m
+            [36m>[39m
+              [0m总宽[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-value"[39m
+            [36m>[39m
+              [0m6000 mm[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-tags"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag"[39m
+              [36m>[39m
+                [0m资料转写[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m已采用[0m
+              [36m</span>[39m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"sc-measure-row"[39m
+            [33mrole[39m=[32m"button"[39m
+            [33mtabindex[39m=[32m"0"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-name gj-numeric"[39m
+            [36m>[39m
+              [0mevidence.coverage.53d60fe0-3e67-4a67-a9bc-083aa9b40207[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-value"[39m
+            [36m>[39m
+              [0m{"kind":"materialCoverage","buildingId":"53d60fe0-3e67-4a67-a9bc-083aa9b40207","entries":[]}[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-tags"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-source gj-source--human"[39m
+              [36m>[39m
+                [0m人工确认[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m已确认[0m
+              [36m</span>[39m
+            [36m</span>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m登记形制[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m从资料转写尺寸[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+        [33maria-orientation[39m=[32m"vertical"[39m
+        [33maria-valuemax[39m=[32m"70"[39m
+        [33maria-valuemin[39m=[32m"30"[39m
+        [33maria-valuenow[39m=[32m"50"[39m
+        [33mclass[39m=[32m"gj-split-divider"[39m
+        [33mrole[39m=[32m"separator"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m/>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"资料区"[39m
+        [33mclass[39m=[32m"gj-split-aside"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m尺寸资料[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+        [36m>[39m
+          [0m选择资料查看手写草图或测量记录原件。[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-caption"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m内部测试尺寸.txt[0m
+          [36m</strong>[39m
+          [36m<p>[39m
+            [0m项目资料整理与候选提取[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-list"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m基准线[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m采用 1 条资料转写尺寸，未做形制推算[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag"[39m
+              [36m>[39m
+                [0m资料转写[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m尺寸单位[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m毫米，全项目一致[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag"[39m
+              [36m>[39m
+                [0m固定设置[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m形制做法[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m未登记形制[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</aside>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 6 passed (9)
+   Start at  19:59:03
+   Duration  2.00s (transform 663ms, setup 681ms, collect 3.13s, tests 137ms, environment 710ms, prepare 293ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/material-coverage.test.ts src/screens/MeasurementBaseline.test.tsx src/workbench/useAssistantBridge.test.tsx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/material-coverage.test.ts > 资料与成果覆盖 > 保存和清空覆盖均不增加尺寸与来源图的尺寸记录
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/material-coverage.test.ts:19:55
+     17|     const cleared = await commitMaterialCoverage({ head, evidenceId, e…
+     18|     for (const current of [head, cleared]) {
+     19|       expect(currentDimensionCount(current.snapshot)).toBe(1);
+       |                                                       ^
+     20|       const graph = buildProvenanceGraphView({ head: current, modelRun…
+     21|       expect(graph.nodes.find((node) => node.key === "fact")?.refs).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/screens/MeasurementBaseline.test.tsx > 资料覆盖及清空保留在资料页，不进入尺寸表
+TestingLibraryElementError: Unable to find an element with the text: 尺寸与记录 · 1 条. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"gj-split "[39m
+      [33mstyle[39m=[32m"--split-ratio: 50%;"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"gj-split-data"[39m
+      [36m>[39m
+        [36m<section[39m
+          [33mclass[39m=[32m"sc-dimension-review"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m核对尺寸候选[0m
+          [36m</span>[39m
+          [36m<form[39m
+            [33maria-label[39m=[32m"尺寸候选核对"[39m
+            [33mclass[39m=[32m"sc-dimension-review"[39m
+            [33mnovalidate[39m=[32m""[39m
+          [36m>[39m
+            [36m<strong>[39m
+              [0m内部测试：总宽、总深及不确定高度[0m
+            [36m</strong>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-pane-desc"[39m
+            [36m>[39m
+              [0m核对原资料后逐条选择。模型的确定度仅供参考，未知尺寸需要补充依据。[0m
+            [36m</p>[39m
+            [36m<fieldset>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"sc-dimension-review-row"[39m
+                [33mid[39m=[32m"dimension-9eee3c89-2a63-4490-84ab-06250132e8cc-0"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"gj-row"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0m1[0m
+                    [0m. [0m
+                    [0m总宽[0m
+                  [36m</strong>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag"[39m
+                  [36m>[39m
+                    [0m模型读数待核对[0m
+                  [36m</span>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+                  [36m>[39m
+                    [0m已采用[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原标注：[0m
+                  [0m6000[0m
+                  [0m；原候选：[0m
+                  [0m6000 mm[0m
+                  [0m；测试记录第 1 行[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m查看资料：[0m
+                  [0m内部原件[0m
+                [36m</button>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m内部测试数值[0m
+                [36m</p>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m总宽[0m
+                  [0m · [0m
+                  [0m长度[0m
+                  [0m · [0m
+                  [0m6000 mm[0m
+                  [0m · 资料转写[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m重新核对第 [0m
+                  [0m1[0m
+                  [0m 条[0m
+                [36m</button>[39m
+              [36m</article>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"sc-dimension-review-row"[39m
+                [33mid[39m=[32m"dimension-9eee3c89-2a63-4490-84ab-06250132e8cc-1"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"gj-row"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0m2[0m
+                    [0m. [0m
+                    [0m总深[0m
+                  [36m</strong>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag"[39m
+                  [36m>[39m
+                    [0m模型读数待核对[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原标注：[0m
+                  [0m4200[0m
+                  [0m；原候选：[0m
+                  [0m4200 mm[0m
+                  [0m；测试记录第 2 行[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m查看资料：[0m
+                  [0m内部原件[0m
+                [36m</button>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m第 2 条处置[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 2 条处置"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"pending"[39m
+                    [36m>[39m
+                      [0m暂不处理[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"adopt"[39m
+                    [36m>[39m
+                      [0m采用[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"reject"[39m
+                    [36m>[39m
+                      [0m驳回[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m标注类型[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 2 条标注类型"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"length"[39m
+                    [36m>[39m
+                      [0m长度[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"relativeElevation"[39m
+                    [36m>[39m
+                      [0m相对标高[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+              [36m</article>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"sc-dimension-review-row"[39m
+                [33mid[39m=[32m"dimension-9eee3c89-2a63-4490-84ab-06250132e8cc-2"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"gj-row"[39m
+                [36m>[39m
+                  [36m<strong>[39m
+                    [0m3[0m
+                    [0m. [0m
+                    [0m层高[0m
+                  [36m</strong>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-tag gj-tag--warning"[39m
+                  [36m>[39m
+                    [0m模型读数待核实[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原标注：[0m
+                  [0m3?00[0m
+                  [0m；原候选：[0m
+                  [0m数值未知[0m
+                  [0m；测试记录第 3 行[0m
+                [36m</p>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m查看资料：[0m
+                  [0m内部原件[0m
+                [36m</button>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"gj-note"[39m
+                [36m>[39m
+                  [0m原资料须补充，不能按猜测采用[0m
+                [36m</p>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m第 3 条处置[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 3 条处置"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"pending"[39m
+                    [36m>[39m
+                      [0m暂不处理[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"adopt"[39m
+                    [36m>[39m
+                      [0m采用[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"reject"[39m
+                    [36m>[39m
+                      [0m驳回[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"gj-field"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m标注类型[0m
+                  [36m</span>[39m
+                  [36m<select[39m
+                    [33maria-label[39m=[32m"第 3 条标注类型"[39m
+                  [36m>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"length"[39m
+                    [36m>[39m
+                      [0m长度[0m
+                    [36m</option>[39m
+                    [36m<option[39m
+                      [33mvalue[39m=[32m"relativeElevation"[39m
+                    [36m>[39m
+                      [0m相对标高[0m
+                    [36m</option>[39m
+                  [36m</select>[39m
+                [36m</label>[39m
+              [36m</article>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"gj-note"[39m
+              [36m>[39m
+                [0m本次采用 [0m
+                [0m0[0m
+                [0m 条，驳回 [0m
+                [0m0[0m
+                [0m 条。其余保持原状态。[0m
+              [36m</p>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-actions"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+                  [33mdisabled[39m=[32m""[39m
+                  [33mtype[39m=[32m"submit"[39m
+                [36m>[39m
+                  [0m保存所选尺寸处置[0m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</fieldset>[39m
+          [36m</form>[39m
+        [36m</section>[39m
+        [0m          [0m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m尺寸与记录 · [0m
+          [0m2[0m
+          [0m 条[0m
+        [36m</span>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m2 条记录里 2 条已确认、0 条待核实、0 条已驳回。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-measure-table"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-measure-head"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m项目[0m
+            [36m</span>[39m
+            [36m<span>[39m
+              [0m数值[0m
+            [36m</span>[39m
+            [36m<span>[39m
+              [0m来源[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"sc-measure-row"[39m
+            [33mrole[39m=[32m"button"[39m
+            [33mtabindex[39m=[32m"0"[39m
+            [33mtitle[39m=[32m"资料转写；原标注 6000；测试记录第 1 行"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-name gj-numeric"[39m
+            [36m>[39m
+              [0m总宽[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-value"[39m
+            [36m>[39m
+              [0m6000 mm[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-tags"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag"[39m
+              [36m>[39m
+                [0m资料转写[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m已采用[0m
+              [36m</span>[39m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"sc-measure-row"[39m
+            [33mrole[39m=[32m"button"[39m
+            [33mtabindex[39m=[32m"0"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-name gj-numeric"[39m
+            [36m>[39m
+              [0mevidence.coverage.53d60fe0-3e67-4a67-a9bc-083aa9b40207[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-value"[39m
+            [36m>[39m
+              [0m{"kind":"materialCoverage","buildingId":"53d60fe0-3e67-4a67-a9bc-083aa9b40207","entries":[]}[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"sc-measure-tags"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-source gj-source--human"[39m
+              [36m>[39m
+                [0m人工确认[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m已确认[0m
+              [36m</span>[39m
+            [36m</span>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m登记形制[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m从资料转写尺寸[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-label[39m=[32m"调整数据区与资料区的宽度"[39m
+        [33maria-orientation[39m=[32m"vertical"[39m
+        [33maria-valuemax[39m=[32m"70"[39m
+        [33maria-valuemin[39m=[32m"30"[39m
+        [33maria-valuenow[39m=[32m"50"[39m
+        [33mclass[39m=[32m"gj-split-divider"[39m
+        [33mrole[39m=[32m"separator"[39m
+        [33mtabindex[39m=[32m"0"[39m
+      [36m/>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"资料区"[39m
+        [33mclass[39m=[32m"gj-split-aside"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m尺寸资料[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+        [36m>[39m
+          [0m选择资料查看手写草图或测量记录原件。[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ws-evidence-caption"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m内部测试尺寸.txt[0m
+          [36m</strong>[39m
+          [36m<p>[39m
+            [0m项目资料整理与候选提取[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-list"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m基准线[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m采用 1 条资料转写尺寸，未做形制推算[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag"[39m
+              [36m>[39m
+                [0m资料转写[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m尺寸单位[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m毫米，全项目一致[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag"[39m
+              [36m>[39m
+                [0m固定设置[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m形制做法[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m未登记形制[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</aside>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/screens/MeasurementBaseline.test.tsx:15:17
+     13|   const view = render(<MeasurementBaseline snapshot={head.snapshot} pa…
+     14|     onRegisterArchetype={vi.fn()} onReviewDimensions={vi.fn()} onConfi…
+     15|   expect(screen.getByText("尺寸与记录 · 1 条")).toBeInTheDocument();
+       |                 ^
+     16|   expect(view.container.querySelector(".sc-measure-table")).toHaveText…
+     17|   expect(view.container.querySelector(".sc-measure-table")).not.toHave…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/workbench/useAssistantBridge.test.tsx > 助手实际快照只将尺寸记录写入尺寸上下文
+AssertionError: expected '项目：单元13尺寸核对内部测试；建筑：内部测试建筑；地点：未登记。\n当前…' to contain '尺寸记录 1 条'
+
+- Expected
++ Received
+
+- 尺寸记录 1 条
++ 项目：单元13尺寸核对内部测试；建筑：内部测试建筑；地点：未登记。
++ 当前这一步：measurement-baseline。
++ 资料 1 份：内部测试尺寸.txt（文档，可用）。
++ 尺寸记录 2 条，其中已确认 2 条，待核实 0 条。
++ 尺寸明细：总宽 6000 mm；evidence.coverage.891ce492-7a53-4a97-a20e-10a45856a8bf {"kind":"materialCoverage","buildingId":"891ce492-7a53-4a97-a20e-10a45856a8bf","entries":[]}。
++ 未关闭的问题 0 条。
++ 三维模型：未生成。
++ 成果要求：未确认；成果文件 0 项。
++ 检查：未检查。
++ 签发与归档：无归档草案。
+
+ ❯ src/workbench/useAssistantBridge.test.tsx:15:19
+     13|   const { result } = renderHook(() => useAssistantBridge(deps));
+     14|   const context = result.current.buildAssistantSnapshot().contextZh;
+     15|   expect(context).toContain("尺寸记录 1 条"); expect(context).toContain("尺寸…
+       |                   ^
+     16|   expect(context).not.toContain("materialCoverage"); expect(context).n…
+     17| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/application
+
+ ❯ src/impact-service.test.ts (21 tests | 1 failed) 10ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > evidenceToFact：资料到事实、现状、实测、关系 1ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > factToConstraint：事实与资料到几何规格，archetype 前缀不建边 1ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > factToConstraint：指向不存在记录的引用计入无法解析 0ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > constraintToGeometry：几何规格到几何版本 0ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > geometryToView：几何版本到成果 0ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > viewToArtifact：出图依据与任务要求到成果 0ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > artifactToCheck：成果与几何版本到检查 0ms
+   ✓ 七类边逐类推导（规格第 5.2 节） > checkToDelivery：检查与成果到交付评估与草案 0ms
+   ✓ 下游闭包 > 从资料出发走通整条链 0ms
+   ✓ 下游闭包 > 只向下游走，不回头 1ms
+   ✓ 下游闭包 > 起点自己不算受影响 0ms
+   ✓ 下游闭包 > 没有下游时闭包为空，不报错 0ms
+   ✓ 下游闭包 > 空输入返回空结构而不是报错 0ms
+   ✓ 下游闭包 > 数据里有环时不死循环 0ms
+   ✓ 下游闭包 > 已交付草案列出但不计入失效 0ms
+   ✓ 下游闭包 > 名称清单超过二十条时截断，截断数写进结构 0ms
+   × 算不全时结果自己说出来 > 覆盖记录独立分类，登记覆盖不报告模型影响缺口 5ms
+     → expected [ …(2) ] to deeply equal []
+   ✓ 算不全时结果自己说出来 > 起点是事实且有 archetype 引用时给出覆盖缺口说明 0ms
+   ✓ 算不全时结果自己说出来 > 起点在下游时不报覆盖缺口 0ms
+   ✓ 算不全时结果自己说出来 > 没有 archetype 引用时覆盖缺口为空 0ms
+   ✓ 算不全时结果自己说出来 > 无法解析的引用出现在结构里，不被丢掉 0ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 passed (21)
+   Start at  19:59:06
+   Duration  588ms (transform 88ms, setup 0ms, collect 312ms, tests 10ms, environment 0ms, prepare 105ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\application:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/impact-service.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/impact-service.test.ts > 算不全时结果自己说出来 > 覆盖记录独立分类，登记覆盖不报告模型影响缺口
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "有 1 处模型尺寸取自形制推算，推算过程没有逐条记录，这部分的影响范围列不出来",
++   "有 1 处引用在本项目里找不到对应记录，这部分的影响范围列不出来",
++ ]
+
+ ❯ src/impact-service.test.ts:243:63
+    241|     });
+    242|     const result = computeImpact(input, [uuid(20)]);
+    243|     expect(result.total).toBe(0); expect(result.coverageGaps).toEqual(…
+       |                                                               ^
+    244|     const downstream = computeImpact(input, [uuid(10)]);
+    245|     expect(downstream.groups).toEqual([{ kind: "资料覆盖记录", count: 1, nam…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

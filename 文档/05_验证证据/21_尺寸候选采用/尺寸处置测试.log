@@ -1,0 +1,16 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/failure-notice.test.ts (15 tests) 6ms
+ ✓ src/stage-map.test.ts (6 tests) 3ms
+ ✓ src/dimension-review.test.ts (14 tests) 55ms
+ ✓ src/workbench/dimension-writes.test.tsx (3 tests) 41ms
+ ✓ src/screens/DimensionCandidateReview.test.tsx (5 tests) 207ms
+ ✓ src/App.test.tsx (2 tests) 294ms
+
+ Test Files  6 passed (6)
+      Tests  45 passed (45)
+   Start at  12:29:39
+   Duration  2.75s (transform 879ms, setup 1.46s, collect 4.41s, tests 606ms, environment 1.92s, prepare 631ms)
+

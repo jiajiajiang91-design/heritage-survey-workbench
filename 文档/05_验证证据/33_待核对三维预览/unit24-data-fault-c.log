@@ -1,0 +1,135 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/draft-geometry.test.ts (13 tests | 2 failed) 91ms
+   ✓ 待核对形体数据 > 纯预览使用草稿当前值、稳定键与候选原文，不写项目事实或几何版本 14ms
+   × 待核对形体数据 > 已采用与直接输入的来源可区分，材料未知不推断且形体形式保持 14ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   ✓ 待核对形体数据 > 候选长度在圆柱及轮廓挤出中保留轴向、毫米坐标和原形体参数 4ms
+   ✓ 待核对形体数据 > 候选列表只包含当前项目可读可用且待核对的正长度，并保留类型未定 3ms
+   ✓ 待核对形体数据 > 无长度、无坐标或明确位置依据、规则位置均不形成预览 3ms
+   ✓ 待核对形体数据 > 候选拒绝、替代、单行驳回、不可读和已失效引用不退回手填值 6ms
+   ✓ 待核对形体数据 > 同一字段不能同时绑定两种来源，同一候选跨字段必须使用同一修正值 5ms
+   ✓ 待核对形体数据 > 修正或同名异值保存前需要说明，预览允许修正且失败不写任何事实 7ms
+   ✓ 待核对形体数据 > 同名异值来源保留冲突，缺说明不采用，说明明确后保留候选原文 4ms
+   ✓ 待核对形体数据 > 尺寸采用和构件通过同一 CommitFacts 原子写入，保持稳定身份及来源 4ms
+   ✓ 待核对形体数据 > 命令提交失败保持零写入，保存读回失败不会重复执行 4ms
+   ✓ 待核对形体数据 > 项目版本改变时原子命令失败，不产生半份尺寸或构件 5ms
+   × 待核对形体数据 > 已保存输入 ZIP 导出后独立仓储恢复引用、稳定键、材料未知和原资料 17ms
+     → expected { …(12) } to match object { …(3) }
+(14 matching properties omitted from actual)
+ ❯ src/component-input.test.ts (19 tests | 1 failed) 87ms
+   ✓ 构件参数转换 > 空白长度、坐标和来源逐项报错，不补默认值 24ms
+   ✓ 构件参数转换 > 修改后保留原有分数、参数、概念、位置依据和待确认条目 9ms
+   ✓ 构件参数转换 > 无效长度 0 不可保存 4ms
+   ✓ 构件参数转换 > 无效长度 -2 不可保存 3ms
+   ✓ 构件参数转换 > 无效长度  不可保存 3ms
+   ✓ 构件参数转换 > 无效长度 NaN 不可保存 3ms
+   ✓ 构件参数转换 > 无效长度 Infinity 不可保存 3ms
+   ✓ 构件参数转换 > 无效长度 1/0 不可保存 3ms
+   ✓ 构件参数转换 > 无效长度 1e999 不可保存 3ms
+   ✓ 构件参数转换 > 尺寸引用读取当前采用值，失效不退回旧手填值 4ms
+   ✓ 构件参数转换 > 圆柱和轮廓挤出可无改动回存 3ms
+   ✓ 构件参数转换 > 圆柱和轮廓挤出可无改动回存 3ms
+   ✓ 构件参数转换 > 重复点、零面积、自交均不可保存 0 2ms
+   ✓ 构件参数转换 > 重复点、零面积、自交均不可保存 1 2ms
+   ✓ 构件参数转换 > 重复点、零面积、自交均不可保存 2 2ms
+   ✓ 构件参数转换 > 资料缺失和父级循环阻止保存，未知材料无说明可记录缺项 2ms
+   ✓ 构件参数转换 > 新增待确认说明明确标记影响正式资格，旧说明不丢失 3ms
+   × 构件参数转换 > 空材料和明确未知自动记录材料缺项，保留其他未知且重复编辑不累加 7ms
+     → expected [ { …(6) } ] to deeply equal [ { …(6) }, ObjectContaining{…} ]
+   ✓ 构件参数转换 > 有展示模型无输入记录时拒绝反写；最新已驳回输入不会复现旧记录 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/component-input.test.ts > 构件参数转换 > 空材料和明确未知自动记录材料缺项，保留其他未知且重复编辑不累加
+AssertionError: expected [ { …(6) } ] to deeply equal [ { …(6) }, ObjectContaining{…} ]
+
+- Expected
++ Received
+
+@@ -9,14 +9,6 @@
+      "reasonCode": "structure-missing",
+      "requiredEvidence": [
+        "构造详图",
+      ],
+    },
+-   ObjectContaining {
+-     "blocksFormalEligibility": true,
+-     "blocksProxyOutcome": false,
+-     "reasonCode": "material-unknown",
+-     "requiredEvidence": [
+-       "材料调查记录",
+-     ],
+-   },
+  ]
+
+ ❯ src/component-input.test.ts:78:30
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 已采用与直接输入的来源可区分，材料未知不推断且形体形式保持
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+- [
+-   ObjectContaining {
+-     "reasonCode": "material-unknown",
+-     "requiredEvidence": [
+-       "材料调查记录",
+-     ],
+-   },
+- ]
++ []
+
+ ❯ src/draft-geometry.test.ts:49:41
+     47|     expect(preview.component!.solid).toEqual(context.component.solid);
+     48|     expect(preview.component!.dimensionBindings).toEqual([{ field: "si…
+     49|     expect(preview.component!.unknowns).toEqual([expect.objectContaini…
+       |                                         ^
+     50|   });
+     51| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 已保存输入 ZIP 导出后独立仓储恢复引用、稳定键、材料未知和原资料
+AssertionError: expected { …(12) } to match object { …(3) }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "materialCode": "unknown",
+    "stableKey": "0554d94d-b925-45b6-9589-b21a045082fd",
+-   "unknowns": [
+-     ObjectContaining {
+-       "reasonCode": "material-unknown",
+-     },
+-   ],
++   "unknowns": [],
+  }
+
+ ❯ src/draft-geometry.test.ts:199:49
+    197|       expect(head.snapshot.facts).toHaveLength(2);
+    198|       expect(reviewedDimension(head.snapshot.facts[0]!)).toMatchObject…
+    199|       expect(componentInputs(head.snapshot)[0]).toMatchObject({ stable…
+       |                                                 ^
+    200|       const component = componentInputs(head.snapshot)[0]!;
+    201|       expect(component.dimensionBindings).toEqual([{ field: "sizeX", s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 29 passed (32)
+   Start at  16:15:31
+   Duration  1.88s (transform 553ms, setup 438ms, collect 1.95s, tests 177ms, environment 358ms, prepare 193ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/draft-geometry.test.ts src/component-input.test.ts

@@ -1,0 +1,15 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/screens/CreateTaskDialog.test.tsx (3 tests) 182ms
+ ✓ src/production-task.test.ts (5 tests) 38ms
+ ✓ src/workbench/task-writes.test.tsx (5 tests) 38ms
+ ✓ src/screens/TaskSetupForm.test.tsx (9 tests) 590ms
+ ✓ src/App.test.tsx (2 tests) 375ms
+   ✓ App > 建立项目后显示当前建筑和版本  375ms
+
+ Test Files  5 passed (5)
+      Tests  24 passed (24)
+   Start at  08:05:48
+   Duration  2.88s (transform 936ms, setup 1.19s, collect 4.71s, tests 1.22s, environment 1.53s, prepare 531ms)
+

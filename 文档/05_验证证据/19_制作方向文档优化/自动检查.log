@@ -1,0 +1,115 @@
+
+==================================================
+文档与引用
+==================================================
+检查范围：87 份文档、571 份源码
+
+建议核对（57）
+  文档/03_辅导笔记/辅导6要点笔记_260704.md  28 处
+  文档/03_辅导笔记/辅导7要点笔记_260712.md  27 处
+  文档/00_索引.md  2 处
+  加 --verbose 看逐行
+
+==================================================
+单元与状态
+==================================================
+实施区单元 10 个，已归档 0 个
+  单元 01_图纸标注体系 验收 8/8 条已判定，其中未通过 0 条
+  单元 01_图纸标注体系 全部通过，可按确认规则关闭
+  单元 02_框选修正接入 验收 10/10 条已判定，其中未通过 0 条
+  单元 02_框选修正接入 全部通过，可按确认规则关闭
+  单元 03_公开仓库发布 验收 10/10 条已判定，其中未通过 0 条
+  单元 03_公开仓库发布 全部通过，可按确认规则关闭
+  单元 04_第三代动作四项 验收 0/12 条已判定，其中未通过 0 条
+  单元 05_设计参数补全与原型对齐 验收 12/12 条已判定，其中未通过 1 条
+  单元 06_外壳与令牌 验收 12/12 条已判定，其中未通过 1 条
+  单元 07_影响范围能力 验收 19/19 条已判定，其中未通过 0 条
+  单元 07_影响范围能力 全部通过，可按确认规则关闭
+  单元 08_十九屏重做 验收 9/9 条已判定，其中未通过 0 条
+  单元 08_十九屏重做 全部通过，可按确认规则关闭
+  单元 09_成功归档与用语层 验收 9/9 条已判定，其中未通过 0 条
+  单元 09_成功归档与用语层 全部通过，可按确认规则关闭
+  单元 11_制作方向文档优化 验收 0/8 条已判定，其中未通过 0 条
+
+状态一致
+
+==================================================
+测试写法
+==================================================
+测试里没有用模板字符串拼的正则
+
+==================================================
+跨 Agent 适配
+==================================================
+跨 Agent 适配一致，共 38 个文件
+
+==================================================
+类型
+==================================================
+
+> typecheck
+> tsc -b --pretty false
+
+
+==================================================
+测试
+==================================================
+
+> test
+> vitest run && pnpm --filter @gujian/server test && pnpm --filter @gujian/workbench test
+
+failed to load config from D:\Claude_jiajia\06_古建保护归档\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: EPERM: operation not permitted, open 'D:\Claude_jiajia\06_古建保护归档\node_modules\.vite-temp\vitest.config.ts.timestamp-1788569986523-08b5842ef2bb38.mjs'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.writeFile (node:internal/fs/promises:1239:14)
+    at async loadConfigFromBundledFile (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35994:3)
+    at async bundleAndLoadConfigFile (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35884:17)
+    at async loadConfigFromFile (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35851:42)
+    at async resolveConfig (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:35500:22)
+    at async _createServer (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vite@7.3.6_@types+node@24.2.1/node_modules/vite/dist/node/chunks/config.js:25441:67)
+    at async createViteServer (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vitest@3.2.4_@types+node@24.2.1_jsdom@26.1.0/node_modules/vitest/dist/chunks/cli-api.BkDphVBG.js:6911:17)
+    at async createVitest (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vitest@3.2.4_@types+node@24.2.1_jsdom@26.1.0/node_modules/vitest/dist/chunks/cli-api.BkDphVBG.js:10202:17)
+    at async prepareVitest (file:///D:/Claude_jiajia/06_%E5%8F%A4%E5%BB%BA%E4%BF%9D%E6%8A%A4%E5%BD%92%E6%A1%A3/node_modules/.pnpm/vitest@3.2.4_@types+node@24.2.1_jsdom@26.1.0/node_modules/vitest/dist/chunks/cli-api.BkDphVBG.js:10541:14) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'open',
+  path: 'D:\\Claude_jiajia\\06_古建保护归档\\node_modules\\.vite-temp\\vitest.config.ts.timestamp-1788569986523-08b5842ef2bb38.mjs'
+}
+
+
+
+
+==================================================
+演示矩阵
+==================================================
+步骤 视图           t0b-constructi  gaodu-yuhuang-  
+一 任务卡           有 1            有 1            
+二 资料清单         有 2            有 5            
+三 实测基准         有 45           有 18           
+四 构件清单         有 1258         有 1186         
+五 三维模型         有 1            有 1            
+六 图纸与检查       有 25           有 21           
+七 交付包           有 1            有 1            
+t0b-construction-sample: 七格全满
+gaodu-yuhuang-temple-main-hall: 七格全满
+
+==================================================
+演示包一致性
+==================================================
+项目                              审计        回执        未解决问题  阻断码      待确认部位  签发        成果        限制条款    
+t0b-construction-sample           15          15          0           26          909         2026-08-24  24          41          
+gaodu-yuhuang-temple-main-hall    21          21          0           4           0           2026-08-24  20          9           
+
+演示包内部一致
+
+==================================================
+通过  文档与引用
+通过  单元与状态
+通过  测试写法
+通过  跨 Agent 适配
+通过  类型
+未过  测试
+通过  演示矩阵
+通过  演示包一致性

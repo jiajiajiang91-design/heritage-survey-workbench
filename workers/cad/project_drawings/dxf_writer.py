@@ -11,6 +11,8 @@ import ezdxf
 from ezdxf import const
 from ezdxf.document import CONST_MARKER_STRING, CREATED_BY_EZDXF, WRITTEN_BY_EZDXF
 
+from workers.cad.output_units import DXF_UNIT_CODES, OUTPUT_UNITS, output_unit
+
 
 CAD_NAMESPACE = uuid.UUID("b7fbddea-740b-524a-9a26-731688e73043")
 APP_ID = "GJ_PROV"
@@ -39,6 +41,8 @@ def _stage_views(ir: dict[str, Any]) -> dict[str, dict[str, Any]]:
 class NativeDxfWriter:
     def __init__(self, ir: dict[str, Any], font_file_name: str):
         self.ir = ir
+        self.unit = output_unit(ir)
+        self.model_factor = 1.0 / OUTPUT_UNITS[self.unit]
         self.font_file_name = font_file_name
         self.stages = _stage_views(ir)
         self.sidecar: list[dict[str, Any]] = []
@@ -59,7 +63,7 @@ class NativeDxfWriter:
         # unused OpenSans/Liberation styles that qualification tools then report
         # as substituted fonts even though the drawing never references them.
         doc = ezdxf.new("R2018")
-        doc.header["$INSUNITS"] = 4
+        doc.header["$INSUNITS"] = DXF_UNIT_CODES[self.unit]
         doc.header["$TDCREATE"] = FIXED_JULIAN_DATE
         doc.header["$TDUPDATE"] = FIXED_JULIAN_DATE
         fingerprint = str(uuid.uuid5(CAD_NAMESPACE, self.ir["drawingIrSha256"])).upper()
@@ -69,9 +73,9 @@ class NativeDxfWriter:
         doc.header["$LASTSAVEDBY"] = "GUJIAN-CAD-WORKER"
         doc.appids.add(APP_ID)
         if "GJ-DASHED" not in doc.linetypes:
-            doc.linetypes.add("GJ-DASHED", pattern=[18.0, 12.0, -6.0], description="Gujian hidden or pending boundary")
+            doc.linetypes.add("GJ-DASHED", pattern=[value * self.model_factor for value in (18.0, 12.0, -6.0)], description="Gujian hidden or pending boundary")
         if "GJ-CENTER" not in doc.linetypes:
-            doc.linetypes.add("GJ-CENTER", pattern=[39.0, 24.0, -6.0, 3.0, -6.0], description="Gujian axis centre line")
+            doc.linetypes.add("GJ-CENTER", pattern=[value * self.model_factor for value in (39.0, 24.0, -6.0, 3.0, -6.0)], description="Gujian axis centre line")
         layers = {
             "GJ-CUT": (7, 50, "Continuous"), "GJ-OUTLINE": (7, 35, "Continuous"),
             "GJ-PROJECTION": (8, 18, "Continuous"), "GJ-HIDDEN": (8, 18, "GJ-DASHED"),
@@ -86,20 +90,23 @@ class NativeDxfWriter:
         style.set_extended_font_data("Gujian Sans SC", italic=False, bold=False)
         dim = doc.dimstyles.duplicate_entry("Standard", "GJ-DIM")
         dim.dxf.dimtxsty = "GJ-TEXT"
-        dim.dxf.dimtxt = 125
-        dim.dxf.dimasz = 100
-        # 尺寸文字统一毫米整数、小数点分隔；不设的话 ezdxf 按逗号出小数，与标高的小数点两套记法
-        dim.dxf.dimdec = 0
-        dim.dxf.dimrnd = 1
+        for name, default in (("dimtxt", 125.0), ("dimasz", 100.0), ("dimexo", 0.625), ("dimexe", 1.25), ("dimgap", 0.625), ("dimdli", 3.75), ("dimfxl", 2.5), ("dimcen", 2.5)):
+            setattr(dim.dxf, name, default * self.model_factor)
+        dim.dxf.dimdec = 8
+        dim.dxf.dimrnd = 0
+        dim.dxf.dimzin = 8
+        dim.dxf.dimlfac = 1
+        dim.dxf.dimpost = f"<> {self.unit}"
         dim.dxf.dimdsep = ord(".")
         title = doc.blocks.new("GJ_TITLEBLOCK")
         title.add_lwpolyline([(0, 0), (221, 0), (221, 30), (0, 30), (0, 0)], dxfattribs={"layer": "GJ-FRAME"})
         for tag, point, height in (("PROJECT", (3, 22), 4), ("TITLE", (3, 14), 4), ("NUMBER", (3, 6), 3), ("STATUS", (83, 6), 3), ("REVISION", (145, 6), 3), ("DATE", (178, 6), 3)):
             title.add_attdef(tag, insert=point, height=height, dxfattribs={"layer": "GJ-TEXT", "style": "GJ-TEXT"})
         condition = doc.blocks.new("GJ_CONDITION_MARK")
-        condition.add_circle((0, 0), 120, dxfattribs={"layer": "GJ-CONDITION"})
-        condition.add_line((-85, -85), (85, 85), dxfattribs={"layer": "GJ-CONDITION"})
-        condition.add_line((-85, 85), (85, -85), dxfattribs={"layer": "GJ-CONDITION"})
+        condition.add_circle((0, 0), 120 * self.model_factor, dxfattribs={"layer": "GJ-CONDITION"})
+        mark = 85 * self.model_factor
+        condition.add_line((-mark, -mark), (mark, mark), dxfattribs={"layer": "GJ-CONDITION"})
+        condition.add_line((-mark, mark), (mark, -mark), dxfattribs={"layer": "GJ-CONDITION"})
         return doc
 
     # 纸面标注排布的共用常量（GB/T 50001 图线与字体一章的取值区间内）。
@@ -114,22 +121,34 @@ class NativeDxfWriter:
     SECTION_MARK_TICK_PAPER_MM = 4.0
     QUALIFICATION_OFFSET_PAPER_MM = 6.0
 
+    @staticmethod
+    def _render_dimension(dimension) -> None:
+        renderer = dimension.get_renderer(None)
+        # 当前 ezdxf 把 DIMRND=0 当作取整，CAD 的同值表示不舍入。
+        renderer.measurement.text_round = None
+        renderer.measurement.update(renderer.measurement.raw_value)
+        block = dimension.doc.blocks.new_anonymous_block(type_char="D")
+        dimension.dimension.dxf.geometry = block.name
+        renderer.render(block)
+        renderer.finalize()
+        dimension.commit()
+
     def _add_model_space(self, doc) -> None:
         msp = doc.modelspace()
         layer_map = self.ir["layerPolicy"]
         for view in self.ir["views"]:
             stage = self.stages[view["viewId"]]
             for line in view["lines"]:
-                points = [(point[0] + stage["offset"][0], point[1] + stage["offset"][1]) for point in line["pointsMm"]]
+                points = [((point[0] + stage["offset"][0]) * self.model_factor, (point[1] + stage["offset"][1]) * self.model_factor) for point in line["pointsMm"]]
                 entity = msp.add_line(points[0], points[1], dxfattribs={"layer": layer_map[line["lineClass"]]})
                 self._register(entity, _cad_id(self.ir["drawingIrSha256"], line["lineId"]), "structure", {
                     "viewId": view["viewId"], "sourceEntityId": line["sourceEntityId"],
                     "geometryRevisionId": self.ir["geometryRevisionId"], "derivation": line["derivation"],
                 })
             for region in view["materialRegions"]:
-                boundary = [(point[0] + stage["offset"][0], point[1] + stage["offset"][1]) for point in region["boundaryMm"]]
+                boundary = [((point[0] + stage["offset"][0]) * self.model_factor, (point[1] + stage["offset"][1]) * self.model_factor) for point in region["boundaryMm"]]
                 hatch = msp.add_hatch(color=9, dxfattribs={"layer": "GJ-HATCH"})
-                hatch.set_pattern_fill("ANSI31", scale=80.0, angle=45.0)
+                hatch.set_pattern_fill("ANSI31", scale=80.0 * self.model_factor, angle=45.0)
                 hatch.paths.add_polyline_path(boundary, is_closed=True)
                 self._register(hatch, _cad_id(self.ir["drawingIrSha256"], region["regionId"]), "materialRegion", {
                     "viewId": view["viewId"], "sourceEntityId": region["sourceEntityId"],
@@ -145,21 +164,22 @@ class NativeDxfWriter:
             raise ValueError(f"annotation points at an unknown view: {annotation['requirementId']}")
         stage = self.stages[view["viewId"]]
         offset = stage["offset"]
-        scale = float(view["scaleDenominator"])
+        scale = float(view["scaleDenominator"]) * self.model_factor
         layer = self.ir["layerPolicy"][annotation["layerKey"]]
         height = float(annotation["paperTextHeightMm"]) * scale
-        placed = [(point[0] + offset[0], point[1] + offset[1]) for point in annotation["anchorMm"]]
+        placed = [((point[0] + offset[0]) * self.model_factor, (point[1] + offset[1]) * self.model_factor) for point in annotation["anchorMm"]]
         cad_id = _cad_id(self.ir["drawingIrSha256"], annotation["requirementId"])
         kind = annotation["kind"]
 
         if kind == "overallDimension":
             first, second = placed[0], placed[1]
+            second = (first[0] + annotation["valueMm"] * self.model_factor, second[1])
             base_y = first[1] - self.DIMENSION_OFFSET_PAPER_MM * scale
             dimension = msp.add_linear_dim(
                 base=((first[0] + second[0]) / 2, base_y), p1=first, p2=second, angle=0,
-                dimstyle="GJ-DIM", dxfattribs={"layer": layer},
+                dimstyle="GJ-DIM", override={"dimpost": f"<> {self.unit}"}, dxfattribs={"layer": layer},
             )
-            dimension.render()
+            self._render_dimension(dimension)
             self._register(dimension.dimension, cad_id, "annotation", annotation)
             return
 
@@ -175,7 +195,7 @@ class NativeDxfWriter:
             anchor = (placed[0][0], placed[0][1] + self.QUALIFICATION_OFFSET_PAPER_MM * scale)
             note = msp.add_mtext(annotation["text"], dxfattribs={
                 "layer": layer, "char_height": height, "style": "GJ-TEXT",
-                "width": max(1200.0, (stage["bounds"][2] - stage["bounds"][0]) * 0.45),
+                "width": max(1200.0, (stage["bounds"][2] - stage["bounds"][0]) * 0.45) * self.model_factor,
             })
             note.set_location(anchor)
             self._register(note, cad_id, "annotation", annotation)
@@ -214,9 +234,9 @@ class NativeDxfWriter:
                 angle = 90
             dimension = msp.add_linear_dim(
                 base=base, p1=first, p2=second, angle=angle,
-                dimstyle="GJ-DIM", dxfattribs={"layer": layer},
+                dimstyle="GJ-DIM", override={"dimpost": f"<> {self.unit}"}, dxfattribs={"layer": layer},
             )
-            dimension.render()
+            self._render_dimension(dimension)
             self._register(dimension.dimension, cad_id, "annotation", annotation)
             return
 
@@ -287,7 +307,7 @@ class NativeDxfWriter:
             note = msp.add_mtext(annotation["text"], dxfattribs={
                 "layer": layer, "char_height": height, "style": "GJ-TEXT",
             })
-            note.set_location((placed[0][0] + 180, placed[0][1] + 180))
+            note.set_location((placed[0][0] + 180 * self.model_factor, placed[0][1] + 180 * self.model_factor))
             self._register(note, _cad_id(self.ir["drawingIrSha256"], annotation["requirementId"] + ":text"), "annotation", annotation)
             return
 
@@ -322,7 +342,7 @@ class NativeDxfWriter:
                 sx1, sy1, sx2, sy2 = stage["bounds"]
                 viewport = layout.add_viewport(
                     center=(rect[0] + rect[2] / 2, rect[1] + rect[3] / 2), size=(rect[2], rect[3]),
-                    view_center_point=((sx1 + sx2) / 2, (sy1 + sy2) / 2), view_height=rect[3] * requirement["scaleDenominator"],
+                    view_center_point=((sx1 + sx2) / 2 * self.model_factor, (sy1 + sy2) / 2 * self.model_factor), view_height=rect[3] * requirement["scaleDenominator"] * self.model_factor,
                     status=index, dxfattribs={"layer": "GJ-FRAME", "flags": const.VSF_VIEWPORT_ZOOM_LOCKING},
                 )
                 viewport.dxf.id = index

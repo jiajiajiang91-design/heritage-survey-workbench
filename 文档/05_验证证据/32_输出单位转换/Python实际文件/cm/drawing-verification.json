@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0",
+  "status": "passed-task-driven-drawing-artifacts",
+  "qualification": "generated-not-qualified",
+  "l1Eligible": false,
+  "formalEligibility": false,
+  "geometryRevisionId": "521d402b-249a-502b-a9f5-2b75679f2dae",
+  "artifactRequirementMatrixSha256": "105765b4c890af1b03f6933fe31602ae27a949fc508cf100020799d90c37e8b4",
+  "drawingBuildRecordSha256": "d33a507dd02bdb5352cb59241d0de1e74679e41ccee07ba8ec5f23f62a6810ab",
+  "fontSha256": "4de4210cdf50d50bd27549cd56a5287c918378015de0773ca18f53022b75cef7",
+  "autocadAuditSummarySha256": null,
+  "qcadCompatibilitySummarySha256": null,
+  "checkCount": 28,
+  "failedCheckCount": 0,
+  "checks": [
+    {
+      "id": "contract-hash",
+      "passed": true,
+      "message": "成果要求矩阵哈希与当前输入一致"
+    },
+    {
+      "id": "geometry-revision",
+      "passed": true,
+      "message": "全部成果绑定同一个 GeometryRevision"
+    },
+    {
+      "id": "drawing-ir-hash",
+      "passed": true,
+      "message": "Drawing IR 可独立复算"
+    },
+    {
+      "id": "qualification-boundary",
+      "passed": true,
+      "message": "成果保持未核定、L1=false、不可正式使用"
+    },
+    {
+      "id": "dynamic-matrix",
+      "passed": true,
+      "message": "视图和图纸数量来自当前任务矩阵"
+    },
+    {
+      "id": "asset-closure",
+      "passed": true,
+      "message": "构建记录中的全部资产哈希和字节数闭合"
+    },
+    {
+      "id": "view-geometry-closure",
+      "passed": true,
+      "message": "全部 ViewGeometry 的来源、修订、类别和哈希闭合"
+    },
+    {
+      "id": "source-geometry-recompute",
+      "passed": true,
+      "message": "独立从 GLB 重算真实剖切、候选边和遮挡可见线，完整集合一致"
+    },
+    {
+      "id": "native-dxf-baseline",
+      "passed": true,
+      "message": "DXF 为 R2018、任务输出单位、ezdxf 审计零错误"
+    },
+    {
+      "id": "native-dxf-types",
+      "passed": true,
+      "message": "原生结构线、按需填充、单行/多行文字和块均存在"
+    },
+    {
+      "id": "native-business-linetypes",
+      "passed": true,
+      "message": "虚线与轴线为原生业务线型并绑定对应图层"
+    },
+    {
+      "id": "native-layouts",
+      "passed": true,
+      "message": "动态图纸布局和全部锁定视口与任务矩阵一致"
+    },
+    {
+      "id": "condition-layer",
+      "passed": true,
+      "message": "现状候选图层仅在当前任务存在观察候选时包含对象"
+    },
+    {
+      "id": "cad-provenance",
+      "passed": true,
+      "message": "CAD XDATA 与来源映射逐对象闭合"
+    },
+    {
+      "id": "native-output-coordinates",
+      "passed": true,
+      "message": "原生结构线按文件单位恢复毫米后与内部视图逐线一致"
+    },
+    {
+      "id": "native-paper-scale",
+      "passed": true,
+      "message": "纸面毫米与模型单位同步换算，视口物理比例和中心一致"
+    },
+    {
+      "id": "native-dimension-display",
+      "passed": true,
+      "message": "原生 DIMENSION 测量、有效样式和实际显示文字对应任务单位"
+    },
+    {
+      "id": "native-length-parameters",
+      "passed": true,
+      "message": "模型空间尺寸样式、线型、字高、圆圈和填充长度参数同步换算"
+    },
+    {
+      "id": "visible-labels",
+      "passed": true,
+      "message": "图面不显示内部 ID、英文状态、假日期或完整 UUID"
+    },
+    {
+      "id": "titleblock-boundary",
+      "passed": true,
+      "message": "图签写明待签发状态并指向签发记录"
+    },
+    {
+      "id": "svg-closure",
+      "passed": true,
+      "message": "SVG 页面、结构线、材料区和字体依赖闭合"
+    },
+    {
+      "id": "pdf-closure",
+      "passed": true,
+      "message": "PDF 页幅、嵌入字重 400、ToUnicode 和可检索中文闭合"
+    },
+    {
+      "id": "png-closure",
+      "passed": true,
+      "message": "全部预览尺寸、300 dpi 元数据和非空内容闭合"
+    },
+    {
+      "id": "cross-format-text",
+      "passed": true,
+      "message": "图名、图号、资格状态、保留小数的长度与米标高跨格式一致"
+    },
+    {
+      "id": "svg-paper-scale",
+      "passed": true,
+      "message": "SVG 逐条结构线的纸面物理长度符合任务比例"
+    },
+    {
+      "id": "pdf-paper-scale",
+      "passed": true,
+      "message": "PDF 实际矢量路径的纸面物理长度符合任务比例"
+    },
+    {
+      "id": "png-dimension-text",
+      "passed": true,
+      "message": "PNG 长度与标高文字的实际字形像素符合独立期望"
+    },
+    {
+      "id": "font-license-closure",
+      "passed": true,
+      "message": "派生字体、字重和官方许可清单闭合"
+    }
+  ],
+  "blockers": [
+    "PROFESSIONAL_REVIEW_REQUIRED",
+    "FORMAL_SIGNOFF_UNAVAILABLE"
+  ]
+}

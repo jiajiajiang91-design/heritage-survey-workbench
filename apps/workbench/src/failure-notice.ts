@@ -6,6 +6,7 @@
 // 未覆盖的码走通用兜底，只说明现象与下一步，绝不显示码本身。
 
 export interface FailureNotice {
+  kind?: "serviceUnavailable";
   summaryZh: string;
   nextStepZh: string;
 }
@@ -16,12 +17,23 @@ interface FailureRule extends FailureNotice {
   showDetail?: boolean;
 }
 
-const RETRY = "稍后重试。若反复出现，导出项目包留存现场后再处理。";
+const RETRY = "可以重试。若仍失败，请查看服务连接与本次输入。";
 const RELOAD = "刷新页面重新载入项目。数据未提交的部分需要重新填写。";
 const LOCAL_SERVICE = "确认本机服务已启动，然后重试。";
 
 // 完整码精确匹配，用于说法与家族默认不同的情况。
 const EXACT: Record<string, FailureRule> = {
+  MODEL_CHECK_TARGETS_INVALID: { summaryZh: "本次任务包含图纸，不能只用模型文件检查。", nextStepZh: "按所选成果生成图纸并完成检查，再建立草案。" },
+  MODEL_CHECK_HEAD_STALE: { summaryZh: "检查期间项目已更新，本次结果没有保存。", nextStepZh: "重新打开当前任务，再检查最新模型。" },
+  MODEL_CHECK_GEOMETRY_STALE: { summaryZh: "当前模型与生成依据不一致，本次检查未通过。", nextStepZh: "返回三维模型重新生成，再检查文件。" },
+  MODEL_CHECK_INPUTS_STALE: { summaryZh: "构件或采用尺寸已修改，模型尚未更新。", nextStepZh: "返回三维模型重新生成；旧文件仍可保存。" },
+  MODEL_CHECK_OUTPUT_UNIT_MISMATCH: { summaryZh: "模型文件的单位与当前任务不一致。", nextStepZh: "按当前任务单位重新生成模型，再检查文件。" },
+  MODEL_CHECK_FILES_MISSING: { summaryZh: "当前模型文件缺失或无法读取。", nextStepZh: "返回三维模型重新生成完整文件，再检查。" },
+  MODEL_CHECK_FILE_INVALID: { summaryZh: "模型文件格式无效，本次检查未通过。", nextStepZh: "返回三维模型重新生成，再检查文件。" },
+  MODEL_CHECK_ASSET_MISMATCH: { summaryZh: "模型文件与保存的生成记录不一致。", nextStepZh: "返回三维模型重新生成，保留原记录供核对。" },
+  MODEL_CHECK_MANIFEST_MISMATCH: { summaryZh: "模型生成清单与当前文件或版本不一致。", nextStepZh: "返回三维模型重新生成完整文件，再检查。" },
+  DELIVERY_TARGET_OUTPUTS_MISSING: { summaryZh: "所选成果尚无完整的对应检查，草案没有建立。", nextStepZh: "按最新任务要求生成并检查所选成果，再建立草案。" },
+  REVISION_CONFLICT: { summaryZh: "项目已由另一窗口修改，本次草稿没有写入。", nextStepZh: "保留草稿，重新打开项目核对最新值后再保存。" },
   KIMI_API_KEY_NOT_CONFIGURED: {
     summaryZh: "模型服务没有配置访问凭证，本次识别没有运行。",
     nextStepZh: "在本机服务的环境配置中填入凭证后重试。凭证不进入浏览器。",
@@ -55,7 +67,7 @@ const EXACT: Record<string, FailureRule> = {
     nextStepZh: "文件名去掉路径分隔符与控制字符后重新上传。",
   },
   FILE_SIZE_NOT_ALLOWED: {
-    summaryZh: "文件大小超出允许范围，该文件没有导入。",
+    summaryZh: "文件为空或大小超出允许范围，该文件没有导入。",
     nextStepZh: "压缩或分卷后重新上传。",
   },
   DELIVERY_NOT_BLOCKED: {
@@ -152,7 +164,7 @@ const FAMILIES: Array<[string, FailureRule]> = [
   ["ARTIFACT_", { summaryZh: "数据的项目归属对不上，本次操作没有执行。", nextStepZh: RELOAD }],
   ["CHECK_RUN_", { summaryZh: "数据的项目归属对不上，本次操作没有执行。", nextStepZh: RELOAD }],
   ["INVALID_JSON", { summaryZh: "收到的数据格式不正确，本次操作没有执行。", nextStepZh: RETRY }],
-  ["SSE_", { summaryZh: "与本机服务的连接中断，进度不再更新。", nextStepZh: LOCAL_SERVICE }],
+  ["SSE_", { kind: "serviceUnavailable", summaryZh: "与本机服务的连接中断，进度不再更新。", nextStepZh: LOCAL_SERVICE }],
   ["HTTP_", { summaryZh: "本机服务返回错误，本次操作没有执行。", nextStepZh: LOCAL_SERVICE }],
 ];
 
@@ -182,7 +194,8 @@ export function inputError(summaryZh: string): FailureNotice {
 // 从抛出的错误里取出用户能看的说明。message 已经是中文的直接采用，
 // 是错误码的按规则翻译，都不匹配时走通用兜底。
 export function describeFailure(reason: unknown, fallbackZh: string): FailureNotice {
-  const raw = reason instanceof Error ? reason.message : typeof reason === "string" ? reason : "";
+  const explicitCode = reason && typeof reason === "object" && "code" in reason && typeof reason.code === "string" ? reason.code : null;
+  const raw = explicitCode ?? (reason instanceof Error ? reason.message : typeof reason === "string" ? reason : "");
   const [head = "", ...rest] = raw.split(":");
   const code = head.trim();
 
@@ -201,7 +214,7 @@ export function describeFailure(reason: unknown, fallbackZh: string): FailureNot
 
   const detail = rest.join(":").trim();
   if (!rule.showDetail || detail === "") {
-    return { summaryZh: rule.summaryZh, nextStepZh: rule.nextStepZh };
+    return { summaryZh: rule.summaryZh, nextStepZh: rule.nextStepZh, ...(rule.kind ? { kind: rule.kind } : {}) };
   }
   // 细节本身常常是内层错误码（如 DRAWING_JOB_FAILED:DRAWING_WORKER_FAILED）。
   // 能翻译就用内层的中文说明，翻译不出就只留外层说明，不把标识符抛给用户。

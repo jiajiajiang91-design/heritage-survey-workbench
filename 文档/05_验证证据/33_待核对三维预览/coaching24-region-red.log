@@ -1,0 +1,42 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/screens/ComponentList-preview.test.tsx (1 test | 1 failed) 123ms
+   × 参数标注区域与构件候选区域分别定位，选形体后恢复构件区域 123ms
+     → expected { x: 0.1, y: 0.1, width: 0.4, …(1) } to deeply equal { x: 0.2, y: 0.3, width: 0.1, …(1) }
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  16:30:07
+   Duration  1.98s (transform 321ms, setup 212ms, collect 1.12s, tests 123ms, environment 331ms, prepare 62ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/screens/ComponentList-preview.test.tsx > 参数标注区域与构件候选区域分别定位，选形体后恢复构件区域
+AssertionError: expected { x: 0.1, y: 0.1, width: 0.4, …(1) } to deeply equal { x: 0.2, y: 0.3, width: 0.1, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "height": 0.1,
+-   "width": 0.1,
+-   "x": 0.2,
+-   "y": 0.3,
++   "height": 0.5,
++   "width": 0.4,
++   "x": 0.1,
++   "y": 0.1,
+  }
+
+ ❯ src/screens/ComponentList-preview.test.tsx:25:72
+     23|   fireEvent.click(screen.getByRole('button',{name:'预览待核对形体'}));
+     24|   fireEvent.click(screen.getAllByRole('button',{name:'查看参数原件：内部测试尺寸.tx…
+     25|   expect(JSON.parse(screen.getByTestId('source-region').textContent!))…
+       |                                                                        ^
+     26|   fireEvent.click(screen.getByRole('button',{name:'选择临时形体'}));
+     27|   expect(JSON.parse(screen.getByTestId('source-region').textContent!))…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

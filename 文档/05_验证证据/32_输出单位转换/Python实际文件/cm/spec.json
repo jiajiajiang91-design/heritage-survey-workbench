@@ -1,0 +1,68 @@
+{
+  "buildingId": "70e7da46-2224-50a9-8033-ec8d28a50f2c",
+  "coordinateSystem": {
+    "axisOrder": "XYZ",
+    "lengthUnit": "mm",
+    "name": "项目局部坐标",
+    "origin": [
+      0,
+      0,
+      0
+    ],
+    "upAxis": "Z"
+  },
+  "createdAt": "2026-08-13T12:00:00.000Z",
+  "id": "f1b37888-b9ba-5af1-8de0-16ed8ce237d3",
+  "inputHash": "a9e7baa2cad9f7c1709a3a6c5bfafc49579c632afdb365256490fe2e82737d78",
+  "interfaces": [],
+  "objects": [
+    {
+      "componentType": "wall",
+      "displayNameZh": "单位转换测试墙体",
+      "evidenceRefs": [],
+      "factRefs": [],
+      "id": "a62f1527-adf5-5081-8167-395579e2deba",
+      "materialCode": "team-demo",
+      "parameters": [
+        {
+          "basis": "demo",
+          "evidenceRefs": [],
+          "exactValue": "3000",
+          "factRefs": [],
+          "id": "a79d720c-6f2f-53a4-87a7-15c1f1a9d34b",
+          "name": "高度",
+          "unit": "mm",
+          "valueType": "length"
+        }
+      ],
+      "parentId": null,
+      "producer": {
+        "fixtureId": "project-kernel-contract",
+        "producerType": "demo"
+      },
+      "solid": {
+        "centerMm": [
+          250.25,
+          450.5,
+          1500
+        ],
+        "kind": "box",
+        "sizeX": "6100.5",
+        "sizeY": "1200.25",
+        "sizeZ": "3000"
+      },
+      "stableKey": "单位转换测试墙体",
+      "unknownRefs": []
+    }
+  ],
+  "outputUnit": "cm",
+  "projectId": "9527b3cb-ab1b-549c-8df1-32664f7a1dd6",
+  "projectRevisionId": "a9667ee8-2627-504b-89bf-50569182082c",
+  "schemaVersion": "2.0",
+  "tolerances": {
+    "interfaceMm": 0.5,
+    "modellingMm": 0.01,
+    "tessellationMm": 0.5
+  },
+  "unknowns": []
+}

@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\build_package.py", line 86, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\build_package.py", line 80, in main
+    record = build_package(matrix, args.geometry_dir, args.font, args.output)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\build_package.py", line 41, in build_package
+    sheets = SheetArtifactWriter(ir, font_path).write(output_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\sheet_writer.py", line 509, in write
+    self._svg(sheet, svg_path)
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\sheet_writer.py", line 341, in _svg
+    for item in sheet_primitives(self.ir, sheet, width):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\sheet_writer.py", line 263, in sheet_primitives
+    out.extend(annotation_primitives(annotation, view, requirements[annotation["viewId"]], page_width))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\sheet_writer.py", line 140, in annotation_primitives
+    x1, x2, dimension_y, label_y = _annotation_rows(view, requirement, page_width)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude_jiajia\06_�Ž������鵵\workers\cad\project_drawings\sheet_writer.py", line 127, in _annotation_rows
+    raise ValueError(f"view {view['viewKey']} viewport overlaps the title block")
+ValueError: view view-3efb01ea-b8aa-4511-ae2d-7a562c25a1da viewport overlaps the title block

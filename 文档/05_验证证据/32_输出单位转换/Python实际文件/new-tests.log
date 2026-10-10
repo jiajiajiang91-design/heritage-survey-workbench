@@ -1,0 +1,17 @@
+test_ifc_physical_vertices_and_glb_metres_for_three_units (workers.cad.project_geometry.test_output_units.GeometryOutputUnitTests.test_ifc_physical_vertices_and_glb_metres_for_three_units) ... ok
+test_independent_ifc_verifier_rejects_each_unit_and_vertex_tamper_after_rehash (workers.cad.project_geometry.test_output_units.GeometryOutputUnitTests.test_independent_ifc_verifier_rejects_each_unit_and_vertex_tamper_after_rehash) ... ok
+test_optional_unit_preserves_old_hash_and_validates_finite_values (workers.cad.project_geometry.test_output_units.GeometryOutputUnitTests.test_optional_unit_preserves_old_hash_and_validates_finite_values) ... ok
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+test_optional_matrix_unit_is_not_injected_and_invalid_values_fail (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_optional_matrix_unit_is_not_injected_and_invalid_values_fail) ... ok
+test_rehashed_single_file_tampers_are_rejected_and_restored (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_rehashed_single_file_tampers_are_rejected_and_restored) ... ok
+test_three_native_units_dimensions_text_and_paper_scale (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_three_native_units_dimensions_text_and_paper_scale) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 8.057s
+
+OK

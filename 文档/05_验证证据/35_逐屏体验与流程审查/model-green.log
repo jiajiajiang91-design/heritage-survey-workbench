@@ -1,0 +1,11 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档
+
+ ✓ packages/infrastructure/src/geometry-spec-builder.test.ts (17 tests) 29ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  22:56:43
+   Duration  669ms (transform 95ms, setup 0ms, collect 365ms, tests 29ms, environment 0ms, prepare 88ms)
+

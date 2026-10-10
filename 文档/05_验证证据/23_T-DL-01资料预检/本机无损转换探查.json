@@ -1,0 +1,39 @@
+{
+  "kind": "implementation-feasibility-only",
+  "runtime": "workers/cad/.venv Python with project Pillow",
+  "results": [
+    {
+      "source": "highres_00016a.tif",
+      "mode": "1",
+      "pixels": [
+        14450,
+        9632
+      ],
+      "pngBytes": 971612,
+      "pixelsIdentical": true,
+      "elapsedSeconds": 0.438
+    },
+    {
+      "source": "highres_00017a.tif",
+      "mode": "1",
+      "pixels": [
+        14442,
+        9632
+      ],
+      "pngBytes": 1157634,
+      "pixelsIdentical": true,
+      "elapsedSeconds": 0.427
+    },
+    {
+      "source": "highres_00018a.tif",
+      "mode": "1",
+      "pixels": [
+        14464,
+        9632
+      ],
+      "pngBytes": 1014263,
+      "pixelsIdentical": true,
+      "elapsedSeconds": 0.396
+    }
+  ]
+}

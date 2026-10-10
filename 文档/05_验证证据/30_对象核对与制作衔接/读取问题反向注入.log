@@ -1,0 +1,40 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/application
+
+ ❯ src/project-command-service.test.ts (11 tests | 1 failed) 18ms
+   ✓ ProjectCommandService > 通过唯一事务入口建立初始项目版本 4ms
+   ✓ ProjectCommandService > 相同 commandId 重试返回原回执且不重复写入 1ms
+   ✓ ProjectCommandService > 版本冲突在提交前失败 1ms
+   ✓ ProjectCommandService > 提交失败不留下项目头或命令回执 1ms
+   ✓ ProjectCommandService > 服务端权威身份覆盖客户端 actorId 0ms
+   ✓ ProjectCommandService > 未授权命令不会开启仓储事务 0ms
+   ✓ ProjectCommandService > 新增事实保留模型来源并拒绝重复事实 ID 1ms
+   ✓ ProjectCommandService > 构件记录写入后可按 id 修订，修订不存在的记录被拒 1ms
+   ✓ ProjectCommandService > 现状记录写入人工来源并拒绝无证据引用的记录 1ms
+   × ProjectCommandService > 规则核对只作废本轮重新提出的问题，没提的保持未解决 6ms
+     → expected 'superseded' to be 'open' // Object.is equality
+   ✓ ProjectCommandService > 复核签发记录追加进快照，几何版本不存在或重复签发被拒 1ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  16:17:10
+   Duration  659ms (transform 111ms, setup 0ms, collect 360ms, tests 18ms, environment 0ms, prepare 107ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\application:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/project-command-service.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/project-command-service.test.ts > ProjectCommandService > 规则核对只作废本轮重新提出的问题，没提的保持未解决
+AssertionError: expected 'superseded' to be 'open' // Object.is equality
+
+Expected: "open"
+Received: "superseded"
+
+ ❯ src/project-command-service.test.ts:403:95
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

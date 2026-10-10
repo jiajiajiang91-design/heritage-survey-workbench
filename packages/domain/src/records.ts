@@ -130,7 +130,14 @@ export const EvidenceSummaryOutputSchema = z.object({
 // 图纸尺寸转写（技术架构 7.2 首期任务类型之一，用户旅程第二步）。
 // 每条尺寸必须能追到图上原文与所在资料；读不准的单独标出来由人工判断，
 // 不由模型替人决定。
+export const AnnotationRegionSchema = z.object({
+  x: z.number().min(0).max(1), y: z.number().min(0).max(1),
+  width: z.number().gt(0).max(1), height: z.number().gt(0).max(1),
+}).strict();
+
 export const TranscribedDimensionSchema = z.object({
+  quantityKind: z.enum(["length", "relativeElevation"]).optional(),
+  region: AnnotationRegionSchema.optional(),
   valueText: z.string().min(1).max(120),
   valueMm: z.string().max(40).nullable(),
   partZh: z.string().max(120).nullable(),

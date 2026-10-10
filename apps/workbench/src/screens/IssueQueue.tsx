@@ -22,6 +22,7 @@ export interface IssueQueueProps {
   onDecideOption: (issueId: string, outcome: "accepted" | "rejected", optionId: string | null, reason: string) => Promise<boolean>;
   onGoToTask: () => void;
   onGoToEvidence: () => void;
+  initialIssueId?: string | null;
 }
 
 function typeTone(issueType: string): "danger" | "warning" {
@@ -50,9 +51,9 @@ function refLabel(ref: string, snapshot: Snapshot, evidenceTitle: (ref: string) 
   return /^[0-9a-f-]{36}$/i.test(id) ? "相关记录" : ref;
 }
 
-export function IssueQueue({ snapshot, openIssues, taskConfirmed, evidenceTitle, humanInterventions, onDecideCandidate, onDecideOption, onGoToTask, onGoToEvidence }: IssueQueueProps) {
+export function IssueQueue({ snapshot, openIssues, taskConfirmed, evidenceTitle, humanInterventions, onDecideCandidate, onDecideOption, onGoToTask, onGoToEvidence, initialIssueId }: IssueQueueProps) {
   const visible = openIssues.filter((issue) => issue.sourceRef !== "rule:task-setup-required");
-  const [selectedId, setSelectedId] = useState<string | null>(visible[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<string | null>(initialIssueId ?? visible[0]?.id ?? null);
   const [reason, setReason] = useState("");
   const [optionId, setOptionId] = useState<string | null>(null);
   const selected = visible.find((issue) => issue.id === selectedId) ?? visible[0] ?? null;

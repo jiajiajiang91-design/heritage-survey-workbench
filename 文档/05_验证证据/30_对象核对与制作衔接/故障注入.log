@@ -1,0 +1,2566 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/component-candidates.test.ts (12 tests | 11 failed) 176ms
+   × 识别构件与制作输入关联 > 首次只沿用可见名称、明确类型和原件，未知三维参数保持空白 26ms
+     → expected '故意错误的候选名称' to be '内部墙体' // Object.is equality
+   × 识别构件与制作输入关联 > 保存与重命名后再次打开编辑原输入，预览与 ZIP 保留同一来源和尺寸引用 20ms
+     → expected '故意错误的候选名称' to be '人工修订墙体' // Object.is equality
+   × 识别构件与制作输入关联 > 错误项目、条目、编号或原件引用均不能写入 14ms
+     → expected null to be truthy
+   × 识别构件与制作输入关联 > 候选驳回后新生成及旧规格重新生成均拒绝，历史模型和事实仍可查 16ms
+     → expected [ { …(14) }, { …(13) } ] to deeply equal []
+   ✓ 识别构件与制作输入关联 > 既有模型重新生成使用最新采用尺寸，不沿用旧规格尺寸 17ms
+   × 识别构件与制作输入关联 > 尺寸来源变为 rejected 时界面与新生成一致失效，历史来源问题保留 9ms
+     → expected true to be false // Object.is equality
+   × 识别构件与制作输入关联 > 尺寸来源变为 superseded 时界面与新生成一致失效，历史来源问题保留 10ms
+     → expected true to be false // Object.is equality
+   × 识别构件与制作输入关联 > 尺寸来源变为 relativeElevation 时界面与新生成一致失效，历史来源问题保留 14ms
+     → expected true to be false // Object.is equality
+   × 识别构件与制作输入关联 > 只有可读图像时不要求文字，读取重试成功后关闭旧失败问题 15ms
+     → expected [ 'rule:parse-failure-review', …(4) ] to not include 'rule:parse-failure-review'
+   × 识别构件与制作输入关联 > 最新构件输入驳回后不退回更早的已确认参数 8ms
+     → expected true to be false // Object.is equality
+   × 识别构件与制作输入关联 > 保留派生图时最新读取为 failed，界面和问题规则均认定不可用 13ms
+     → expected [ 'rule:parse-failure-review', …(4) ] to include 'rule:parsed-evidence-required'
+   × 识别构件与制作输入关联 > 保留派生图时最新读取为 unsupported，界面和问题规则均认定不可用 13ms
+     → expected [ 'rule:model-candidate-review', …(3) ] to include 'rule:parsed-evidence-required'
+ ❯ src/workbench/usePreviewFlow.test.tsx (11 tests | 3 failed) 73ms
+   ✓ 生成预览流程 > 缺少任务设置不发请求，并指出补充入口 20ms
+   ✓ 生成预览流程 > 生成准备期间防止重复，成功后进入预览并保留旧候选 7ms
+   ✓ 生成预览流程 > 失败不切页、不清空旧结果，可再次生成 6ms
+   ✓ 生成预览流程 > 纯文字完成标注后不调用构件任务 4ms
+   ✓ 生成预览流程 > 图像串行执行两任务，第二任务取得前一步最新项目版本 7ms
+   ✓ 生成预览流程 > 标注 失败仍保存另一步结果，并逐步报告 4ms
+   ✓ 生成预览流程 > 构件 失败仍保存另一步结果，并逐步报告 4ms
+   ✓ 生成预览流程 > 服务取消标注后不启动后一步构件任务 3ms
+   × 生成预览流程 > 服务返回 标注失败 回执时按终态报告并保留已有结果 8ms
+     → expected last "spy" call to have been called with [ StringContaining "标注提取失败" ]
+   × 生成预览流程 > 服务返回 构件失败 回执时按终态报告并保留已有结果 5ms
+     → expected last "spy" call to have been called with [ StringContaining "构件提取失败" ]
+   × 生成预览流程 > 服务返回 标注取消 回执时按终态报告并保留已有结果 5ms
+     → expected "runComponentRecognition" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st runComponentRecognition call:
+
+    Array [
+      Object {
+        "auditEventId": "a8c41beb-f67f-48fb-8d1a-29edf230b1a1",
+        "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+        "revisionId": "cf5df2e1-bc06-4933-b24b-c8f50641e9a8",
+        "snapshot": Object {
+          "adoptedRecordRefs": Array [],
+          "buildings": Array [
+            Object {
+              "addressText": null,
+              "id": "c8d21782-5031-42ae-9e8e-a75d4e7d2bd7",
+              "name": "内部测试建筑",
+              "periodText": null,
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "status": "existing",
+            },
+          ],
+          "candidates": Array [
+            Object {
+              "contentText": "内部交互测试候选，非真实模型运行",
+              "createdAt": "2026-10-01T15:13:43.722Z",
+              "evidenceRefs": Array [
+                "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+              ],
+              "id": "e6bcfa95-cc67-4900-bb47-bf6273cc00e6",
+              "inputRevisionId": "ba75df4f-9e53-4d98-af41-394f116f98c7",
+              "producer": Object {
+                "producerType": "model",
+                "runId": "4398439b-433b-454d-a032-971def887a80",
+              },
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "reviewStatus": "unreviewed",
+              "runId": "4398439b-433b-454d-a032-971def887a80",
+              "structured": Object {
+                "dimensions": Array [
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+                    "locationZh": "测试记录第 1 行",
+                    "noteZh": "内部测试数值",
+                    "partZh": "总宽",
+                    "valueMm": "6000",
+                    "valueText": "6000",
+                  },
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+                    "locationZh": "测试记录第 2 行",
+                    "noteZh": null,
+                    "partZh": "总深",
+                    "valueMm": "4200",
+                    "valueText": "4200",
+                  },
+                  Object {
+                    "certainty": "uncertain",
+                    "evidenceRef": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+                    "locationZh": "测试记录第 3 行",
+                    "noteZh": "原资料须补充，不能按猜测采用",
+                    "partZh": "层高",
+                    "valueMm": null,
+                    "valueText": "3?00",
+                  },
+                ],
+                "kind": "measurementTranscription",
+                "missingInformation": Array [
+                  "本文件仅用于交互测试，不用于建筑制作",
+                ],
+                "summary": "内部测试：总宽、总深及不确定高度",
+              },
+              "taskType": "measurement-transcription",
+            },
+          ],
+          "dependencyEdges": Array [],
+          "entities": Array [],
+          "evidences": Array [
+            Object {
+              "assetId": "2f0ea9ae-a6f7-4d4f-9517-acd76321c25e",
+              "dataStatus": "available",
+              "evidenceType": "document",
+              "id": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+              "intendedUse": "项目资料整理与候选提取",
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "recordedAt": "2026-10-01T15:13:43.721Z",
+              "relatedEntityRefs": Array [
+                "c8d21782-5031-42ae-9e8e-a75d4e7d2bd7",
+              ],
+              "rightsDeclaration": null,
+              "title": "内部测试尺寸.txt",
+            },
+          ],
+          "exclusionRecords": Array [],
+          "facts": Array [],
+          "geometryRevisions": Array [],
+          "geometrySpecs": Array [],
+          "issues": Array [],
+          "measurements": Array [],
+          "observations": Array [],
+          "parseRecords": Array [
+            Object {
+              "assetId": "2f0ea9ae-a6f7-4d4f-9517-acd76321c25e",
+              "createdAt": "2026-10-01T15:13:43.721Z",
+              "evidenceId": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+              "extractedText": "内部测试资料，不是实测记录。
+    总宽 6000 mm
+    总深 4200 mm
+    层高 3?00 mm
+    ",
+              "id": "99e43521-f782-439b-abc0-8adcd08c351b",
+              "parser": "utf8-text",
+              "parserVersion": "1.0.0",
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "readability": "readable",
+              "readableAs": "image",
+              "status": "parsed",
+              "warnings": Array [],
+            },
+          ],
+          "project": Object {
+            "createdAt": "2026-10-01T15:13:43.721Z",
+            "id": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+            "locationText": null,
+            "name": "单元13尺寸核对内部测试",
+            "status": "active",
+          },
+          "relations": Array [],
+          "reviewSignoffs": Array [],
+          "schemaVersion": "3.0",
+          "taskDefinitions": Array [
+            Object {
+              "automationPolicyRef": null,
+              "confirmedAt": "2026-10-01T15:13:43.722Z",
+              "deliverables": Array [
+                "主体模型",
+                "首层平面",
+              ],
+              "id": "2d32e08e-5283-4eda-b1e6-f051474324c3",
+              "name": "预览内部测试",
+              "productionSetup": Object {
+                "buildingId": "c8d21782-5031-42ae-9e8e-a75d4e7d2bd7",
+                "outputUnit": "mm",
+                "projectGroup": null,
+                "purpose": "existingSurvey",
+                "targets": Array [
+                  "model",
+                  "floorPlan",
+                ],
+              },
+              "regulationRefs": Array [],
+              "responsibilities": Array [
+                Object {
+                  "actorId": "775397c2-10a3-4ed6-99da-56c4844334e5",
+                  "role": "surveyor",
+                },
+              ],
+              "scope": Array [
+                "根据已有资料制作现状测绘成果",
+              ],
+            },
+          ],
+        },
+      },
+      "3230e41a-b753-45c5-8c98-085f09fb4b27",
+      Array [
+        "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+      ],
+      [Function bound dispatchSetState],
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/screens/ComponentCandidateFlow.test.tsx (2 tests | 2 failed) 100ms
+   × 候选进入构件制作表单 > 沿用候选来源，填写并绑定后真实保存，重命名后仍编辑同一输入 83ms
+     → expect(element).toHaveValue(内部墙体)
+
+Expected the element to have value:
+  内部墙体
+Received:
+  故意错误的候选名称
+   × 候选进入构件制作表单 > 预览传入的候选选择打开相应条目，候选失效后明确提示并停止新增 17ms
+     → expect(element).toHaveValue(内部圆柱)
+
+Expected the element to have value:
+  内部圆柱
+Received:
+  故意错误的候选名称
+ ❯ src/screens/ModelView.test.tsx (3 tests | 3 failed) 157ms
+   × 模型对象核对入口 > 墙体与圆柱联动原件区域，已采用尺寸和相关问题可直接进入核对 55ms
+     → expect(received).toHaveStyle()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+   × 模型对象核对入口 > 候选失效时历史对象仍显示来源问题；异步原图不匹配时不显示区域 83ms
+     → Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "编辑构件输入":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "生成模型":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "0 处待确认":
+  [36m<button[39m
+    [33maria-expanded[39m=[32m"false"[39m
+    [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-001 · 内部墙体":
+  [36m<button[39m
+    [33maria-current[39m=[32m"true"[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-002 · 内部圆柱":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "核对尺寸：总宽":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "处理相关问题":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "下载原文件":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--text gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-note"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-model"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-viewport"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-toolbar"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m透视视角[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m按构件着色[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m编辑构件输入[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-canvas"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-empty"[39m
+          [36m>[39m
+            [36m<p>[39m
+              [0m还没有三维模型。生成只使用本项目已确认的构件数据，不读取项目以外的文件；生成后可在这里查看构件并核对来源。[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m生成模型[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-legend"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m2[0m
+            [0m 个构件[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag gj-tag--accent"[39m
+          [36m>[39m
+            [0m0[0m
+            [0m 处构件连接[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-tag"[39m
+            [36m>[39m
+              [0m0[0m
+              [0m [0m
+              [0m处待确认[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-tree"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m对象树[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-tree-rows"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m内部测试建筑[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m2[0m
+              [0m 个构件[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child is-selected"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mwall[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mcolumn[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-001[0m
+            [0m · [0m
+            [0m内部墙体[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-002[0m
+            [0m · [0m
+            [0m内部圆柱[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-selected"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m选中构件[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0mC-001 · 内部墙体[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-source gj-source--rule"[39m
+            [36m>[39m
+              [0m自动核对[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m追溯编号[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-numeric"[39m
+                [36m>[39m
+                  [0mcandidate:8eda55d3-e073-4444-b7ef-aaa7aa39d68d:0[0m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m依据的资料[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m1 份[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · X 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m6000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Y 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m240 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Z 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m3000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m当前采用尺寸[0m
+            [36m</strong>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-note"[39m
+            [36m>[39m
+              [0m修改后需重新生成模型与图纸。[0m
+            [36m</p>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-info-row"[39m
+              [36m>[39m
+                [36m<div>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-label"[39m
+                  [36m>[39m
+                    [0mX 向长度[0m
+                  [36m</span>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-value"[39m
+                  [36m>[39m
+                    [0m总宽 · 6000 mm[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m核对尺寸：[0m
+                [0m总宽[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m相关待处理事项[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m助手的识别结果还没有确认。确认后仍标为 AI 识别，不会变成现场实测数据。[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m助手发现资料里缺这些内容：仅验证对象关联，未执行真实模型[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m处理相关问题[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-pane-head"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-pane-title"[39m
+            [36m>[39m
+              [0m对象来源[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"gj-pane-desc"[39m
+          [36m>[39m
+            [0m原图区域用于核对来源，不表示三维坐标。[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+          [36m>[39m
+            [0m该对象没有可用原件。[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-caption"[39m
+          [36m>[39m
+            [36m<strong>[39m
+              [0m内部测试尺寸.txt[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m项目资料整理与候选提取[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m资料类型[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m文档[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m文件状态[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m原件已随项目提供[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m可用[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-actions"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--text gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m下载原文件[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × 模型对象核对入口 > 直接填写的长度修改后对照旧模型，问题队列进入指定来源问题 18ms
+     → Unable to find an element with the text: 已修改制作输入. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-model"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-viewport"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-toolbar"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m透视视角[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m按构件着色[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m编辑构件输入[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-canvas"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-empty"[39m
+          [36m>[39m
+            [36m<p>[39m
+              [0m还没有三维模型。生成只使用本项目已确认的构件数据，不读取项目以外的文件；生成后可在这里查看构件并核对来源。[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m生成模型[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-legend"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m2[0m
+            [0m 个构件[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag gj-tag--accent"[39m
+          [36m>[39m
+            [0m0[0m
+            [0m 处构件连接[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-tag"[39m
+            [36m>[39m
+              [0m0[0m
+              [0m [0m
+              [0m处待确认[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-tree"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m对象树[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-tree-rows"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m内部测试建筑[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m2[0m
+              [0m 个构件[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child is-selected"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mwall[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mcolumn[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-001[0m
+            [0m · [0m
+            [0m内部墙体[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-002[0m
+            [0m · [0m
+            [0m内部圆柱[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-selected"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m选中构件[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0mC-001 · 内部墙体[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-source gj-source--rule"[39m
+            [36m>[39m
+              [0m自动核对[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m追溯编号[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-numeric"[39m
+                [36m>[39m
+                  [0mcandidate:6a97b6c7-7e89-4281-b9cf-a293cb18f2cb:0[0m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m依据的资料[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m1 份[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · X 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m6000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Y 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m240 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Z 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m3000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m当前采用尺寸[0m
+            [36m</strong>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-note"[39m
+            [36m>[39m
+              [0m修改后需重新生成模型与图纸。[0m
+            [36m</p>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-info-row"[39m
+              [36m>[39m
+                [36m<div>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-label"[39m
+                  [36m>[39m
+                    [0mX 向长度[0m
+                  [36m</span>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-value"[39m
+                  [36m>[39m
+                    [0m总宽 · 6000 mm[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m核对尺寸：[0m
+                [0m总宽[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m相关待处理事项[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m助手的识别结果还没有确认。确认后仍标为 AI 识别，不会变成现场实测数据。[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m助手发现资料里缺这些内容：仅验证对象关联，未执行真实模型[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m处理相关问题[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-pane-head"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-pane-title"[39m
+            [36m>[39m
+              [0m对象来源[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"gj-pane-desc"[39m
+          [36m>[39m
+            [0m原图区域用于核对来源，不表示三维坐标。[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-figure"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"evidence-marquee"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m"内部关联示意.png 原件"[39m
+                [33mdraggable[39m=[32m"false"[39m
+                [33msrc[39m=[32m"data:image/png;base64,AA=="[39m
+              [36m/>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-caption"[39m
+          [36m>[39m
+            [36m<strong>[39m
+              [0m内部测试尺寸.txt[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m项目资料整理与候选提取[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m资料类型[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m文档[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m文件状态[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m原件已随项目提供[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m可用[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-actions"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--text gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m下载原文件[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+ Test Files  4 failed (4)
+      Tests  19 failed | 9 passed (28)
+   Start at  16:13:41
+   Duration  2.06s (transform 748ms, setup 910ms, collect 3.91s, tests 506ms, environment 1.11s, prepare 452ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/component-candidates.test.ts src/workbench/usePreviewFlow.test.tsx src/screens/ComponentCandidateFlow.test.tsx src/screens/ModelView.test.tsx
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 首次只沿用可见名称、明确类型和原件，未知三维参数保持空白
+AssertionError: expected '故意错误的候选名称' to be '内部墙体' // Object.is equality
+
+Expected: "内部墙体"
+Received: "故意错误的候选名称"
+
+ ❯ src/component-candidates.test.ts:45:24
+     43|     const selection = { candidateId: test.recognition.id, rowIndex: 0 …
+     44|     const draft = candidateComponentDraft(test.head.snapshot, selectio…
+     45|     expect(draft.name).toBe("内部墙体"); expect(draft.componentType).toBe(…
+       |                        ^
+     46|     expect(draft.candidateSource).toEqual(selection); expect(draft.evi…
+     47|     expect(draft.coordinates).toEqual(["", "", ""]); expect(draft.leng…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 保存与重命名后再次打开编辑原输入，预览与 ZIP 保留同一来源和尺寸引用
+AssertionError: expected '故意错误的候选名称' to be '人工修订墙体' // Object.is equality
+
+Expected: "人工修订墙体"
+Received: "故意错误的候选名称"
+
+ ❯ src/component-candidates.test.ts:60:27
+     58|     expect(componentInputs(saved.head!.snapshot)).toHaveLength(2);
+     59|     const reopened = candidateComponentDraft(saved.head!.snapshot, sel…
+     60|     expect(reopened.name).toBe("人工修订墙体"); expect(reopened.stableKey).t…
+       |                           ^
+     61|     const assets = (await projectRepository.getProjectAssets(test.head…
+     62|     const preview = buildPreviewReadModel(saved.head!.snapshot, assets…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 错误项目、条目、编号或原件引用均不能写入
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ src/component-candidates.test.ts:80:68
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 候选驳回后新生成及旧规格重新生成均拒绝，历史模型和事实仍可查
+AssertionError: expected [ { …(14) }, { …(13) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "candidateSource": {
++       "candidateId": "818cacb3-3392-4ef6-a3e1-0beadbb2f7dc",
++       "rowIndex": 0,
++     },
++     "componentType": "wall",
++     "conceptRef": "wall-test",
++     "dimensionBindings": [
++       {
++         "field": "sizeX",
++         "sourceFactRef": "7fff1a18-8dd1-4d3a-8353-c5c1f41ec9cf",
++       },
++     ],
++     "displayNameZh": "内部墙体",
++     "evidenceRefs": [
++       "375115c2-6ecc-4a1e-8bc1-8fc872d91bf1",
++     ],
++     "materialCode": "brick",
++     "parameters": [],
++     "parentStableKey": null,
++     "positionBasis": "human",
++     "solid": {
++       "centerMm": [
++         3000,
++         120,
++         1500,
++       ],
++       "kind": "box",
++       "sizeX": "6000",
++       "sizeY": "240",
++       "sizeZ": "3000",
++     },
++     "sourceLocation": "内部测试资料第 1 行",
++     "stableKey": "candidate:818cacb3-3392-4ef6-a3e1-0beadbb2f7dc:0",
++     "unknowns": [],
++   },
++   {
++     "candidateSource": {
++       "candidateId": "818cacb3-3392-4ef6-a3e1-0beadbb2f7dc",
++       "rowIndex": 1,
++     },
++     "componentType": "column",
++     "conceptRef": "column-test",
++     "displayNameZh": "内部圆柱",
++     "evidenceRefs": [
++       "375115c2-6ecc-4a1e-8bc1-8fc872d91bf1",
++     ],
++     "materialCode": "brick",
++     "parameters": [],
++     "parentStableKey": null,
++     "positionBasis": "human",
++     "solid": {
++       "axis": "z",
++       "centerMm": [
++         6800,
++         200,
++         1500,
++       ],
++       "height": "3000",
++       "kind": "cylinder",
++       "radius": "200",
++     },
++     "sourceLocation": "内部测试资料第 1 行",
++     "stableKey": "candidate:818cacb3-3392-4ef6-a3e1-0beadbb2f7dc:1",
++     "unknowns": [],
++   },
++ ]
+
+ ❯ src/component-candidates.test.ts:91:44
+     89|     const head = await workflow.decideCandidate(test.head, localActorI…
+     90|     head.snapshot.geometrySpecs.push(spec);
+     91|     expect(componentInputs(head.snapshot)).toEqual([]); expect(geometr…
+       |                                            ^
+     92|     expect(head.snapshot.facts.filter((fact) => fact.field.startsWith(…
+     93|     expect(() => rebindExistingGeometrySpec(head, spec)).toThrow("ORIG…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 尺寸来源变为 rejected 时界面与新生成一致失效，历史来源问题保留
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 尺寸来源变为 superseded 时界面与新生成一致失效，历史来源问题保留
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 尺寸来源变为 relativeElevation 时界面与新生成一致失效，历史来源问题保留
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/component-candidates.test.ts:121:48
+    119|     } else head.snapshot.candidates.find((row) => row.id === test.cand…
+    120|     head.snapshot.geometrySpecs.push(spec);
+    121|     expect(geometryGenerationGate(head).ready).toBe(false);
+       |                                                ^
+    122|     expect(() => buildProjectGeometrySpec(head, crypto.randomUUID())).…
+    123|     const source = objectSourceModel(head.snapshot, spec.objects[0]!);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 只有可读图像时不要求文字，读取重试成功后关闭旧失败问题
+AssertionError: expected [ 'rule:parse-failure-review', …(4) ] to not include 'rule:parse-failure-review'
+ ❯ src/component-candidates.test.ts:135:113
+    133|     const head = await retryImage(failed, "readable");
+    134|     expect(head.snapshot.issues.filter((issue) => issue.status === "op…
+    135|     expect(head.snapshot.issues.filter((issue) => issue.status === "op…
+       |                                                                                                                 ^
+    136|   });
+    137|   it("最新构件输入驳回后不退回更早的已确认参数", async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 最新构件输入驳回后不退回更早的已确认参数
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/component-candidates.test.ts:145:48
+    143|     const head = { ...test.head, snapshot };
+    144|     expect(componentInputs(snapshot)).toHaveLength(1);
+    145|     expect(geometryGenerationGate(head).ready).toBe(false);
+       |                                                ^
+    146|     expect(() => buildProjectGeometrySpec(head, crypto.randomUUID())).…
+    147|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 保留派生图时最新读取为 failed，界面和问题规则均认定不可用
+AssertionError: expected [ 'rule:parse-failure-review', …(4) ] to include 'rule:parsed-evidence-required'
+ ❯ src/component-candidates.test.ts:156:109
+    154|     expect(evidenceReadability(head.snapshot, evidence.id).state).toBe…
+    155|     expect(head.snapshot.evidences[0]!.imageDerivative).toBeDefined();
+    156|     expect(head.snapshot.issues.filter((issue) => issue.status === "op…
+       |                                                                                                             ^
+    157|   });
+    158| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/19]⎯
+
+ FAIL  src/component-candidates.test.ts > 识别构件与制作输入关联 > 保留派生图时最新读取为 unsupported，界面和问题规则均认定不可用
+AssertionError: expected [ 'rule:model-candidate-review', …(3) ] to include 'rule:parsed-evidence-required'
+ ❯ src/component-candidates.test.ts:156:109
+    154|     expect(evidenceReadability(head.snapshot, evidence.id).state).toBe…
+    155|     expect(head.snapshot.evidences[0]!.imageDerivative).toBeDefined();
+    156|     expect(head.snapshot.issues.filter((issue) => issue.status === "op…
+       |                                                                                                             ^
+    157|   });
+    158| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/19]⎯
+
+ FAIL  src/screens/ComponentCandidateFlow.test.tsx > 候选进入构件制作表单 > 沿用候选来源，填写并绑定后真实保存，重命名后仍编辑同一输入
+Error: expect(element).toHaveValue(内部墙体)
+
+Expected the element to have value:
+  内部墙体
+Received:
+  故意错误的候选名称
+ ❯ src/screens/ComponentCandidateFlow.test.tsx:21:43
+     19|     const view = render(<ComponentInputPanel {...props} />);
+     20|     fireEvent.click(screen.getByRole("button", { name: "完善识别构件：内部墙体" }…
+     21|     expect(screen.getByLabelText("构件名称")).toHaveValue("内部墙体");
+       |                                           ^
+     22|     expect(screen.getByLabelText("构件类型")).toHaveValue("wall");
+     23|     expect(screen.getByLabelText("X 坐标")).toHaveValue("");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/19]⎯
+
+ FAIL  src/screens/ComponentCandidateFlow.test.tsx > 候选进入构件制作表单 > 预览传入的候选选择打开相应条目，候选失效后明确提示并停止新增
+Error: expect(element).toHaveValue(内部圆柱)
+
+Expected the element to have value:
+  内部圆柱
+Received:
+  故意错误的候选名称
+ ❯ src/screens/ComponentCandidateFlow.test.tsx:54:43
+     52|     const props = { snapshot: test.head.snapshot, onSave: vi.fn(), onS…
+     53|     const view = render(<ComponentInputPanel {...props} selection={sou…
+     54|     expect(screen.getByLabelText("构件名称")).toHaveValue("内部圆柱");
+       |                                           ^
+     55|     expect(selected).toHaveBeenCalledWith(source); expect(handled).toH…
+     56|     fireEvent.click(screen.getByRole("button", { name: "取消" }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/19]⎯
+
+ FAIL  src/screens/ModelView.test.tsx > 模型对象核对入口 > 墙体与圆柱联动原件区域，已采用尺寸和相关问题可直接进入核对
+Error: expect(received).toHaveStyle()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+ ❯ src/screens/ModelView.test.tsx:39:69
+     37|     expect(test.pane.setActiveEvidenceId).toHaveBeenCalledWith(test.pa…
+     38|     expect(test.pane.setImageSelection).toHaveBeenCalledWith(null);
+     39|     expect(view.container.querySelector(".evidence-marquee__rect")).to…
+       |                                                                     ^
+     40|     expect(screen.getByText("总宽 · 6000 mm")).toBeInTheDocument();
+     41|     fireEvent.click(screen.getByRole("button", { name: "核对尺寸：总宽" }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/19]⎯
+
+ FAIL  src/screens/ModelView.test.tsx > 模型对象核对入口 > 候选失效时历史对象仍显示来源问题；异步原图不匹配时不显示区域
+TestingLibraryElementError: Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "编辑构件输入":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "生成模型":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "0 处待确认":
+  [36m<button[39m
+    [33maria-expanded[39m=[32m"false"[39m
+    [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-001 · 内部墙体":
+  [36m<button[39m
+    [33maria-current[39m=[32m"true"[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-002 · 内部圆柱":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "核对尺寸：总宽":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "处理相关问题":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "下载原文件":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--text gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-note"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-model"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-viewport"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-toolbar"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m透视视角[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m按构件着色[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m编辑构件输入[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-canvas"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-empty"[39m
+          [36m>[39m
+            [36m<p>[39m
+              [0m还没有三维模型。生成只使用本项目已确认的构件数据，不读取项目以外的文件；生成后可在这里查看构件并核对来源。[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m生成模型[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-legend"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m2[0m
+            [0m 个构件[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag gj-tag--accent"[39m
+          [36m>[39m
+            [0m0[0m
+            [0m 处构件连接[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-tag"[39m
+            [36m>[39m
+              [0m0[0m
+              [0m [0m
+              [0m处待确认[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-tree"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m对象树[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-tree-rows"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m内部测试建筑[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m2[0m
+              [0m 个构件[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child is-selected"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mwall[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mcolumn[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-001[0m
+            [0m · [0m
+            [0m内部墙体[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-002[0m
+            [0m · [0m
+            [0m内部圆柱[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-selected"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m选中构件[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0mC-001 · 内部墙体[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-source gj-source--rule"[39m
+            [36m>[39m
+              [0m自动核对[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m追溯编号[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-numeric"[39m
+                [36m>[39m
+                  [0mcandidate:8eda55d3-e073-4444-b7ef-aaa7aa39d68d:0[0m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m依据的资料[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m1 份[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · X 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m6000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Y 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m240 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Z 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m3000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m当前采用尺寸[0m
+            [36m</strong>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-note"[39m
+            [36m>[39m
+              [0m修改后需重新生成模型与图纸。[0m
+            [36m</p>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-info-row"[39m
+              [36m>[39m
+                [36m<div>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-label"[39m
+                  [36m>[39m
+                    [0mX 向长度[0m
+                  [36m</span>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-value"[39m
+                  [36m>[39m
+                    [0m总宽 · 6000 mm[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m核对尺寸：[0m
+                [0m总宽[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m相关待处理事项[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m助手的识别结果还没有确认。确认后仍标为 AI 识别，不会变成现场实测数据。[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m助手发现资料里缺这些内容：仅验证对象关联，未执行真实模型[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m处理相关问题[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-pane-head"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-pane-title"[39m
+            [36m>[39m
+              [0m对象来源[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"gj-pane-desc"[39m
+          [36m>[39m
+            [0m原图区域用于核对来源，不表示三维坐标。[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-placeholder"[39m
+          [36m>[39m
+            [0m该对象没有可用原件。[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-caption"[39m
+          [36m>[39m
+            [36m<strong>[39m
+              [0m内部测试尺寸.txt[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m项目资料整理与候选提取[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m资料类型[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m文档[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m文件状态[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m原件已随项目提供[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m可用[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-actions"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--text gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m下载原文件[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/screens/ModelView.test.tsx:56:19
+     54|     const pane = { ...test.pane, evidencePreview: { ...test.pane.evide…
+     55|     const view = render(<ModelView {...test.props} snapshot={snapshot}…
+     56|     expect(screen.getByRole("status")).toHaveTextContent("驳回");
+       |                   ^
+     57|     expect(screen.getByRole("status")).toHaveTextContent("当前模型保留供查看");
+     58|     expect(view.container.querySelector(".evidence-marquee__rect")).no…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/19]⎯
+
+ FAIL  src/screens/ModelView.test.tsx > 模型对象核对入口 > 直接填写的长度修改后对照旧模型，问题队列进入指定来源问题
+TestingLibraryElementError: Unable to find an element with the text: 已修改制作输入. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-model"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-viewport"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-toolbar"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m透视视角[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m按构件着色[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m编辑构件输入[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-canvas"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-empty"[39m
+          [36m>[39m
+            [36m<p>[39m
+              [0m还没有三维模型。生成只使用本项目已确认的构件数据，不读取项目以外的文件；生成后可在这里查看构件并核对来源。[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m生成模型[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-legend"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m2[0m
+            [0m 个构件[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag gj-tag--accent"[39m
+          [36m>[39m
+            [0m0[0m
+            [0m 处构件连接[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-tag"[39m
+            [36m>[39m
+              [0m0[0m
+              [0m [0m
+              [0m处待确认[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-tree"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m对象树[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-tree-rows"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m内部测试建筑[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m2[0m
+              [0m 个构件[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child is-selected"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mwall[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mcolumn[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"true"[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-001[0m
+            [0m · [0m
+            [0m内部墙体[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-002[0m
+            [0m · [0m
+            [0m内部圆柱[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-selected"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m选中构件[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0mC-001 · 内部墙体[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-source gj-source--rule"[39m
+            [36m>[39m
+              [0m自动核对[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m追溯编号[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-numeric"[39m
+                [36m>[39m
+                  [0mcandidate:6a97b6c7-7e89-4281-b9cf-a293cb18f2cb:0[0m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m依据的资料[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m1 份[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · X 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m6000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Y 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m240 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-info-row"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-label"[39m
+              [36m>[39m
+                [0m当前模型 · Z 向长度[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-info-row-value"[39m
+              [36m>[39m
+                [0m3000 mm[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m当前采用尺寸[0m
+            [36m</strong>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"gj-note"[39m
+            [36m>[39m
+              [0m修改后需重新生成模型与图纸。[0m
+            [36m</p>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"gj-info-row"[39m
+              [36m>[39m
+                [36m<div>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-label"[39m
+                  [36m>[39m
+                    [0mX 向长度[0m
+                  [36m</span>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"gj-info-row-value"[39m
+                  [36m>[39m
+                    [0m总宽 · 6000 mm[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m核对尺寸：[0m
+                [0m总宽[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<strong>[39m
+              [0m相关待处理事项[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m助手的识别结果还没有确认。确认后仍标为 AI 识别，不会变成现场实测数据。[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m助手发现资料里缺这些内容：仅验证对象关联，未执行真实模型[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m处理相关问题[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-pane-head"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-pane-title"[39m
+            [36m>[39m
+              [0m对象来源[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"gj-pane-desc"[39m
+          [36m>[39m
+            [0m原图区域用于核对来源，不表示三维坐标。[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-figure"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"evidence-marquee"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m"内部关联示意.png 原件"[39m
+                [33mdraggable[39m=[32m"false"[39m
+                [33msrc[39m=[32m"data:image/png;base64,AA=="[39m
+              [36m/>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ws-evidence-caption"[39m
+          [36m>[39m
+            [36m<strong>[39m
+              [0m内部测试尺寸.txt[0m
+            [36m</strong>[39m
+            [36m<p>[39m
+              [0m项目资料整理与候选提取[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-card gj-card--compact"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m资料类型[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m文档[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-info-row"[39m
+            [36m>[39m
+              [36m<div>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-label"[39m
+                [36m>[39m
+                  [0m文件状态[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gj-info-row-value"[39m
+                [36m>[39m
+                  [0m原件已随项目提供[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"gj-tag gj-tag--success"[39m
+              [36m>[39m
+                [0m可用[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"gj-actions"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"gj-btn gj-btn--text gj-btn--compact"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m下载原文件[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/screens/ModelView.test.tsx:66:19
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/19]⎯
+
+ FAIL  src/workbench/usePreviewFlow.test.tsx > 生成预览流程 > 服务返回 标注失败 回执时按终态报告并保留已有结果
+AssertionError: expected last "spy" call to have been called with [ StringContaining "标注提取失败" ]
+
+- Expected
++ Received
+
+  [
+-   StringContaining "标注提取失败",
++   "标注提取完成，0 条；构件提取完成，2 条。已有结果保留，可继续核对或再次提取。",
+  ]
+
+ ❯ src/workbench/usePreviewFlow.test.tsx:91:38
+     89|       expect(measurement).toHaveBeenCalledOnce(); expect(recognize).to…
+     90|       expect(test.nav.setActiveStage).toHaveBeenCalledWith("preview");
+     91|       expect(test.notices.setNotice).toHaveBeenLastCalledWith(expect.s…
+       |                                      ^
+     92|       expect(test.notices.setError).toHaveBeenLastCalledWith(expect.ob…
+     93|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/19]⎯
+
+ FAIL  src/workbench/usePreviewFlow.test.tsx > 生成预览流程 > 服务返回 构件失败 回执时按终态报告并保留已有结果
+AssertionError: expected last "spy" call to have been called with [ StringContaining "构件提取失败" ]
+
+- Expected
++ Received
+
+  [
+-   StringContaining "构件提取失败",
++   "标注提取完成，3 条；构件提取完成，0 条。已有结果保留，可继续核对或再次提取。",
+  ]
+
+ ❯ src/workbench/usePreviewFlow.test.tsx:91:38
+     89|       expect(measurement).toHaveBeenCalledOnce(); expect(recognize).to…
+     90|       expect(test.nav.setActiveStage).toHaveBeenCalledWith("preview");
+     91|       expect(test.notices.setNotice).toHaveBeenLastCalledWith(expect.s…
+       |                                      ^
+     92|       expect(test.notices.setError).toHaveBeenLastCalledWith(expect.ob…
+     93|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/19]⎯
+
+ FAIL  src/workbench/usePreviewFlow.test.tsx > 生成预览流程 > 服务返回 标注取消 回执时按终态报告并保留已有结果
+AssertionError: expected "runComponentRecognition" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st runComponentRecognition call:
+
+    Array [
+      Object {
+        "auditEventId": "a8c41beb-f67f-48fb-8d1a-29edf230b1a1",
+        "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+        "revisionId": "cf5df2e1-bc06-4933-b24b-c8f50641e9a8",
+        "snapshot": Object {
+          "adoptedRecordRefs": Array [],
+          "buildings": Array [
+            Object {
+              "addressText": null,
+              "id": "c8d21782-5031-42ae-9e8e-a75d4e7d2bd7",
+              "name": "内部测试建筑",
+              "periodText": null,
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "status": "existing",
+            },
+          ],
+          "candidates": Array [
+            Object {
+              "contentText": "内部交互测试候选，非真实模型运行",
+              "createdAt": "2026-10-01T15:13:43.722Z",
+              "evidenceRefs": Array [
+                "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+              ],
+              "id": "e6bcfa95-cc67-4900-bb47-bf6273cc00e6",
+              "inputRevisionId": "ba75df4f-9e53-4d98-af41-394f116f98c7",
+              "producer": Object {
+                "producerType": "model",
+                "runId": "4398439b-433b-454d-a032-971def887a80",
+              },
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "reviewStatus": "unreviewed",
+              "runId": "4398439b-433b-454d-a032-971def887a80",
+              "structured": Object {
+                "dimensions": Array [
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+                    "locationZh": "测试记录第 1 行",
+                    "noteZh": "内部测试数值",
+                    "partZh": "总宽",
+                    "valueMm": "6000",
+                    "valueText": "6000",
+                  },
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+                    "locationZh": "测试记录第 2 行",
+                    "noteZh": null,
+                    "partZh": "总深",
+                    "valueMm": "4200",
+                    "valueText": "4200",
+                  },
+                  Object {
+                    "certainty": "uncertain",
+                    "evidenceRef": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+                    "locationZh": "测试记录第 3 行",
+                    "noteZh": "原资料须补充，不能按猜测采用",
+                    "partZh": "层高",
+                    "valueMm": null,
+                    "valueText": "3?00",
+                  },
+                ],
+                "kind": "measurementTranscription",
+                "missingInformation": Array [
+                  "本文件仅用于交互测试，不用于建筑制作",
+                ],
+                "summary": "内部测试：总宽、总深及不确定高度",
+              },
+              "taskType": "measurement-transcription",
+            },
+          ],
+          "dependencyEdges": Array [],
+          "entities": Array [],
+          "evidences": Array [
+            Object {
+              "assetId": "2f0ea9ae-a6f7-4d4f-9517-acd76321c25e",
+              "dataStatus": "available",
+              "evidenceType": "document",
+              "id": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+              "intendedUse": "项目资料整理与候选提取",
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "recordedAt": "2026-10-01T15:13:43.721Z",
+              "relatedEntityRefs": Array [
+                "c8d21782-5031-42ae-9e8e-a75d4e7d2bd7",
+              ],
+              "rightsDeclaration": null,
+              "title": "内部测试尺寸.txt",
+            },
+          ],
+          "exclusionRecords": Array [],
+          "facts": Array [],
+          "geometryRevisions": Array [],
+          "geometrySpecs": Array [],
+          "issues": Array [],
+          "measurements": Array [],
+          "observations": Array [],
+          "parseRecords": Array [
+            Object {
+              "assetId": "2f0ea9ae-a6f7-4d4f-9517-acd76321c25e",
+              "createdAt": "2026-10-01T15:13:43.721Z",
+              "evidenceId": "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+              "extractedText": "内部测试资料，不是实测记录。
+    总宽 6000 mm
+    总深 4200 mm
+    层高 3?00 mm
+    ",
+              "id": "99e43521-f782-439b-abc0-8adcd08c351b",
+              "parser": "utf8-text",
+              "parserVersion": "1.0.0",
+              "projectId": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+              "readability": "readable",
+              "readableAs": "image",
+              "status": "parsed",
+              "warnings": Array [],
+            },
+          ],
+          "project": Object {
+            "createdAt": "2026-10-01T15:13:43.721Z",
+            "id": "c6f68c55-b3aa-40dc-8979-86d6ca498a25",
+            "locationText": null,
+            "name": "单元13尺寸核对内部测试",
+            "status": "active",
+          },
+          "relations": Array [],
+          "reviewSignoffs": Array [],
+          "schemaVersion": "3.0",
+          "taskDefinitions": Array [
+            Object {
+              "automationPolicyRef": null,
+              "confirmedAt": "2026-10-01T15:13:43.722Z",
+              "deliverables": Array [
+                "主体模型",
+                "首层平面",
+              ],
+              "id": "2d32e08e-5283-4eda-b1e6-f051474324c3",
+              "name": "预览内部测试",
+              "productionSetup": Object {
+                "buildingId": "c8d21782-5031-42ae-9e8e-a75d4e7d2bd7",
+                "outputUnit": "mm",
+                "projectGroup": null,
+                "purpose": "existingSurvey",
+                "targets": Array [
+                  "model",
+                  "floorPlan",
+                ],
+              },
+              "regulationRefs": Array [],
+              "responsibilities": Array [
+                Object {
+                  "actorId": "775397c2-10a3-4ed6-99da-56c4844334e5",
+                  "role": "surveyor",
+                },
+              ],
+              "scope": Array [
+                "根据已有资料制作现状测绘成果",
+              ],
+            },
+          ],
+        },
+      },
+      "3230e41a-b753-45c5-8c98-085f09fb4b27",
+      Array [
+        "9a0b989a-fa6e-4f48-b287-b74c85d332bf",
+      ],
+      [Function bound dispatchSetState],
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/workbench/usePreviewFlow.test.tsx:86:29
+     84|     expect(test.session.setProjectModelRuns).toHaveBeenCalled();
+     85|     if (terminal.endsWith("取消")) {
+     86|       expect(recognize).not.toHaveBeenCalled();
+       |                             ^
+     87|       expect(test.notices.setNotice).toHaveBeenLastCalledWith(expect.s…
+     88|     } else {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/19]⎯
+

@@ -1,0 +1,32 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/server
+
+ ❯ src/drawing-worker.test.ts (1 test | 1 failed) 5ms
+   × 读取生成记录中声明的中文图号文件，仍拒绝路径与未声明文件 5ms
+     → DRAWING_ASSET_NAME_INVALID
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  20:54:47
+   Duration  299ms (transform 25ms, setup 0ms, collect 38ms, tests 5ms, environment 0ms, prepare 103ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\server:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/drawing-worker.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/drawing-worker.test.ts > 读取生成记录中声明的中文图号文件，仍拒绝路径与未声明文件
+Error: DRAWING_ASSET_NAME_INVALID
+ ❯ PythonDrawingWorker.readAsset src/drawing-worker.ts:80:75
+     78| 
+     79|   readAsset(jobId: string, fileName: string): Buffer {
+     80|     if (!/^[A-Za-z0-9._-]+(?:\/[A-Za-z0-9._-]+)?$/u.test(fileName)) th…
+       |                                                                           ^
+     81|     const directory = resolve(drawingStagingRoot, jobId, "output");
+     82|     const path = resolve(directory, ...fileName.split("/"));
+ ❯ src/drawing-worker.test.ts:16:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

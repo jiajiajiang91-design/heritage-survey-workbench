@@ -1,9 +1,14 @@
 import { ProjectCommandService, type ProjectHead } from "@gujian/application";
 import {
   ArtifactRecordSchema,
+  CheckRunSchema,
   DeliveryDraftSchema,
   DeliveryEvaluationSchema,
+  artifactOutputUnitMatches,
+  geometryOutputUnitMatches,
+  taskOutputUnit,
   type ArtifactRecord,
+  type ArtifactRequirementMatrix,
   type CheckRun,
   type DeliveryDraft,
   type DeliveryEvaluation,
@@ -11,9 +16,11 @@ import {
   type ReviewSignoff,
 } from "@gujian/domain";
 import { IndexedDbProjectRepository } from "./indexeddb-project-repository.js";
-import { sha256Hex } from "./hash.js";
+import { recordHash, sha256Hex } from "./hash.js";
+import { checkStoredModelFiles } from "./model-file-check.js";
 
-import { geometryPrerequisites } from "./geometry-spec-builder.js";
+import { componentCandidateProblem, EvidenceGeometryComponentValueSchema, geometryPrerequisites } from "./geometry-spec-builder.js";
+import { dimensionLengthSourceProblem } from "./geometry-dimension-binding.js";
 
 const GEOMETRY_KIND: Record<string, ArtifactRecord["kind"]> = {
   ifc: "ifc", glb: "glb", brepBundle: "brepBundle", manifest: "geometryManifest", sourceMap: "geometrySourceMap",
@@ -23,8 +30,36 @@ const GEOMETRY_KIND: Record<string, ArtifactRecord["kind"]> = {
 type DeliveryBlockerDetail = NonNullable<DeliveryEvaluation["blockerDetails"]>[number];
 const FORMAL_ONLY_CODES = new Set(["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE", "L1_ELIGIBILITY_FALSE"]);
 
+export function modelInputsCurrent(head: ProjectHead, geometry: GeometryRevision): boolean {
+  const spec = head.snapshot.geometrySpecs.find((item) => item.id === geometry.geometrySpecId);
+  if (!spec) return false;
+  const facts = head.snapshot.facts;
+  const latest = new Map(facts.map((fact) => [fact.subjectRef + ":" + fact.field, fact]));
+  const refs = new Set(spec.objects.flatMap((object) => object.factRefs));
+  for (const ref of refs) {
+    const fact = facts.find((item) => item.id === ref);
+    if (!fact) continue;
+    if (latest.get(fact.subjectRef + ":" + fact.field)?.id !== ref || fact.reviewStatus !== "confirmed" || fact.dataStatus !== "available"
+      || dimensionLengthSourceProblem(head.snapshot, fact)) return false;
+    const component = EvidenceGeometryComponentValueSchema.safeParse(fact.value);
+    if (component.success && componentCandidateProblem(head.snapshot, component.data)) return false;
+  }
+  return [...latest.values()].filter((fact) => fact.field.startsWith("geometry.component.") && fact.reviewStatus === "confirmed" && fact.dataStatus === "available").every((fact) => refs.has(fact.id));
+}
+
+function geometryArtifact(head: ProjectHead, geometry: GeometryRevision, asset: GeometryRevision["assets"][number], fileName?: string): ArtifactRecord {
+  return ArtifactRecordSchema.parse({
+    id: crypto.randomUUID(), projectId: head.projectId, projectRevisionId: geometry.projectRevisionId, geometryRevisionId: geometry.id,
+    requirementMatrixId: null, kind: GEOMETRY_KIND[asset.kind]!, fileName: fileName ?? (asset.kind === "brepBundle" ? "model-brep.zip" : `${asset.kind}.${asset.kind === "glb" ? "glb" : asset.kind === "ifc" ? "ifc" : asset.kind === "preview" ? "png" : asset.kind === "sourceMap" ? "ndjson" : "json"}`),
+    assetId: asset.assetId, sha256: asset.sha256, mimeType: asset.mimeType, byteLength: asset.byteLength,
+    status: "generated-not-qualified", l1Eligible: false, formalEligibility: false, sourceRefs: [geometry.id],
+    blockers: ["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE"], createdAt: new Date().toISOString(),
+  });
+}
+
 // 复核签发记录解除哪些正式资格阻断：复核与签发两条随记录解除，L1 只在记录认定达到样板等级时解除
 export function signoffFor(head: ProjectHead, geometryRevisionId: string): ReviewSignoff | null {
+  if (!geometryOutputUnitMatches(head.snapshot, geometryRevisionId)) return null;
   return head.snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometryRevisionId) ?? null;
 }
 
@@ -36,9 +71,10 @@ export function liftedBySignoff(signoff: ReviewSignoff | null): Set<string> {
 // 签发是项目责任人员对正式资格的人工决定：只阻断正式资格、不阻断代理成果的项
 // （未知项、未关闭的专业判断、检查里的复核要求）随签发一并视为已复核接受；
 // 阻断代理成果本身的硬错误不受签发影响。L1 另按记录里的认定。
-export function collectDeliveryBlockerDetails(head: ProjectHead, geometry: GeometryRevision, artifacts: readonly ArtifactRecord[], checkRun: CheckRun): DeliveryBlockerDetail[] {
+export function collectDeliveryBlockerDetails(head: ProjectHead, geometry: GeometryRevision, artifacts: readonly ArtifactRecord[], checkRun: CheckRun, matrices: readonly ArtifactRequirementMatrix[] = []): DeliveryBlockerDetail[] {
   const details: DeliveryBlockerDetail[] = [];
-  const signoff = signoffFor(head, geometry.id);
+  const outdatedArtifacts = artifacts.filter((item) => !artifactOutputUnitMatches(head.snapshot, item, matrices));
+  const signoff = outdatedArtifacts.length ? null : signoffFor(head, geometry.id);
   const lifted = liftedBySignoff(signoff);
   const add = (detail: DeliveryBlockerDetail) => {
     if (lifted.has(detail.code) || lifted.has(detail.code.replace(/^CHECK_BLOCKED:/, ""))) return;
@@ -53,6 +89,9 @@ export function collectDeliveryBlockerDetails(head: ProjectHead, geometry: Geome
   };
   for (const code of FORMAL_ONLY_CODES) {
     add({ code, sourceType: "qualification", sourceRef: geometry.id, message: FORMAL_ONLY_ZH[code] ?? "成果尚未取得正式交付资格。", blocksProxyOutcome: false });
+  }
+  for (const artifact of outdatedArtifacts) {
+    add({ code: "OUTPUT_UNIT_MISMATCH", sourceType: "artifact", sourceRef: artifact.id, message: `成果文件 ${artifact.fileName} 的输出单位与当前任务要求不一致，须重新生成。`, blocksProxyOutcome: true });
   }
   const spec = head.snapshot.geometrySpecs.find((item) => item.id === geometry.geometrySpecId);
   for (const unknown of spec?.unknowns ?? []) {
@@ -79,17 +118,68 @@ export function collectDeliveryBlockerDetails(head: ProjectHead, geometry: Geome
 export class DeliveryService {
   constructor(private readonly input: { repository: IndexedDbProjectRepository; commands: ProjectCommandService }) {}
 
+  async checkModelFiles(head: ProjectHead, actorId: string, geometry: GeometryRevision): Promise<{ head: ProjectHead; checkRun: CheckRun; artifacts: ArtifactRecord[] }> {
+    const task = head.snapshot.taskDefinitions.find((item) => item.confirmedAt !== null);
+    if (task?.productionSetup?.targets.length !== 1 || task.productionSetup.targets[0] !== "model") throw new Error("MODEL_CHECK_TARGETS_INVALID");
+    const currentHead = await this.input.repository.getProjectHead(head.projectId);
+    if (!currentHead || currentHead.revisionId !== head.revisionId) throw new Error("MODEL_CHECK_HEAD_STALE");
+    const current = head.snapshot.geometryRevisions.at(-1);
+    const spec = head.snapshot.geometrySpecs.find((item) => item.id === geometry.geometrySpecId);
+    if (!current || recordHash(current) !== recordHash(geometry) || geometry.projectId !== head.projectId || !spec || spec.inputHash !== geometry.inputHash
+      || spec.projectRevisionId !== geometry.projectRevisionId) throw new Error("MODEL_CHECK_GEOMETRY_STALE");
+    if (!modelInputsCurrent(head, geometry)) throw new Error("MODEL_CHECK_INPUTS_STALE");
+    if (!geometryOutputUnitMatches(head.snapshot, geometry.id)) throw new Error("MODEL_CHECK_OUTPUT_UNIT_MISMATCH");
+    const files = await checkStoredModelFiles(head, geometry, this.input.repository);
+    const existing = await this.input.repository.getProjectArtifacts(head.projectId);
+    const artifacts = files.map((file) => existing.find((item) => item.geometryRevisionId === geometry.id && item.assetId === file.record.id
+      && item.kind === GEOMETRY_KIND[file.kind] && item.sha256 === file.record.sha256 && item.byteLength === file.record.byteLength)
+      ?? geometryArtifact(head, geometry, geometry.assets.find((item) => item.kind === file.kind)!, file.record.fileName));
+    const createdAt = new Date().toISOString(), checkId = crypto.randomUUID();
+    const results: CheckRun["results"] = [
+      { code: "MODEL_OUTPUT_HASH_CLOSURE", outcome: "passed", message: "当前模型及生成资料的实际文件、字节数、哈希、清单和输出单位与本次几何版本对应。", sourceRefs: [geometry.id, ...artifacts.map((item) => item.id)] },
+      { code: "PROFESSIONAL_REVIEW_REQUIRED", outcome: "blocked", message: "本次仅检查文件对应关系，不证明测绘、几何精度或专业复核通过。", sourceRefs: [geometry.id] },
+    ];
+    const reportBytes = new TextEncoder().encode(JSON.stringify({
+      schemaVersion: "1.0", scope: "model-files", checkRunId: checkId, projectId: head.projectId, projectRevisionId: head.revisionId,
+      geometryRevisionId: geometry.id, geometrySpecId: geometry.geometrySpecId, inputHash: geometry.inputHash, outputUnit: taskOutputUnit(head.snapshot),
+      glbLengthUnit: "m", checkedAt: createdAt, qualification: "generated-not-qualified", l1Eligible: false, formalEligibility: false,
+      files: files.map((file, index) => ({ artifactId: artifacts[index]!.id, kind: file.kind, assetId: file.record.id, fileName: file.record.fileName, byteLength: file.bytes.byteLength, sha256: sha256Hex(file.bytes) })),
+      unknowns: spec.unknowns, results,
+    }, null, 2) + "\n");
+    const reportAsset = { id: crypto.randomUUID(), projectId: head.projectId, fileName: `model-file-check-${checkId}.json`, mimeType: "application/json", byteLength: reportBytes.byteLength,
+      sha256: sha256Hex(reportBytes), contentStatus: "available" as const, createdAt };
+    const report = ArtifactRecordSchema.parse({ id: crypto.randomUUID(), projectId: head.projectId, projectRevisionId: head.revisionId, geometryRevisionId: geometry.id,
+      requirementMatrixId: null, kind: "checkReport", fileName: reportAsset.fileName, assetId: reportAsset.id, sha256: reportAsset.sha256, mimeType: reportAsset.mimeType, byteLength: reportAsset.byteLength,
+      status: "generated-not-qualified", l1Eligible: false, formalEligibility: false, sourceRefs: [geometry.id, checkId], blockers: ["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE"], createdAt });
+    const sessionId = crypto.randomUUID();
+    await this.input.repository.stageAssets(sessionId, [reportAsset], new Map([[reportAsset.id, new Blob([reportBytes as BlobPart], { type: reportAsset.mimeType })]]));
+    await this.input.commands.execute({ commandType: "CommitArtifactSet", commandId: crypto.randomUUID(), projectId: head.projectId, actorId, expectedRevisionId: head.revisionId, issuedAt: createdAt,
+      payload: { artifacts: [...artifacts.filter((item) => !existing.some((old) => old.id === item.id)), report], assets: [reportAsset], stagingSessionId: sessionId } });
+    let updated = (await this.input.repository.getProjectHead(head.projectId))!;
+    const checkRun = CheckRunSchema.parse({ id: checkId, projectId: head.projectId, projectRevisionId: updated.revisionId, geometryRevisionId: geometry.id,
+      artifactRefs: [...artifacts.map((item) => item.id), report.id], status: "completed", results, reportAssetId: report.assetId, reportHash: report.sha256,
+      qualification: "generated-not-qualified", l1Eligible: false, formalEligibility: false, completedAt: createdAt });
+    await this.input.commands.execute({ commandType: "CommitCheckRun", commandId: crypto.randomUUID(), projectId: head.projectId, actorId, expectedRevisionId: updated.revisionId, issuedAt: createdAt, payload: { checkRun } });
+    updated = (await this.input.repository.getProjectHead(head.projectId))!;
+    return { head: updated, checkRun, artifacts: [...artifacts, report] };
+  }
+
   async createProxyDraft(head: ProjectHead, actorId: string, geometry: GeometryRevision, drawingArtifacts: readonly ArtifactRecord[], checkRun: CheckRun): Promise<{ head: ProjectHead; draft: DeliveryDraft }> {
     let updated = head;
     const existingArtifacts = await this.input.repository.getProjectArtifacts(head.projectId);
+    const targets = head.snapshot.taskDefinitions.find((item) => item.confirmedAt !== null)?.productionSetup?.targets;
+    if (targets) {
+      const required = targets.length === 1 && targets[0] === "model" ? ["ifc", "glb"] : ["dxf", "pdf"];
+      const code = required[0] === "ifc" ? "MODEL_OUTPUT_HASH_CLOSURE" : "DRAWING_OUTPUT_HASH_CLOSURE";
+      const checked = drawingArtifacts.filter((item) => checkRun.artifactRefs.includes(item.id) && item.projectId === head.projectId && item.geometryRevisionId === geometry.id);
+      if (geometry.id !== head.snapshot.geometryRevisions.at(-1)?.id || !modelInputsCurrent(head, geometry)) throw new Error("MODEL_CHECK_INPUTS_STALE");
+      if (checkRun.geometryRevisionId !== geometry.id || !checkRun.results.some((item) => item.code === code && item.outcome === "passed") || required.some((kind) => !checked.some((item) => item.kind === kind))) throw new Error("DELIVERY_TARGET_OUTPUTS_MISSING");
+      const saved = (await this.input.repository.getProjectCheckRuns(head.projectId)).find((item) => item.id === checkRun.id);
+      if (!saved || recordHash(saved) !== recordHash(checkRun) || checked.some((item) => !existingArtifacts.some((old) => recordHash(old) === recordHash(item)))) throw new Error("DELIVERY_TARGET_OUTPUTS_MISSING");
+      if (required[0] === "ifc") await checkStoredModelFiles(head, geometry, this.input.repository);
+    }
     const existingIds = new Set(existingArtifacts.map((item) => item.assetId));
-    const geometryArtifacts = geometry.assets.filter((asset) => !existingIds.has(asset.assetId)).map((asset) => ArtifactRecordSchema.parse({
-      id: crypto.randomUUID(), projectId: head.projectId, projectRevisionId: geometry.projectRevisionId, geometryRevisionId: geometry.id,
-      requirementMatrixId: null, kind: GEOMETRY_KIND[asset.kind]!, fileName: asset.kind === "brepBundle" ? "model-brep.zip" : `${asset.kind}.${asset.kind === "glb" ? "glb" : asset.kind === "ifc" ? "ifc" : asset.kind === "preview" ? "png" : asset.kind === "sourceMap" ? "ndjson" : "json"}`,
-      assetId: asset.assetId, sha256: asset.sha256, mimeType: asset.mimeType, byteLength: asset.byteLength,
-      status: "generated-not-qualified", l1Eligible: false, formalEligibility: false, sourceRefs: [geometry.id],
-      blockers: ["PROFESSIONAL_REVIEW_REQUIRED", "FORMAL_SIGNOFF_UNAVAILABLE"], createdAt: new Date().toISOString(),
-    }));
+    const geometryArtifacts = geometry.assets.filter((asset) => !existingIds.has(asset.assetId)).map((asset) => geometryArtifact(head, geometry, asset));
     if (geometryArtifacts.length) {
       await this.input.commands.execute({ commandType: "CommitArtifactSet", commandId: crypto.randomUUID(), projectId: head.projectId, actorId, expectedRevisionId: updated.revisionId, issuedAt: new Date().toISOString(), payload: { artifacts: geometryArtifacts, assets: [], stagingSessionId: null } });
       updated = (await this.input.repository.getProjectHead(head.projectId))!;
@@ -104,7 +194,8 @@ export class DeliveryService {
       ...drawingArtifacts.filter((item) => checkedDrawingIds.has(item.id)),
     ];
     const unique = [...new Map(allArtifacts.map((item) => [item.id, item])).values()];
-    const blockerDetails = collectDeliveryBlockerDetails(updated, geometry, unique, checkRun);
+    const matrices = await this.input.repository.getProjectArtifactRequirementMatrices(head.projectId);
+    const blockerDetails = collectDeliveryBlockerDetails(updated, geometry, unique, checkRun, matrices);
     const blockerCodes = [...new Set(blockerDetails.map((item) => item.code))];
     const blocksProxy = blockerDetails.some((item) => item.blocksProxyOutcome);
     const evaluation = DeliveryEvaluationSchema.parse({

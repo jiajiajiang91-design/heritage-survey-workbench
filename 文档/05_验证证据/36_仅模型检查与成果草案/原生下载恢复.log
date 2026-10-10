@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-03T03:19:25.029Z",
+  "source": "D:/Downloads/单元26仅模型内部界面检查.gujian (2).zip",
+  "byteLength": 77928,
+  "sha256": "49abc7c74ce17dd11455db56d79d4309bd9b8ecf833eb4cc8007fe1625124ba7",
+  "savedAt": "2026-10-03T03:09:13.600Z",
+  "restored": {
+    "evidences": 1,
+    "ruleRuns": 4,
+    "geometryRevisions": 2,
+    "artifacts": 18,
+    "checkRuns": 2,
+    "deliveryDrafts": 2
+  },
+  "modelFilesValidated": 7,
+  "allArtifactBytesVerified": true,
+  "formalEligibility": false,
+  "l1Eligible": false,
+  "signatureStatus": "unsigned"
+}

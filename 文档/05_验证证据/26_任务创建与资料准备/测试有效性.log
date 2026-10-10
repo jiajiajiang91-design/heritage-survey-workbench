@@ -1,0 +1,68 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/production-task.test.ts (5 tests | 2 failed) 32ms
+   × 单页制作任务保存 > 初次创建原子保存任务与建筑，文件层级与输出单位回导保持 11ms
+     → expected { taskName: '单页保存测试', …(7) } to deeply equal { taskName: '单页保存测试', …(7) }
+   ✓ 单页制作任务保存 > 单个文件失败继续保存下一份，错误包含具体名称 5ms
+   ✓ 单页制作任务保存 > 修改基本设置保持建筑编号、资料、出图要求；图纸修改保持新属性 11ms
+   × 单页制作任务保存 > 旧项目不推断缺失属性，错误建筑关联无法写入 2ms
+     → expected 'mm' to be 'm' // Object.is equality
+   ✓ 单页制作任务保存 > 保存失败不修改既有项目 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/production-task.test.ts > 单页制作任务保存 > 初次创建原子保存任务与建筑，文件层级与输出单位回导保持
+AssertionError: expected { taskName: '单页保存测试', …(7) } to deeply equal { taskName: '单页保存测试', …(7) }
+
+- Expected
++ Received
+
+@@ -1,10 +1,10 @@
+  {
+    "buildingName": "测试山门",
+    "buildingType": "门楼",
+    "mainStructure": "木结构",
+-   "outputUnit": "m",
++   "outputUnit": "mm",
+    "projectGroup": "测试村落",
+    "purpose": "existingSurvey",
+    "targets": [
+      "model",
+      "floorPlan",
+
+ ❯ src/production-task.test.ts:17:47
+     15|   it("初次创建原子保存任务与建筑，文件层级与输出单位回导保持", async () => {
+     16|     const v = values(); let head = await createLocalProject({ name: v.…
+     17|     expect(readProductionTask(head.snapshot)).toEqual(v);
+       |                                               ^
+     18|     expect(head.snapshot.taskDefinitions[0]!.artifactRequirements).toB…
+     19|     const files: PreparedFile[] = [{ file: file("资料.txt", "测试尺寸 6000 m…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/production-task.test.ts > 单页制作任务保存 > 旧项目不推断缺失属性，错误建筑关联无法写入
+AssertionError: expected 'mm' to be 'm' // Object.is equality
+
+Expected: "m"
+Received: "mm"
+
+ ❯ src/production-task.test.ts:58:76
+     56|     const wrong = structuredClone(saved.snapshot); wrong.taskDefinitio…
+     57|     expect(ProjectSnapshotSchema.safeParse(wrong).success).toBe(false);
+     58|     expect(saved.snapshot.taskDefinitions[0]!.productionSetup!.outputU…
+       |                                                                            ^
+     59|   });
+     60|   it("保存失败不修改既有项目", async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  08:08:15
+   Duration  1.36s (transform 245ms, setup 220ms, collect 841ms, tests 32ms, environment 0ms, prepare 95ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run production-task.test.ts

@@ -103,6 +103,7 @@ export const ArtifactRequirementMatrixSchema = z.object({
   projectId: z.uuid(),
   projectRevisionId: z.uuid(),
   geometryRevisionId: z.uuid(),
+  outputUnit: z.enum(["mm", "cm", "m"]).optional(),
   titleZh: z.string().min(1).max(120),
   buildingDisplayNameZh: z.string().min(1).max(120),
   issueState: z.literal("proxy-unissued"),

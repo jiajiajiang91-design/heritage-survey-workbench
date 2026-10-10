@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import { IndexedDbProjectRepository, LocalAuthorization, openWorkbenchDatabase } from "./indexeddb-project-repository.js";
 import { ProjectPackageService } from "./project-package-service.js";
-import { sha256Hex } from "./hash.js";
+import { recordHash, sha256Hex } from "./hash.js";
 
 async function seededRepository() {
   const repository = new IndexedDbProjectRepository(openWorkbenchDatabase(`gujian-package-${crypto.randomUUID()}`));
@@ -27,11 +27,21 @@ async function seededRepository() {
   return { projectId, repository, commands, packages: new ProjectPackageService(repository) };
 }
 
-async function commitFollowOnProxyChain(seeded: Awaited<ReturnType<typeof seededRepository>>, tag: string) {
+async function commitFollowOnProxyChain(seeded: Awaited<ReturnType<typeof seededRepository>>, tag: string, outputUnit?: "cm" | "m") {
   let head = await seeded.repository.getProjectHead(seeded.projectId);
   if (!head) throw new Error("missing imported project");
   const actorId = crypto.randomUUID();
   const now = "2026-08-13T13:00:00Z";
+  if (outputUnit) {
+    await seeded.commands.execute({ commandType: "ConfirmTaskSetup", commandId: crypto.randomUUID(), projectId: seeded.projectId, actorId,
+      expectedRevisionId: head.revisionId, issuedAt: now, payload: { taskDefinition: {
+        id: crypto.randomUUID(), name: "单位恢复测试任务", scope: ["建筑测绘"], regulationRefs: [], deliverables: ["模型", "图纸"],
+        responsibilities: [{ role: "projectLead", actorId }], automationPolicyRef: null, confirmedAt: now,
+        productionSetup: { buildingId: head.snapshot.buildings[0]!.id, purpose: "existingSurvey", outputUnit, targets: ["model", "floorPlan"], projectGroup: null },
+      } } });
+    head = await seeded.repository.getProjectHead(seeded.projectId);
+    if (!head) throw new Error("missing project after output unit setup");
+  }
   const geometrySpecId = crypto.randomUUID();
   const cadJobId = crypto.randomUUID();
   const inputRevisionId = head.revisionId;
@@ -76,6 +86,7 @@ async function commitFollowOnProxyChain(seeded: Awaited<ReturnType<typeof seeded
   const geometrySpec = {
     schemaVersion: "2.0" as const, id: geometrySpecId, projectId: seeded.projectId, projectRevisionId: inputRevisionId,
     buildingId: head.snapshot.buildings[0]!.id, inputHash: baseJob.inputHash,
+    ...(outputUnit ? { outputUnit } : {}),
     coordinateSystem: { name: `local-${tag}`, axisOrder: "XYZ" as const, upAxis: "Z" as const, lengthUnit: "mm" as const, origin: [0, 0, 0] as [number, number, number] },
     tolerances: { modellingMm: 0.5, interfaceMm: 0.5, tessellationMm: 1 }, objects: [{
       id: objectId, stableKey: `${tag}-base`, parentId: null, componentType: "base", displayNameZh: "回导后基座", materialCode: "demo",
@@ -100,6 +111,7 @@ async function commitFollowOnProxyChain(seeded: Awaited<ReturnType<typeof seeded
   const sheetId = crypto.randomUUID();
   const matrix = {
     schemaVersion: "1.0" as const, id: matrixId, projectId: seeded.projectId, projectRevisionId: inputRevisionId, geometryRevisionId,
+    ...(outputUnit ? { outputUnit } : {}),
     titleZh: "回导后新图纸", buildingDisplayNameZh: "正殿", issueState: "proxy-unissued" as const, issueDate: null, revisionLabel: "P02",
     views: [{ id: viewId, key: `${tag}-plan`, displayLabelZh: "回导后平面图", drawingRef: "平-02", kind: "floorPlan" as const, scaleDenominator: 50,
       sheetId, viewportRectMm: [20, 40, 240, 160] as [number, number, number, number], direction: [0, 0, 1] as [number, number, number],
@@ -159,10 +171,73 @@ async function commitFollowOnProxyChain(seeded: Awaited<ReturnType<typeof seeded
     status: "proxy-unissued" as const, l1Eligible: false as const, formalEligibility: false as const, signatureStatus: "unsigned" as const,
     restrictions: ["代理成果，不可正式使用"], createdAt: now };
   await seeded.commands.execute({ commandType: "CreateDeliveryDraft", commandId: crypto.randomUUID(), projectId: seeded.projectId, actorId, expectedRevisionId: head.revisionId, issuedAt: now, payload: { draft, manifestAsset, manifestArtifact, stagingSessionId: manifestSessionId } });
-  return { geometryRevisionId, matrixId, draftId: draft.id };
+  return { geometrySpecId, geometryRevisionId, matrixId, draftId: draft.id };
 }
 
 describe("ProjectPackageService", () => {
+  // 模拟文件只验证真实仓储、ZIP 和独立库恢复，不用于几何物理转换验收。
+  it.each(["cm", "m"] as const)("单元23：%s 单位真实仓储 ZIP 独立库回导保留单位、内部毫米、文件和旧记录哈希", async (outputUnit) => {
+    const source = await seededRepository();
+    const legacyChain = await commitFollowOnProxyChain(source, "legacy-mm");
+    const legacyHead = (await source.repository.getProjectHead(source.projectId))!;
+    const legacySpec = legacyHead.snapshot.geometrySpecs.find((item) => item.id === legacyChain.geometrySpecId)!;
+    const legacyMatrix = (await source.repository.getProjectArtifactRequirementMatrices(source.projectId)).find((item) => item.id === legacyChain.matrixId)!;
+    const legacyHashes = { spec: recordHash(legacySpec), matrix: recordHash(legacyMatrix) };
+    expect(legacySpec).not.toHaveProperty("outputUnit"); expect(legacyMatrix).not.toHaveProperty("outputUnit");
+
+    const newChain = await commitFollowOnProxyChain(source, `new-${outputUnit}`, outputUnit);
+    const before = await source.repository.exportProjectClosure(source.projectId);
+    const beforeSpec = before.head.snapshot.geometrySpecs.find((item) => item.id === newChain.geometrySpecId)!;
+    const matrices = await source.repository.getProjectArtifactRequirementMatrices(source.projectId);
+    const artifacts = await source.repository.getProjectArtifacts(source.projectId);
+    const assetIds = new Set([...before.head.snapshot.geometryRevisions.flatMap((item) => item.assets.map((asset) => asset.assetId)), ...artifacts.map((item) => item.assetId)]);
+    const sourceAssets = new Map(await Promise.all([...assetIds].map(async (id) => {
+      const asset = await source.repository.getAsset(id);
+      return [id, { record: asset.record, bytes: new Uint8Array(await asset.content.arrayBuffer()) }] as const;
+    })));
+    const zip = await source.packages.exportZip(source.projectId);
+    const parsed = source.packages.parse(zip, "unit23.gujian.zip");
+    expect(parsed.snapshot.geometrySpecs.find((item) => item.id === newChain.geometrySpecId)?.outputUnit).toBe(outputUnit);
+    expect(parsed.artifactRequirementMatrices.find((item) => item.id === newChain.matrixId)?.outputUnit).toBe(outputUnit);
+    expect(recordHash(parsed.snapshot.geometrySpecs.find((item) => item.id === legacyChain.geometrySpecId))).toBe(legacyHashes.spec);
+    expect(recordHash(parsed.artifactRequirementMatrices.find((item) => item.id === legacyChain.matrixId))).toBe(legacyHashes.matrix);
+
+    const target = new IndexedDbProjectRepository(openWorkbenchDatabase(`gujian-unit23-target-${crypto.randomUUID()}`));
+    const packages = new ProjectPackageService(target);
+    expect(await target.getProjectHead(source.projectId)).toBeNull();
+    await packages.import(zip, "unit23.gujian.zip", crypto.randomUUID());
+    const imported = await target.exportProjectClosure(source.projectId);
+    const newSpec = imported.head.snapshot.geometrySpecs.find((item) => item.id === newChain.geometrySpecId)!;
+    const restoredMatrices = await target.getProjectArtifactRequirementMatrices(source.projectId);
+    expect(imported.head.snapshot.taskDefinitions[0]?.productionSetup?.outputUnit).toBe(outputUnit);
+    expect(newSpec.outputUnit).toBe(outputUnit);
+    expect(newSpec.coordinateSystem.lengthUnit).toBe("mm");
+    expect(newSpec.coordinateSystem).toEqual(beforeSpec.coordinateSystem);
+    expect(newSpec.objects).toEqual(beforeSpec.objects);
+    expect(newSpec.objects[0]!.solid).toMatchObject({ sizeX: "1200", sizeY: "900", sizeZ: "120", centerMm: [0, 0, 60] });
+    expect(recordHash(newSpec)).toBe(recordHash(beforeSpec));
+    expect(imported.head.snapshot.geometryRevisions).toEqual(before.head.snapshot.geometryRevisions);
+    expect(restoredMatrices).toEqual(matrices);
+    expect(restoredMatrices.find((item) => item.id === newChain.matrixId)?.outputUnit).toBe(outputUnit);
+    expect(await target.getProjectArtifacts(source.projectId)).toEqual(artifacts);
+    expect(await target.getProjectCheckRuns(source.projectId)).toEqual(await source.repository.getProjectCheckRuns(source.projectId));
+    expect(await target.getProjectDeliveryEvaluations(source.projectId)).toEqual(await source.repository.getProjectDeliveryEvaluations(source.projectId));
+    expect(await target.getProjectDeliveries(source.projectId)).toEqual(await source.repository.getProjectDeliveries(source.projectId));
+    const importedLegacySpec = imported.head.snapshot.geometrySpecs.find((item) => item.id === legacyChain.geometrySpecId)!;
+    const importedLegacyMatrix = restoredMatrices.find((item) => item.id === legacyChain.matrixId)!;
+    expect(importedLegacySpec).not.toHaveProperty("outputUnit"); expect(importedLegacyMatrix).not.toHaveProperty("outputUnit");
+    expect(recordHash(importedLegacySpec)).toBe(legacyHashes.spec); expect(recordHash(importedLegacyMatrix)).toBe(legacyHashes.matrix);
+    expect(imported.auditEvents.slice(0, before.auditEvents.length)).toEqual(before.auditEvents);
+    for (const [id, expected] of sourceAssets) {
+      const restored = await target.getAsset(id);
+      const bytes = new Uint8Array(await restored.content.arrayBuffer());
+      expect(restored.record).toEqual(expected.record);
+      expect(bytes).toEqual(expected.bytes);
+      expect(sha256Hex(bytes)).toBe(expected.record.sha256);
+    }
+    expect((await source.repository.getProjectHead(source.projectId))!.revisionId).toBe(before.head.revisionId);
+  });
+
   it("JSON 与 ZIP 均可在空库回导并保留来源版本和审计前缀", async () => {
     for (const type of ["json", "zip"] as const) {
       const seeded = await seededRepository();

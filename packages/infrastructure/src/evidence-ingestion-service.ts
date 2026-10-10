@@ -9,6 +9,8 @@ export interface UploadFile extends Blob {
   readonly lastModified?: number;
 }
 
+export function isTiff(file: { name: string; type: string }): boolean { return /\.tiff?$/i.test(file.name) || file.type === "image/tiff"; }
+
 const TEXT_LIMIT = 200_000;
 
 function evidenceType(file: UploadFile): "photo" | "document" | "drawing" | "audio" | "video" | "other" {
@@ -26,6 +28,8 @@ export interface ParseOutcome {
   status: "parsed" | "metadataOnly" | "pending" | "failed";
   extractedText: string | null;
   warnings: string[];
+  readability?: "readable" | "unsupported" | "failed";
+  readableAs?: "text" | "image";
 }
 
 // PDF 逐页取文字层。任务书、历史记录、修缮档案都是 PDF，用户旅程第一步
@@ -35,6 +39,7 @@ export interface ParseOutcome {
 async function parsePdf(file: UploadFile): Promise<ParseOutcome> {
   try {
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    if (typeof Worker !== "undefined" && !pdfjs.GlobalWorkerOptions.workerSrc) pdfjs.GlobalWorkerOptions.workerSrc = `/pdfjs/pdf.worker.min.mjs?v=${pdfjs.version}-mime1`;
     // 不允许求值、不取系统字体：解析的是不可信来源，只要文字内容
     const document = await pdfjs.getDocument({
       data: new Uint8Array(await file.arrayBuffer()),
@@ -51,6 +56,7 @@ async function parsePdf(file: UploadFile): Promise<ParseOutcome> {
       // 纯扫描件没有文字层。如实说明缺什么，不返回空字符串装作解析成功。
       return {
         parser: "pdf-text",
+        readability: "unsupported",
         status: "metadataOnly",
         extractedText: null,
         warnings: [`该 PDF 共 ${document.numPages} 页但没有文字层，需要 OCR 或人工转录后才能作为文字依据；原文件已保存。`],
@@ -59,6 +65,7 @@ async function parsePdf(file: UploadFile): Promise<ParseOutcome> {
     const truncated = text.length > TEXT_LIMIT;
     return {
       parser: "pdf-text",
+      readability: "readable", readableAs: "text",
       status: "parsed",
       extractedText: text.slice(0, TEXT_LIMIT),
       warnings: [
@@ -69,9 +76,10 @@ async function parsePdf(file: UploadFile): Promise<ParseOutcome> {
   } catch (reason) {
     return {
       parser: "pdf-text",
+      readability: "failed",
       status: "failed",
       extractedText: null,
-      warnings: [`PDF 读取失败：${reason instanceof Error ? reason.message : "未知原因"}；原文件仍已保存。`],
+      warnings: ["PDF 读取失败，请核对原件并重试；原文件仍已保存。"],
     };
   }
 }
@@ -79,33 +87,47 @@ async function parsePdf(file: UploadFile): Promise<ParseOutcome> {
 export async function parseEvidenceFile(file: UploadFile): Promise<ParseOutcome> {
   const extension = file.name.toLowerCase().split(".").at(-1) ?? "";
   if (extension === "pdf" || file.type === "application/pdf") return parsePdf(file);
+  if (isTiff(file)) return { parser: "tiff-png", status: "pending", extractedText: null, readability: "unsupported", warnings: ["TIFF 原件已保存，需要本机图像处理后才能用于提取。"] };
+  if (["image/png", "image/jpeg", "image/webp"].includes(file.type) || /\.(png|jpe?g|webp)$/i.test(file.name)) {
+    try {
+      if (file.size > 12 * 1024 * 1024) return { parser: "image-decode", status: "metadataOnly", extractedText: null, readability: "unsupported", warnings: ["图像超过当前单份模型输入 12 MiB 上限；原件已保存，请补充适合读取的图像。"] };
+      if (typeof createImageBitmap !== "function") return { parser: "image-decode", status: "pending", extractedText: null, readability: "unsupported", warnings: ["当前环境不能解码图像，请在浏览器中重试读取。"] };
+      const bitmap = await createImageBitmap(file);
+      const valid = bitmap.width > 0 && bitmap.height > 0; bitmap.close();
+      if (!valid) throw new Error("EMPTY_IMAGE");
+      return { parser: "image-decode", status: "metadataOnly", extractedText: null, readability: "readable", readableAs: "image", warnings: [] };
+    } catch { return { parser: "image-decode", status: "failed", extractedText: null, readability: "failed", warnings: ["图像无法解码，请核对或替换原文件。"] }; }
+  }
   const textLike = file.type.startsWith("text/") || ["txt", "md", "json", "csv", "xml"].includes(extension);
   if (!textLike) {
     return {
       parser: "binary-metadata",
+      readability: "unsupported",
       status: ["dwg", "dxf"].includes(extension) ? "pending" : "metadataOnly",
       extractedText: null,
-      warnings: ["原始文件已保存；本里程碑未对该格式提取正文。"],
+      warnings: ["原始文件已保存，当前提取未支持此格式。"],
     };
   }
   let decoded: string;
   try {
-    decoded = new TextDecoder("utf-8", { fatal: true }).decode(await file.slice(0, TEXT_LIMIT * 4).arrayBuffer());
+    decoded = new TextDecoder("utf-8", { fatal: true }).decode(await file.slice(0, TEXT_LIMIT * 4).arrayBuffer(), { stream: file.size > TEXT_LIMIT * 4 });
   } catch {
-    return { parser: "utf8-text", status: "failed", extractedText: null, warnings: ["文件不是有效 UTF-8；原文件仍已保存。"] };
+    return { parser: "utf8-text", readability: "failed", status: "failed", extractedText: null, warnings: ["文件不是有效 UTF-8；原文件仍已保存。"] };
   }
-  const truncated = decoded.length > TEXT_LIMIT;
+  const truncated = decoded.length > TEXT_LIMIT || file.size > TEXT_LIMIT * 4;
   const text = decoded.slice(0, TEXT_LIMIT);
   if (extension === "json") {
     try { JSON.parse(text); } catch {
-      return { parser: "utf8-json", status: "failed", extractedText: text, warnings: ["JSON 语法无效；原文件仍已保存。"] };
+      return { parser: "utf8-json", readability: "failed", status: "failed", extractedText: text, warnings: ["JSON 语法无效；原文件仍已保存。"] };
     }
   }
   return {
     parser: extension === "json" ? "utf8-json" : "utf8-text",
     status: "parsed",
+    readability: text.trim() ? "readable" : "unsupported",
+    ...(text.trim() ? { readableAs: "text" as const } : {}),
     extractedText: text,
-    warnings: truncated ? ["提取文本已按 200,000 字符上限截断；原文件未截断。"] : [],
+    warnings: !text.trim() ? ["文件没有可提取文字，原件已保存。"] : truncated ? ["提取文本已按 200,000 字符上限截断；原文件未截断。"] : [],
   };
 }
 
@@ -120,7 +142,7 @@ export class EvidenceIngestionService {
     this.#maxBytes = maxBytes;
   }
 
-  async ingest(head: ProjectHead, actorId: string, file: UploadFile): Promise<ProjectHead> {
+  async ingest(head: ProjectHead, actorId: string, file: UploadFile, preparationLevel?: "required" | "recommended" | "additional"): Promise<ProjectHead> {
     if (!file.name.trim() || file.name.length > 300) throw new Error("FILE_NAME_INVALID");
     if (file.size === 0 || file.size > this.#maxBytes) throw new Error("FILE_SIZE_NOT_ALLOWED");
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -132,7 +154,7 @@ export class EvidenceIngestionService {
       id: assetId,
       projectId: head.projectId,
       fileName: file.name,
-      mimeType: file.type || "application/octet-stream",
+      mimeType: file.type || (/\.tiff?$/i.test(file.name) ? "image/tiff" : /\.png$/i.test(file.name) ? "image/png" : /\.jpe?g$/i.test(file.name) ? "image/jpeg" : /\.webp$/i.test(file.name) ? "image/webp" : "application/octet-stream"),
       byteLength: file.size,
       sha256: sha256Hex(bytes),
       contentStatus: "available",
@@ -146,6 +168,7 @@ export class EvidenceIngestionService {
       title: file.name,
       rightsDeclaration: null,
       intendedUse: "项目资料整理与候选提取",
+      ...(preparationLevel ? { preparationLevel } : {}),
       recordedAt: file.lastModified ? new Date(file.lastModified).toISOString() : null,
       relatedEntityRefs: [head.snapshot.buildings[0]?.id ?? head.projectId],
       dataStatus: "available",
@@ -158,6 +181,8 @@ export class EvidenceIngestionService {
       parser: parse.parser,
       parserVersion: "1.0.0",
       status: parse.status,
+      ...(parse.readability ? { readability: parse.readability } : {}),
+      ...(parse.readableAs ? { readableAs: parse.readableAs } : {}),
       extractedText: parse.extractedText,
       warnings: parse.warnings,
       createdAt: now,

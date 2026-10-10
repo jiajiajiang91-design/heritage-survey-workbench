@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="970" viewBox="0 0 1280 970">
+<title>创建制作任务页面原型</title><desc>任务定义与三层资料输入，主要操作为生成预览，成功进入预览与核对。</desc>
+<rect width="1280" height="970" fill="#F5F3ED"/><rect width="1280" height="72" fill="white"/><path d="M0 72H1280" stroke="#DDD9CF"/>
+<g font-family="Microsoft YaHei,sans-serif" fill="#2D2A24"><text x="65" y="44" font-size="20" font-weight="bold">古建保护成果工作台</text><text x="316" y="44" font-size="14" fill="#767065">页面原型</text>
+<text x="80" y="126" font-size="30" font-weight="bold">创建制作任务</text><text x="80" y="158" font-size="15" fill="#6D675E">说明建筑与成果要求，添加已有资料，开始准备可核对的预览。</text>
+<rect x="80" y="188" width="800" height="290" rx="9" fill="white" stroke="#DEDBD2"/><text x="106" y="225" font-size="20" font-weight="bold">1. 制作任务</text>
+<g font-size="14"><text x="106" y="266">任务名称</text><text x="492" y="266">建筑名称</text>
+<rect x="106" y="280" width="352" height="40" rx="5" fill="white" stroke="#D5D0C4"/><rect x="492" y="280" width="362" height="40" rx="5" fill="white" stroke="#D5D0C4"/>
+<text x="119" y="306">戴来商店现状测绘</text><text x="505" y="306">戴来商店</text>
+<text x="106" y="350">制作目的</text><text x="492" y="350">成果单位</text>
+<rect x="106" y="364" width="352" height="40" rx="5" fill="white" stroke="#D5D0C4"/><rect x="492" y="364" width="362" height="40" rx="5" fill="white" stroke="#D5D0C4"/>
+<text x="119" y="390">现状测绘</text><text x="505" y="390">毫米</text>
+<text x="106" y="444">目标成果　☑ 主体模型　☑ 首层平面　□ 指定立面　□ 指定剖面</text></g>
+<rect x="80" y="497" width="800" height="337" rx="9" fill="white" stroke="#DEDBD2"/><text x="106" y="533" font-size="20" font-weight="bold">2. 建筑资料</text>
+<text x="106" y="564" font-size="14" fill="#6D675E">先提供已有资料，在预览中补充缺项和修正内容。</text>
+<rect x="106" y="587" width="748" height="129" rx="7" fill="white" stroke="#DFDBD1"/><text x="122" y="614" font-size="16" font-weight="bold">必需资料</text><text x="122" y="641" font-size="14" fill="#6D675E">平面图或草图、尺度与定位依据；主体模型需要高度依据。</text>
+<rect x="122" y="659" width="182" height="37" rx="5" fill="white" stroke="#CFC8B7"/><text x="135" y="683" font-size="14">添加图纸或尺寸记录</text>
+<text x="329" y="683" font-size="14">highres_00016a.tif</text>
+<rect x="106" y="733" width="748" height="37" rx="5" fill="white" stroke="#DFDBD1"/><text x="122" y="757" font-size="14">▸ 建议资料　用于进一步核对</text>
+<rect x="106" y="782" width="748" height="37" rx="5" fill="white" stroke="#DFDBD1"/><text x="122" y="806" font-size="14">▸ 额外补充　用于局部细节</text>
+<rect x="903" y="188" width="297" height="297" rx="9" fill="white" stroke="#DEDBD2"/><text x="927" y="225" font-size="18" font-weight="bold">本次工作</text>
+<g font-size="15"><text x="929" y="267" fill="#756746" font-weight="bold">1. 任务与资料</text><text x="929" y="307">2. 预览与核对</text><text x="929" y="347">3. 修正与导出</text></g>
+<path d="M927 366H1176" stroke="#EEE9DE"/><text x="929" y="400" font-size="14" font-weight="bold">下一步</text><text x="929" y="428" font-size="14" fill="#6D675E">将建筑预览与原图对照，</text><text x="929" y="454" font-size="14" fill="#6D675E">定位并处理待核对对象。</text>
+<path d="M80 865H880" stroke="#DDD9CF"/><rect x="80" y="883" width="86" height="42" rx="5" fill="white" stroke="#CFC8B7"/><text x="106" y="910" font-size="15">返回</text>
+<rect x="180" y="883" width="118" height="42" rx="5" fill="white" stroke="#CFC8B7"/><text x="205" y="910" font-size="15">保存任务</text>
+<rect x="736" y="883" width="144" height="42" rx="5" fill="#756746"/><text x="774" y="910" font-size="15" fill="white">生成预览</text>
+<text x="80" y="951" font-size="12" fill="#80786B">页面样板：任务信息、资料分层、操作出口。具体交互见 PRD 与可操作原型。</text>
+</g></svg>

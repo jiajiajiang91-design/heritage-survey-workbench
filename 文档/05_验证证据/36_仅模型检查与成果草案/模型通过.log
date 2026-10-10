@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ✓ src/delivery-service.test.ts (30 tests) 273ms
+
+ Test Files  1 passed (1)
+      Tests  30 passed (30)
+   Start at  04:02:54
+   Duration  1.09s (transform 171ms, setup 0ms, collect 611ms, tests 273ms, environment 0ms, prepare 74ms)
+

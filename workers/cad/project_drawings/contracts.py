@@ -6,6 +6,8 @@ import math
 import re
 from typing import Any
 
+from workers.cad.output_units import output_unit
+
 
 class DrawingContractError(ValueError):
     pass
@@ -32,6 +34,10 @@ def _unit(vector: list[float]) -> tuple[float, float, float]:
 
 
 def validate_artifact_matrix(value: dict[str, Any], geometry_manifest: dict[str, Any]) -> dict[str, Any]:
+    try:
+        output_unit(value)
+    except ValueError as error:
+        raise DrawingContractError(str(error)) from error
     require(value.get("schemaVersion") == "1.0", "artifact matrix schema differs")
     require(value.get("geometryRevisionId") == geometry_manifest.get("geometryRevisionId"), "geometry revision differs")
     require(value.get("projectId") == geometry_manifest.get("projectId"), "project differs")

@@ -3,10 +3,10 @@
  * 节点上没绑变量的颜色按最近语义令牌实现，对应关系见偏离清单。前缀 ws-。 */
 
 /* ---------- 总体网格：顶栏在上，下面三栏 ---------- */
-.ws-app { display: grid; grid-template-rows: var(--layout-topbar-height) minmax(0, 1fr); height: 100vh; min-width: calc(var(--layout-rail-icon) + var(--layout-center-min) + var(--layout-rail-collapsed)); background: var(--bg-canvas); }
-.ws-body { display: grid; grid-template-columns: var(--layout-left-rail) minmax(var(--layout-center-min), 1fr) var(--layout-assistant-panel); min-height: 0; }
+.ws-app { display: grid; grid-template-rows: var(--layout-topbar-height) minmax(0, 1fr) auto; height: 100vh; min-width: 0; background: var(--bg-canvas); }
+.ws-body { position: relative; display: grid; grid-template-columns: var(--layout-left-rail) minmax(var(--layout-center-min), 1fr) var(--layout-assistant-panel); min-height: 0; }
 .ws-body--assistant-collapsed { grid-template-columns: var(--layout-left-rail) minmax(var(--layout-center-min), 1fr) var(--layout-rail-collapsed); }
-.ws-body--single { grid-template-columns: minmax(var(--layout-center-min), 1fr); }
+.ws-body--single { grid-template-columns: minmax(0, 1fr); }
 
 /* ---------- 顶栏（35:14）：高 56，白底，下边线，内边距 10/20，间距 16 ---------- */
 .ws-topbar { display: flex; align-items: center; gap: var(--space-lg); height: var(--layout-topbar-height); padding: var(--space-10) var(--space-xl); background: var(--bg-surface); border-bottom: var(--stroke-hairline) solid var(--border-subtle); min-width: 0; }
@@ -42,6 +42,9 @@
 .ws-stage--current { background: var(--bg-selected); }
 .ws-stage--current .ws-stage-title { font-weight: var(--font-weight-medium); }
 .ws-stage--current:hover { background: var(--bg-selected); }
+.ws-rail-auxiliary { display: flex; flex-wrap: wrap; gap: var(--space-md); padding: var(--space-md); border-top: var(--stroke-hairline) solid var(--border-subtle); }
+.ws-rail-auxiliary button { color: var(--text-secondary); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
+.ws-rail-auxiliary button[aria-current] { color: var(--text-primary); font-weight: var(--font-weight-medium); }
 .ws-rail-spacer { flex: 1 1 auto; }
 /* 待处理摘要卡（37:54）：白底细边，内边距 12，间距 8 */
 .ws-rail-summary { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-surface); border: var(--stroke-hairline) solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-secondary); text-align: left; }
@@ -81,7 +84,7 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 .ws-assistant-head { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md) var(--space-lg); border-bottom: var(--stroke-hairline) solid var(--border-subtle); }
 .ws-assistant-head h2 { font: var(--font-weight-medium) var(--font-size-16)/var(--line-24) var(--font-family-ui); color: var(--text-primary); flex: 1 1 auto; }
 .ws-assistant-state { display: flex; align-items: center; gap: var(--space-sm); font: var(--font-weight-regular) var(--font-size-12)/var(--line-20) var(--font-family-ui); color: var(--text-primary); white-space: nowrap; }
-.ws-assistant-close { display: none; margin-left: var(--space-sm); }
+.ws-assistant-close { display: flex; margin-left: var(--space-sm); }
 .ws-assistant-dot { width: 7px; height: 7px; border-radius: var(--radius-full); background: var(--status-success-fg); flex: none; }
 .ws-assistant-dot--busy { background: var(--status-warning-fg); }
 .ws-assistant-dot--off { background: var(--border-strong); }
@@ -145,9 +148,9 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 .ws-evidence-caption p { font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-secondary); overflow-wrap: anywhere; }
 .ws-evidence-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-sm); min-height: 238px; background: var(--bg-subtle); border-radius: var(--radius-md); color: var(--text-tertiary); font: var(--font-weight-regular) var(--font-size-12)/var(--line-18) var(--font-family-ui); text-align: center; padding: var(--space-lg); }
 
-/* ---------- 失败提示与通知（07 第 5.6 节）：固定在中栏底部 ---------- */
-.ws-banners { position: fixed; left: 50%; bottom: var(--space-2xl); transform: translateX(-50%); display: flex; flex-direction: column; gap: var(--space-sm); z-index: 30; max-width: min(640px, calc(100vw - var(--space-5xl))); }
-.ws-banner { display: flex; align-items: flex-start; gap: var(--space-md); padding: var(--space-md) var(--space-lg); border-radius: var(--radius-md); border: var(--stroke-hairline) solid; background: var(--bg-surface); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
+/* ---------- 失败提示与通知：独立布局行，长说明可滚动 ---------- */
+.ws-banners { display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); padding: var(--space-sm); max-height: 30vh; overflow: auto; }
+.ws-banner { display: flex; align-items: flex-start; gap: var(--space-md); padding: var(--space-md) var(--space-lg); width: min(640px, calc(100vw - var(--space-5xl))); border-radius: var(--radius-md); border: var(--stroke-hairline) solid; background: var(--bg-surface); font: var(--font-weight-regular) var(--font-size-13)/var(--line-20) var(--font-family-ui); }
 .ws-banner--error { border-color: var(--status-danger-border); background: var(--status-danger-bg); color: var(--status-danger-fg); }
 .ws-banner--notice { border-color: var(--border-default); color: var(--text-primary); }
 .ws-banner > div { display: flex; flex-direction: column; gap: var(--space-2xs); flex: 1 1 auto; }
@@ -157,12 +160,39 @@ button.ws-rail-summary:hover { background: var(--bg-hover); }
 /* ---------- 三档断点（07 第 6.2 节），边界由令牌减一得出，测试锁住 ---------- */
 @media (max-width: 1279px) {
   .ws-body:not(.ws-body--single) { grid-template-columns: var(--layout-left-rail) minmax(var(--layout-center-min), 1fr) var(--layout-rail-collapsed); }
-  .ws-body:not(.ws-body--single) .ws-assistant { position: fixed; top: var(--layout-topbar-height); right: 0; bottom: 0; width: var(--layout-assistant-panel); z-index: 10; }
+  .ws-body:not(.ws-body--single) .ws-assistant { position: absolute; top: 0; right: 0; bottom: 0; width: var(--layout-assistant-panel); z-index: 10; }
   .ws-assistant-close { display: flex; }
 }
 @media (max-width: 1023px) {
-  .ws-body:not(.ws-body--single) { grid-template-columns: var(--layout-rail-icon) minmax(var(--layout-center-min), 1fr) var(--layout-rail-collapsed); }
-  .ws-rail { padding: var(--space-lg) var(--space-sm); }
-  .ws-rail-context, .ws-rail-heading, .ws-rail-summary, .ws-stage-title, .ws-stage-state { display: none; }
-  .ws-stage { grid-template-columns: minmax(0, 1fr); justify-items: center; padding: 0; }
+  .ws-body:not(.ws-body--single) { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .ws-rail { padding: var(--space-sm) var(--space-lg); gap: var(--space-sm); border-right: 0; border-bottom: var(--stroke-hairline) solid var(--border-subtle); }
+  .ws-rail-context, .ws-rail-heading, .ws-rail-summary, .ws-stage-state, .ws-stage-index, .ws-rail-spacer { display: none; }
+  .ws-stage-nav { flex-direction: row; overflow-x: auto; gap: var(--space-xs); }
+  .ws-stage { display: flex; flex: 1 0 auto; justify-content: center; padding: var(--space-sm) var(--space-md); }
+  .ws-stage-title { display: block; }
+  .ws-rail-auxiliary { padding: 0; border: 0; justify-content: flex-end; }
+  .ws-assistant-collapsed { display: none; }
+  .ws-topbar { gap: var(--space-sm); padding: var(--space-sm) var(--space-lg); }
+  .ws-topbar-nav { gap: var(--space-md); }
+  .ws-brand-name { max-width: 10em; overflow: hidden; text-overflow: ellipsis; }
+  .sc-checks, .sc-delivery { grid-template-columns: minmax(0, 1fr); }
+  .sc-sheet-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
+  .ws-center-body .sc-checks-figure:not(.sc-checks-figure--empty) { height: 16rem; }
+  .sc-delivery-summary { grid-row: 1; }
+  .sc-delivery-manifest { grid-row: 2; }
+}
+
+/* 短内容与操作相邻，画布保留自身尺寸。 */
+.ws-center-body > .gj-split, .ws-center-body > .sc-task, .ws-center-body > .sc-sheet, .ws-center-body > .sc-model, .ws-center-body > .sc-checks, .ws-center-body > .sc-delivery { flex: 0 0 auto; align-items: start; }
+.ws-center-body .sc-task-content { flex: 0 0 auto; align-items: start; }
+.ws-center-body .sc-checks-figure--empty, .ws-center-body .sc-sheet-figure--empty { height: auto; min-height: 8rem; padding: var(--space-xl); }
+.ws-center-body .sc-checks-results { padding: var(--space-lg); }
+@media (max-width: 42rem) {
+  .ws-breadcrumb, .ws-topbar-divider { display: none; }
+  .ws-page-header { flex-wrap: wrap; }
+  .ws-center-body > .gj-split, .ws-center-body > .sc-sheet, .ws-center-body .sc-task-content { display: flex; flex-direction: column; gap: var(--space-md); }
+  .gj-split-data, .gj-split-aside { width: 100%; }
+  .gj-split-divider { display: none; }
+  .ws-center-body > .gj-split > .gj-split-aside { order: -1; }
+  .ws-body:not(.ws-body--single) .ws-assistant { width: min(100%, var(--layout-assistant-panel)); }
 }

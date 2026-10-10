@@ -1,0 +1,13 @@
+test_independent_ifc_verifier_rejects_each_unit_and_vertex_tamper_after_rehash (workers.cad.project_geometry.test_output_units.GeometryOutputUnitTests.test_independent_ifc_verifier_rejects_each_unit_and_vertex_tamper_after_rehash) ... ok
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+test_rehashed_single_file_tampers_are_rejected_and_restored (workers.cad.project_drawings.test_output_units.DrawingOutputUnitTests.test_rehashed_single_file_tampers_are_rejected_and_restored) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 7.541s
+
+OK

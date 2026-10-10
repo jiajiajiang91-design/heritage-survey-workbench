@@ -1,0 +1,39 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/workbench/component-writes.test.tsx (6 tests | 1 failed) 64ms
+   ✓ 构件写入反馈 > 写入失败返回 false，保留项目原记录 30ms
+   ✓ 构件写入反馈 > 读回失败报告已保存，避免误导再次提交 8ms
+   ✓ 构件写入反馈 > 刷新失败仍保留已保存项目，尺寸引用进入真实仓储 6ms
+   ✓ 构件写入反馈 > 核对草稿经真实入口一次保存尺寸与构件，不产生几何成果 7ms
+   × 构件写入反馈 > 核对草稿失败返回false且尺寸与构件均未写入 7ms
+     → expected true to be false // Object.is equality
+   ✓ 构件写入反馈 > 核对草稿已提交而读回失败时仍报告已保存，避免重复采用 5ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  16:46:50
+   Duration  1.95s (transform 328ms, setup 223ms, collect 1.14s, tests 64ms, environment 335ms, prepare 63ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/workbench/component-writes.test.tsx > 构件写入反馈 > 核对草稿失败返回false且尺寸与构件均未写入
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/workbench/component-writes.test.tsx:70:16
+     68|     let ok = true;
+     69|     await act(async () => { ok = await test.result.current.confirmDraf…
+     70|     expect(ok).toBe(false); expect(test.setSelected).not.toHaveBeenCal…
+       |                ^
+     71|     expect((await projectRepository.getProjectHead(test.head.projectId…
+     72|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

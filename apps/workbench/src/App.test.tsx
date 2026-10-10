@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { App, LENGTH_INPUT_STEP } from "./App";
@@ -14,39 +14,40 @@ describe("App", () => {
   it("建立项目后显示当前建筑和版本", async () => {
     render(<App bootstrapDemo={noDemoBootstrap} />);
     expect(screen.getByRole("heading", { name: /古建保护/ })).toBeInTheDocument();
-    expect(screen.getByText("资料原件保存在本机，不会上传")).toBeInTheDocument();
+    expect(screen.getByText("项目与资料保存在本机。AI 处理按本次选择发送资料。")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "新建项目" }));
-    fireEvent.change(screen.getByLabelText("项目名称"), { target: { value: "山门保护记录" } });
+    fireEvent.click(screen.getByRole("button", { name: "创建制作任务" }));
+    fireEvent.change(screen.getByLabelText("任务名称"), { target: { value: "山门保护记录" } });
     fireEvent.change(screen.getByLabelText("建筑名称"), { target: { value: "山门" } });
-    fireEvent.click(screen.getByRole("button", { name: "创建并进入项目" }));
+    fireEvent.click(screen.getByRole("button", { name: "保存草稿" }));
 
-    expect(await screen.findByRole("heading", { name: "山门" })).toBeInTheDocument();
-    expect(screen.getByText("山门保护记录")).toBeInTheDocument();
+    const stageNav = await screen.findByRole("navigation", { name: "任务进度" });
+    expect(screen.getByRole("heading", { name: "山门" })).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.getAllByText("山门保护记录").length).toBeGreaterThan(0);
 
-    // 导航分两层：左栏是八个任务阶段，中栏页签行按 v4 形式始终显示。
-    // 新建后直接进入建立任务阶段，任务确认表单就在任务卡上（实施单元 08 起）。
-    const stageNav = screen.getByRole("navigation", { name: "任务进度" });
-    expect(within(stageNav).getByRole("button", { name: /建立任务/ })).toHaveAttribute("aria-current", "step");
-    expect(await screen.findByText("确认任务要求")).toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText("成果目录（每行一项）"), { target: { value: "平面图" } });
+    // 新建草稿进入设置，主导航保留可读名称。
+    expect(within(stageNav).getByRole("button", { name: /任务设置/ })).toHaveAttribute("aria-current", "step");
+    expect(await screen.findByText("本次制作任务")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "设置图纸要求" }));
     fireEvent.change(screen.getByLabelText("图纸标题"), { target: { value: "山门代理成果图" } });
     fireEvent.change(screen.getByLabelText("修订标记"), { target: { value: "P1" } });
     fireEvent.change(screen.getByLabelText("需要出图的构件类型（每行一项）"), { target: { value: "wall" } });
-    fireEvent.change(screen.getByLabelText("图幅设置"), { target: { value: '[{"key":"sheet","drawingNumber":"P-01","displayLabelZh":"平面","pageMm":[420,297]}]' } });
-    fireEvent.change(screen.getByLabelText("视图设置"), { target: { value: '[{"key":"plan","displayLabelZh":"平面","drawingRef":"平-01","kind":"floorPlan","scaleDenominator":50,"sheetKey":"sheet","viewportRectMm":[20,20,380,250],"direction":[0,0,1],"right":[1,0,0],"up":[0,1,0],"targetStableKeys":[],"sourceEvidenceRefs":[]}]' } });
-    fireEvent.click(screen.getByRole("button", { name: "确认任务要求，开始整理资料" }));
-    expect(await screen.findByText("启动检查")).toBeInTheDocument();
-    expect(await screen.findByText("任务范围、规范和责任角色已一次确认")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("图号", { exact: true }), { target: { value: "P-01" } });
+    fireEvent.change(screen.getByLabelText("图幅名称", { exact: true }), { target: { value: "首层图纸" } });
+    fireEvent.change(screen.getByLabelText("视图名称", { exact: true }), { target: { value: "首层平面" } });
+    fireEvent.change(screen.getByLabelText("视图编号", { exact: true }), { target: { value: "平-01" } });
+    fireEvent.click(screen.getByRole("button", { name: "保存任务要求" }));
+    expect(await screen.findByText("本次制作任务")).toBeInTheDocument();
+    expect(await screen.findByText("任务要求已保存。旧任务与成果保留，新成果需重新生成。")).toBeInTheDocument();
 
-    // 确认后记录现状阶段出页签行，问题队列是第二个视图
-    fireEvent.click(within(stageNav).getByRole("button", { name: /记录现状/ }));
-    const viewTabs = screen.getByRole("navigation", { name: "工作区视图" });
-    fireEvent.click(within(viewTabs).getByRole("button", { name: "问题队列" }));
+    // 问题处理在辅助入口中，能力仍可访问。
+    fireEvent.click(within(screen.getByRole("navigation", { name: "辅助工作" })).getByRole("button", { name: "问题队列" }));
     expect(await screen.findByText("待处理问题")).toBeInTheDocument();
 
-    // 交付归档只有一个视图，没有页签行，从左栏阶段直接进。
-    fireEvent.click(within(stageNav).getByRole("button", { name: /交付归档/ }));
+    fireEvent.click(within(stageNav).getByRole("button", { name: /检查与导出/ }));
+    fireEvent.click(screen.getByRole("button", { name: "成果导出" }));
+    fireEvent.click(screen.getByText("项目记录与恢复"));
     expect(screen.getByRole("button", { name: "检验导出与恢复" })).toBeInTheDocument();
   });
 

@@ -1,0 +1,53 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/screens/GeometryComponentEditor.test.tsx (13 tests | 1 failed | 11 skipped) 148ms
+   ↓ 普通构件表单 > 选择已采用尺寸后显示只读数值与资料，候选保留待核对标记
+   ↓ 普通构件表单 > 无效长度定位到字段并阻止写入，取消不保存
+   ↓ 普通构件表单 > 保存中阻止重复提交，失败及异常保留全部草稿
+   ↓ 普通构件表单 > 可切换圆柱和逐点挤出表单，长度不自动补齐
+   ↓ 普通构件表单 > 同一构件记录变化时锁定旧草稿，取消后可重开
+   ↓ 普通构件表单 > 展示模型没有输入时不提供新增或反写入口
+   ↓ 普通构件表单 > 预览、选择来源和修改保持草稿，不保存事实且旧形体立即失效
+   ↓ 普通构件表单 > raw 候选可修正并通过原子保存入口提交，清来源恢复普通入口
+   ↓ 普通构件表单 > 快照来源改变即隐藏旧预览，重新预览列明失效引用，缺项保留输入
+   ↓ 普通构件表单 > 仅解析记录变化时 candidate 来源旧形体立即失效且草稿保留
+   ↓ 普通构件表单 > 仅解析记录变化时 adopted 来源旧形体立即失效且草稿保留
+   × 普通构件表单 > 跨资料形体选择恢复构件A图候选区域，参数按钮独立查看B表 102ms
+     → expected last "spy" call to have been called with [ …(2) ]
+   ✓ 普通构件表单 > 首次编辑和重开已保存candidateSource输入均恢复构件A图区域 45ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/screens/GeometryComponentEditor.test.tsx > 普通构件表单 > 跨资料形体选择恢复构件A图候选区域，参数按钮独立查看B表
+AssertionError: expected last "spy" call to have been called with [ …(2) ]
+
+- Expected
++ Received
+
+  [
+    "75d277b4-d568-4a59-ad37-fb23c40aec1d",
+-   {
+-     "height": 0.1,
+-     "width": 0.3,
+-     "x": 0.2,
+-     "y": 0.6,
+-   },
+  ]
+
+ ❯ src/screens/GeometryComponentEditor.test.tsx:192:18
+    190|     fireEvent.change(screen.getByLabelText("X 向长度来源"), { target: { val…
+    191|     fireEvent.click(screen.getByRole("button", { name: "查看候选原件：" + tes…
+    192|     expect(show).toHaveBeenLastCalledWith(test.sourceB.id, test.parame…
+       |                  ^
+    193|     fireEvent.click(screen.getByRole("button", { name: "预览待核对形体" }));
+    194|     show.mockClear(); select.mockClear();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 11 skipped (13)
+   Start at  16:28:35
+   Duration  2.12s (transform 352ms, setup 226ms, collect 1.21s, tests 148ms, environment 343ms, prepare 62ms)
+

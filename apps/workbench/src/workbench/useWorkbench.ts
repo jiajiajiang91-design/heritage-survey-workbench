@@ -1,5 +1,5 @@
 import type { DemoLoadResult } from "../demo-library-loader";
-import { bootstrapDemoProjects } from "../workbench";
+import { prepareEvidenceFiles, bootstrapDemoProjects } from "../workbench";
 import { useAssistantBridge } from "./useAssistantBridge";
 import { useEvidencePane } from "./useEvidencePane";
 import { useJobs } from "./useJobs";
@@ -29,19 +29,33 @@ export function useWorkbench({ bootstrapDemo = bootstrapDemoProjects }: Workbenc
   // 跨 hook 的组合动作放在门面里，各 hook 之间不互相引用。
   // 从列表进项目：上一个项目的几何选中项清掉；停在项目级页面（运行与用量、修改历史）时回到资料清单，
   // 不让新项目一进来就落在修改历史上。
-  const chooseProject = async (projectId: string) => {
+  const chooseProject = async (projectId: string, showExample = false) => {
     jobs.resetModelProgress();
     nav.setSelectedGeometryEntityId(null);
-    // 第一次进入必须从任务卡开始，先理解对象、范围和数据边界，再沿八阶段查看。
-    nav.setActiveStage("tasks");
-    await session.chooseProject(projectId);
+    notices.setError(null);
+    notices.setNotice(null);
+    nav.setDimensionCandidateSelection(null);
+    nav.setDimensionReturnView(null);
+    nav.setComponentCandidateSelection(null);
+    const card = session.projectCards.find((item) => item.projectId === projectId);
+    const head = await session.chooseProject(projectId);
+    const hasPreview = head?.snapshot.candidates.some((candidate) => candidate.structured?.kind === "measurementTranscription" || candidate.structured?.kind === "componentRecognition");
+    nav.setActiveStage(showExample && card?.objectCount ? "geometry" : !card?.taskName ? "tasks" : !card.evidenceCount ? "evidence" : card.outputUnitPending ? "geometry" : card.pendingCount && hasPreview ? "preview" : card.artifactCount ? "checks" : card.objectCount ? "objects" : "evidence");
   };
 
   // 新建或导入后进入建立任务（W01）：先确认对象、范围与成果要求，再整理资料（实施单元 08 偏离清单）。
-  const createProject = async (values: CreateProjectValues): Promise<boolean> => {
+  const createProject = async (values: CreateProjectValues, files: readonly import("../production-task").PreparedFile[] = [], destination: "tasks" | "evidence" | "list" = "tasks"): Promise<boolean> => {
     const head = await session.createProject(values);
     if (!head) return false;
-    nav.setActiveStage("tasks");
+    try {
+      const prepared = await prepareEvidenceFiles(head, files);
+      session.setSelected(prepared.head);
+      await session.loadProject(head.projectId);
+      await session.refresh();
+      if (prepared.failures.length) notices.setError({ summaryZh: "部分资料尚未就绪：" + prepared.failures.join("；"), nextStepZh: "已保存原件可在资料清单重试；未保存文件可重新添加。" });
+      else notices.setNotice(files.length ? files.length + " 份资料已保存，可以继续准备与核对。" : "任务草稿已保存，可以补充资料。");
+    } catch { notices.setError({ summaryZh: "任务已保存，资料准备或页面刷新未完成。", nextStepZh: "重新进入任务，查看已保存资料并补充缺项。" }); }
+    if (destination === "list") { session.exitToProjectList(); nav.setActiveStage("tasks"); } else nav.setActiveStage(destination);
     return true;
   };
 

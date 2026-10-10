@@ -1,0 +1,18 @@
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+'created' timestamp seems very low; regarding as unix timestamp
+'modified' timestamp seems very low; regarding as unix timestamp
+mm failures []
+measurement 6100.5 text <> effective [1.0, 0.0, '<> mm'] rendered ['6100.5 mm']
+measurement 6100.5 text <> effective [1.0, 0.0, '<> mm'] rendered ['6100.5 mm']
+expect {'dimension:3377312d-33b8-5577-972e-2006a993370c': (6100.5, '图形总宽 6100.5 mm'), 'chain:3377312d-33b8-5577-972e-2006a993370c:1-2': (6100.5, '6100.5 mm')}
+cm failures []
+measurement 610.0500000000001 text <> effective [1.0, 0.0, '<> cm'] rendered ['610.05 cm']
+measurement 610.05 text <> effective [1.0, 0.0, '<> cm'] rendered ['610.05 cm']
+expect {'dimension:3377312d-33b8-5577-972e-2006a993370c': (6100.5, '图形总宽 610.05 cm'), 'chain:3377312d-33b8-5577-972e-2006a993370c:1-2': (6100.5, '610.05 cm')}
+m failures []
+measurement 6.1005 text <> effective [1.0, 0.0, '<> m'] rendered ['6.1005 m']
+measurement 6.100499999999999 text <> effective [1.0, 0.0, '<> m'] rendered ['6.1005 m']
+expect {'dimension:3377312d-33b8-5577-972e-2006a993370c': (6100.5, '图形总宽 6.1005 m'), 'chain:3377312d-33b8-5577-972e-2006a993370c:1-2': (6100.5, '6.1005 m')}

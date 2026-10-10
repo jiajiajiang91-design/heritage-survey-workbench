@@ -77,7 +77,7 @@ export class PythonDrawingWorker implements DrawingWorker {
   }
 
   readAsset(jobId: string, fileName: string): Buffer {
-    if (!/^[A-Za-z0-9._-]+(?:\/[A-Za-z0-9._-]+)?$/.test(fileName)) throw new Error("DRAWING_ASSET_NAME_INVALID");
+    if (!/^[\p{L}\p{N}._-]+(?:\/[\p{L}\p{N}._-]+)?$/u.test(fileName)) throw new Error("DRAWING_ASSET_NAME_INVALID");
     const directory = resolve(drawingStagingRoot, jobId, "output");
     const path = resolve(directory, ...fileName.split("/"));
     if (relative(directory, path).startsWith("..")) throw new Error("DRAWING_ASSET_PATH_INVALID");

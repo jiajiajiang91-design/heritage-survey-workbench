@@ -1,0 +1,38 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/project-progress.test.ts (5 tests | 1 failed) 24ms
+   × 首页制作任务摘要 > 签发或已有旧文件不代表本次任务完成 4ms
+     → expected '已完成' to be '已有成果，待复查' // Object.is equality
+   ✓ 首页制作任务摘要 > 明确显示缺任务与缺资料 0ms
+   ✓ 首页制作任务摘要 > 待处理优先，其余按最近修改，检索不修改原数组 0ms
+   ✓ 首页制作任务摘要 > 100 条摘要按任务与项目检索，状态条件可以组合 1ms
+   ✓ 首页制作任务摘要 > 首页读取摘要时不请求照片或模型 Blob 18ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/project-progress.test.ts > 首页制作任务摘要 > 签发或已有旧文件不代表本次任务完成
+AssertionError: expected '已完成' to be '已有成果，待复查' // Object.is equality
+
+Expected: "已有成果，待复查"
+Received: "已完成"
+
+ ❯ src/project-progress.test.ts:11:67
+      9|     const card = projectCard({ signedAt: "2026-09-01T10:00:00Z", artif…
+     10|     expect(productionSummary(card)).toEqual({ label: "待核对", next: "处理 …
+     11|     expect(productionSummary({ ...card, pendingCount: 0 }).label).toBe…
+       |                                                                   ^
+     12|   });
+     13| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  11:10:51
+   Duration  1.67s (transform 249ms, setup 205ms, collect 827ms, tests 24ms, environment 326ms, prepare 88ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run project-progress.test.ts

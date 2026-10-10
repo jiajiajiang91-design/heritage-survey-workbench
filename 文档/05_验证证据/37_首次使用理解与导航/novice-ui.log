@@ -1,0 +1,67 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/DraftGeometryViewer.test.tsx (4 tests) 157ms
+ ✓ src/assistant/assistant-ui.test.tsx (4 tests) 138ms
+ ✓ src/screens/ProjectList.test.tsx (3 tests) 163ms
+ ✓ src/screens/CreateTaskDialog.test.tsx (3 tests) 268ms
+ ✓ src/screens/ChecksAndQualification.test.tsx (2 tests) 139ms
+ ✓ src/component-input.test.ts (19 tests) 172ms
+ ✓ src/screens/EvidenceList.test.tsx (2 tests) 139ms
+ ✓ src/screens/MeasurementBaseline.test.tsx (1 test) 67ms
+ ✓ src/screens/MaterialCoverage.test.tsx (2 tests) 235ms
+ ✓ src/workbench/usePreviewFlow.test.tsx (11 tests) 135ms
+ ✓ src/no-hardcoded-project-data.test.ts (3 tests) 28ms
+ ✓ src/workbench/dimension-writes.test.tsx (3 tests) 51ms
+ ✓ src/workbench/task-writes.test.tsx (5 tests) 57ms
+ ✓ src/workbench/component-writes.test.tsx (6 tests) 106ms
+ ✓ src/screens/PreviewReview.test.tsx (4 tests) 269ms
+ ✓ src/screens/ComponentList-preview.test.tsx (1 test) 311ms
+   ✓ 参数标注区域与构件候选区域分别定位，选形体后恢复构件区域  310ms
+ ✓ src/screens/DimensionCandidateReview.test.tsx (5 tests) 460ms
+ ✓ src/screens/ComponentCandidateFlow.test.tsx (2 tests) 431ms
+   ✓ 候选进入构件制作表单 > 沿用候选来源，填写并绑定后真实保存，重命名后仍编辑同一输入  385ms
+ ✓ src/project-progress.test.ts (6 tests) 32ms
+ ✓ src/screens/ModelView.test.tsx (5 tests) 382ms
+ ✓ src/output-unit-state.test.tsx (5 tests) 233ms
+ ✓ src/workbench/useAssistantBridge.test.tsx (1 test) 39ms
+ ✓ src/visual-spec.test.ts (22 tests) 19ms
+ ✓ src/screens/GeometryComponentEditor.test.tsx (13 tests) 1229ms
+ ✓ src/demo-library-loader.test.ts (6 tests) 2545ms
+   ✓ 演示项目装载 > 单个包失败不影响其余，失败逐条留下  2019ms
+   ✓ 演示项目装载 > 单个包短暂下载失败时自动重试，不要求清空已有项目  519ms
+ ✓ src/screens/TaskSetupForm.test.tsx (9 tests) 1436ms
+ ✓ src/wording.test.ts (1 test) 27ms
+ ✓ src/App.test.tsx (2 tests) 960ms
+   ✓ App > 建立项目后显示当前建筑和版本  959ms
+ ✓ src/draft-geometry-mesh.test.ts (8 tests) 13ms
+ ✓ src/failure-notice.test.ts (15 tests) 8ms
+ ✓ src/model-run-client.test.ts (7 tests) 13ms
+ ✓ src/delivery-readiness.test.ts (1 test) 5ms
+ ✓ src/task-requirements.test.ts (14 tests) 102ms
+ ✓ src/change-history.test.ts (15 tests) 7ms
+ ✓ src/label-coverage.test.ts (11 tests) 6ms
+ ✓ src/qualification.test.ts (21 tests) 4ms
+ ✓ src/assistant/assistant-core.test.ts (25 tests) 11ms
+ ✓ src/stage-map.test.ts (6 tests) 3ms
+ ✓ src/portfolio-return.test.ts (1 test) 2ms
+ ✓ src/query-models.test.ts (5 tests) 4ms
+ ✓ src/assistant/marquee-correction.test.ts (9 tests) 8ms
+ ✓ src/assistant/action-delivery.test.ts (5 tests) 4ms
+ ✓ src/exclusion-filter.test.ts (7 tests) 2ms
+ ✓ src/component-package.test.ts (1 test) 51ms
+ ✓ src/production-task.test.ts (5 tests) 52ms
+ ✓ src/preview-read-model.test.ts (7 tests) 73ms
+ ✓ src/dimension-review.test.ts (14 tests) 73ms
+ ✓ src/material-coverage.test.ts (7 tests) 73ms
+ ✓ src/draft-geometry.test.ts (16 tests) 126ms
+ ✓ src/evidence-processing.test.ts (7 tests) 222ms
+ ✓ src/component-candidates.test.ts (12 tests) 219ms
+
+ Test Files  51 passed (51)
+      Tests  369 passed (369)
+   Start at  11:05:08
+   Duration  6.36s (transform 4.49s, setup 26.55s, collect 39.41s, tests 11.31s, environment 32.73s, prepare 7.16s)
+

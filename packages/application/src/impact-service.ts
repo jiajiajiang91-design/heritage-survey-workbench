@@ -6,6 +6,7 @@ import type {
   DeliveryEvaluation,
   ProjectSnapshot,
 } from "@gujian/domain";
+import { isMaterialCoverageFact } from "@gujian/domain";
 
 // 影响范围（技术架构 5.4）。数据改了之后，程序算出哪些下游内容因此失效。
 //
@@ -30,7 +31,7 @@ export interface ImpactGraphInput {
 }
 
 export type ImpactRecordKind =
-  | "资料" | "尺寸记录" | "现状" | "实测" | "记录关联" | "构件"
+  | "资料" | "资料覆盖记录" | "尺寸记录" | "现状" | "实测" | "记录关联" | "构件"
   | "模型规格" | "模型版本" | "出图要求" | "成果" | "检查" | "交付评估" | "交付草案";
 
 export interface ImpactGroup {
@@ -86,7 +87,11 @@ function buildIndex(input: ImpactGraphInput): Map<string, RecordIndex> {
     index.set(id, { kind, name, preserved });
   };
   for (const item of snapshot.evidences) put(item.id, "资料", item.title);
-  for (const item of snapshot.facts) put(item.id, "尺寸记录", item.field);
+  for (const item of snapshot.facts) {
+    const coverage = isMaterialCoverageFact(item);
+    put(item.id, coverage ? "资料覆盖记录" : "尺寸记录", coverage
+      ? `资料覆盖：${snapshot.evidences.find((evidence) => evidence.id === item.subjectRef)?.title ?? "原件未找到"}` : item.field);
+  }
   for (const item of snapshot.observations) put(item.id, "现状", item.text.slice(0, 40));
   for (const item of snapshot.measurements) put(item.id, "实测", item.subjectRef);
   for (const item of snapshot.relations) put(item.id, "记录关联", item.relationType);

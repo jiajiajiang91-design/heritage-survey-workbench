@@ -1,0 +1,12 @@
+{
+  "workers/cad/output_units.py": "8a7c7ddc12235fddaf20acb76597fb58d7a1ae9a884a2b978cc40be99e7d18c8",
+  "workers/cad/project_geometry/contracts.py": "2bc114f0b544652559c916e919a69f3409014b5fe9ef8430e0a36d778e0e8e21",
+  "workers/cad/project_geometry/kernel.py": "9274b4c5b4e5ca83a8f9577c9fa3c786f7991778e0f3921c6b0a2a0b7c397445",
+  "workers/cad/project_geometry/verify_job.py": "76284c26160660e8817d442243f385e4fd3eaea7b7d2e352c5bf65ca020296db",
+  "workers/cad/project_geometry/test_output_units.py": "752eab0a8b0763540bd70746885eee8ef6a661f1fda716eccdc1eb0e9fdbde6f",
+  "workers/cad/project_drawings/contracts.py": "c82d7a72232ee06414575f0835804576ad40344650263e509bc9a31024fb6a28",
+  "workers/cad/project_drawings/dxf_writer.py": "d687a004d44edf29a54394342d8b11dd41e6916a7d58a1cce8c4f4a14d4f7357",
+  "workers/cad/project_drawings/view_geometry.py": "10ddca3cedaa962c1f6d98f6942d02eb332ad942f344c3f7edcfbe0528488d16",
+  "workers/cad/project_drawings/verify_package.py": "c192c5f576ce0d328af08ac6cc340fdadd63e3ed291af73093c437ad7c7a4e89",
+  "workers/cad/project_drawings/test_output_units.py": "a8b1a22881984dbc3f85503510c1696070878614cce92f0c4998111ce0c17bac"
+}

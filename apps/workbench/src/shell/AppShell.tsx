@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import type { FailureNotice } from "../failure-notice";
 import { Tabs } from "../ui";
@@ -39,8 +39,10 @@ export function CenterFrame({ title, description, actions, tabs, children, fill 
   // 内容自己滚动（分栏视图）时由内容管溢出，容器不再滚
   fill?: boolean;
 }) {
+  const frame = useRef<HTMLElement>(null);
+  useEffect(() => { if (frame.current) frame.current.scrollTop = 0; }, [title]);
   return (
-    <section className="ws-center">
+    <section className="ws-center" ref={frame}>
       <div className="ws-page-header">
         <div>
           <h2 className="ws-page-title">{title}</h2>
@@ -48,7 +50,7 @@ export function CenterFrame({ title, description, actions, tabs, children, fill 
         </div>
         {actions}
       </div>
-      {tabs && <Tabs items={tabs.items} activeId={tabs.activeId} onSelect={tabs.onSelect} label="工作区视图" />}
+      {tabs && tabs.items.length > 1 && <Tabs items={tabs.items} activeId={tabs.activeId} onSelect={tabs.onSelect} label="工作区视图" />}
       <div className={fill ? "ws-center-body ws-center-body--fill" : "ws-center-body"}>{children}</div>
     </section>
   );

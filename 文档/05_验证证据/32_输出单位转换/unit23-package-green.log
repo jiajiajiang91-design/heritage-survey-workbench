@@ -1,0 +1,11 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ✓ src/project-package-service.test.ts (10 tests | 8 skipped) 120ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 8 skipped (10)
+   Start at  20:46:09
+   Duration  896ms (transform 148ms, setup 0ms, collect 495ms, tests 120ms, environment 0ms, prepare 105ms)
+

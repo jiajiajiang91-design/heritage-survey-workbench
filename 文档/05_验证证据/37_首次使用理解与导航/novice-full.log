@@ -1,0 +1,737 @@
+
+==================================================
+文档与引用
+==================================================
+检查范围：139 份文档、766 份源码
+
+建议核对（55）
+  文档/03_辅导笔记/辅导6要点笔记_260704.md  28 处
+  文档/03_辅导笔记/辅导7要点笔记_260712.md  27 处
+  加 --verbose 看逐行
+
+==================================================
+单元与状态
+==================================================
+实施区单元 26 个，已归档 0 个
+  单元 01_图纸标注体系 验收 8/8 条已判定，其中未通过 0 条
+  单元 01_图纸标注体系 全部通过，可按确认规则关闭
+  单元 02_框选修正接入 验收 10/10 条已判定，其中未通过 0 条
+  单元 02_框选修正接入 全部通过，可按确认规则关闭
+  单元 03_公开仓库发布 验收 10/10 条已判定，其中未通过 0 条
+  单元 03_公开仓库发布 全部通过，可按确认规则关闭
+  单元 04_第三代动作四项 验收 0/12 条已判定，其中未通过 0 条
+  单元 05_设计参数补全与原型对齐 验收 12/12 条已判定，其中未通过 1 条
+  单元 06_外壳与令牌 验收 12/12 条已判定，其中未通过 1 条
+  单元 07_影响范围能力 验收 19/19 条已判定，其中未通过 0 条
+  单元 07_影响范围能力 全部通过，可按确认规则关闭
+  单元 08_十九屏重做 验收 9/9 条已判定，其中未通过 0 条
+  单元 08_十九屏重做 全部通过，可按确认规则关闭
+  单元 09_成功归档与用语层 验收 9/9 条已判定，其中未通过 0 条
+  单元 09_成功归档与用语层 全部通过，可按确认规则关闭
+  单元 11_制作方向文档优化 验收 8/8 条已判定，其中未通过 0 条
+  单元 11_制作方向文档优化 全部通过，可按确认规则关闭
+  单元 12_任务与出图表单 验收 9/9 条已判定，其中未通过 0 条
+  单元 12_任务与出图表单 全部通过，可按确认规则关闭
+  单元 13_尺寸候选采用 验收 9/9 条已判定，其中未通过 0 条
+  单元 13_尺寸候选采用 全部通过，可按确认规则关闭
+  单元 14_构件参数与尺寸引用 验收 9/9 条已判定，其中未通过 0 条
+  单元 14_构件参数与尺寸引用 全部通过，可按确认规则关闭
+  单元 15_辅导13需求与文档收敛 验收 10/10 条已判定，其中未通过 0 条
+  单元 15_辅导13需求与文档收敛 全部通过，可按确认规则关闭
+  单元 16_首页任务进展 验收 8/8 条已判定，其中未通过 0 条
+  单元 16_首页任务进展 全部通过，可按确认规则关闭
+  单元 21_对象核对与制作衔接 验收 8/8 条已判定，其中未通过 0 条
+  单元 21_对象核对与制作衔接 全部通过，可按确认规则关闭
+  单元 22_资料与成果覆盖 验收 7/7 条已判定，其中未通过 0 条
+  单元 22_资料与成果覆盖 全部通过，可按确认规则关闭
+  单元 23_输出单位转换 验收 9/9 条已判定，其中未通过 0 条
+  单元 23_输出单位转换 全部通过，可按确认规则关闭
+  单元 24_待核对三维预览 验收 9/9 条已判定，其中未通过 0 条
+  单元 24_待核对三维预览 全部通过，可按确认规则关闭
+  单元 25_操作提示与按钮可达 验收 6/6 条已判定，其中未通过 0 条
+  单元 25_操作提示与按钮可达 全部通过，可按确认规则关闭
+  单元 26_逐屏体验与制作链路 验收 8/8 条已判定，其中未通过 0 条
+  单元 26_逐屏体验与制作链路 全部通过，可按确认规则关闭
+  单元 27_仅模型检查与成果草案 验收 8/8 条已判定，其中未通过 0 条
+  单元 27_仅模型检查与成果草案 全部通过，可按确认规则关闭
+
+状态一致
+
+==================================================
+测试写法
+==================================================
+测试里没有用模板字符串拼的正则
+
+==================================================
+跨 Agent 适配
+==================================================
+跨 Agent 适配一致，共 38 个文件
+
+==================================================
+类型
+==================================================
+
+> typecheck
+> tsc -b --pretty false
+
+
+==================================================
+测试
+==================================================
+
+> test
+> vitest run && pnpm --filter @gujian/server test && pnpm --filter @gujian/workbench test
+
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档
+
+ ✓ packages/infrastructure/src/demo-component-translation.test.ts (6 tests) 5ms
+ ✓ packages/infrastructure/src/timber-frame-builder/generate.test.ts (6 tests) 30ms
+ ✓ packages/domain/src/drawing-detail-policy.test.ts (8 tests) 7ms
+ ✓ packages/domain/src/geometry-v2.test.ts (4 tests) 8ms
+ ✓ packages/domain/src/assistant-records.test.ts (3 tests) 6ms
+ ✓ packages/domain/src/domain-contracts.test.ts (7 tests) 9ms
+ ✓ packages/application/src/impact-service.test.ts (21 tests) 8ms
+ ✓ packages/application/src/delivery-chain-closure.test.ts (6 tests) 3ms
+ ✓ packages/domain/src/model-candidate.test.ts (7 tests) 5ms
+ ✓ packages/application/src/project-command-service.test.ts (20 tests) 28ms
+ ✓ packages/domain/src/drawings.test.ts (1 test) 5ms
+ ✓ packages/infrastructure/src/annotation-planner.test.ts (6 tests) 5ms
+ ✓ packages/infrastructure/src/artifact-matrix-builder.test.ts (6 tests) 9ms
+ ✓ packages/infrastructure/src/rule-engine.test.ts (9 tests) 18ms
+ ✓ packages/infrastructure/src/archetype-derivation.test.ts (8 tests) 9ms
+ ✓ packages/infrastructure/src/geometry-spec-builder.test.ts (17 tests) 36ms
+ ✓ packages/infrastructure/src/cad-job-client.test.ts (1 test) 15ms
+ ✓ packages/infrastructure/src/vocabulary-resolver.test.ts (9 tests) 28ms
+ ✓ packages/infrastructure/src/indexeddb-project-repository.test.ts (3 tests) 30ms
+ ✓ packages/infrastructure/src/demo-library/demo-matrix.test.ts (5 tests) 3ms
+ ✓ packages/infrastructure/src/demo-library/wording.test.ts (3 tests) 2ms
+ ✓ packages/infrastructure/src/demo-project-package-converter.test.ts (4 tests) 106ms
+ ✓ packages/infrastructure/src/authorization.test.ts (2 tests) 2ms
+ ✓ packages/infrastructure/src/workflow-service.test.ts (5 tests) 93ms
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/project-package-service.test.ts (10 tests) 258ms
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 坏文件只记失败，不抛异常打断上传
+Warning: Indexing all PDF objects
+
+ ✓ packages/infrastructure/src/evidence-ingestion-service.test.ts (5 tests) 354ms
+   ✓ 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸  307ms
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/delivery-service.test.ts (30 tests) 372ms
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/construction-generator/generate.test.ts (28 tests) 645ms
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/demo-library/build-demo-project.test.ts (13 tests) 565ms
+ ✓ packages/infrastructure/src/impact-real-packages.test.ts (16 tests) 4910ms
+   ✓ 依赖边字段恒为空（验收第 14 条） > 源码里没有一处往 dependencyEdges 写非空值  4342ms
+
+ Test Files  30 passed (30)
+      Tests  269 passed (269)
+   Start at  11:02:47
+   Duration  6.10s (transform 1.97s, setup 0ms, collect 15.40s, tests 7.58s, environment 5ms, prepare 3.81s)
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/server
+
+(node:28760) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37628) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42492) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11632) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/drawing-worker.test.ts (1 test) 7ms
+ ✓ src/model-tasks.test.ts (8 tests) 3ms
+ ✓ src/kimi-gateway.test.ts (4 tests) 37ms
+ ✓ src/actions/action-runtime.test.ts (10 tests) 9ms
+(node:40300) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48752) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35184) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/actions/gateway-tools.test.ts (3 tests) 6ms
+ ✓ src/actions/action-catalog.test.ts (12 tests) 6ms
+ ✓ src/actions/dispatch.test.ts (36 tests) 9ms
+ ✓ src/actions/assistant-routes.test.ts (12 tests) 14ms
+ ✓ src/cad-jobs.test.ts (2 tests) 58ms
+ ✓ src/drawing-jobs.test.ts (4 tests) 83ms
+ ✓ src/status.test.ts (5 tests) 91ms
+ ✓ src/shutdown.test.ts (2 tests) 112ms
+ ✓ src/image-processing.test.ts (3 tests) 3509ms
+   ✓ 本机图像处理 > 公开 TIFF 三份经实际 worker 解码，独立复核像素、尺寸和模式  2863ms
+   ✓ 本机图像处理 > 损坏文件失败，多帧与 CMYK 明确未支持  606ms
+
+ Test Files  13 passed (13)
+      Tests  102 passed (102)
+   Start at  11:02:54
+   Duration  4.33s (transform 462ms, setup 0ms, collect 4.41s, tests 3.95s, environment 2ms, prepare 1.77s)
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/DraftGeometryViewer.test.tsx (4 tests) 149ms
+ ✓ src/assistant/assistant-ui.test.tsx (4 tests) 157ms
+ ✓ src/screens/ProjectList.test.tsx (3 tests) 216ms
+ ✓ src/screens/CreateTaskDialog.test.tsx (3 tests) 264ms
+ ✓ src/screens/ChecksAndQualification.test.tsx (2 tests) 114ms
+ ✓ src/component-input.test.ts (19 tests) 192ms
+ ✓ src/screens/MeasurementBaseline.test.tsx (1 test) 74ms
+ ✓ src/no-hardcoded-project-data.test.ts (3 tests) 21ms
+ ✓ src/screens/MaterialCoverage.test.tsx (2 tests) 229ms
+ ✓ src/workbench/usePreviewFlow.test.tsx (11 tests) 123ms
+ ✓ src/workbench/dimension-writes.test.tsx (3 tests) 54ms
+ ✓ src/screens/EvidenceList.test.tsx (2 tests) 155ms
+ ✓ src/workbench/task-writes.test.tsx (5 tests) 71ms
+ ✓ src/workbench/component-writes.test.tsx (6 tests) 107ms
+ ✓ src/wording.test.ts (1 test) 18ms
+ ✓ src/screens/ComponentList-preview.test.tsx (1 test) 281ms
+ ✓ src/screens/PreviewReview.test.tsx (4 tests) 276ms
+ ✓ src/screens/DimensionCandidateReview.test.tsx (5 tests) 485ms
+ ✓ src/screens/ComponentCandidateFlow.test.tsx (2 tests) 446ms
+   ✓ 候选进入构件制作表单 > 沿用候选来源，填写并绑定后真实保存，重命名后仍编辑同一输入  389ms
+ ✓ src/screens/ModelView.test.tsx (5 tests) 397ms
+ ✓ src/output-unit-state.test.tsx (5 tests) 267ms
+ ✓ src/workbench/useAssistantBridge.test.tsx (1 test) 37ms
+ ✓ src/project-progress.test.ts (6 tests) 34ms
+ ✓ src/screens/GeometryComponentEditor.test.tsx (13 tests) 1249ms
+ ✓ src/demo-library-loader.test.ts (6 tests) 2534ms
+   ✓ 演示项目装载 > 单个包失败不影响其余，失败逐条留下  2013ms
+   ✓ 演示项目装载 > 单个包短暂下载失败时自动重试，不要求清空已有项目  515ms
+ ❯ src/App.test.tsx (2 tests | 1 failed) 503ms
+   × App > 建立项目后显示当前建筑和版本 502ms
+     → Unable to find an accessible element with the role "button" and name `/建立任务/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "01 任务设置 当前，已确认":
+  [36m<button[39m
+    [33maria-current[39m=[32m"step"[39m
+    [33mclass[39m=[32m"ws-stage ws-stage--current"[39m
+    [33mtitle[39m=[32m"任务设置 · 已确认"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------button:
+
+  Name "02 资料与预览 未开始，无资料 · 未生成预览 · 无尺寸记录":
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"资料与预览 · 无资料 · 未生成预览 · 无尺寸记录"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------button:
+
+  Name "03 模型制作 未开始，无对象 · 未生成":
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"模型制作 · 无对象 · 未生成"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------button:
+
+  Name "04 图纸制作 未开始，未设置 · 未生成":
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"图纸制作 · 未设置 · 未生成"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------button:
+
+  Name "05 检查与导出 未开始，未检查 · 未建立":
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"检查与导出 · 未检查 · 未建立"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<nav[39m
+  [33maria-label[39m=[32m"任务进度"[39m
+  [33mclass[39m=[32m"ws-stage-nav"[39m
+[36m>[39m
+  [36m<button[39m
+    [33maria-current[39m=[32m"step"[39m
+    [33mclass[39m=[32m"ws-stage ws-stage--current"[39m
+    [33mtitle[39m=[32m"任务设置 · 已确认"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-index"[39m
+    [36m>[39m
+      [0m01[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-title"[39m
+    [36m>[39m
+      [0m任务设置[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"ws-stage-state"[39m
+    [36m/>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"sr-only"[39m
+    [36m>[39m
+      [0m当前[0m
+      [0m，[0m
+      [0m已确认[0m
+    [36m</span>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"资料与预览 · 无资料 · 未生成预览 · 无尺寸记录"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-index"[39m
+    [36m>[39m
+      [0m02[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-title"[39m
+    [36m>[39m
+      [0m资料与预览[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"ws-stage-state"[39m
+    [36m/>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"sr-only"[39m
+    [36m>[39m
+      [0m未开始[0m
+      [0m，[0m
+      [0m无资料 · 未生成预览 · 无尺寸记录[0m
+    [36m</span>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"模型制作 · 无对象 · 未生成"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-index"[39m
+    [36m>[39m
+      [0m03[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-title"[39m
+    [36m>[39m
+      [0m模型制作[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"ws-stage-state"[39m
+    [36m/>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"sr-only"[39m
+    [36m>[39m
+      [0m未开始[0m
+      [0m，[0m
+      [0m无对象 · 未生成[0m
+    [36m</span>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"图纸制作 · 未设置 · 未生成"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-index"[39m
+    [36m>[39m
+      [0m04[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-title"[39m
+    [36m>[39m
+      [0m图纸制作[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"ws-stage-state"[39m
+    [36m/>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"sr-only"[39m
+    [36m>[39m
+      [0m未开始[0m
+      [0m，[0m
+      [0m未设置 · 未生成[0m
+    [36m</span>[39m
+  [36m</button>[39m
+  [36m<button[39m
+    [33mclass[39m=[32m"ws-stage"[39m
+    [33mtitle[39m=[32m"检查与导出 · 未检查 · 未建立"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-index"[39m
+    [36m>[39m
+      [0m05[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"ws-stage-title"[39m
+    [36m>[39m
+      [0m检查与导出[0m
+    [36m</span>[39m
+    [36m<span[39m
+      [33maria-hidden[39m=[32m"true"[39m
+      [33mclass[39m=[32m"ws-stage-state"[39m
+    [36m/>[39m
+    [36m<span[39m
+      [33mclass[39m=[32m"sr-only"[39m
+    [36m>[39m
+      [0m未开始[0m
+      [0m，[0m
+      [0m未检查 · 未建立[0m
+    [36m</span>[39m
+  [36m</button>[39m
+[36m</nav>[39m
+   ✓ App > 长度输入接受图纸换算后的毫米小数 0ms
+ ✓ src/screens/TaskSetupForm.test.tsx (9 tests) 1426ms
+ ✓ src/visual-spec.test.ts (22 tests) 19ms
+ ✓ src/draft-geometry-mesh.test.ts (8 tests) 13ms
+ ✓ src/failure-notice.test.ts (15 tests) 8ms
+ ✓ src/qualification.test.ts (21 tests) 4ms
+ ✓ src/label-coverage.test.ts (11 tests) 5ms
+ ✓ src/change-history.test.ts (15 tests) 5ms
+ ✓ src/delivery-readiness.test.ts (1 test) 5ms
+ ✓ src/model-run-client.test.ts (7 tests) 15ms
+ ✓ src/query-models.test.ts (5 tests) 5ms
+ ✓ src/stage-map.test.ts (6 tests) 3ms
+ ✓ src/portfolio-return.test.ts (1 test) 2ms
+ ✓ src/assistant/assistant-core.test.ts (25 tests) 12ms
+ ✓ src/assistant/marquee-correction.test.ts (9 tests) 6ms
+ ✓ src/task-requirements.test.ts (14 tests) 84ms
+ ✓ src/assistant/action-delivery.test.ts (5 tests) 4ms
+ ✓ src/exclusion-filter.test.ts (7 tests) 3ms
+ ✓ src/production-task.test.ts (5 tests) 46ms
+ ✓ src/component-package.test.ts (1 test) 48ms
+ ✓ src/preview-read-model.test.ts (7 tests) 73ms
+ ✓ src/dimension-review.test.ts (14 tests) 74ms
+ ✓ src/material-coverage.test.ts (7 tests) 71ms
+ ✓ src/draft-geometry.test.ts (16 tests) 133ms
+ ✓ src/evidence-processing.test.ts (7 tests) 218ms
+ ✓ src/component-candidates.test.ts (12 tests) 204ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > App > 建立项目后显示当前建筑和版本
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/建立任务/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "01 任务设置 当前，已确认":
+  <button
+    aria-current="step"
+    class="ws-stage ws-stage--current"
+    title="任务设置 · 已确认"
+    type="button"
+  />
+
+  --------------------------------------------------button:
+
+  Name "02 资料与预览 未开始，无资料 · 未生成预览 · 无尺寸记录":
+  <button
+    class="ws-stage"
+    title="资料与预览 · 无资料 · 未生成预览 · 无尺寸记录"
+    type="button"
+  />
+
+  --------------------------------------------------button:
+
+  Name "03 模型制作 未开始，无对象 · 未生成":
+  <button
+    class="ws-stage"
+    title="模型制作 · 无对象 · 未生成"
+    type="button"
+  />
+
+  --------------------------------------------------button:
+
+  Name "04 图纸制作 未开始，未设置 · 未生成":
+  <button
+    class="ws-stage"
+    title="图纸制作 · 未设置 · 未生成"
+    type="button"
+  />
+
+  --------------------------------------------------button:
+
+  Name "05 检查与导出 未开始，未检查 · 未建立":
+  <button
+    class="ws-stage"
+    title="检查与导出 · 未检查 · 未建立"
+    type="button"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="任务进度"
+  class="ws-stage-nav"
+>
+  <button
+    aria-current="step"
+    class="ws-stage ws-stage--current"
+    title="任务设置 · 已确认"
+    type="button"
+  >
+    <span
+      class="ws-stage-index"
+    >
+      01
+    </span>
+    <span
+      class="ws-stage-title"
+    >
+      任务设置
+    </span>
+    <span
+      aria-hidden="true"
+      class="ws-stage-state"
+    />
+    <span
+      class="sr-only"
+    >
+      当前
+      ，
+      已确认
+    </span>
+  </button>
+  <button
+    class="ws-stage"
+    title="资料与预览 · 无资料 · 未生成预览 · 无尺寸记录"
+    type="button"
+  >
+    <span
+      class="ws-stage-index"
+    >
+      02
+    </span>
+    <span
+      class="ws-stage-title"
+    >
+      资料与预览
+    </span>
+    <span
+      aria-hidden="true"
+      class="ws-stage-state"
+    />
+    <span
+      class="sr-only"
+    >
+      未开始
+      ，
+      无资料 · 未生成预览 · 无尺寸记录
+    </span>
+  </button>
+  <button
+    class="ws-stage"
+    title="模型制作 · 无对象 · 未生成"
+    type="button"
+  >
+    <span
+      class="ws-stage-index"
+    >
+      03
+    </span>
+    <span
+      class="ws-stage-title"
+    >
+      模型制作
+    </span>
+    <span
+      aria-hidden="true"
+      class="ws-stage-state"
+    />
+    <span
+      class="sr-only"
+    >
+      未开始
+      ，
+      无对象 · 未生成
+    </span>
+  </button>
+  <button
+    class="ws-stage"
+    title="图纸制作 · 未设置 · 未生成"
+    type="button"
+  >
+    <span
+      class="ws-stage-index"
+    >
+      04
+    </span>
+    <span
+      class="ws-stage-title"
+    >
+      图纸制作
+    </span>
+    <span
+      aria-hidden="true"
+      class="ws-stage-state"
+    />
+    <span
+      class="sr-only"
+    >
+      未开始
+      ，
+      未设置 · 未生成
+    </span>
+  </button>
+  <button
+    class="ws-stage"
+    title="检查与导出 · 未检查 · 未建立"
+    type="button"
+  >
+    <span
+      class="ws-stage-index"
+    >
+      05
+    </span>
+    <span
+      class="ws-stage-title"
+    >
+      检查与导出
+    </span>
+    <span
+      aria-hidden="true"
+      class="ws-stage-state"
+    />
+    <span
+      class="sr-only"
+    >
+      未开始
+      ，
+      未检查 · 未建立
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:31:29
+     29|     // 导航分两层：左栏是八个任务阶段，中栏页签行按 v4 形式始终显示。
+     30|     // 新建后直接进入建立任务阶段，任务确认表单就在任务卡上（实施单元 08 起）。
+     31|     expect(within(stageNav).getByRole("button", { name: /建立任务/ })).toH…
+       |                             ^
+     32|     expect(await screen.findByText("本次制作任务")).toBeInTheDocument();
+     33|     fireEvent.click(screen.getByRole("button", { name: "设置图纸要求" }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 50 passed (51)
+      Tests  1 failed | 368 passed (369)
+   Start at  11:02:59
+   Duration  6.21s (transform 4.10s, setup 26.50s, collect 38.72s, tests 10.94s, environment 33.05s, prepare 6.92s)
+
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @gujian/workbench@0.0.0 test: `vitest run`
+Exit status 1
+
+==================================================
+演示矩阵
+==================================================
+步骤 视图           t0b-constructi  gaodu-yuhuang-  
+一 任务卡           有 1            有 1            
+二 资料清单         有 2            有 5            
+三 实测基准         有 45           有 18           
+四 构件清单         有 1258         有 1186         
+五 三维模型         有 1            有 1            
+六 图纸与检查       有 25           有 21           
+七 交付包           有 1            有 1            
+t0b-construction-sample: 七格全满
+gaodu-yuhuang-temple-main-hall: 七格全满
+
+==================================================
+演示包一致性
+==================================================
+项目                              审计        回执        未解决问题  阻断码      待确认部位  签发        成果        限制条款    
+t0b-construction-sample           15          15          0           26          909         2026-08-24  24          41          
+gaodu-yuhuang-temple-main-hall    21          21          0           4           0           2026-08-24  20          9           
+
+演示包内部一致
+
+==================================================
+通过  文档与引用
+通过  单元与状态
+通过  测试写法
+通过  跨 Agent 适配
+通过  类型
+未过  测试
+通过  演示矩阵
+通过  演示包一致性

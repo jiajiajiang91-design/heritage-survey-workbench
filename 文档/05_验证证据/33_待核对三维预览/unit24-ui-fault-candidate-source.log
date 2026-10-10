@@ -1,0 +1,67 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/screens/GeometryComponentEditor.test.tsx (13 tests | 2 failed | 11 skipped) 125ms
+   ↓ 普通构件表单 > 选择已采用尺寸后显示只读数值与资料，候选保留待核对标记
+   ↓ 普通构件表单 > 无效长度定位到字段并阻止写入，取消不保存
+   ↓ 普通构件表单 > 保存中阻止重复提交，失败及异常保留全部草稿
+   ↓ 普通构件表单 > 可切换圆柱和逐点挤出表单，长度不自动补齐
+   ↓ 普通构件表单 > 同一构件记录变化时锁定旧草稿，取消后可重开
+   ↓ 普通构件表单 > 展示模型没有输入时不提供新增或反写入口
+   ↓ 普通构件表单 > 预览、选择来源和修改保持草稿，不保存事实且旧形体立即失效
+   ↓ 普通构件表单 > raw 候选可修正并通过原子保存入口提交，清来源恢复普通入口
+   ↓ 普通构件表单 > 快照来源改变即隐藏旧预览，重新预览列明失效引用，缺项保留输入
+   ↓ 普通构件表单 > 仅解析记录变化时 candidate 来源旧形体立即失效且草稿保留
+   ↓ 普通构件表单 > 仅解析记录变化时 adopted 来源旧形体立即失效且草稿保留
+   × 普通构件表单 > 跨资料形体选择恢复构件A图候选区域，参数按钮独立查看B表 106ms
+     → expected last "spy" call to have been called with [ Array(1) ]
+   × 普通构件表单 > 首次编辑和重开已保存candidateSource输入均恢复构件A图区域 19ms
+     → expected "spy" to be called once with arguments: [ { …(2) } ]
+
+Number of calls: 0
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/screens/GeometryComponentEditor.test.tsx > 普通构件表单 > 跨资料形体选择恢复构件A图候选区域，参数按钮独立查看B表
+AssertionError: expected last "spy" call to have been called with [ Array(1) ]
+
+- Expected
++ Received
+
+  [
+-   "f9ae31eb-b7ef-4b6b-abb6-14e783113dcd",
++   "6e3a2e04-6ed2-4fee-a36c-01000d04899f",
+  ]
+
+ ❯ src/screens/GeometryComponentEditor.test.tsx:189:18
+    187|     show.mockClear(); select.mockClear();
+    188|     fireEvent.click(screen.getByRole("button", { name: "选择待核对形体" }));
+    189|     expect(show).toHaveBeenLastCalledWith(test.sourceA.id);
+       |                  ^
+    190|     expect(select).toHaveBeenLastCalledWith(test.component.candidateSo…
+    191|     expect(screen.getByLabelText("预览参数来源")).toHaveFocus();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/screens/GeometryComponentEditor.test.tsx > 普通构件表单 > 首次编辑和重开已保存candidateSource输入均恢复构件A图区域
+AssertionError: expected "spy" to be called once with arguments: [ { …(2) } ]
+
+Number of calls: 0
+
+ ❯ src/screens/GeometryComponentEditor.test.tsx:203:22
+    201|       show.mockClear(); select.mockClear();
+    202|       fireEvent.click(screen.getByRole("button", { name: "编辑输入：内部墙体" }…
+    203|       expect(select).toHaveBeenCalledExactlyOnceWith(test.component.ca…
+       |                      ^
+    204|       expect(show).toHaveBeenLastCalledWith(test.sourceA.id);
+    205|       expect(screen.getByLabelText("X 向长度（mm）")).toHaveValue("6000");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 skipped (13)
+   Start at  16:26:11
+   Duration  2.05s (transform 339ms, setup 214ms, collect 1.17s, tests 125ms, environment 343ms, prepare 63ms)
+

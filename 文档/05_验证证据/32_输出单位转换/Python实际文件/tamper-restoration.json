@@ -1,0 +1,141 @@
+[
+  {
+    "篡改项": "IFC单独单位声明",
+    "篡改回读": {
+      "format": "IFC",
+      "failedChecks": 2,
+      "failures": [
+        "IFC output unit declaration mismatch",
+        "IFC physical mesh mismatch: a62f1527-adf5-5081-8167-395579e2deba"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "IFC",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "IFC单个顶点",
+    "篡改回读": {
+      "format": "IFC",
+      "failedChecks": 1,
+      "failures": [
+        "IFC physical mesh mismatch: a62f1527-adf5-5081-8167-395579e2deba"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "IFC",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "DXF单独单位声明",
+    "篡改回读": {
+      "format": "drawing",
+      "failedChecks": 4,
+      "failures": [
+        "native-dxf-baseline",
+        "native-output-coordinates",
+        "native-paper-scale",
+        "native-dimension-display"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "drawing",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "DXF单条原生结构线坐标",
+    "篡改回读": {
+      "format": "drawing",
+      "failedChecks": 1,
+      "failures": [
+        "native-output-coordinates"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "drawing",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "DIMENSION实际显示文字",
+    "篡改回读": {
+      "format": "drawing",
+      "failedChecks": 1,
+      "failures": [
+        "native-dimension-display"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "drawing",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "DIMENSION有效测量倍率",
+    "篡改回读": {
+      "format": "drawing",
+      "failedChecks": 1,
+      "failures": [
+        "native-dimension-display"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "drawing",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "SVG长度文字",
+    "篡改回读": {
+      "format": "drawing",
+      "failedChecks": 1,
+      "failures": [
+        "cross-format-text"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "drawing",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "PNG长度文字像素",
+    "篡改回读": {
+      "format": "drawing",
+      "failedChecks": 1,
+      "failures": [
+        "png-dimension-text"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "drawing",
+      "failedChecks": 0,
+      "failures": []
+    }
+  },
+  {
+    "篡改项": "PDF纸面比例变换",
+    "篡改回读": {
+      "format": "drawing",
+      "failedChecks": 1,
+      "failures": [
+        "pdf-paper-scale"
+      ]
+    },
+    "原文件恢复后回读": {
+      "format": "drawing",
+      "failedChecks": 0,
+      "failures": []
+    }
+  }
+]

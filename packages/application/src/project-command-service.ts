@@ -1,4 +1,4 @@
-import { ProjectSnapshotSchema, type ArtifactRecord, type ArtifactRequirementMatrix, type CheckRun, type ExclusionRecord, type FactEnvelope, type HeritageEntity, type Observation, type ProjectSnapshot } from "@gujian/domain";
+import { ProjectSnapshotSchema, artifactOutputUnitMatches, geometryOutputUnitMatches, type ArtifactRecord, type ArtifactRequirementMatrix, type CheckRun, type ExclusionRecord, type FactEnvelope, type HeritageEntity, type Observation, type ProjectSnapshot } from "@gujian/domain";
 
 import { ProjectCommandSchema, type ProjectCommand } from "./commands.js";
 import { assertDeliveryChainClosure } from "./delivery-chain-closure.js";
@@ -62,6 +62,14 @@ function requireMatchingProjectRefs(command: ProjectCommand): void {
     throw new CommandError("PROJECT_REF_MISMATCH", "imported CAD, artifact and delivery records must match command projectId");
   }
   if (command.commandType === "ImportProjectSnapshot") {
+    const assets = new Map(command.payload.assets.map((item) => [item.id, item]));
+    for (const evidence of command.payload.snapshot.evidences) {
+      if (!evidence.imageDerivative) continue;
+      const source = assets.get(evidence.assetId); const image = assets.get(evidence.imageDerivative.assetId);
+      if (!source || !image || source.sha256 !== evidence.imageDerivative.originalSha256 || image.mimeType !== "image/png") {
+        throw new CommandError("PROJECT_REF_MISMATCH", "imported image derivative must refer to matching original and PNG assets");
+      }
+    }
     assertDeliveryChainClosure({
       projectId: command.projectId,
       geometryRevisions: command.payload.snapshot.geometryRevisions,
@@ -194,7 +202,7 @@ function createInitialSnapshot(command: Extract<ProjectCommand, { commandType: "
     schemaVersion: "3.0",
     project: command.payload.project,
     buildings: [command.payload.building],
-    taskDefinitions: [],
+    taskDefinitions: command.payload.taskDefinition ? [command.payload.taskDefinition] : [],
     evidences: [],
     parseRecords: [],
     entities: [], exclusionRecords: [],
@@ -289,6 +297,26 @@ function appendEvidence(
   });
 }
 
+function processEvidence(head: ProjectHead, command: Extract<ProjectCommand, { commandType: "ProcessEvidence" }>): ProjectSnapshot {
+  const { evidence, parseRecord, derivedAsset } = command.payload;
+  const original = head.snapshot.evidences.find((item) => item.id === evidence.id);
+  if (!original || evidence.assetId !== original.assetId || evidence.projectId !== command.projectId
+      || parseRecord.projectId !== command.projectId || parseRecord.evidenceId !== evidence.id || parseRecord.assetId !== original.assetId
+      || head.snapshot.parseRecords.some((item) => item.id === parseRecord.id)
+      || (derivedAsset && (derivedAsset.projectId !== command.projectId || derivedAsset.id === original.assetId || evidence.imageDerivative?.assetId !== derivedAsset.id || derivedAsset.mimeType !== "image/png"))) {
+    throw new CommandError("PROJECT_REF_MISMATCH", "processing must preserve the original evidence and asset closure");
+  }
+  const { imageDerivative: oldDerivative, ...oldFields } = original;
+  const { imageDerivative: newDerivative, ...newFields } = evidence;
+  if (JSON.stringify(oldFields) !== JSON.stringify(newFields) || (!derivedAsset && newDerivative && JSON.stringify(newDerivative) !== JSON.stringify(oldDerivative))) {
+    throw new CommandError("COMMAND_INVALID", "processing cannot modify evidence registration or invent a derivative");
+  }
+  return ProjectSnapshotSchema.parse({ ...head.snapshot,
+    evidences: head.snapshot.evidences.map((item) => item.id === evidence.id ? evidence : item),
+    parseRecords: [...head.snapshot.parseRecords, parseRecord],
+  });
+}
+
 function appendModelResult(
   head: ProjectHead,
   command: Extract<ProjectCommand, { commandType: "CommitModelRunResult" }>,
@@ -310,7 +338,12 @@ function confirmTaskSetup(
   if (head.snapshot.taskDefinitions.some((task) => task.confirmedAt !== null)) {
     throw new CommandError("COMMAND_INVALID", "task setup is already confirmed");
   }
-  return ProjectSnapshotSchema.parse({ ...head.snapshot, taskDefinitions: [command.payload.taskDefinition] });
+  if (command.payload.building && (command.payload.building.projectId !== head.projectId || !head.snapshot.buildings.some((b) => b.id === command.payload.building!.id))) {
+    throw new CommandError("PROJECT_REF_MISMATCH", "updated building must belong to project");
+  }
+  return ProjectSnapshotSchema.parse({ ...head.snapshot, taskDefinitions: [command.payload.taskDefinition],
+    buildings: command.payload.building ? head.snapshot.buildings.map((b) => b.id === command.payload.building!.id ? command.payload.building! : b) : head.snapshot.buildings,
+  });
 }
 
 function replaceTaskDefinition(
@@ -319,7 +352,8 @@ function replaceTaskDefinition(
 ): ProjectSnapshot {
   const current = head.snapshot.taskDefinitions.find((task) => task.id === command.payload.supersedesTaskDefinitionId && task.confirmedAt !== null);
   if (!current) throw new CommandError("COMMAND_INVALID", "confirmed task definition to supersede is missing");
-  return ProjectSnapshotSchema.parse({ ...head.snapshot, taskDefinitions: [command.payload.taskDefinition] });
+  if (command.payload.building && (command.payload.building.projectId !== head.projectId || !head.snapshot.buildings.some((b) => b.id === command.payload.building!.id))) throw new CommandError("PROJECT_REF_MISMATCH", "updated building must belong to project");
+  return ProjectSnapshotSchema.parse({ ...head.snapshot, taskDefinitions: [command.payload.taskDefinition], buildings: command.payload.building ? head.snapshot.buildings.map((b) => b.id === command.payload.building!.id ? command.payload.building! : b) : head.snapshot.buildings });
 }
 
 // 同一个问题的身份：说的是哪一类问题、针对哪些对象。规则引擎每次重算，
@@ -332,15 +366,14 @@ function appendRuleEvaluation(
   head: ProjectHead,
   command: Extract<ProjectCommand, { commandType: "CommitRuleEvaluation" }>,
 ): ProjectSnapshot {
-  // 只作废本轮重新提出的那些问题，其余保持原状。
-  // 原来是一律作废：跑一次规则核对就把上一轮所有未解决问题标成已被替代并盖上
-  // 解决时间，哪怕本轮一条都没提。几何作业为记录一条输入闭合检查也会发这条命令，
-  // 于是三个演示项目共 13 条没人处理过的问题在问题队列与交付阻断里同时消失。
-  // 问题只能由人工决定关闭（见 decideCandidate 与 decideIssueOption），
-  // 规则没重新提出不等于问题没了，宁可留着未解决，也不替人判定已解决。
-  const raised = new Set(command.payload.issues.map(issueIdentity));
+  // 读取状态由本轮对应规则更新；其他问题仅替代本轮重新提出的记录。
+  const inputRuleSources = new Set(["rule:parsed-evidence-required", "rule:parse-failure-review"]);
+  const raised = new Set(command.payload.issues.filter((issue) => !inputRuleSources.has(issue.sourceRef)).map(issueIdentity));
+  const refreshedInputRules = new Set(command.payload.ruleRun.results
+    .filter((result) => result.ruleId === "parsed-evidence-required" || result.ruleId === "parse-failure-review")
+    .map((result) => `rule:${result.ruleId}`));
   const superseded = head.snapshot.issues.map((issue) => (
-    issue.status === "open" && issue.producer.producerType === "rule" && raised.has(issueIdentity(issue))
+    issue.status === "open" && issue.producer.producerType === "rule" && (refreshedInputRules.has(issue.sourceRef) || !inputRuleSources.has(issue.sourceRef) && raised.has(issueIdentity(issue)))
       ? { ...issue, status: "superseded" as const, resolvedAt: command.issuedAt }
       : issue
   ));
@@ -448,6 +481,9 @@ function appendReviewSignoff(head: ProjectHead, command: Extract<ProjectCommand,
   if (!head.snapshot.geometryRevisions.some((item) => item.id === signoff.geometryRevisionId)) {
     throw new CommandError("COMMAND_INVALID", "review signoff references an unknown geometry revision");
   }
+  if (!geometryOutputUnitMatches(head.snapshot, signoff.geometryRevisionId)) {
+    throw new CommandError("COMMAND_INVALID", "review signoff geometry output unit does not match current task");
+  }
   if (head.snapshot.reviewSignoffs.some((item) => item.deliveryDraftId === signoff.deliveryDraftId)) {
     throw new CommandError("COMMAND_INVALID", "delivery draft is already signed off");
   }
@@ -526,7 +562,7 @@ export class ProjectCommandService {
                 ])),
               }),
           changedRefs: command.commandType === "CreateProject"
-            ? [command.projectId, command.payload.building.id]
+            ? [command.projectId, command.payload.building.id, ...(command.payload.taskDefinition ? [command.payload.taskDefinition.id] : [])]
             : [command.projectId, command.payload.sourceRevisionId],
           ...(command.commandType === "ImportProjectSnapshot"
             ? { priorAuditEvents: command.payload.sourceAuditEvents }
@@ -606,6 +642,11 @@ export class ProjectCommandService {
         }
         return [...matrices.values()];
       };
+      const assertCurrentOutputUnits = (artifacts: readonly ArtifactRecord[], matrices: readonly ArtifactRequirementMatrix[]) => {
+        if (artifacts.some((artifact) => artifact.kind !== "deliveryManifest" && !artifactOutputUnitMatches(head.snapshot, artifact, matrices))) {
+          throw new CommandError("COMMAND_INVALID", "delivery artifact output unit does not match current task");
+        }
+      };
       const persistedCadJob = command.commandType === "StartCadJob" || command.commandType === "SyncCadJobEvents" || command.commandType === "CommitGeometryRevision"
         ? await transaction.getCadJob(command.commandType === "CommitGeometryRevision" ? command.payload.cadJobId : command.payload.job.id)
         : null;
@@ -676,10 +717,12 @@ export class ProjectCommandService {
             artifacts.set(artifact.id, artifact);
           }
         }
+        const matrices = await requirementMatricesFor([...artifacts.values()]);
+        if (command.payload.evaluation.outcome === "proxy-ready") assertCurrentOutputUnits([...artifacts.values()], matrices);
         assertDeliveryChainClosure({
           projectId: command.projectId,
           geometryRevisions: head.snapshot.geometryRevisions,
-          artifactRequirementMatrices: await requirementMatricesFor([...artifacts.values()]),
+          artifactRequirementMatrices: matrices,
           artifacts: [...artifacts.values()],
           checkRuns,
           deliveryEvaluations: [command.payload.evaluation],
@@ -711,15 +754,26 @@ export class ProjectCommandService {
             artifacts.set(artifact.id, artifact);
           }
         }
+        const matrices = await requirementMatricesFor([...artifacts.values()]);
+        assertCurrentOutputUnits([...artifacts.values()], matrices);
         assertDeliveryChainClosure({
           projectId: command.projectId,
           geometryRevisions: head.snapshot.geometryRevisions,
-          artifactRequirementMatrices: await requirementMatricesFor([...artifacts.values()]),
+          artifactRequirementMatrices: matrices,
           artifacts: [...artifacts.values()],
           checkRuns,
           deliveryEvaluations: [evaluation],
           deliveries: [command.payload.draft],
         });
+      }
+      if (command.commandType === "ProcessEvidence") {
+        const source = await transaction.getAssetRecord(command.payload.evidence.assetId);
+        const derivative = command.payload.evidence.imageDerivative;
+        if (!source || source.projectId !== command.projectId || source.contentStatus !== "available"
+          || (derivative && derivative.originalSha256 !== source.sha256)
+          || (command.payload.derivedAsset && (command.payload.parseRecord.readability !== "readable" || command.payload.parseRecord.readableAs !== "image" || command.payload.derivedAsset.byteLength === 0))) {
+          throw new CommandError("PROJECT_REF_MISMATCH", "original asset and derivative source hash must match");
+        }
       }
       const snapshot = command.commandType === "CommitFacts"
         ? appendFacts(head, command.payload.facts)
@@ -733,6 +787,8 @@ export class ProjectCommandService {
         ? appendExclusionRecords(head, command.payload.records)
         : command.commandType === "ImportEvidence"
           ? appendEvidence(head, command)
+          : command.commandType === "ProcessEvidence"
+            ? processEvidence(head, command)
           : command.commandType === "CommitModelRunResult"
             ? appendModelResult(head, command)
         : command.commandType === "ConfirmTaskSetup"
@@ -779,6 +835,8 @@ export class ProjectCommandService {
             ? command.payload.records.map((item) => item.id)
           : command.commandType === "ImportEvidence"
             ? [command.payload.asset.id, command.payload.evidence.id, command.payload.parseRecord.id]
+            : command.commandType === "ProcessEvidence"
+              ? [command.payload.evidence.id, command.payload.parseRecord.id, ...(command.payload.derivedAsset ? [command.payload.derivedAsset.id] : [])]
             : command.commandType === "CommitModelRunResult"
               ? [command.payload.run.id, ...(command.payload.candidate ? [command.payload.candidate.id] : [])]
           : command.commandType === "ConfirmTaskSetup"
@@ -810,6 +868,9 @@ export class ProjectCommandService {
                               : [command.payload.job.id, ...command.payload.job.events.map((event) => event.id)],
         ...(command.commandType === "ImportEvidence"
           ? { assetWrites: { records: [command.payload.asset], stagingSessionId: command.payload.stagingSessionId } }
+          : {}),
+        ...(command.commandType === "ProcessEvidence" && command.payload.derivedAsset
+          ? { assetWrites: { records: [command.payload.derivedAsset], stagingSessionId: command.payload.stagingSessionId! } }
           : {}),
         ...(command.commandType === "CommitModelRunResult"
           ? { modelRunsToPut: [command.payload.run] }

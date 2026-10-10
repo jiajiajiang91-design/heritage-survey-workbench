@@ -1,9 +1,8 @@
-// 浏览器侧落文件的唯一入口。地址用完即撤，不留对象 URL。
+// 下载请求接收后再释放对象 URL，兼容异步接收文件的内嵌浏览器。
 export function triggerDownload(content: Blob, fileName: string): void {
   const url = URL.createObjectURL(content);
   const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.click();
-  URL.revokeObjectURL(url);
+  anchor.href = url; anchor.download = fileName; anchor.hidden = true;
+  document.body.append(anchor); anchor.click(); anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }

@@ -59,7 +59,7 @@ export function ConditionRecord({ snapshot, pane, archetypeDifferences, evidence
               </div>
             )}
             {archetypeDifferences.length > 0 && (
-              <Alert tone="warning">有 {archetypeDifferences.length} 项实测尺寸超出按形制推算的允许偏差，建议记入现状：{archetypeDifferences.map((item) => item.dimension).join("、")}。</Alert>
+              <Alert tone="warning">有 {archetypeDifferences.length} 项已有尺寸与形制参考值差异较大，请核对原资料和形制选择：{archetypeDifferences.map((item) => item.dimension).join("、")}。</Alert>
             )}
             <label className="sc-condition-text">
               <span className="gj-text-note">判断内容</span>

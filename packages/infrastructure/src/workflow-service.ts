@@ -54,17 +54,24 @@ function desiredIssues(head: ProjectHead): IssueDescriptor[] {
       impactRefs: [head.projectId],
     });
   }
-  const usableEvidence = head.snapshot.parseRecords.filter((record) => record.status === "parsed" && record.extractedText?.trim());
+  const latestParses = [...new Map(head.snapshot.parseRecords.map((record) => [record.evidenceId, record])).values()];
+  const usableEvidence = head.snapshot.evidences.filter((evidence) => {
+    if (evidence.dataStatus !== "available") return false;
+    const record = latestParses.find((item) => item.evidenceId === evidence.id);
+    if (record?.readability) return record.readability === "readable";
+    if (record?.status === "failed") return false;
+    return Boolean(record?.status === "parsed" && record.extractedText?.trim() || evidence.imageDerivative);
+  });
   if (!usableEvidence.length) {
     result.push({
       ruleId: "parsed-evidence-required",
       issueType: "missingEvidence",
       subjectRefs: [head.snapshot.buildings[0]?.id ?? head.projectId],
-      description: "还没有可供助手识别的文字资料。",
+      description: "还没有可供助手读取的图像或文字资料。",
       impactRefs: [head.projectId],
     });
   }
-  const failedParses = head.snapshot.parseRecords.filter((record) => record.status === "failed");
+  const failedParses = latestParses.filter((record) => record.status === "failed");
   if (failedParses.length) {
     result.push({
       ruleId: "parse-failure-review",

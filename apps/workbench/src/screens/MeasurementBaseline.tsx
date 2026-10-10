@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import type { ProjectHead } from "@gujian/application";
-import type { ArchetypeSpec } from "@gujian/domain";
+import type { ArchetypeSpec, ModelCandidate } from "@gujian/domain";
 import { compareWithMeasuredFacts, deriveArchetypeExpectations } from "@gujian/infrastructure";
 
 import { DATA_STATUS_LABELS, LIFT_RATIO_SET_LABELS, REVIEW_LABELS, factFieldLabel, isFactFieldCode } from "../labels";
@@ -9,6 +9,9 @@ import { EvidencePane } from "../shell/EvidencePane";
 import { Button, DataStatusTag, EmptyState, Field, InfoRow, SourceTag, Tag } from "../ui";
 import { SplitPane } from "../ui/SplitPane";
 import type { EvidencePane as EvidencePaneModel } from "../workbench/useEvidencePane";
+import { DimensionCandidateReview } from "./DimensionCandidateReview";
+import { dimensionFactIsCurrent, dimensionRecordFacts, reviewedDimension, type DimensionReviewDraft } from "../dimension-review";
+import { validPreviewRegion } from "../preview-read-model";
 import "./MeasurementBaseline.css";
 
 // W03 实测基准（66:1720）：左卡尺寸表（表头 34、行 44，三列项目/数值/来源），右卡基准证据
@@ -23,7 +26,12 @@ export interface MeasurementBaselineProps {
   archetypes: readonly ArchetypeSpec[];
   evidenceTitle: (ref: string) => string;
   onRegisterArchetype: (event: FormEvent<HTMLFormElement>) => Promise<void>;
+  onReviewDimensions: (candidate: ModelCandidate, drafts: DimensionReviewDraft[]) => Promise<boolean>;
   onConfirmDimensionChain: (event: FormEvent<HTMLFormElement>) => Promise<void>;
+  returnLabel?: string | undefined;
+  onReturn?: (() => void) | undefined;
+  selection?: { candidateId: string; rowIndex: number } | null;
+  onSelectDimension?: (selection: { candidateId: string; rowIndex: number } | null) => void;
 }
 
 // 事实取值可能是数字、文字或带单位的对象，统一成一行文字
@@ -48,8 +56,8 @@ function factMethod(value: unknown): string | null {
 function ArchetypeForm({ onSubmit }: { onSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void> }) {
   return (
     <form className="sc-measure-form" onSubmit={(event) => void onSubmit(event)}>
-      <span className="gj-pane-title">登记形制，用于核对实测</span>
-      <p className="gj-pane-desc">填写开间、进深和举架做法后，系统按形制推算各处尺寸，供你与实测比对。实测记录始终优先，差异较大的项会提示记入现状。</p>
+      <span className="gj-pane-title">登记形制，用于核对尺寸</span>
+      <p className="gj-pane-desc">填写开间、进深和举架做法后，系统按形制推算各处尺寸，供你与实测比对。实测记录始终优先，差异较大的项会提示核对原资料与形制选择。</p>
       <div className="sc-measure-form-grid">
         <Field label="逐间面阔 mm（逗号分隔）" required><input name="bayX" required placeholder="例如 4800" /></Field>
         <Field label="逐间进深 mm（逗号分隔）" required><input name="bayY" required placeholder="例如 1800,1800" /></Field>
@@ -85,25 +93,32 @@ function DimensionChainForm({ onSubmit }: { onSubmit: (event: FormEvent<HTMLForm
   );
 }
 
-export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle, onRegisterArchetype, onConfirmDimensionChain }: MeasurementBaselineProps) {
+export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle, onRegisterArchetype, onConfirmDimensionChain, onReviewDimensions, selection, onSelectDimension, returnLabel, onReturn }: MeasurementBaselineProps) {
   const [form, setForm] = useState<"none" | "archetype" | "chain">("none");
   const archetype = archetypes.at(-1) ?? null;
   const derivation = archetype ? deriveArchetypeExpectations(archetype) : null;
   const comparisons = derivation ? compareWithMeasuredFacts(derivation, snapshot.facts) : [];
-  const total = snapshot.measurements.length + snapshot.facts.length;
-  const uncertain = snapshot.facts.filter((fact) => fact.dataStatus === "uncertain").length;
-  const confirmed = snapshot.facts.filter((fact) => fact.reviewStatus === "confirmed").length;
+  const facts = dimensionRecordFacts(snapshot.facts);
+  const candidates = snapshot.candidates.filter((candidate) => candidate.structured?.kind === "measurementTranscription");
+  const selectedCandidate = candidates.find((item) => item.id === selection?.candidateId);
+  const selectedRow = selectedCandidate?.structured?.kind === "measurementTranscription" ? selectedCandidate.structured.dimensions[selection?.rowIndex ?? -1] : null;
+  useEffect(() => { if (selectedRow) pane.setActiveEvidenceId(selectedRow.evidenceRef); }, [selection?.candidateId, selection?.rowIndex]);
+  const total = snapshot.measurements.length + facts.length;
+  const uncertain = facts.filter((fact) => fact.dataStatus === "uncertain" && fact.reviewStatus !== "rejected").length;
+  const rejected = facts.filter((fact) => fact.reviewStatus === "rejected").length;
+  const confirmed = facts.filter((fact) => fact.reviewStatus === "confirmed").length;
 
   const submitArchetype = async (event: FormEvent<HTMLFormElement>) => { await onRegisterArchetype(event); setForm("none"); };
   const submitChain = async (event: FormEvent<HTMLFormElement>) => { await onConfirmDimensionChain(event); setForm("none"); };
 
   // 基准行的三种情形：登记过形制按形制；没有形制但有已确认的转写或实测尺寸，按这些尺寸；两者都没有才是缺失。
   // 图纸转写型项目没有形制也没有测量记录表，此前被错判成红色缺失，与已签发状态冲突。
-  const confirmedDimensionCount = snapshot.facts.filter((fact) =>
+  const confirmedDimensionCount = facts.filter((fact) =>
     fact.field.startsWith("documentedDimension.") && fact.reviewStatus === "confirmed" && fact.dataStatus === "available").length;
 
   // 点一行，右卡切到这条事实引用的第一份能显示的资料（v4 右卡没有切换下拉）
   const showEvidenceOf = (refs: readonly string[]) => {
+    onSelectDimension?.(null);
     const target = refs.map((ref) => snapshot.evidences.find((item) => item.id === ref)).find((item) => item && item.dataStatus === "available") ?? snapshot.evidences.find((item) => refs.includes(item.id));
     if (target) pane.setActiveEvidenceId(target.id);
   };
@@ -111,14 +126,14 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
     <div className="sc-measure-row" key={fact.id} title={factMethod(fact.value) ?? undefined} role="button" tabIndex={0}
       aria-current={fact.evidenceRefs.includes(pane.activeEvidenceId ?? "") ? "true" : undefined}
       onClick={() => showEvidenceOf(fact.evidenceRefs)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); showEvidenceOf(fact.evidenceRefs); } }}>
-      <span className={`sc-measure-name${isFactFieldCode(fact.field) ? " gj-numeric" : ""}`}>{factFieldLabel(fact.field)}</span>
-      <span className="sc-measure-value">{factValueText(fact.value)}</span>
+      <span className={`sc-measure-name${isFactFieldCode(fact.field) ? " gj-numeric" : ""}`}>{reviewedDimension(fact)?.name ?? factFieldLabel(fact.field)}</span>
+      <span className="sc-measure-value">{reviewedDimension(fact)?.disposition === "reject" ? "未采用" : factValueText(fact.value)}</span>
       {/* 来源列按 v4（66:1720）一行一个标签：来源标记；存疑或缺失时换成数据状态，已确认时加一枚确认标签 */}
       <span className="sc-measure-tags">
-        {fact.dataStatus !== "available"
+        {fact.reviewStatus === "rejected" ? <Tag>已驳回</Tag> : fact.dataStatus !== "available"
           ? <DataStatusTag status={fact.dataStatus} label={DATA_STATUS_LABELS[fact.dataStatus] ?? fact.dataStatus} />
-          : <SourceTag producerType={fact.producer.producerType} />}
-        {fact.reviewStatus === "confirmed" && <Tag tone="success">{REVIEW_LABELS.confirmed}</Tag>}
+          : fact.field.startsWith("documentedDimension.") && fact.producer.producerType !== "demo" && fact.producer.producerType !== "rule" ? <Tag>资料转写</Tag> : <SourceTag producerType={fact.producer.producerType} />}
+        {fact.reviewStatus === "confirmed" && <Tag tone={dimensionFactIsCurrent(fact, snapshot) ? "success" : "neutral"}>{!dimensionFactIsCurrent(fact, snapshot) ? "候选已失效" : reviewedDimension(fact) ? "已采用" : REVIEW_LABELS.confirmed}</Tag>}
       </span>
     </div>
   );
@@ -138,35 +153,47 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
     <SplitPane
       data={(
         <>
+          {onReturn && <div className="gj-actions"><Button onClick={onReturn}>{returnLabel}</Button></div>}
+          {candidates.length > 0 && (
+            <section className="sc-dimension-review">
+              {!selectedRow && <span className="gj-pane-title">核对尺寸候选</span>}
+              {candidates.filter((candidate) => !selectedRow || candidate.id === selection?.candidateId).map((candidate) => <DimensionCandidateReview key={candidate.id + ":" + (selection?.rowIndex ?? "all")}
+                candidate={candidate} snapshot={snapshot} evidenceTitle={evidenceTitle}
+                selectedRowIndex={selection?.candidateId === candidate.id ? selection.rowIndex : undefined}
+                onShowEvidence={(ref, rowIndex) => { onSelectDimension?.({ candidateId: candidate.id, rowIndex: rowIndex ?? 0 }); pane.setActiveEvidenceId(ref); }} onSubmit={onReviewDimensions} />)}
+            </section>
+          )}
+          {selectedRow && <Button variant="text" onClick={() => onSelectDimension?.(null)}>查看全部尺寸与记录</Button>}
+          {!selectedRow && <>
           <span className="gj-pane-title">尺寸与记录 · {total} 条</span>
           <p className="gj-pane-desc">
             {total
-              ? `${snapshot.facts.length} 条尺寸里 ${confirmed} 条已确认、${uncertain} 条待核实${snapshot.measurements.length ? `，另有 ${snapshot.measurements.length} 条现场记录` : ""}。`
+              ? `${facts.length} 条记录里 ${confirmed} 条已确认、${uncertain} 条待核实、${rejected} 条已驳回${snapshot.measurements.length ? `，另有 ${snapshot.measurements.length} 条现场记录` : ""}。`
               : "还没有可用的尺寸。尺寸缺失时，依赖它的成果不会生成，系统也不会用默认值补齐。"}
           </p>
           {total > 0 && (
             <div className="sc-measure-table">
               <div className="sc-measure-head"><span>项目</span><span>数值</span><span>来源</span></div>
               {snapshot.measurements.map(rowOfMeasurement)}
-              {snapshot.facts.map(rowOfFact)}
+              {facts.map(rowOfFact)}
             </div>
           )}
           {derivation && comparisons.length > 0 && (
             <div className="sc-measure-compare">
-              <span className="gj-pane-title">按形制推算的尺寸与实测对照</span>
-              <p className="gj-pane-desc">采用{LIFT_RATIO_SET_LABELS[derivation.ruleSetId] ?? derivation.ruleSetId}，柱位 {derivation.layout.pillarCount} 处，枋连接 {derivation.layout.fangCount} 处。推算值只作核对参考，实测记录始终优先。</p>
+              <span className="gj-pane-title">按形制推算与已有尺寸对照</span>
+              <p className="gj-pane-desc">采用{LIFT_RATIO_SET_LABELS[derivation.ruleSetId] ?? derivation.ruleSetId}，柱位 {derivation.layout.pillarCount} 处，枋连接 {derivation.layout.fangCount} 处。推算值只作核对参考，各记录的来源在尺寸表中显示。</p>
               {comparisons.map((item) => (
                 <InfoRow
                   key={item.dimension}
                   label={item.valueMm !== null
-                    ? `${item.dimension} · 推算 ${item.valueMm} mm${item.toleranceText ? `，允许偏差 ${item.toleranceText}` : ""}`
+                    ? `${item.dimension} · 推算 ${item.valueMm} mm${item.toleranceText ? `，参考范围 ${item.toleranceText}` : ""}`
                     : `${item.dimension} · 无文献取值，按实测为准`}
-                  value={item.measuredMm !== null ? `实测 ${item.measuredMm} mm${item.deltaMm !== null ? `，相差 ${item.deltaMm} mm` : ""}` : "尚无实测记录"}
+                  value={item.measuredMm !== null ? `已有记录 ${item.measuredMm} mm${item.deltaMm !== null ? `，相差 ${item.deltaMm} mm` : ""}` : "尚无对应尺寸记录"}
                   trailing={item.measuredMm === null
-                    ? <Tag>缺实测</Tag>
+                    ? <Tag>缺尺寸记录</Tag>
                     : item.withinTolerance === null
                       ? (item.deltaMm === 0 ? <Tag tone="success">一致</Tag> : <Tag>已对照，无偏差档</Tag>)
-                      : item.withinTolerance ? <Tag tone="success">在允许偏差内</Tag> : <Tag tone="warning">超出允许偏差</Tag>}
+                      : item.withinTolerance ? <Tag tone="success">在参考范围内</Tag> : <Tag tone="warning">超出参考范围</Tag>}
                 />
               ))}
             </div>
@@ -179,16 +206,18 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
             {!archetype && <Button onClick={() => setForm(form === "archetype" ? "none" : "archetype")}>登记形制</Button>}
             <Button variant="primary" onClick={() => setForm(form === "chain" ? "none" : "chain")}>从资料转写尺寸</Button>
           </div>
+          </>}
         </>
       )}
       aside={(
         <EvidencePane
           evidences={snapshot.evidences}
           pane={pane}
-          title="实测依据"
+          title="尺寸资料"
+          location={selectedRow?.evidenceRef === pane.activeEvidenceId && validPreviewRegion(selectedRow.region) ? selectedRow.region : null}
           emptyHint="选择资料查看手写草图或测量记录原件。"
           detail={(
-            <div className="gj-pane-list">
+            <details className="gj-card gj-card--compact"><summary>任务尺寸说明</summary><div className="gj-pane-list">
               <div className="gj-card gj-card--compact">
                 <InfoRow
                   label="基准线"
@@ -197,17 +226,18 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
                     : snapshot.measurements.length
                       ? "以现场测量记录为基准"
                       : confirmedDimensionCount
-                        ? `以 ${confirmedDimensionCount} 条已确认的转写与实测尺寸为基准，未做形制推算`
+                        ? `采用 ${confirmedDimensionCount} 条资料转写尺寸，未做形制推算`
                         : "未登记形制，也没有现场测量记录"}
                   trailing={archetype
                     ? <Tag tone="warning">形制假设值</Tag>
-                    : snapshot.measurements.length || confirmedDimensionCount
-                      ? <Tag tone="success">实测</Tag>
+                    : snapshot.measurements.length
+                      ? <Tag>现场记录</Tag>
+                      : confirmedDimensionCount ? <Tag>资料转写</Tag>
                       : <Tag tone="danger">缺失</Tag>}
                 />
               </div>
               <div className="gj-card gj-card--compact">
-                <InfoRow label="尺寸单位" value="毫米，全项目一致" trailing={<Tag>固定设置</Tag>} />
+                <InfoRow label="尺寸记录单位" value="毫米；文件输出单位按任务设置" trailing={<Tag>固定设置</Tag>} />
               </div>
               <div className="gj-card gj-card--compact">
                 <InfoRow
@@ -216,7 +246,7 @@ export function MeasurementBaseline({ snapshot, pane, archetypes, evidenceTitle,
                   trailing={archetype ? <SourceTag producerType="rule" /> : undefined}
                 />
               </div>
-            </div>
+            </div></details>
           )}
         />
       )}

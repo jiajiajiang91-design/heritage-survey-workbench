@@ -1,0 +1,91 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/application
+
+ ❯ src/project-command-service.test.ts (19 tests | 3 failed) 31ms
+   ✓ ProjectCommandService > 通过唯一事务入口建立初始项目版本 4ms
+   ✓ ProjectCommandService > 相同 commandId 重试返回原回执且不重复写入 0ms
+   ✓ ProjectCommandService > 版本冲突在提交前失败 1ms
+   ✓ ProjectCommandService > 提交失败不留下项目头或命令回执 1ms
+   ✓ ProjectCommandService > 服务端权威身份覆盖客户端 actorId 0ms
+   ✓ ProjectCommandService > 未授权命令不会开启仓储事务 0ms
+   ✓ ProjectCommandService > 新增事实保留模型来源并拒绝重复事实 ID 1ms
+   ✓ ProjectCommandService > 构件记录写入后可按 id 修订，修订不存在的记录被拒 2ms
+   ✓ ProjectCommandService > 现状记录写入人工来源并拒绝无证据引用的记录 1ms
+   ✓ ProjectCommandService > 规则核对只作废本轮重新提出的问题，没提的保持未解决 3ms
+   ✓ ProjectCommandService > 复核签发记录追加进快照，几何版本不存在或重复签发被拒 1ms
+   ✓ delivery output unit commands > 任务单位改变后直接提交 proxy-ready 评估不能绕过模型和图纸单位校验 1ms
+   × delivery output unit commands > 新单位图纸可以基于旧毫米几何独立交付，加入旧单位 IFC 后拒绝 4ms
+     → delivery artifact output unit does not match current task
+   ✓ delivery output unit commands > 已保存的 mm proxy-ready 评估不能用于当前米单位草案 2ms
+   ✓ delivery output unit commands > 已保存的 cm proxy-ready 评估不能用于当前米单位草案 0ms
+   ✓ delivery output unit commands > 按实际图纸矩阵校验，不能使用最新矩阵使旧图纸适用 0ms
+   × delivery output unit commands > 单位改变不阻止旧成果技术检查和 blocked 评估保存 2ms
+     → promise rejected "CommandError: injected historical check r… { …(2) }" instead of resolving
+   ✓ delivery output unit commands > 签发按明确几何版本校验单位，最新模型不能覆盖旧版 0ms
+   × delivery output unit commands > 旧毫米记录仍可交付并保留缺省字段，历史包当前单位不同也可导入 7ms
+     → promise rejected "CommandError: injected history import rej… { …(2) }" instead of resolving
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 新单位图纸可以基于旧毫米几何独立交付，加入旧单位 IFC 后拒绝
+CommandError: delivery artifact output unit does not match current task
+ ❯ assertCurrentOutputUnits src/project-command-service.ts:647:17
+    645|       const assertCurrentOutputUnits = (artifacts: readonly ArtifactRe…
+    646|         if (!geometryOutputUnitMatches(head.snapshot) || artifacts.som…
+    647|           throw new CommandError("COMMAND_INVALID", "delivery artifact…
+       |                 ^
+    648|         }
+    649|       };
+ ❯ src/project-command-service.ts:721:67
+ ❯ MemoryRepository.transaction src/project-command-service.test.ts:135:20
+ ❯ src/project-command-service.test.ts:540:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 单位改变不阻止旧成果技术检查和 blocked 评估保存
+AssertionError: promise rejected "CommandError: injected historical check r… { …(2) }" instead of resolving
+ ❯ src/project-command-service.test.ts:567:90
+    565|     const fixture = await deliveryUnitFixture("m");
+    566|     const checkRun = { ...fixture.checkRun, id: crypto.randomUUID() };
+    567|     await expect(fixture.service.execute(fixture.command("CommitCheckR…
+       |                                                                                          ^
+    568|     const evaluation = { ...fixture.evaluation, outcome: "blocked", bl…
+    569|     await expect(fixture.service.execute(fixture.command("EvaluateDeli…
+
+Caused by: CommandError: injected historical check rejection
+ ❯ src/project-command-service.ts:684:108
+ ❯ MemoryRepository.transaction src/project-command-service.test.ts:135:20
+ ❯ src/project-command-service.test.ts:567:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'COMMAND_INVALID', details: {} }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 旧毫米记录仍可交付并保留缺省字段，历史包当前单位不同也可导入
+AssertionError: promise rejected "CommandError: injected history import rej… { …(2) }" instead of resolving
+ ❯ src/project-command-service.test.ts:597:36
+    595|       assets: [], modelRuns: [], ruleRuns: [], decisions: [], artifact…
+    596|       checkRuns: [fixture.checkRun], deliveryEvaluations: [fixture.eva…
+    597|     }), expectedRevisionId: null })).resolves.toMatchObject({ commandT…
+       |                                    ^
+    598|     expect(imported.repository.head!.snapshot.geometrySpecs[0]).not.to…
+    599|     expect(imported.repository.evaluations.get(fixture.evaluation.id)?…
+
+Caused by: CommandError: injected history import rejection
+ ❯ ProjectCommandService.execute src/project-command-service.ts:530:101
+ ❯ src/project-command-service.test.ts:593:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'COMMAND_INVALID', details: {} }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 16 passed (19)
+   Start at  20:32:03
+   Duration  687ms (transform 119ms, setup 0ms, collect 389ms, tests 31ms, environment 0ms, prepare 106ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\application:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/project-command-service.test.ts

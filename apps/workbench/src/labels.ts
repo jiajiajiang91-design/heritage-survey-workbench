@@ -3,7 +3,7 @@
 // 由 label-coverage.test.ts 锁住。核心 PRD 附录 A.4：界面状态词一律取这里的取值。
 
 export const PRODUCER_LABELS: Record<string, string> = {
-  model: "AI 识别", human: "人工确认", rule: "自动核对", demo: "演示数据",
+  model: "AI 识别", human: "人工记录", rule: "规则计算", demo: "演示数据",
 };
 
 // 记录级构件的来源。框选新增与识别确认写的是同一类记录，来源必须分得开：

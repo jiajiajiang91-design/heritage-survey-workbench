@@ -4,6 +4,8 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { ArtifactRequirementMatrixSchema, ProjectDrivenGeometrySpecSchema } from "@gujian/domain";
 import { z } from "zod";
 
+import { PythonImageProcessor, type ImageProcessor } from "./image-processor.js";
+
 import { findModelTask } from "./model-tasks.js";
 import { ActionLedger } from "./actions/action-ledger.js";
 import { modelFacingCatalog } from "./actions/action-catalog.js";
@@ -61,6 +63,7 @@ const TextEvidenceSchema = z.object({
 const ImageEvidenceSchema = z.object({
   evidenceId: z.uuid(),
   assetSha256: z.string().regex(/^[a-f0-9]{64}$/),
+  processedAssetSha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   mediaType: z.enum(["image/jpeg", "image/png", "image/webp"]),
   base64: z.string().min(1).max(16 * 1_024 * 1_024),
   titleZh: z.string().min(1).max(200),
@@ -234,17 +237,22 @@ function sendSse(response: ServerResponse, payload: unknown): void {
   if (!response.writableEnded) response.write(`data: ${JSON.stringify(payload)}\n\n`);
 }
 
-async function readJsonBody(request: IncomingMessage): Promise<unknown> {
+async function readBody(request: IncomingMessage, limit = maxBodyBytes): Promise<Buffer> {
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of request) {
     const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
     size += buffer.length;
-    if (size > maxBodyBytes) throw new Error("REQUEST_TOO_LARGE");
+    if (size > limit) throw new Error("REQUEST_TOO_LARGE");
     chunks.push(buffer);
   }
+  return Buffer.concat(chunks);
+}
+
+async function readJsonBody(request: IncomingMessage): Promise<unknown> {
+  const bytes = await readBody(request);
   try {
-    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+    return JSON.parse(bytes.toString("utf8"));
   } catch {
     throw new Error("INVALID_JSON");
   }
@@ -312,6 +320,7 @@ export function createWorkbenchServer(options: {
   cadLedger?: CadJobLedger;
   cadWorker?: CadWorker;
   drawingWorker?: DrawingWorker;
+  imageProcessor?: ImageProcessor;
   allowedOrigin?: string | readonly string[];
 } = {}) {
   const gateway = options.gateway ?? new KimiGateway();
@@ -337,6 +346,7 @@ export function createWorkbenchServer(options: {
   const ledger = options.ledger ?? new ModelRunLedger(process.env.NODE_ENV === "test" ? ":memory:" : undefined);
   const ownsCadLedger = options.cadLedger === undefined;
   const cadLedger = options.cadLedger ?? new CadJobLedger(process.env.NODE_ENV === "test" ? ":memory:" : undefined);
+  const imageProcessor = options.imageProcessor ?? new PythonImageProcessor();
   const cadWorker = options.cadWorker ?? new PythonCadWorker();
   const drawingWorker = options.drawingWorker ?? new PythonDrawingWorker();
   const allowedOrigins = new Set(
@@ -504,6 +514,18 @@ export function createWorkbenchServer(options: {
       const session = sessionId ? sessions.get(sessionId) : undefined;
       if (!session || session.expiresAt < Date.now() || request.headers["x-csrf-token"] !== session.csrfToken) {
         return writeJson(response, 403, { error: "SESSION_OR_CSRF_INVALID" }, origin);
+      }
+
+      if (request.method === "POST" && url.pathname === "/api/evidence/process-image") {
+        try {
+          const bytes = await readBody(request, 100 * 1024 * 1024);
+          if (!bytes.length) return writeJson(response, 400, { error: "IMAGE_DECODE_FAILED" }, origin);
+          const result = await imageProcessor.process(bytes);
+          return writeJson(response, 200, result, origin);
+        } catch (error) {
+          const code = error instanceof Error ? error.message : "IMAGE_DECODE_FAILED";
+          return writeJson(response, code === "REQUEST_TOO_LARGE" ? 413 : 422, { error: /^IMAGE_[A-Z_]+$/.test(code) || code === "REQUEST_TOO_LARGE" ? code : "IMAGE_DECODE_FAILED" }, origin);
+        }
       }
 
       // 模型侧动作目录（架构 7.6）：只投影名称、描述、参数三字段

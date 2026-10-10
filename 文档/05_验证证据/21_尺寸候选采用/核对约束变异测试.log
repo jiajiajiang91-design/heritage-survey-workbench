@@ -1,0 +1,29 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/dimension-review.test.ts (14 tests | 1 failed) 55ms
+   ✓ 尺寸候选采用 > 真实仓储写入保留模型来源、原文、候选关联及采用命令，不创建现场测量 15ms
+   ✓ 尺寸候选采用 > 人工修正保留旧值，责任人和理由可读回 4ms
+   ✓ 尺寸候选采用 > 无效数值  不写入 3ms
+   ✓ 尺寸候选采用 > 无效数值 NaN 不写入 2ms
+   ✓ 尺寸候选采用 > 无效数值 Infinity 不写入 2ms
+   ✓ 尺寸候选采用 > 无效数值 -1 不写入 2ms
+   ✓ 尺寸候选采用 > 无效数值 0 不写入 2ms
+   × 尺寸候选采用 > 未核对、空名称、待核实或修改缺说明均被拦截 4ms
+     → expected 0 to be greater than 0
+   ✓ 尺寸候选采用 > 缺失资料不能采用，但可有理由地驳回并保留原引用 3ms
+   ✓ 尺寸候选采用 > 同一处置重复保存不增加记录，不同运行相同行号分别保留 6ms
+   ✓ 尺寸候选采用 > 重新核对可驳回原采用，历史保留但可用尺寸不再包含该项 3ms
+   ✓ 尺寸候选采用 > 同名异值必须说明，不自动替换已有来源 3ms
+   ✓ 尺寸候选采用 > 重复行、变更候选、过期窗口均不能悄悄覆盖项目 3ms
+   ✓ 尺寸候选采用 > 命令成功后读回失败报告已保存，不把刷新故障变成再次写入 3ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  12:25:14
+   Duration  1.37s (transform 249ms, setup 217ms, collect 832ms, tests 55ms, environment 0ms, prepare 110ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/dimension-review.test.ts

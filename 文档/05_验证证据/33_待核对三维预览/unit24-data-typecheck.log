@@ -1,0 +1,2 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ tsc -b --pretty false

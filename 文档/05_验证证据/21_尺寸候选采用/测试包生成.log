@@ -1,0 +1,11 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/dimension-review.test.ts (14 tests) 62ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  12:19:47
+   Duration  1.36s (transform 237ms, setup 215ms, collect 830ms, tests 62ms, environment 0ms, prepare 113ms)
+

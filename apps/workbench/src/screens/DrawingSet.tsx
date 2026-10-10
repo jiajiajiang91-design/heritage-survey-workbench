@@ -3,7 +3,7 @@ import type { ArtifactRecord, CheckRun, ReviewSignoff } from "@gujian/domain";
 
 import { cadPhaseLabel } from "../labels";
 import { LongTask } from "../LongTask";
-import { DrawingLimitationNote, QualificationChip } from "../QualificationNotice";
+import { DrawingLimitationNote } from "../QualificationNotice";
 import { Button, EmptyState, Tag } from "../ui";
 import { FileViewer } from "../ui/FileViewer";
 import { useAssetBlob } from "../workbench/useAssetUrls";
@@ -13,6 +13,7 @@ import "./SheetStyle.css";
 // 成组图纸：十九屏没有对应屏，按 W08 的形式规则做（左设置卡 300、右预览卡，同一套行距与字阶）。
 // 左卡列本次检查覆盖的图纸成果，右卡按张预览；每条线都由当前三维模型剖切或投影得到（PRD F13）。
 export interface DrawingSetProps {
+  outputUnitChanged?: boolean;
   artifacts: readonly ArtifactRecord[];
   previews: readonly DrawingPreview[];
   latestCheckRun: CheckRun | null;
@@ -32,7 +33,7 @@ export interface DrawingSetProps {
 
 const KIND_LABELS: Record<string, string> = { svg: "矢量预览", pdf: "PDF", dxf: "DXF", glb: "GLB", ifc: "IFC", json: "记录", viewGeometry: "视图线稿" };
 
-export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, hasTask, generating, showTask, progressPhase, cancelling, onGenerate, onCancel, onDownload, signoff, demoLimitationZh }: DrawingSetProps) {
+export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, hasTask, generating, showTask, progressPhase, cancelling, onGenerate, onCancel, onDownload, signoff, demoLimitationZh, outputUnitChanged }: DrawingSetProps) {
   const drawings = artifacts.filter((artifact) => ["svg", "pdf", "dxf"].includes(artifact.kind));
   const others = artifacts.filter((artifact) => !["svg", "pdf", "dxf"].includes(artifact.kind));
   // 右卡看选中的那份；默认第一张图幅的 SVG（实施单元 09：DXF 与 PDF 都在页内看）
@@ -45,9 +46,10 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
       <section className="sc-sheet-settings">
         <div className="gj-pane-head">
           <span className="gj-pane-title">成组图纸</span>
-          {artifacts.length > 0 && (signoff ? <Tag tone="success">{demoLimitationZh ? "展示归档成果" : "已签发成果"}</Tag> : <QualificationChip />)}
+          {artifacts.length > 0 && <Tag tone={signoff ? "success" : "warning"}>{signoff ? demoLimitationZh ? "展示归档成果" : "已签发成果" : "未签发"}</Tag>}
         </div>
         {showTask && <LongTask labelZh={`正在生成成组图纸：${cadPhaseLabel(progressPhase)}`} onCancel={onCancel} cancelling={cancelling} />}
+        {outputUnitChanged && <p role="status" className="gj-note">输出单位已变化，旧图纸已保留。请按当前成果目录重新生成并检查。</p>}
         {artifacts.length ? (
           <div className="sc-sheet-list">
             {drawings.map((artifact) => (
@@ -59,9 +61,12 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
             {others.length > 0 && <span className="gj-note">另有 {others.length} 项模型与记录成果随本次检查一并收录。</span>}
           </div>
         ) : (
-          <EmptyState>{hasGeometry ? "还没有图纸。按任务要求出图后，图纸会同时导出 DXF、PDF 和预览图。" : "先生成三维模型，再按任务要求出图。"}</EmptyState>
+          <EmptyState>{outputUnitChanged ? "当前单位尚无适用图纸。" : hasGeometry ? "还没有图纸。按任务要求出图后，图纸会同时导出 DXF、PDF 和预览图。" : "先生成三维模型，再按任务要求出图。"}</EmptyState>
         )}
-        {artifacts.length > 0 && !signoff && <DrawingLimitationNote />}
+        {artifacts.length > 0 && !signoff && <p className="gj-note">当前图纸未签发，可下载用于核对。</p>}
+        {artifacts.length > 0 && <details>
+          <summary>检查与使用说明</summary>
+        {!signoff && <DrawingLimitationNote />}
         {artifacts.length > 0 && signoff && demoLimitationZh && <p className="gj-note">项目包随附流程演示签发记录，用于展示归档后的页面与数据关系，不构成真实工程签发。</p>}
         {latestCheckRun && (
           <div className="sc-sheet-checks">
@@ -74,6 +79,7 @@ export function DrawingSet({ artifacts, previews, latestCheckRun, hasGeometry, h
             ))}
           </div>
         )}
+        </details>}
         <span className="gj-spacer" />
         <div className="gj-actions">
           <Button variant="primary" loadable busy={generating} disabled={!hasGeometry || !hasTask || generating} onClick={onGenerate}>按成果目录生成</Button>

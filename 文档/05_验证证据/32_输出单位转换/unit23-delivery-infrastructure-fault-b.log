@@ -1,0 +1,172 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ❯ src/delivery-service.test.ts (6 tests | 4 failed) 14ms
+   ✓ delivery blocker propagation > 传播 open issue、结构化 unknown 和 blocked check，并区分仅正式资格阻断 1ms
+   × delivery blocker propagation > 有复核签发记录时，正式资格阻断随记录解除，其余阻断照旧 4ms
+     → expected [ Array(8) ] to not include 'PROFESSIONAL_REVIEW_REQUIRED'
+   × delivery output units > 单位变更后旧签发不能解除旧模型的单位阻断，新单位图纸仍单独适用 2ms
+     → expected [ { …(5) }, { …(5) } ] to deeply equal [ ObjectContaining{…} ]
+   × delivery output units > 按成果引用的矩阵判断，旧图纸不会被最新矩阵或签发覆盖 1ms
+     → expected [ { …(5) }, { …(5) } ] to deeply equal [ ObjectContaining{…} ]
+   × delivery output units > 旧毫米规格和矩阵保持兼容，读取不补写单位 1ms
+     → expected [ { …(5) }, { …(5) }, { …(5) }, …(4) ] to deeply equal []
+   ✓ delivery output units > 草案包含新单位图纸和已保存旧单位模型时先保存 blocked 评估，再拒绝生成草案 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/delivery-service.test.ts > delivery blocker propagation > 有复核签发记录时，正式资格阻断随记录解除，其余阻断照旧
+AssertionError: expected [ Array(8) ] to not include 'PROFESSIONAL_REVIEW_REQUIRED'
+ ❯ src/delivery-service.test.ts:90:23
+     88|     const after = collectDeliveryBlockerDetails(signed as unknown as P…
+     89|     const codes = after.map((item) => item.code);
+     90|     expect(codes).not.toContain("PROFESSIONAL_REVIEW_REQUIRED");
+       |                       ^
+     91|     expect(codes).not.toContain("FORMAL_SIGNOFF_UNAVAILABLE");
+     92|     expect(codes).not.toContain("CHECK_BLOCKED:PROFESSIONAL_REVIEW_REQ…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/delivery-service.test.ts > delivery output units > 单位变更后旧签发不能解除旧模型的单位阻断，新单位图纸仍单独适用
+AssertionError: expected [ { …(5) }, { …(5) } ] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+  [
+    ObjectContaining {
+      "blocksProxyOutcome": true,
+      "sourceRef": "4463b2d5-618f-4f39-b5f9-c137336eb43e",
+    },
++   {
++     "blocksProxyOutcome": true,
++     "code": "OUTPUT_UNIT_MISMATCH",
++     "message": "成果文件 drawing.dxf 的输出单位与当前任务要求不一致，须重新生成。",
++     "sourceRef": "b144eac0-5420-4375-bd26-6e423363e5ba",
++     "sourceType": "artifact",
++   },
+  ]
+
+ ❯ src/delivery-service.test.ts:125:76
+    123|     const fixture = unitFixture("m", "mm", "m");
+    124|     const details = collectDeliveryBlockerDetails(fixture.head, fixtur…
+    125|     expect(details.filter((item) => item.code === "OUTPUT_UNIT_MISMATC…
+       |                                                                            ^
+    126|     expect(details.map((item) => item.code)).toEqual(expect.arrayConta…
+    127|     const drawingOnly = collectDeliveryBlockerDetails(fixture.head, fi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/delivery-service.test.ts > delivery output units > 按成果引用的矩阵判断，旧图纸不会被最新矩阵或签发覆盖
+AssertionError: expected [ { …(5) }, { …(5) } ] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+  [
+-   ObjectContaining {
++   {
++     "blocksProxyOutcome": true,
++     "code": "OUTPUT_UNIT_MISMATCH",
++     "message": "成果文件 model.ifc 的输出单位与当前任务要求不一致，须重新生成。",
++     "sourceRef": "dffba88a-2eaf-4258-ab1f-0038abc38050",
++     "sourceType": "artifact",
++   },
++   {
+      "blocksProxyOutcome": true,
++     "code": "OUTPUT_UNIT_MISMATCH",
++     "message": "成果文件 drawing.dxf 的输出单位与当前任务要求不一致，须重新生成。",
+      "sourceRef": "1481556f-655e-4bdf-8542-994c36106ced",
++     "sourceType": "artifact",
+    },
+  ]
+
+ ❯ src/delivery-service.test.ts:135:76
+    133|     const newest = { ...fixture.matrix, id: crypto.randomUUID(), outpu…
+    134|     const details = collectDeliveryBlockerDetails(fixture.head, fixtur…
+    135|     expect(details.filter((item) => item.code === "OUTPUT_UNIT_MISMATC…
+       |                                                                            ^
+    136|     expect(details.some((item) => item.code === "FORMAL_SIGNOFF_UNAVAI…
+    137|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/delivery-service.test.ts > delivery output units > 旧毫米规格和矩阵保持兼容，读取不补写单位
+AssertionError: expected [ { …(5) }, { …(5) }, { …(5) }, …(4) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "blocksProxyOutcome": false,
++     "code": "PROFESSIONAL_REVIEW_REQUIRED",
++     "message": "成果尚未经项目责任人员专业复核。",
++     "sourceRef": "eccbe6aa-0f96-4673-900b-ad79ef2cb5f1",
++     "sourceType": "qualification",
++   },
++   {
++     "blocksProxyOutcome": false,
++     "code": "FORMAL_SIGNOFF_UNAVAILABLE",
++     "message": "本机身份不具备签发资格，签发须在正式环境完成。",
++     "sourceRef": "eccbe6aa-0f96-4673-900b-ad79ef2cb5f1",
++     "sourceType": "qualification",
++   },
++   {
++     "blocksProxyOutcome": false,
++     "code": "L1_ELIGIBILITY_FALSE",
++     "message": "成果未评定为专业样板等级，不作为其他项目的参照标准。",
++     "sourceRef": "eccbe6aa-0f96-4673-900b-ad79ef2cb5f1",
++     "sourceType": "qualification",
++   },
++   {
++     "blocksProxyOutcome": true,
++     "code": "OUTPUT_UNIT_MISMATCH",
++     "message": "成果文件 model.ifc 的输出单位与当前任务要求不一致，须重新生成。",
++     "sourceRef": "e3df2313-dae7-43f5-bd5a-a08814032051",
++     "sourceType": "artifact",
++   },
++   {
++     "blocksProxyOutcome": true,
++     "code": "OUTPUT_UNIT_MISMATCH",
++     "message": "成果文件 drawing.dxf 的输出单位与当前任务要求不一致，须重新生成。",
++     "sourceRef": "5658e2fa-5c13-486f-b311-179d2a3b06b9",
++     "sourceType": "artifact",
++   },
++   {
++     "blocksProxyOutcome": false,
++     "code": "PROFESSIONAL_REVIEW_REQUIRED",
++     "message": "成果文件 model.ifc 在签发前尚未经专业复核。",
++     "sourceRef": "e3df2313-dae7-43f5-bd5a-a08814032051",
++     "sourceType": "artifact",
++   },
++   {
++     "blocksProxyOutcome": false,
++     "code": "PROFESSIONAL_REVIEW_REQUIRED",
++     "message": "成果文件 drawing.dxf 在签发前尚未经专业复核。",
++     "sourceRef": "5658e2fa-5c13-486f-b311-179d2a3b06b9",
++     "sourceType": "artifact",
++   },
++ ]
+
+ ❯ src/delivery-service.test.ts:143:21
+    141|     const before = JSON.stringify([fixture.head.snapshot.geometrySpecs…
+    142|     const details = collectDeliveryBlockerDetails(fixture.head, fixtur…
+    143|     expect(details).toEqual([]);
+       |                     ^
+    144|     expect(JSON.stringify([fixture.head.snapshot.geometrySpecs, fixtur…
+    145|     expect(fixture.head.snapshot.geometrySpecs[0]).not.toHaveProperty(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+   Start at  20:32:05
+   Duration  744ms (transform 140ms, setup 0ms, collect 453ms, tests 14ms, environment 0ms, prepare 104ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\infrastructure:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/delivery-service.test.ts

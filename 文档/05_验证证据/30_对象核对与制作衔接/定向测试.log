@@ -1,0 +1,14 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/component-candidates.test.ts (12 tests) 197ms
+ ✓ src/workbench/usePreviewFlow.test.tsx (11 tests) 81ms
+ ✓ src/screens/ComponentCandidateFlow.test.tsx (2 tests) 256ms
+ ✓ src/screens/ModelView.test.tsx (3 tests) 169ms
+
+ Test Files  4 passed (4)
+      Tests  28 passed (28)
+   Start at  16:07:40
+   Duration  2.21s (transform 803ms, setup 961ms, collect 4.21s, tests 703ms, environment 1.17s, prepare 436ms)
+

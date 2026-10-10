@@ -1,0 +1,2010 @@
+unit27-model-red-validation.log
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ❯ src/delivery-service.test.ts (28 tests | 4 failed | 24 skipped) 83ms
+   ↓ delivery blocker propagation > 传播 open issue、结构化 unknown 和 blocked check，并区分仅正式资格阻断
+   ↓ delivery blocker propagation > 有复核签发记录时，正式资格阻断随记录解除，其余阻断照旧
+   ↓ delivery output units > 单位变更后旧签发不能解除旧模型的单位阻断，新单位图纸仍单独适用
+   ↓ delivery output units > 按成果引用的矩阵判断，旧图纸不会被最新矩阵或签发覆盖
+   ↓ delivery output units > 旧单位模型关联新单位矩阵时仍按模型规格保留硬阻断
+   ↓ delivery output units > 旧毫米规格和矩阵保持兼容，读取不补写单位
+   ↓ delivery output units > 草案包含新单位图纸和已保存旧单位模型时先保存 blocked 评估，再拒绝生成草案
+   ↓ 仅模型实际文件检查 > mm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+   ↓ 仅模型实际文件检查 > cm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+   ↓ 仅模型实际文件检查 > m 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+   ↓ 仅模型实际文件检查 > 实际资产 missing 不能新增通过检查，原成功记录不会充作本次成功
+   × 仅模型实际文件检查 > 实际资产 tamper 不能新增通过检查，原成功记录不会充作本次成功 52ms
+     → promise resolved "{ head: { …(4) }, …(2) }" instead of rejecting
+   ↓ 仅模型实际文件检查 > 实际资产 length 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > 实际资产 metadata 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > manifest-version 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-geometry 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   × 仅模型实际文件检查 > manifest-input 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容 11ms
+     → promise resolved "{ head: { …(4) }, …(2) }" instead of rejecting
+   ↓ 仅模型实际文件检查 > manifest-file 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-missing 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > spec-unit 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   × 仅模型实际文件检查 > ifc-unit 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容 10ms
+     → promise resolved "{ head: { …(4) }, …(2) }" instead of rejecting
+   × 仅模型实际文件检查 > glb-format 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容 10ms
+     → promise resolved "{ head: { …(4) }, …(2) }" instead of rejecting
+   ↓ 仅模型实际文件检查 > targets 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 0 后未生成，拒绝旧文件检查和草案
+   ↓ 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 1 后未生成，拒绝旧文件检查和草案
+   ↓ 仅模型实际文件检查 > 空检查、缺GLB或任务追加图纸目标不放行模型草案
+   ↓ 仅模型实际文件检查 > 新增或撤销构件使模型待更新，合成来源和无关记录不使模型失效
+   ↓ 仅模型实际文件检查 > 过期head、非当前几何与检查后文件篡改均不得建立新的检查或草案
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 实际资产 tamper 不能新增通过检查，原成功记录不会充作本次成功
+AssertionError: promise resolved "{ head: { …(4) }, …(2) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "artifacts": [
++     {
++       "assetId": "ac4d318a-5fd1-4b09-a2d4-4c782e7c387c",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 113,
++       "createdAt": "2026-10-03T02:50:34.016Z",
++       "fileName": "model.ifc",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "e7719963-7a34-4f42-bf39-3d2636a4f5c0",
++       "kind": "ifc",
++       "l1Eligible": false,
++       "mimeType": "application/x-step",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++       "requirementMatrixId": null,
++       "sha256": "a7d8765194a4da8ad0df6c66c0cfd12e9d0f5b1e6f4a9dd2d4e776f6e87f5d16",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "eece0f26-dc79-4829-bd85-3a17ba063222",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 76,
++       "createdAt": "2026-10-03T02:50:34.017Z",
++       "fileName": "model.glb",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "a01c1d0b-50cf-468d-acd9-5712ef4b22a0",
++       "kind": "glb",
++       "l1Eligible": false,
++       "mimeType": "model/gltf-binary",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++       "requirementMatrixId": null,
++       "sha256": "d23bc8a62bc727e5acac14d9fc7fc87c60057a1721083e9558932cabd8b356b3",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "da5af7f9-7fcb-47a3-b17e-d05ca8ee56d7",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 48,
++       "createdAt": "2026-10-03T02:50:34.017Z",
++       "fileName": "model-brep.zip",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "97c1f4a3-d089-4111-8fd3-bad295c22d9d",
++       "kind": "brepBundle",
++       "l1Eligible": false,
++       "mimeType": "application/zip",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++       "requirementMatrixId": null,
++       "sha256": "d5fc705f79d20ef1d8319ee7aeafb7bd69aaad9155ee2d42c113536069e8230e",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "c50336da-c2d8-449d-af6c-354c1a910bf7",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 143,
++       "createdAt": "2026-10-03T02:50:34.017Z",
++       "fileName": "source-map.ndjson",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "cf861256-00ed-46f6-9166-669627c3e846",
++       "kind": "geometrySourceMap",
++       "l1Eligible": false,
++       "mimeType": "application/x-ndjson",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++       "requirementMatrixId": null,
++       "sha256": "76aff6e9f2069ce380b71562d433e99efb4f4bf77c8f8964f7aeb250c045cf82",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "bdb34885-f328-45ce-99d6-4d4a997f79e7",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 170,
++       "createdAt": "2026-10-03T02:50:34.017Z",
++       "fileName": "geometry-report.json",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "4b4ae36a-6fa8-429c-b7f5-c3671e6211b7",
++       "kind": "geometryReport",
++       "l1Eligible": false,
++       "mimeType": "application/json",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++       "requirementMatrixId": null,
++       "sha256": "560b64737773c16578546ac1516eebda4ae74539ba5a7b66a166ab3eb40c9ae1",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "4f21fbe8-13c3-45d6-8a80-a65e356ba74f",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 48,
++       "createdAt": "2026-10-03T02:50:34.017Z",
++       "fileName": "preview.png",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "ea87a57d-07b8-41ef-807b-f9f41162e9c4",
++       "kind": "geometryPreview",
++       "l1Eligible": false,
++       "mimeType": "image/png",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++       "requirementMatrixId": null,
++       "sha256": "2af0c60b79cd7201c94755f8be223b04a8d6382b46dbcb7f68a28de1af137388",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "da4b8a0d-78c8-4c3c-bcc1-cd39393db7db",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 1611,
++       "createdAt": "2026-10-03T02:50:34.017Z",
++       "fileName": "manifest.json",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "570f67e0-7468-42eb-b6d9-7f4bc57eca54",
++       "kind": "geometryManifest",
++       "l1Eligible": false,
++       "mimeType": "application/json",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++       "requirementMatrixId": null,
++       "sha256": "3e3fc7d95402fff473a1b196a873a6ce2a5884ce003911953d7fa7ef9e9232c4",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "4798c975-d590-4810-a774-c4df072e13c9",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 3669,
++       "createdAt": "2026-10-03T02:50:34.023Z",
++       "fileName": "model-file-check-3cd4326d-8e69-41e6-b19b-efc3ce3646ef.json",
++       "formalEligibility": false,
++       "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++       "id": "d2e70bc5-121e-491c-b811-46fdba605083",
++       "kind": "checkReport",
++       "l1Eligible": false,
++       "mimeType": "application/json",
++       "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++       "projectRevisionId": "1e778680-d31f-48db-961c-0cb43c690d90",
++       "requirementMatrixId": null,
++       "sha256": "9e77432e3a937cff5c222c99138135d5076074fd1d59fdd63753b3a4a86a7ec4",
++       "sourceRefs": [
++         "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++         "3cd4326d-8e69-41e6-b19b-efc3ce3646ef",
++       ],
++       "status": "generated-not-qualified",
++     },
++   ],
++   "checkRun": {
++     "artifactRefs": [
++       "e7719963-7a34-4f42-bf39-3d2636a4f5c0",
++       "a01c1d0b-50cf-468d-acd9-5712ef4b22a0",
++       "97c1f4a3-d089-4111-8fd3-bad295c22d9d",
++       "cf861256-00ed-46f6-9166-669627c3e846",
++       "4b4ae36a-6fa8-429c-b7f5-c3671e6211b7",
++       "ea87a57d-07b8-41ef-807b-f9f41162e9c4",
++       "570f67e0-7468-42eb-b6d9-7f4bc57eca54",
++       "d2e70bc5-121e-491c-b811-46fdba605083",
++     ],
++     "completedAt": "2026-10-03T02:50:34.023Z",
++     "formalEligibility": false,
++     "geometryRevisionId": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++     "id": "3cd4326d-8e69-41e6-b19b-efc3ce3646ef",
++     "l1Eligible": false,
++     "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++     "projectRevisionId": "0526acd1-8c40-4f34-bfae-4dd21e45bf51",
++     "qualification": "generated-not-qualified",
++     "reportAssetId": "4798c975-d590-4810-a774-c4df072e13c9",
++     "reportHash": "9e77432e3a937cff5c222c99138135d5076074fd1d59fdd63753b3a4a86a7ec4",
++     "results": [
++       {
++         "code": "MODEL_OUTPUT_HASH_CLOSURE",
++         "message": "当前模型及生成资料的实际文件、字节数、哈希、清单和输出单位与本次几何版本对应。",
++         "outcome": "passed",
++         "sourceRefs": [
++           "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++           "e7719963-7a34-4f42-bf39-3d2636a4f5c0",
++           "a01c1d0b-50cf-468d-acd9-5712ef4b22a0",
++           "97c1f4a3-d089-4111-8fd3-bad295c22d9d",
++           "cf861256-00ed-46f6-9166-669627c3e846",
++           "4b4ae36a-6fa8-429c-b7f5-c3671e6211b7",
++           "ea87a57d-07b8-41ef-807b-f9f41162e9c4",
++           "570f67e0-7468-42eb-b6d9-7f4bc57eca54",
++         ],
++       },
++       {
++         "code": "PROFESSIONAL_REVIEW_REQUIRED",
++         "message": "本次仅检查文件对应关系，不证明测绘、几何精度或专业复核通过。",
++         "outcome": "blocked",
++         "sourceRefs": [
++           "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++         ],
++       },
++     ],
++     "status": "completed",
++   },
++   "head": {
++     "auditEventId": "b1f4d92a-790e-42e7-9e9e-0d53a140785f",
++     "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++     "revisionId": "6c35533a-26c3-49a3-8b02-53e0a2b47062",
++     "snapshot": {
++       "adoptedRecordRefs": [],
++       "buildings": [
++         {
++           "addressText": null,
++           "id": "917658f9-208c-4128-b8a5-127b86abef89",
++           "name": "内部测试建筑",
++           "periodText": null,
++           "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++           "status": "existing",
++         },
++       ],
++       "candidates": [],
++       "dependencyEdges": [],
++       "entities": [],
++       "evidences": [],
++       "exclusionRecords": [],
++       "facts": [
++         {
++           "acceptanceRef": {
++             "id": "7b657a67-4a54-40fc-a234-14911eef5ebe",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "geometry.component.wall",
++           "id": "59a70dac-6fdd-4929-b64c-2afd7f429242",
++           "producer": {
++             "actionRef": {
++               "commandId": "7b657a67-4a54-40fc-a234-14911eef5ebe",
++             },
++             "actorId": "ec8c8715-6d2e-4264-b6ff-269ba8bce678",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "917658f9-208c-4128-b8a5-127b86abef89",
++           "value": {
++             "componentType": "wall",
++             "displayNameZh": "内部墙体",
++             "evidenceRefs": [],
++             "materialCode": "brick",
++             "parameters": [],
++             "parentStableKey": null,
++             "positionBasis": "human",
++             "solid": {
++               "centerMm": [
++                 0,
++                 0,
++                 1500,
++               ],
++               "kind": "box",
++               "sizeX": "6100.5",
++               "sizeY": "240",
++               "sizeZ": "3000",
++             },
++             "sourceLocation": "内部测试",
++             "stableKey": "wall",
++             "unknowns": [],
++           },
++         },
++         {
++           "acceptanceRef": {
++             "id": "7b657a67-4a54-40fc-a234-14911eef5ebe",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "documentedDimension.candidate.e17a84ad-231e-4afd-a7e6-8deef834e1bc.0",
++           "id": "60d6ff14-33e2-4350-8d83-2b3b5456958b",
++           "producer": {
++             "actionRef": {
++               "commandId": "7b657a67-4a54-40fc-a234-14911eef5ebe",
++             },
++             "actorId": "ec8c8715-6d2e-4264-b6ff-269ba8bce678",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "917658f9-208c-4128-b8a5-127b86abef89",
++           "value": {
++             "candidateId": "e17a84ad-231e-4afd-a7e6-8deef834e1bc",
++             "corrected": false,
++             "disposition": "adopt",
++             "kind": "documentedDimension",
++             "methodZh": "资料转写",
++             "name": "总宽",
++             "original": {
++               "certainty": "certain",
++               "evidenceRef": "ae723891-6f16-4799-8b7d-f140dd8b5818",
++               "locationZh": "内部测试第1行",
++               "noteZh": null,
++               "partZh": "总宽",
++               "valueMm": "6100.5",
++               "valueText": "6100.5",
++             },
++             "quantityKind": "length",
++             "reason": "",
++             "rowIndex": 0,
++             "runId": "96d23c11-42d4-4aa7-9ded-466010b0abb5",
++             "sourceKind": "document-transcription",
++             "unit": "mm",
++             "value": 6100.5,
++           },
++         },
++       ],
++       "geometryRevisions": [
++         {
++           "assets": [
++             {
++               "assetId": "ac4d318a-5fd1-4b09-a2d4-4c782e7c387c",
++               "byteLength": 113,
++               "kind": "ifc",
++               "mimeType": "application/x-step",
++               "sha256": "a7d8765194a4da8ad0df6c66c0cfd12e9d0f5b1e6f4a9dd2d4e776f6e87f5d16",
++             },
++             {
++               "assetId": "eece0f26-dc79-4829-bd85-3a17ba063222",
++               "byteLength": 76,
++               "kind": "glb",
++               "mimeType": "model/gltf-binary",
++               "sha256": "d23bc8a62bc727e5acac14d9fc7fc87c60057a1721083e9558932cabd8b356b3",
++             },
++             {
++               "assetId": "da5af7f9-7fcb-47a3-b17e-d05ca8ee56d7",
++               "byteLength": 48,
++               "kind": "brepBundle",
++               "mimeType": "application/zip",
++               "sha256": "d5fc705f79d20ef1d8319ee7aeafb7bd69aaad9155ee2d42c113536069e8230e",
++             },
++             {
++               "assetId": "c50336da-c2d8-449d-af6c-354c1a910bf7",
++               "byteLength": 143,
++               "kind": "sourceMap",
++               "mimeType": "application/x-ndjson",
++               "sha256": "76aff6e9f2069ce380b71562d433e99efb4f4bf77c8f8964f7aeb250c045cf82",
++             },
++             {
++               "assetId": "bdb34885-f328-45ce-99d6-4d4a997f79e7",
++               "byteLength": 170,
++               "kind": "report",
++               "mimeType": "application/json",
++               "sha256": "560b64737773c16578546ac1516eebda4ae74539ba5a7b66a166ab3eb40c9ae1",
++             },
++             {
++               "assetId": "4f21fbe8-13c3-45d6-8a80-a65e356ba74f",
++               "byteLength": 48,
++               "kind": "preview",
++               "mimeType": "image/png",
++               "sha256": "2af0c60b79cd7201c94755f8be223b04a8d6382b46dbcb7f68a28de1af137388",
++             },
++             {
++               "assetId": "da4b8a0d-78c8-4c3c-bcc1-cd39393db7db",
++               "byteLength": 1611,
++               "kind": "manifest",
++               "mimeType": "application/json",
++               "sha256": "3e3fc7d95402fff473a1b196a873a6ce2a5884ce003911953d7fa7ef9e9232c4",
++             },
++           ],
++           "blockers": [
++             "PROFESSIONAL_REVIEW_REQUIRED",
++             "FORMAL_SIGNOFF_UNAVAILABLE",
++           ],
++           "createdAt": "2026-10-03T00:00:00Z",
++           "entityClosureHash": "2222222222222222222222222222222222222222222222222222222222222222",
++           "formalEligibility": false,
++           "geometrySignature": "4444444444444444444444444444444444444444444444444444444444444444",
++           "geometrySpecId": "cd46bb0e-81c6-43a8-8532-a77cb16e98bf",
++           "id": "99fd4421-9c9e-4473-a9fc-41f7ef934b0a",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaceClosureHash": "3333333333333333333333333333333333333333333333333333333333333333",
++           "l1Eligible": false,
++           "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++           "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++           "status": "generated-not-qualified",
++         },
++       ],
++       "geometrySpecs": [
++         {
++           "buildingId": "917658f9-208c-4128-b8a5-127b86abef89",
++           "coordinateSystem": {
++             "axisOrder": "XYZ",
++             "lengthUnit": "mm",
++             "name": "内部坐标",
++             "origin": [
++               0,
++               0,
++               0,
++             ],
++             "upAxis": "Z",
++           },
++           "createdAt": "2026-10-03T00:00:00Z",
++           "id": "cd46bb0e-81c6-43a8-8532-a77cb16e98bf",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaces": [],
++           "objects": [
++             {
++               "componentType": "wall",
++               "displayNameZh": "内部墙体",
++               "evidenceRefs": [],
++               "factRefs": [
++                 "59a70dac-6fdd-4929-b64c-2afd7f429242",
++                 "60d6ff14-33e2-4350-8d83-2b3b5456958b",
++               ],
++               "id": "1e0f272f-7208-45f5-aee6-cf3c899cdf42",
++               "materialCode": "brick",
++               "parameters": [],
++               "parentId": null,
++               "producer": {
++                 "fixtureId": "unit27-file-check",
++                 "producerType": "demo",
++               },
++               "solid": {
++                 "centerMm": [
++                   0,
++                   0,
++                   1500,
++                 ],
++                 "kind": "box",
++                 "sizeX": "6100.5",
++                 "sizeY": "240",
++                 "sizeZ": "3000",
++               },
++               "stableKey": "wall",
++               "unknownRefs": [],
++             },
++           ],
++           "outputUnit": "m",
++           "projectId": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++           "projectRevisionId": "6fa9907d-8ee9-4b72-9f9b-63617f6b5a62",
++           "schemaVersion": "2.0",
++           "tolerances": {
++             "interfaceMm": 0.5,
++             "modellingMm": 0.5,
++             "tessellationMm": 1,
++           },
++           "unknowns": [],
++         },
++       ],
++       "issues": [],
++       "measurements": [],
++       "observations": [],
++       "parseRecords": [],
++       "project": {
++         "createdAt": "2026-10-03T00:00:00Z",
++         "id": "267bbe5f-5f03-4be4-8c2c-1f15d7bba3fc",
++         "locationText": null,
++         "name": "内部文件检查",
++         "status": "active",
++       },
++       "relations": [],
++       "reviewSignoffs": [],
++       "schemaVersion": "3.0",
++       "taskDefinitions": [
++         {
++           "automationPolicyRef": null,
++           "confirmedAt": "2026-10-03T00:00:00Z",
++           "deliverables": [
++             "模型",
++           ],
++           "id": "fb67690b-7fbe-4178-98ec-ede82f00b876",
++           "name": "内部模型文件检查",
++           "productionSetup": {
++             "buildingId": "917658f9-208c-4128-b8a5-127b86abef89",
++             "outputUnit": "m",
++             "projectGroup": null,
++             "purpose": "existingSurvey",
++             "targets": [
++               "model",
++             ],
++           },
++           "regulationRefs": [],
++           "responsibilities": [
++             {
++               "actorId": "ec8c8715-6d2e-4264-b6ff-269ba8bce678",
++               "role": "projectLead",
++             },
++           ],
++           "scope": [
++             "局部模型",
++           ],
++         },
++       ],
++     },
++   },
+  }
+
+ ❯ src/delivery-service.test.ts:295:90
+    293|       const before = await test.service.checkModelFiles(test.head, tes…
+    294|       await test.corrupt("ifc", mode);
+    295|       await expect(test.service.checkModelFiles(before.head, test.acto…
+       |                                                                                          ^
+    296|       expect((await test.repository.getProjectCheckRuns(test.head.proj…
+    297|       expect((await test.repository.getProjectHead(test.head.projectId…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > manifest-input 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > ifc-unit 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > glb-format 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+AssertionError: promise resolved "{ head: { …(4) }, …(2) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "artifacts": [
++     {
++       "assetId": "eb974289-7d55-4c9f-a4a5-4c95fa7c40a2",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 113,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "model.ifc",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "bdd40c4f-d70c-4f90-ae5c-b01662166b92",
++       "kind": "ifc",
++       "l1Eligible": false,
++       "mimeType": "application/x-step",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++       "requirementMatrixId": null,
++       "sha256": "a7d8765194a4da8ad0df6c66c0cfd12e9d0f5b1e6f4a9dd2d4e776f6e87f5d16",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "f94ae06e-e04b-4b30-abfc-f9a92992b907",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 76,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "model.glb",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "4a65390b-4164-4db6-b5bb-bcc65e17e80a",
++       "kind": "glb",
++       "l1Eligible": false,
++       "mimeType": "model/gltf-binary",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++       "requirementMatrixId": null,
++       "sha256": "d23bc8a62bc727e5acac14d9fc7fc87c60057a1721083e9558932cabd8b356b3",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "99096c83-037d-4218-8ac9-51df169bd7ac",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 48,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "model-brep.zip",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "788571e0-b1b8-4a71-b87c-8b7ff2ca12ba",
++       "kind": "brepBundle",
++       "l1Eligible": false,
++       "mimeType": "application/zip",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++       "requirementMatrixId": null,
++       "sha256": "d5fc705f79d20ef1d8319ee7aeafb7bd69aaad9155ee2d42c113536069e8230e",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "0bab0756-7ec0-46b4-b465-edbfe3c2b0dc",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 143,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "source-map.ndjson",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "d32abe4e-f8b8-471e-98b4-b383c24f2041",
++       "kind": "geometrySourceMap",
++       "l1Eligible": false,
++       "mimeType": "application/x-ndjson",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++       "requirementMatrixId": null,
++       "sha256": "65a0cc7a96902562292c00431f04801c012f72b8651c1001723f2c9f5b13939c",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "9b6db356-c076-478c-9050-81a526863356",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 170,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "geometry-report.json",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "594828a3-95e1-46ad-abce-9284fec68366",
++       "kind": "geometryReport",
++       "l1Eligible": false,
++       "mimeType": "application/json",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++       "requirementMatrixId": null,
++       "sha256": "d01214021c5e6d081740c1e6c0b2066a5db617fda937f7c6dd1e374db394d0b5",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "b6ed79a5-fea1-40c7-91cc-5974487b19e7",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 48,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "preview.png",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "f2adb43c-6dfb-49c1-a2f7-ef2f0c734657",
++       "kind": "geometryPreview",
++       "l1Eligible": false,
++       "mimeType": "image/png",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++       "requirementMatrixId": null,
++       "sha256": "2af0c60b79cd7201c94755f8be223b04a8d6382b46dbcb7f68a28de1af137388",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "e664aebd-ead3-420c-b979-2286fa4b2f75",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 1611,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "manifest.json",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "2d7364f0-27ec-4e4f-a991-9f8a1f0be8d6",
++       "kind": "geometryManifest",
++       "l1Eligible": false,
++       "mimeType": "application/json",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++       "requirementMatrixId": null,
++       "sha256": "8d1e9102018475f0cfcc6713921dd4a52c730652e7604efacf11332d82f48cb7",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       ],
++       "status": "generated-not-qualified",
++     },
++     {
++       "assetId": "e02c08d7-d840-4633-99ce-fdea81391260",
++       "blockers": [
++         "PROFESSIONAL_REVIEW_REQUIRED",
++         "FORMAL_SIGNOFF_UNAVAILABLE",
++       ],
++       "byteLength": 3669,
++       "createdAt": "2026-10-03T02:50:34.040Z",
++       "fileName": "model-file-check-fecdea48-55f0-4b45-9172-e9e271fcac4b.json",
++       "formalEligibility": false,
++       "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++       "id": "219d33cf-b802-42b1-a238-0baaf80d80af",
++       "kind": "checkReport",
++       "l1Eligible": false,
++       "mimeType": "application/json",
++       "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++       "projectRevisionId": "cd4bb626-b52e-45ee-89c4-caf75c304ca3",
++       "requirementMatrixId": null,
++       "sha256": "7a11ac39113d859178188e7185ca57fb7911262de43a60566d7937fafd75bbc7",
++       "sourceRefs": [
++         "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++         "fecdea48-55f0-4b45-9172-e9e271fcac4b",
++       ],
++       "status": "generated-not-qualified",
++     },
++   ],
++   "checkRun": {
++     "artifactRefs": [
++       "bdd40c4f-d70c-4f90-ae5c-b01662166b92",
++       "4a65390b-4164-4db6-b5bb-bcc65e17e80a",
++       "788571e0-b1b8-4a71-b87c-8b7ff2ca12ba",
++       "d32abe4e-f8b8-471e-98b4-b383c24f2041",
++       "594828a3-95e1-46ad-abce-9284fec68366",
++       "f2adb43c-6dfb-49c1-a2f7-ef2f0c734657",
++       "2d7364f0-27ec-4e4f-a991-9f8a1f0be8d6",
++       "219d33cf-b802-42b1-a238-0baaf80d80af",
++     ],
++     "completedAt": "2026-10-03T02:50:34.040Z",
++     "formalEligibility": false,
++     "geometryRevisionId": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++     "id": "fecdea48-55f0-4b45-9172-e9e271fcac4b",
++     "l1Eligible": false,
++     "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++     "projectRevisionId": "a342bd22-5dab-40f3-b162-03460b806b61",
++     "qualification": "generated-not-qualified",
++     "reportAssetId": "e02c08d7-d840-4633-99ce-fdea81391260",
++     "reportHash": "7a11ac39113d859178188e7185ca57fb7911262de43a60566d7937fafd75bbc7",
++     "results": [
++       {
++         "code": "MODEL_OUTPUT_HASH_CLOSURE",
++         "message": "当前模型及生成资料的实际文件、字节数、哈希、清单和输出单位与本次几何版本对应。",
++         "outcome": "passed",
++         "sourceRefs": [
++           "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++           "bdd40c4f-d70c-4f90-ae5c-b01662166b92",
++           "4a65390b-4164-4db6-b5bb-bcc65e17e80a",
++           "788571e0-b1b8-4a71-b87c-8b7ff2ca12ba",
++           "d32abe4e-f8b8-471e-98b4-b383c24f2041",
++           "594828a3-95e1-46ad-abce-9284fec68366",
++           "f2adb43c-6dfb-49c1-a2f7-ef2f0c734657",
++           "2d7364f0-27ec-4e4f-a991-9f8a1f0be8d6",
++         ],
++       },
++       {
++         "code": "PROFESSIONAL_REVIEW_REQUIRED",
++         "message": "本次仅检查文件对应关系，不证明测绘、几何精度或专业复核通过。",
++         "outcome": "blocked",
++         "sourceRefs": [
++           "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++         ],
++       },
++     ],
++     "status": "completed",
++   },
++   "head": {
++     "auditEventId": "168f63bf-578f-4eb8-984e-10161c7e8160",
++     "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++     "revisionId": "056b8d6d-879c-462d-a224-3e9e6283b24f",
++     "snapshot": {
++       "adoptedRecordRefs": [],
++       "buildings": [
++         {
++           "addressText": null,
++           "id": "c77cdc7c-3cfc-4b58-bc8e-18305b8b102d",
++           "name": "内部测试建筑",
++           "periodText": null,
++           "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++           "status": "existing",
++         },
++       ],
++       "candidates": [],
++       "dependencyEdges": [],
++       "entities": [],
++       "evidences": [],
++       "exclusionRecords": [],
++       "facts": [
++         {
++           "acceptanceRef": {
++             "id": "e1631f59-a205-447b-bd37-dbe42b171f57",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "geometry.component.wall",
++           "id": "0009497e-6de8-424a-aa73-54c0d5ca41ec",
++           "producer": {
++             "actionRef": {
++               "commandId": "e1631f59-a205-447b-bd37-dbe42b171f57",
++             },
++             "actorId": "26e7cb63-5dac-4eb9-98a0-e0afe6e1b726",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "c77cdc7c-3cfc-4b58-bc8e-18305b8b102d",
++           "value": {
++             "componentType": "wall",
++             "displayNameZh": "内部墙体",
++             "evidenceRefs": [],
++             "materialCode": "brick",
++             "parameters": [],
++             "parentStableKey": null,
++             "positionBasis": "human",
++             "solid": {
++               "centerMm": [
++                 0,
++                 0,
++                 1500,
++               ],
++               "kind": "box",
++               "sizeX": "6100.5",
++               "sizeY": "240",
++               "sizeZ": "3000",
++             },
++             "sourceLocation": "内部测试",
++             "stableKey": "wall",
++             "unknowns": [],
++           },
++         },
++         {
++           "acceptanceRef": {
++             "id": "e1631f59-a205-447b-bd37-dbe42b171f57",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "documentedDimension.candidate.80095bf9-32c8-4edd-9132-671395664072.0",
++           "id": "c9deb4ed-6f29-47fe-9db5-74bdae73ff07",
++           "producer": {
++             "actionRef": {
++               "commandId": "e1631f59-a205-447b-bd37-dbe42b171f57",
++             },
++             "actorId": "26e7cb63-5dac-4eb9-98a0-e0afe6e1b726",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "c77cdc7c-3cfc-4b58-bc8e-18305b8b102d",
++           "value": {
++             "candidateId": "80095bf9-32c8-4edd-9132-671395664072",
++             "corrected": false,
++             "disposition": "adopt",
++             "kind": "documentedDimension",
++             "methodZh": "资料转写",
++             "name": "总宽",
++             "original": {
++               "certainty": "certain",
++               "evidenceRef": "5e7f6e09-86ca-42e7-b1db-3a6265469295",
++               "locationZh": "内部测试第1行",
++               "noteZh": null,
++               "partZh": "总宽",
++               "valueMm": "6100.5",
++               "valueText": "6100.5",
++             },
++             "quantityKind": "length",
++             "reason": "",
++             "rowIndex": 0,
++             "runId": "a682d7fc-5249-45dd-ae11-306107afc482",
++             "sourceKind": "document-transcription",
++             "unit": "mm",
++             "value": 6100.5,
++           },
++         },
++       ],
++       "geometryRevisions": [
++         {
++           "assets": [
++             {
++               "assetId": "eb974289-7d55-4c9f-a4a5-4c95fa7c40a2",
++               "byteLength": 113,
++               "kind": "ifc",
++               "mimeType": "application/x-step",
++               "sha256": "a7d8765194a4da8ad0df6c66c0cfd12e9d0f5b1e6f4a9dd2d4e776f6e87f5d16",
++             },
++             {
++               "assetId": "f94ae06e-e04b-4b30-abfc-f9a92992b907",
++               "byteLength": 76,
++               "kind": "glb",
++               "mimeType": "model/gltf-binary",
++               "sha256": "d23bc8a62bc727e5acac14d9fc7fc87c60057a1721083e9558932cabd8b356b3",
++             },
++             {
++               "assetId": "99096c83-037d-4218-8ac9-51df169bd7ac",
++               "byteLength": 48,
++               "kind": "brepBundle",
++               "mimeType": "application/zip",
++               "sha256": "d5fc705f79d20ef1d8319ee7aeafb7bd69aaad9155ee2d42c113536069e8230e",
++             },
++             {
++               "assetId": "0bab0756-7ec0-46b4-b465-edbfe3c2b0dc",
++               "byteLength": 143,
++               "kind": "sourceMap",
++               "mimeType": "application/x-ndjson",
++               "sha256": "65a0cc7a96902562292c00431f04801c012f72b8651c1001723f2c9f5b13939c",
++             },
++             {
++               "assetId": "9b6db356-c076-478c-9050-81a526863356",
++               "byteLength": 170,
++               "kind": "report",
++               "mimeType": "application/json",
++               "sha256": "d01214021c5e6d081740c1e6c0b2066a5db617fda937f7c6dd1e374db394d0b5",
++             },
++             {
++               "assetId": "b6ed79a5-fea1-40c7-91cc-5974487b19e7",
++               "byteLength": 48,
++               "kind": "preview",
++               "mimeType": "image/png",
++               "sha256": "2af0c60b79cd7201c94755f8be223b04a8d6382b46dbcb7f68a28de1af137388",
++             },
++             {
++               "assetId": "e664aebd-ead3-420c-b979-2286fa4b2f75",
++               "byteLength": 1611,
++               "kind": "manifest",
++               "mimeType": "application/json",
++               "sha256": "8d1e9102018475f0cfcc6713921dd4a52c730652e7604efacf11332d82f48cb7",
++             },
++           ],
++           "blockers": [
++             "PROFESSIONAL_REVIEW_REQUIRED",
++             "FORMAL_SIGNOFF_UNAVAILABLE",
++           ],
++           "createdAt": "2026-10-03T00:00:00Z",
++           "entityClosureHash": "2222222222222222222222222222222222222222222222222222222222222222",
++           "formalEligibility": false,
++           "geometrySignature": "4444444444444444444444444444444444444444444444444444444444444444",
++           "geometrySpecId": "3b2d2a32-f78a-4fd4-8399-a077f390b3c4",
++           "id": "c1eb778d-9f79-4da5-a98d-91d8de7c3e79",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaceClosureHash": "3333333333333333333333333333333333333333333333333333333333333333",
++           "l1Eligible": false,
++           "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++           "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++           "status": "generated-not-qualified",
++         },
++       ],
++       "geometrySpecs": [
++         {
++           "buildingId": "c77cdc7c-3cfc-4b58-bc8e-18305b8b102d",
++           "coordinateSystem": {
++             "axisOrder": "XYZ",
++             "lengthUnit": "mm",
++             "name": "内部坐标",
++             "origin": [
++               0,
++               0,
++               0,
++             ],
++             "upAxis": "Z",
++           },
++           "createdAt": "2026-10-03T00:00:00Z",
++           "id": "3b2d2a32-f78a-4fd4-8399-a077f390b3c4",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaces": [],
++           "objects": [
++             {
++               "componentType": "wall",
++               "displayNameZh": "内部墙体",
++               "evidenceRefs": [],
++               "factRefs": [
++                 "0009497e-6de8-424a-aa73-54c0d5ca41ec",
++                 "c9deb4ed-6f29-47fe-9db5-74bdae73ff07",
++               ],
++               "id": "06127cc5-711f-43ca-815c-b58778756c41",
++               "materialCode": "brick",
++               "parameters": [],
++               "parentId": null,
++               "producer": {
++                 "fixtureId": "unit27-file-check",
++                 "producerType": "demo",
++               },
++               "solid": {
++                 "centerMm": [
++                   0,
++                   0,
++                   1500,
++                 ],
++                 "kind": "box",
++                 "sizeX": "6100.5",
++                 "sizeY": "240",
++                 "sizeZ": "3000",
++               },
++               "stableKey": "wall",
++               "unknownRefs": [],
++             },
++           ],
++           "outputUnit": "m",
++           "projectId": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++           "projectRevisionId": "aa467a55-b988-45ed-b7c0-b8d906e74155",
++           "schemaVersion": "2.0",
++           "tolerances": {
++             "interfaceMm": 0.5,
++             "modellingMm": 0.5,
++             "tessellationMm": 1,
++           },
++           "unknowns": [],
++         },
++       ],
++       "issues": [],
++       "measurements": [],
++       "observations": [],
++       "parseRecords": [],
++       "project": {
++         "createdAt": "2026-10-03T00:00:00Z",
++         "id": "b1ff43fd-eff0-4915-8e5f-556cd9a6e535",
++         "locationText": null,
++         "name": "内部文件检查",
++         "status": "active",
++       },
++       "relations": [],
++       "reviewSignoffs": [],
++       "schemaVersion": "3.0",
++       "taskDefinitions": [
++         {
++           "automationPolicyRef": null,
++           "confirmedAt": "2026-10-03T00:00:00Z",
++           "deliverables": [
++             "模型",
++           ],
++           "id": "a8924ff3-ce2c-49fc-8700-abd92508a95c",
++           "name": "内部模型文件检查",
++           "productionSetup": {
++             "buildingId": "c77cdc7c-3cfc-4b58-bc8e-18305b8b102d",
++             "outputUnit": "m",
++             "projectGroup": null,
++             "purpose": "existingSurvey",
++             "targets": [
++               "model",
++             ],
++           },
++           "regulationRefs": [],
++           "responsibilities": [
++             {
++               "actorId": "26e7cb63-5dac-4eb9-98a0-e0afe6e1b726",
++               "role": "projectLead",
++             },
++           ],
++           "scope": [
++             "局部模型",
++           ],
++         },
++       ],
++     },
++   },
+  }
+
+ ❯ src/delivery-service.test.ts:304:88
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 24 skipped (28)
+   Start at  03:50:33
+   Duration  870ms (transform 156ms, setup 0ms, collect 577ms, tests 83ms, environment 0ms, prepare 70ms)
+
+
+unit27-model-red-service.log
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ❯ src/delivery-service.test.ts (28 tests | 8 failed | 20 skipped) 113ms
+   ↓ delivery blocker propagation > 传播 open issue、结构化 unknown 和 blocked check，并区分仅正式资格阻断
+   ↓ delivery blocker propagation > 有复核签发记录时，正式资格阻断随记录解除，其余阻断照旧
+   ↓ delivery output units > 单位变更后旧签发不能解除旧模型的单位阻断，新单位图纸仍单独适用
+   ↓ delivery output units > 按成果引用的矩阵判断，旧图纸不会被最新矩阵或签发覆盖
+   ↓ delivery output units > 旧单位模型关联新单位矩阵时仍按模型规格保留硬阻断
+   ↓ delivery output units > 旧毫米规格和矩阵保持兼容，读取不补写单位
+   ↓ delivery output units > 草案包含新单位图纸和已保存旧单位模型时先保存 blocked 评估，再拒绝生成草案
+   × 仅模型实际文件检查 > mm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果 46ms
+     → expected { schemaVersion: '1.0', …(16) } to match object { scope: 'model-files', …(4) }
+(12 matching properties omitted from actual)
+   × 仅模型实际文件检查 > cm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果 9ms
+     → expected { schemaVersion: '1.0', …(16) } to match object { scope: 'model-files', …(4) }
+(12 matching properties omitted from actual)
+   × 仅模型实际文件检查 > m 模型保存独立非空报告，待签发草案实际包恢复保留对应成果 8ms
+     → expected { schemaVersion: '1.0', …(16) } to match object { scope: 'model-files', …(4) }
+(12 matching properties omitted from actual)
+   ↓ 仅模型实际文件检查 > 实际资产 missing 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > 实际资产 tamper 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > 实际资产 length 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > 实际资产 metadata 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > manifest-version 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-geometry 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-input 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-file 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-missing 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > spec-unit 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > ifc-unit 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > glb-format 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > targets 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   × 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 0 后未生成，拒绝旧文件检查和草案 8ms
+     → expected true to be false // Object.is equality
+   × 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 1 后未生成，拒绝旧文件检查和草案 9ms
+     → expected true to be false // Object.is equality
+   × 仅模型实际文件检查 > 空检查、缺GLB或任务追加图纸目标不放行模型草案 14ms
+     → promise resolved "{ head: { …(4) }, draft: { …(14) } }" instead of rejecting
+   × 仅模型实际文件检查 > 新增或撤销构件使模型待更新，合成来源和无关记录不使模型失效 4ms
+     → expected true to be false // Object.is equality
+   × 仅模型实际文件检查 > 过期head、非当前几何与检查后文件篡改均不得建立新的检查或草案 13ms
+     → promise resolved "{ head: { …(4) }, draft: { …(14) } }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > mm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > cm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > m 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+AssertionError: expected { schemaVersion: '1.0', …(16) } to match object { scope: 'model-files', …(4) }
+(12 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "checkRunId": "f8ab8f9c-de6e-4506-a529-a14d080ac477",
+    "geometryRevisionId": "18a63086-bba1-4e72-a48b-8fd24d3df488",
+    "glbLengthUnit": "m",
+-   "outputUnit": "mm",
++   "outputUnit": "invalid",
+    "scope": "model-files",
+  }
+
+ ❯ src/delivery-service.test.ts:272:22
+    270|       const report = JSON.parse(new TextDecoder().decode(bytes));
+    271|       expect(sha256Hex(bytes)).toBe(result.checkRun.reportHash);
+    272|       expect(report).toMatchObject({ scope: "model-files", outputUnit:…
+       |                      ^
+    273|       expect(report.files).toHaveLength(7); expect(report.files[0].byt…
+    274|       expect(report.files[0].sha256).toBe(sha256Hex(test.bytesByKind.g…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 0 后未生成，拒绝旧文件检查和草案
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 1 后未生成，拒绝旧文件检查和草案
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/delivery-service.test.ts:318:55
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 空检查、缺GLB或任务追加图纸目标不放行模型草案
+AssertionError: promise resolved "{ head: { …(4) }, draft: { …(14) } }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "draft": {
++     "artifactRefs": [
++       "11e2e73f-71e8-44b8-add8-057d8de052a2",
++       "4ca19fef-d548-454b-bb2a-f719f9ee511d",
++       "54720882-d0a2-492f-82ba-2a87fffba434",
++       "7dbfef87-cc11-4848-8691-28eb74be4310",
++       "832830db-405e-489d-bfc9-03eae66c7e31",
++       "cc82bfa9-bbd4-4de1-ae9a-419cb96dcdb1",
++       "ebb7aabf-b384-4ecd-8679-9c0b0fb75be9",
++       "a1666c4a-50b1-49c4-afd2-f2bc4d8a4234",
++       "edf41722-79cc-43fb-9b69-1c84bc4c1662",
++     ],
++     "createdAt": "2026-10-03T02:51:58.283Z",
++     "evaluationId": "7a7179f6-3f9f-470d-add7-a4def6ff78c6",
++     "formalEligibility": false,
++     "geometryRevisionId": "2a80d529-82d8-4c88-bdae-2f99088a39e4",
++     "id": "d2792bdd-2d5b-4965-8df2-fc5c9f35bc42",
++     "l1Eligible": false,
++     "manifestAssetId": "c5f5770f-ea90-4d6a-9ff7-a79831b10f63",
++     "manifestHash": "5fb5d233465e80990cc93f6b59d765a7a8a2fde793f44de89a79792ed097f093",
++     "projectId": "b88adf46-59c6-4e08-b02e-06ef44943dd4",
++     "projectRevisionId": "49a65cfd-006c-4314-8251-bdff5ce22c74",
++     "restrictions": [
++       "本套成果由系统生成，签发前只作为待签发成果使用。",
++       "签发前不可用于正式交付、施工或法定档案入库。",
++       "签发前须经项目责任人员专业复核。",
++       "成果尚未经项目责任人员专业复核。",
++       "本机身份不具备签发资格，签发须在正式环境完成。",
++       "成果未评定为专业样板等级，不作为其他项目的参照标准。",
++       "成果文件在签发前尚未经专业复核。（涉及 8 项）",
++       "成果文件在签发前不能由本机签发。（涉及 8 项）",
++     ],
++     "signatureStatus": "unsigned",
++     "status": "proxy-unissued",
++   },
++   "head": {
++     "auditEventId": "33c33b5f-1ddd-48d2-a1d4-196dcc458b45",
++     "projectId": "b88adf46-59c6-4e08-b02e-06ef44943dd4",
++     "revisionId": "0451743d-b14c-4e1d-9f05-65f819ba0afc",
++     "snapshot": {
++       "adoptedRecordRefs": [],
++       "buildings": [
++         {
++           "addressText": null,
++           "id": "2318f14d-db7b-4eb6-bdd2-1f584e43b0b1",
++           "name": "内部测试建筑",
++           "periodText": null,
++           "projectId": "b88adf46-59c6-4e08-b02e-06ef44943dd4",
++           "status": "existing",
++         },
++       ],
++       "candidates": [],
++       "dependencyEdges": [],
++       "entities": [],
++       "evidences": [],
++       "exclusionRecords": [],
++       "facts": [
++         {
++           "acceptanceRef": {
++             "id": "e0210953-db3a-490a-9599-b5dd7bb5b190",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "geometry.component.wall",
++           "id": "b162413f-8570-402b-8c3e-3ff548120bd9",
++           "producer": {
++             "actionRef": {
++               "commandId": "e0210953-db3a-490a-9599-b5dd7bb5b190",
++             },
++             "actorId": "4c30d528-1d0d-4708-ad98-dadf45c77712",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "2318f14d-db7b-4eb6-bdd2-1f584e43b0b1",
++           "value": {
++             "componentType": "wall",
++             "displayNameZh": "内部墙体",
++             "evidenceRefs": [],
++             "materialCode": "brick",
++             "parameters": [],
++             "parentStableKey": null,
++             "positionBasis": "human",
++             "solid": {
++               "centerMm": [
++                 0,
++                 0,
++                 1500,
++               ],
++               "kind": "box",
++               "sizeX": "6100.5",
++               "sizeY": "240",
++               "sizeZ": "3000",
++             },
++             "sourceLocation": "内部测试",
++             "stableKey": "wall",
++             "unknowns": [],
++           },
++         },
++         {
++           "acceptanceRef": {
++             "id": "e0210953-db3a-490a-9599-b5dd7bb5b190",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "documentedDimension.candidate.6e216712-97b8-446e-ae66-7a77ec4872c6.0",
++           "id": "d33aa0f7-fc9d-4d30-9eba-5036ae1c98be",
++           "producer": {
++             "actionRef": {
++               "commandId": "e0210953-db3a-490a-9599-b5dd7bb5b190",
++             },
++             "actorId": "4c30d528-1d0d-4708-ad98-dadf45c77712",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "2318f14d-db7b-4eb6-bdd2-1f584e43b0b1",
++           "value": {
++             "candidateId": "6e216712-97b8-446e-ae66-7a77ec4872c6",
++             "corrected": false,
++             "disposition": "adopt",
++             "kind": "documentedDimension",
++             "methodZh": "资料转写",
++             "name": "总宽",
++             "original": {
++               "certainty": "certain",
++               "evidenceRef": "71c4876d-f575-4f03-b26b-85b54b5e82f3",
++               "locationZh": "内部测试第1行",
++               "noteZh": null,
++               "partZh": "总宽",
++               "valueMm": "6100.5",
++               "valueText": "6100.5",
++             },
++             "quantityKind": "length",
++             "reason": "",
++             "rowIndex": 0,
++             "runId": "b7630de5-67d3-4991-bfc6-2dd8e8c0a435",
++             "sourceKind": "document-transcription",
++             "unit": "mm",
++             "value": 6100.5,
++           },
++         },
++       ],
++       "geometryRevisions": [
++         {
++           "assets": [
++             {
++               "assetId": "551d94ef-5627-4854-91f1-283da421c77e",
++               "byteLength": 113,
++               "kind": "ifc",
++               "mimeType": "application/x-step",
++               "sha256": "a7d8765194a4da8ad0df6c66c0cfd12e9d0f5b1e6f4a9dd2d4e776f6e87f5d16",
++             },
++             {
++               "assetId": "2036d2ca-f8ec-4f12-9055-c4b3e57e606b",
++               "byteLength": 76,
++               "kind": "glb",
++               "mimeType": "model/gltf-binary",
++               "sha256": "d23bc8a62bc727e5acac14d9fc7fc87c60057a1721083e9558932cabd8b356b3",
++             },
++             {
++               "assetId": "680c7fa9-e2e1-4a32-92f0-3a4d20d13b80",
++               "byteLength": 48,
++               "kind": "brepBundle",
++               "mimeType": "application/zip",
++               "sha256": "d5fc705f79d20ef1d8319ee7aeafb7bd69aaad9155ee2d42c113536069e8230e",
++             },
++             {
++               "assetId": "9c8f59e4-d4f3-4b6a-baba-af9789b1e913",
++               "byteLength": 143,
++               "kind": "sourceMap",
++               "mimeType": "application/x-ndjson",
++               "sha256": "9cee40575465ce6c0c8a5a3ed47126acc6eaa21c111fec95f88185a00bdce432",
++             },
++             {
++               "assetId": "982db736-2ebc-40df-854e-2639f29da75e",
++               "byteLength": 170,
++               "kind": "report",
++               "mimeType": "application/json",
++               "sha256": "de984cc82f1e6204274fde5fa940fe429a1c2f82aa1ad966c2313dacbecd594c",
++             },
++             {
++               "assetId": "f9a97d67-79c0-4643-9e31-01cc82435b6f",
++               "byteLength": 48,
++               "kind": "preview",
++               "mimeType": "image/png",
++               "sha256": "2af0c60b79cd7201c94755f8be223b04a8d6382b46dbcb7f68a28de1af137388",
++             },
++             {
++               "assetId": "e17e3ab3-8be5-4e00-84df-0817453fa0b2",
++               "byteLength": 1611,
++               "kind": "manifest",
++               "mimeType": "application/json",
++               "sha256": "2f1f9670e09e823f5b4e3075546df700e8aef7a801b3164c27a2f4a3e25e3e11",
++             },
++           ],
++           "blockers": [
++             "PROFESSIONAL_REVIEW_REQUIRED",
++             "FORMAL_SIGNOFF_UNAVAILABLE",
++           ],
++           "createdAt": "2026-10-03T00:00:00Z",
++           "entityClosureHash": "2222222222222222222222222222222222222222222222222222222222222222",
++           "formalEligibility": false,
++           "geometrySignature": "4444444444444444444444444444444444444444444444444444444444444444",
++           "geometrySpecId": "7f276a7c-8375-4ced-ab77-418b15a223d3",
++           "id": "2a80d529-82d8-4c88-bdae-2f99088a39e4",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaceClosureHash": "3333333333333333333333333333333333333333333333333333333333333333",
++           "l1Eligible": false,
++           "projectId": "b88adf46-59c6-4e08-b02e-06ef44943dd4",
++           "projectRevisionId": "07b9a834-d07f-4a2b-84fd-22ff3ba36b07",
++           "status": "generated-not-qualified",
++         },
++       ],
++       "geometrySpecs": [
++         {
++           "buildingId": "2318f14d-db7b-4eb6-bdd2-1f584e43b0b1",
++           "coordinateSystem": {
++             "axisOrder": "XYZ",
++             "lengthUnit": "mm",
++             "name": "内部坐标",
++             "origin": [
++               0,
++               0,
++               0,
++             ],
++             "upAxis": "Z",
++           },
++           "createdAt": "2026-10-03T00:00:00Z",
++           "id": "7f276a7c-8375-4ced-ab77-418b15a223d3",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaces": [],
++           "objects": [
++             {
++               "componentType": "wall",
++               "displayNameZh": "内部墙体",
++               "evidenceRefs": [],
++               "factRefs": [
++                 "b162413f-8570-402b-8c3e-3ff548120bd9",
++                 "d33aa0f7-fc9d-4d30-9eba-5036ae1c98be",
++               ],
++               "id": "8fc77531-187f-47ae-9637-d9786bc508b5",
++               "materialCode": "brick",
++               "parameters": [],
++               "parentId": null,
++               "producer": {
++                 "fixtureId": "unit27-file-check",
++                 "producerType": "demo",
++               },
++               "solid": {
++                 "centerMm": [
++                   0,
++                   0,
++                   1500,
++                 ],
++                 "kind": "box",
++                 "sizeX": "6100.5",
++                 "sizeY": "240",
++                 "sizeZ": "3000",
++               },
++               "stableKey": "wall",
++               "unknownRefs": [],
++             },
++           ],
++           "outputUnit": "m",
++           "projectId": "b88adf46-59c6-4e08-b02e-06ef44943dd4",
++           "projectRevisionId": "07b9a834-d07f-4a2b-84fd-22ff3ba36b07",
++           "schemaVersion": "2.0",
++           "tolerances": {
++             "interfaceMm": 0.5,
++             "modellingMm": 0.5,
++             "tessellationMm": 1,
++           },
++           "unknowns": [],
++         },
++       ],
++       "issues": [],
++       "measurements": [],
++       "observations": [],
++       "parseRecords": [],
++       "project": {
++         "createdAt": "2026-10-03T00:00:00Z",
++         "id": "b88adf46-59c6-4e08-b02e-06ef44943dd4",
++         "locationText": null,
++         "name": "内部文件检查",
++         "status": "active",
++       },
++       "relations": [],
++       "reviewSignoffs": [],
++       "schemaVersion": "3.0",
++       "taskDefinitions": [
++         {
++           "automationPolicyRef": null,
++           "confirmedAt": "2026-10-03T00:00:00Z",
++           "deliverables": [
++             "模型",
++           ],
++           "id": "2b3f1dba-a3cf-48a8-9ccd-239b2bc8c249",
++           "name": "内部模型文件检查",
++           "productionSetup": {
++             "buildingId": "2318f14d-db7b-4eb6-bdd2-1f584e43b0b1",
++             "outputUnit": "m",
++             "projectGroup": null,
++             "purpose": "existingSurvey",
++             "targets": [
++               "model",
++             ],
++           },
++           "regulationRefs": [],
++           "responsibilities": [
++             {
++               "actorId": "4c30d528-1d0d-4708-ad98-dadf45c77712",
++               "role": "projectLead",
++             },
++           ],
++           "scope": [
++             "局部模型",
++           ],
++         },
++       ],
++     },
++   },
+  }
+
+ ❯ src/delivery-service.test.ts:329:146
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 新增或撤销构件使模型待更新，合成来源和无关记录不使模型失效
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/delivery-service.test.ts:344:58
+    342|       const changed = structuredClone(test.head);
+    343|       changed.snapshot.facts.push({ ...test.facts[0]!, id: crypto.rand…
+    344|       expect(modelInputsCurrent(changed, test.geometry)).toBe(false);
+       |                                                          ^
+    345|       changed.snapshot.facts = [...test.head.snapshot.facts, { ...test…
+    346|       expect(modelInputsCurrent(changed, test.geometry)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 过期head、非当前几何与检查后文件篡改均不得建立新的检查或草案
+AssertionError: promise resolved "{ head: { …(4) }, draft: { …(14) } }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "draft": {
++     "artifactRefs": [
++       "034299b0-8438-4a95-856f-fe889c104371",
++       "0f1bec7c-dd9b-4cf8-9c8d-632fe22c1c26",
++       "15856570-9335-4b9a-9757-41886095b453",
++       "37a78eff-2cd7-4f8c-8929-04109180df43",
++       "65c0b3c9-e498-42ef-ba2a-9499eb7b3bcb",
++       "a3f915b8-eee0-4a74-907a-387ae26f1ccb",
++       "a9e35f7f-97b6-442e-b900-fc5b30112136",
++       "c28abc86-70c8-44d8-ad8d-a5a1cc5dba8b",
++       "1e5a57c1-35a2-4530-ae1a-f4288b9e1ed3",
++     ],
++     "createdAt": "2026-10-03T02:51:58.301Z",
++     "evaluationId": "4f23abe6-76d3-41ce-b791-eeef172e4930",
++     "formalEligibility": false,
++     "geometryRevisionId": "1a25e689-8b57-48e3-81c8-7684bb6b4e1d",
++     "id": "68168064-4d05-4f3a-bb24-24b8b2d6e31c",
++     "l1Eligible": false,
++     "manifestAssetId": "91eef808-d990-4bee-a50b-c883f651ec7d",
++     "manifestHash": "6131656c0617385b0ea1cdaca1a1cfac9a835b1fb67f3181136303efb98daa8f",
++     "projectId": "c26ff322-b10a-4b06-a480-eba4319dce83",
++     "projectRevisionId": "f2d29bd8-6eed-4955-90ea-066ea6dbce5d",
++     "restrictions": [
++       "本套成果由系统生成，签发前只作为待签发成果使用。",
++       "签发前不可用于正式交付、施工或法定档案入库。",
++       "签发前须经项目责任人员专业复核。",
++       "成果尚未经项目责任人员专业复核。",
++       "本机身份不具备签发资格，签发须在正式环境完成。",
++       "成果未评定为专业样板等级，不作为其他项目的参照标准。",
++       "本次仅检查文件对应关系，不证明测绘、几何精度或专业复核通过。",
++       "成果文件在签发前尚未经专业复核。（涉及 8 项）",
++       "成果文件在签发前不能由本机签发。（涉及 8 项）",
++     ],
++     "signatureStatus": "unsigned",
++     "status": "proxy-unissued",
++   },
++   "head": {
++     "auditEventId": "11f7a3da-2a68-4765-9a21-cf4ab0a93dbb",
++     "projectId": "c26ff322-b10a-4b06-a480-eba4319dce83",
++     "revisionId": "4bbd1466-98b0-4d6f-8331-cafcb70456a6",
++     "snapshot": {
++       "adoptedRecordRefs": [],
++       "buildings": [
++         {
++           "addressText": null,
++           "id": "1bdcd5a4-4fa9-4f0b-9728-4df7f82c8859",
++           "name": "内部测试建筑",
++           "periodText": null,
++           "projectId": "c26ff322-b10a-4b06-a480-eba4319dce83",
++           "status": "existing",
++         },
++       ],
++       "candidates": [],
++       "dependencyEdges": [],
++       "entities": [],
++       "evidences": [],
++       "exclusionRecords": [],
++       "facts": [
++         {
++           "acceptanceRef": {
++             "id": "a4275ed7-7d69-47dd-874c-fd3f1e38368b",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "geometry.component.wall",
++           "id": "7d6724bb-e912-4601-b9c2-a79b60c8dd64",
++           "producer": {
++             "actionRef": {
++               "commandId": "a4275ed7-7d69-47dd-874c-fd3f1e38368b",
++             },
++             "actorId": "a4a0c1de-90d0-4c22-a868-bdc281b1a419",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "1bdcd5a4-4fa9-4f0b-9728-4df7f82c8859",
++           "value": {
++             "componentType": "wall",
++             "displayNameZh": "内部墙体",
++             "evidenceRefs": [],
++             "materialCode": "brick",
++             "parameters": [],
++             "parentStableKey": null,
++             "positionBasis": "human",
++             "solid": {
++               "centerMm": [
++                 0,
++                 0,
++                 1500,
++               ],
++               "kind": "box",
++               "sizeX": "6100.5",
++               "sizeY": "240",
++               "sizeZ": "3000",
++             },
++             "sourceLocation": "内部测试",
++             "stableKey": "wall",
++             "unknowns": [],
++           },
++         },
++         {
++           "acceptanceRef": {
++             "id": "a4275ed7-7d69-47dd-874c-fd3f1e38368b",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [],
++           "field": "documentedDimension.candidate.2f65ffe6-3d63-4dee-bd18-12665b739979.0",
++           "id": "8ab5b657-28d8-4eaa-8fa2-600c136239ff",
++           "producer": {
++             "actionRef": {
++               "commandId": "a4275ed7-7d69-47dd-874c-fd3f1e38368b",
++             },
++             "actorId": "a4a0c1de-90d0-4c22-a868-bdc281b1a419",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "1bdcd5a4-4fa9-4f0b-9728-4df7f82c8859",
++           "value": {
++             "candidateId": "2f65ffe6-3d63-4dee-bd18-12665b739979",
++             "corrected": false,
++             "disposition": "adopt",
++             "kind": "documentedDimension",
++             "methodZh": "资料转写",
++             "name": "总宽",
++             "original": {
++               "certainty": "certain",
++               "evidenceRef": "0b86e7a6-c8c0-40ec-a112-eac8c671ae7b",
++               "locationZh": "内部测试第1行",
++               "noteZh": null,
++               "partZh": "总宽",
++               "valueMm": "6100.5",
++               "valueText": "6100.5",
++             },
++             "quantityKind": "length",
++             "reason": "",
++             "rowIndex": 0,
++             "runId": "ed681d4b-d92f-4472-a7ff-2c5968f836dc",
++             "sourceKind": "document-transcription",
++             "unit": "mm",
++             "value": 6100.5,
++           },
++         },
++       ],
++       "geometryRevisions": [
++         {
++           "assets": [
++             {
++               "assetId": "3c05054c-903a-47c9-94f1-c2be7c2c1248",
++               "byteLength": 113,
++               "kind": "ifc",
++               "mimeType": "application/x-step",
++               "sha256": "a7d8765194a4da8ad0df6c66c0cfd12e9d0f5b1e6f4a9dd2d4e776f6e87f5d16",
++             },
++             {
++               "assetId": "87943087-554a-4b99-9f90-4c4afa17b7b3",
++               "byteLength": 76,
++               "kind": "glb",
++               "mimeType": "model/gltf-binary",
++               "sha256": "d23bc8a62bc727e5acac14d9fc7fc87c60057a1721083e9558932cabd8b356b3",
++             },
++             {
++               "assetId": "f54bbcad-c34f-451e-8d37-15b881b4f33a",
++               "byteLength": 48,
++               "kind": "brepBundle",
++               "mimeType": "application/zip",
++               "sha256": "d5fc705f79d20ef1d8319ee7aeafb7bd69aaad9155ee2d42c113536069e8230e",
++             },
++             {
++               "assetId": "6db4392f-6caf-4038-9536-909b62b08556",
++               "byteLength": 143,
++               "kind": "sourceMap",
++               "mimeType": "application/x-ndjson",
++               "sha256": "a6c28e045275c8bb09f807503eb3902d50b8be94837a89e1e1a0c13ec10a3e8c",
++             },
++             {
++               "assetId": "cadb2eee-f0f2-464e-ab41-872f56740418",
++               "byteLength": 170,
++               "kind": "report",
++               "mimeType": "application/json",
++               "sha256": "21eb2b81ca9d3e5453f53f7a6bcc7d1567ff7250f1d1c863b32644920523d9eb",
++             },
++             {
++               "assetId": "919be798-f5ef-48fb-a210-53643e30de27",
++               "byteLength": 48,
++               "kind": "preview",
++               "mimeType": "image/png",
++               "sha256": "2af0c60b79cd7201c94755f8be223b04a8d6382b46dbcb7f68a28de1af137388",
++             },
++             {
++               "assetId": "3dc5d9c7-67f9-43b7-956b-6417d7170418",
++               "byteLength": 1611,
++               "kind": "manifest",
++               "mimeType": "application/json",
++               "sha256": "a1d6cf6fcd2b91c5c41a7cece5436b82cdf51ff5d7b6c896c8809457ced05ff5",
++             },
++           ],
++           "blockers": [
++             "PROFESSIONAL_REVIEW_REQUIRED",
++             "FORMAL_SIGNOFF_UNAVAILABLE",
++           ],
++           "createdAt": "2026-10-03T00:00:00Z",
++           "entityClosureHash": "2222222222222222222222222222222222222222222222222222222222222222",
++           "formalEligibility": false,
++           "geometrySignature": "4444444444444444444444444444444444444444444444444444444444444444",
++           "geometrySpecId": "d558f2c3-0cbb-4b19-901e-773dd3056358",
++           "id": "1a25e689-8b57-48e3-81c8-7684bb6b4e1d",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaceClosureHash": "3333333333333333333333333333333333333333333333333333333333333333",
++           "l1Eligible": false,
++           "projectId": "c26ff322-b10a-4b06-a480-eba4319dce83",
++           "projectRevisionId": "db0d4845-b2af-400c-a5f1-6c4f55c49fbc",
++           "status": "generated-not-qualified",
++         },
++       ],
++       "geometrySpecs": [
++         {
++           "buildingId": "1bdcd5a4-4fa9-4f0b-9728-4df7f82c8859",
++           "coordinateSystem": {
++             "axisOrder": "XYZ",
++             "lengthUnit": "mm",
++             "name": "内部坐标",
++             "origin": [
++               0,
++               0,
++               0,
++             ],
++             "upAxis": "Z",
++           },
++           "createdAt": "2026-10-03T00:00:00Z",
++           "id": "d558f2c3-0cbb-4b19-901e-773dd3056358",
++           "inputHash": "1111111111111111111111111111111111111111111111111111111111111111",
++           "interfaces": [],
++           "objects": [
++             {
++               "componentType": "wall",
++               "displayNameZh": "内部墙体",
++               "evidenceRefs": [],
++               "factRefs": [
++                 "7d6724bb-e912-4601-b9c2-a79b60c8dd64",
++                 "8ab5b657-28d8-4eaa-8fa2-600c136239ff",
++               ],
++               "id": "ce6321b5-453c-4e0a-9a19-1878e44dc335",
++               "materialCode": "brick",
++               "parameters": [],
++               "parentId": null,
++               "producer": {
++                 "fixtureId": "unit27-file-check",
++                 "producerType": "demo",
++               },
++               "solid": {
++                 "centerMm": [
++                   0,
++                   0,
++                   1500,
++                 ],
++                 "kind": "box",
++                 "sizeX": "6100.5",
++                 "sizeY": "240",
++                 "sizeZ": "3000",
++               },
++               "stableKey": "wall",
++               "unknownRefs": [],
++             },
++           ],
++           "outputUnit": "m",
++           "projectId": "c26ff322-b10a-4b06-a480-eba4319dce83",
++           "projectRevisionId": "db0d4845-b2af-400c-a5f1-6c4f55c49fbc",
++           "schemaVersion": "2.0",
++           "tolerances": {
++             "interfaceMm": 0.5,
++             "modellingMm": 0.5,
++             "tessellationMm": 1,
++           },
++           "unknowns": [],
++         },
++       ],
++       "issues": [],
++       "measurements": [],
++       "observations": [],
++       "parseRecords": [],
++       "project": {
++         "createdAt": "2026-10-03T00:00:00Z",
++         "id": "c26ff322-b10a-4b06-a480-eba4319dce83",
++         "locationText": null,
++         "name": "内部文件检查",
++         "status": "active",
++       },
++       "relations": [],
++       "reviewSignoffs": [],
++       "schemaVersion": "3.0",
++       "taskDefinitions": [
++         {
++           "automationPolicyRef": null,
++           "confirmedAt": "2026-10-03T00:00:00Z",
++           "deliverables": [
++             "模型",
++           ],
++           "id": "4d68c234-0c2d-4d5c-8c8c-be3ac234ac72",
++           "name": "内部模型文件检查",
++           "productionSetup": {
++             "buildingId": "1bdcd5a4-4fa9-4f0b-9728-4df7f82c8859",
++             "outputUnit": "m",
++             "projectGroup": null,
++             "purpose": "existingSurvey",
++             "targets": [
++               "model",
++             ],
++           },
++           "regulationRefs": [],
++           "responsibilities": [
++             {
++               "actorId": "a4a0c1de-90d0-4c22-a868-bdc281b1a419",
++               "role": "projectLead",
++             },
++           ],
++           "scope": [
++             "局部模型",
++           ],
++         },
++       ],
++     },
++   },
+  }
+
+ ❯ src/delivery-service.test.ts:366:126
+    364|       await expect(test.service.checkModelFiles(result.head, test.acto…
+    365|       await test.corrupt("ifc", "tamper");
+    366|       await expect(test.service.createProxyDraft(result.head, test.act…
+       |                                                                                                                              ^
+    367|       expect(await test.repository.getProjectCheckRuns(test.head.proje…
+    368|       expect(await test.repository.getProjectDeliveries(test.head.proj…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 20 skipped (28)
+   Start at  03:51:57
+   Duration  892ms (transform 157ms, setup 0ms, collect 574ms, tests 113ms, environment 0ms, prepare 66ms)
+
+
+unit27-model-source-rejection-red.log
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ❯ src/delivery-service.test.ts (30 tests | 2 failed | 28 skipped) 64ms
+   ↓ delivery blocker propagation > 传播 open issue、结构化 unknown 和 blocked check，并区分仅正式资格阻断
+   ↓ delivery blocker propagation > 有复核签发记录时，正式资格阻断随记录解除，其余阻断照旧
+   ↓ delivery output units > 单位变更后旧签发不能解除旧模型的单位阻断，新单位图纸仍单独适用
+   ↓ delivery output units > 按成果引用的矩阵判断，旧图纸不会被最新矩阵或签发覆盖
+   ↓ delivery output units > 旧单位模型关联新单位矩阵时仍按模型规格保留硬阻断
+   ↓ delivery output units > 旧毫米规格和矩阵保持兼容，读取不补写单位
+   ↓ delivery output units > 草案包含新单位图纸和已保存旧单位模型时先保存 blocked 评估，再拒绝生成草案
+   × 仅模型实际文件检查 > 实际整体驳回 source-dimension 来源后事实ID不变，旧模型检查和草案均失效 50ms
+     → expected true to be false // Object.is equality
+   × 仅模型实际文件检查 > 实际整体驳回 source-component 来源后事实ID不变，旧模型检查和草案均失效 14ms
+     → expected true to be false // Object.is equality
+   ↓ 仅模型实际文件检查 > mm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+   ↓ 仅模型实际文件检查 > cm 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+   ↓ 仅模型实际文件检查 > m 模型保存独立非空报告，待签发草案实际包恢复保留对应成果
+   ↓ 仅模型实际文件检查 > 实际资产 missing 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > 实际资产 tamper 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > 实际资产 length 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > 实际资产 metadata 不能新增通过检查，原成功记录不会充作本次成功
+   ↓ 仅模型实际文件检查 > manifest-version 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-geometry 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-input 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-file 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > manifest-missing 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > spec-unit 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > ifc-unit 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > glb-format 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > targets 在写通过记录前拒绝，全部文件哈希有效仍核对实际内容
+   ↓ 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 0 后未生成，拒绝旧文件检查和草案
+   ↓ 仅模型实际文件检查 > 实际保存构件或采用尺寸新事实 1 后未生成，拒绝旧文件检查和草案
+   ↓ 仅模型实际文件检查 > 空检查、缺GLB或任务追加图纸目标不放行模型草案
+   ↓ 仅模型实际文件检查 > 新增或撤销构件使模型待更新，合成来源和无关记录不使模型失效
+   ↓ 仅模型实际文件检查 > 过期head、非当前几何与检查后文件篡改均不得建立新的检查或草案
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 实际整体驳回 source-dimension 来源后事实ID不变，旧模型检查和草案均失效
+ FAIL  src/delivery-service.test.ts > 仅模型实际文件检查 > 实际整体驳回 source-component 来源后事实ID不变，旧模型检查和草案均失效
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/delivery-service.test.ts:300:55
+    298|       expect(head.snapshot.candidates.find((item) => item.id === test.…
+    299|       expect(head.snapshot.geometryRevisions[0]!.assets).toEqual(test.…
+    300|       expect(modelInputsCurrent(head, test.geometry)).toBe(false);
+       |                                                       ^
+    301|       await expect(test.service.checkModelFiles(head, test.actorId, te…
+    302|       await expect(test.service.createProxyDraft(head, test.actorId, t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 28 skipped (30)
+   Start at  04:01:43
+   Duration  798ms (transform 152ms, setup 0ms, collect 549ms, tests 64ms, environment 0ms, prepare 62ms)
+

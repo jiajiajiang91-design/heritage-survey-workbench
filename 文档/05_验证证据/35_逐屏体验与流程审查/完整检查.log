@@ -1,0 +1,321 @@
+
+==================================================
+文档与引用
+==================================================
+检查范围：136 份文档、756 份源码
+
+建议核对（55）
+  文档/03_辅导笔记/辅导6要点笔记_260704.md  28 处
+  文档/03_辅导笔记/辅导7要点笔记_260712.md  27 处
+  加 --verbose 看逐行
+
+==================================================
+单元与状态
+==================================================
+实施区单元 25 个，已归档 0 个
+  单元 01_图纸标注体系 验收 8/8 条已判定，其中未通过 0 条
+  单元 01_图纸标注体系 全部通过，可按确认规则关闭
+  单元 02_框选修正接入 验收 10/10 条已判定，其中未通过 0 条
+  单元 02_框选修正接入 全部通过，可按确认规则关闭
+  单元 03_公开仓库发布 验收 10/10 条已判定，其中未通过 0 条
+  单元 03_公开仓库发布 全部通过，可按确认规则关闭
+  单元 04_第三代动作四项 验收 0/12 条已判定，其中未通过 0 条
+  单元 05_设计参数补全与原型对齐 验收 12/12 条已判定，其中未通过 1 条
+  单元 06_外壳与令牌 验收 12/12 条已判定，其中未通过 1 条
+  单元 07_影响范围能力 验收 19/19 条已判定，其中未通过 0 条
+  单元 07_影响范围能力 全部通过，可按确认规则关闭
+  单元 08_十九屏重做 验收 9/9 条已判定，其中未通过 0 条
+  单元 08_十九屏重做 全部通过，可按确认规则关闭
+  单元 09_成功归档与用语层 验收 9/9 条已判定，其中未通过 0 条
+  单元 09_成功归档与用语层 全部通过，可按确认规则关闭
+  单元 11_制作方向文档优化 验收 8/8 条已判定，其中未通过 0 条
+  单元 11_制作方向文档优化 全部通过，可按确认规则关闭
+  单元 12_任务与出图表单 验收 9/9 条已判定，其中未通过 0 条
+  单元 12_任务与出图表单 全部通过，可按确认规则关闭
+  单元 13_尺寸候选采用 验收 9/9 条已判定，其中未通过 0 条
+  单元 13_尺寸候选采用 全部通过，可按确认规则关闭
+  单元 14_构件参数与尺寸引用 验收 9/9 条已判定，其中未通过 0 条
+  单元 14_构件参数与尺寸引用 全部通过，可按确认规则关闭
+  单元 15_辅导13需求与文档收敛 验收 10/10 条已判定，其中未通过 0 条
+  单元 15_辅导13需求与文档收敛 全部通过，可按确认规则关闭
+  单元 16_首页任务进展 验收 8/8 条已判定，其中未通过 0 条
+  单元 16_首页任务进展 全部通过，可按确认规则关闭
+  单元 21_对象核对与制作衔接 验收 8/8 条已判定，其中未通过 0 条
+  单元 21_对象核对与制作衔接 全部通过，可按确认规则关闭
+  单元 22_资料与成果覆盖 验收 7/7 条已判定，其中未通过 0 条
+  单元 22_资料与成果覆盖 全部通过，可按确认规则关闭
+  单元 23_输出单位转换 验收 9/9 条已判定，其中未通过 0 条
+  单元 23_输出单位转换 全部通过，可按确认规则关闭
+  单元 24_待核对三维预览 验收 9/9 条已判定，其中未通过 0 条
+  单元 24_待核对三维预览 全部通过，可按确认规则关闭
+  单元 25_操作提示与按钮可达 验收 6/6 条已判定，其中未通过 0 条
+  单元 25_操作提示与按钮可达 全部通过，可按确认规则关闭
+  单元 26_逐屏体验与制作链路 验收 0/8 条已判定，其中未通过 0 条
+
+状态一致
+
+==================================================
+测试写法
+==================================================
+测试里没有用模板字符串拼的正则
+
+==================================================
+跨 Agent 适配
+==================================================
+跨 Agent 适配一致，共 38 个文件
+
+==================================================
+类型
+==================================================
+
+> typecheck
+> tsc -b --pretty false
+
+
+==================================================
+测试
+==================================================
+
+> test
+> vitest run && pnpm --filter @gujian/server test && pnpm --filter @gujian/workbench test
+
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档
+
+ ✓ packages/infrastructure/src/demo-component-translation.test.ts (6 tests) 5ms
+ ✓ packages/infrastructure/src/timber-frame-builder/generate.test.ts (6 tests) 23ms
+ ✓ packages/domain/src/model-candidate.test.ts (7 tests) 6ms
+ ✓ packages/domain/src/geometry-v2.test.ts (4 tests) 7ms
+ ✓ packages/domain/src/assistant-records.test.ts (3 tests) 5ms
+ ✓ packages/application/src/delivery-chain-closure.test.ts (6 tests) 4ms
+ ✓ packages/application/src/impact-service.test.ts (21 tests) 7ms
+ ✓ packages/domain/src/domain-contracts.test.ts (7 tests) 10ms
+ ✓ packages/infrastructure/src/annotation-planner.test.ts (6 tests) 5ms
+ ✓ packages/application/src/project-command-service.test.ts (20 tests) 33ms
+ ✓ packages/infrastructure/src/artifact-matrix-builder.test.ts (6 tests) 10ms
+ ✓ packages/infrastructure/src/archetype-derivation.test.ts (8 tests) 8ms
+ ✓ packages/infrastructure/src/rule-engine.test.ts (9 tests) 17ms
+ ✓ packages/infrastructure/src/geometry-spec-builder.test.ts (17 tests) 38ms
+ ✓ packages/domain/src/drawing-detail-policy.test.ts (8 tests) 5ms
+ ✓ packages/domain/src/drawings.test.ts (1 test) 5ms
+ ✓ packages/infrastructure/src/cad-job-client.test.ts (1 test) 15ms
+ ✓ packages/infrastructure/src/delivery-service.test.ts (7 tests) 11ms
+ ✓ packages/infrastructure/src/indexeddb-project-repository.test.ts (3 tests) 24ms
+ ✓ packages/infrastructure/src/vocabulary-resolver.test.ts (9 tests) 27ms
+ ✓ packages/infrastructure/src/demo-library/demo-matrix.test.ts (5 tests) 2ms
+ ✓ packages/infrastructure/src/demo-project-package-converter.test.ts (4 tests) 123ms
+ ✓ packages/infrastructure/src/demo-library/wording.test.ts (3 tests) 2ms
+ ✓ packages/infrastructure/src/workflow-service.test.ts (5 tests) 77ms
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/authorization.test.ts (2 tests) 3ms
+ ✓ packages/infrastructure/src/project-package-service.test.ts (10 tests) 258ms
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 坏文件只记失败，不抛异常打断上传
+Warning: Indexing all PDF objects
+
+ ✓ packages/infrastructure/src/evidence-ingestion-service.test.ts (5 tests) 329ms
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/construction-generator/generate.test.ts (28 tests) 607ms
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/demo-library/build-demo-project.test.ts (13 tests) 494ms
+ ✓ packages/infrastructure/src/impact-real-packages.test.ts (16 tests) 4838ms
+   ✓ 依赖边字段恒为空（验收第 14 条） > 源码里没有一处往 dependencyEdges 写非空值  4310ms
+
+ Test Files  30 passed (30)
+      Tests  246 passed (246)
+   Start at  23:27:16
+   Duration  5.95s (transform 2.08s, setup 0ms, collect 14.66s, tests 7.00s, environment 4ms, prepare 3.77s)
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/server
+
+(node:45960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32792) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/model-tasks.test.ts (8 tests) 3ms
+ ✓ src/drawing-worker.test.ts (1 test) 6ms
+ ✓ src/kimi-gateway.test.ts (4 tests) 35ms
+ ✓ src/actions/action-runtime.test.ts (10 tests) 8ms
+(node:40096) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39080) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47864) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/actions/gateway-tools.test.ts (3 tests) 7ms
+ ✓ src/actions/action-catalog.test.ts (12 tests) 8ms
+ ✓ src/actions/dispatch.test.ts (36 tests) 8ms
+ ✓ src/actions/assistant-routes.test.ts (12 tests) 13ms
+ ✓ src/cad-jobs.test.ts (2 tests) 59ms
+ ✓ src/drawing-jobs.test.ts (4 tests) 73ms
+ ✓ src/status.test.ts (5 tests) 99ms
+ ✓ src/shutdown.test.ts (2 tests) 115ms
+ ✓ src/image-processing.test.ts (3 tests) 3475ms
+   ✓ 本机图像处理 > 公开 TIFF 三份经实际 worker 解码，独立复核像素、尺寸和模式  2839ms
+   ✓ 本机图像处理 > 损坏文件失败，多帧与 CMYK 明确未支持  597ms
+
+ Test Files  13 passed (13)
+      Tests  102 passed (102)
+   Start at  23:27:23
+   Duration  4.27s (transform 484ms, setup 0ms, collect 4.39s, tests 3.91s, environment 2ms, prepare 1.66s)
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/DraftGeometryViewer.test.tsx (4 tests) 173ms
+ ✓ src/assistant/assistant-ui.test.tsx (4 tests) 152ms
+ ✓ src/screens/ProjectList.test.tsx (3 tests) 196ms
+ ✓ src/screens/CreateTaskDialog.test.tsx (3 tests) 263ms
+ ✓ src/wording.test.ts (1 test) 21ms
+ ✓ src/no-hardcoded-project-data.test.ts (3 tests) 21ms
+ ✓ src/component-input.test.ts (19 tests) 166ms
+ ✓ src/workbench/dimension-writes.test.tsx (3 tests) 62ms
+ ✓ src/workbench/task-writes.test.tsx (5 tests) 63ms
+ ✓ src/screens/MeasurementBaseline.test.tsx (1 test) 76ms
+ ✓ src/workbench/component-writes.test.tsx (6 tests) 122ms
+ ✓ src/screens/EvidenceList.test.tsx (2 tests) 181ms
+ ✓ src/workbench/usePreviewFlow.test.tsx (11 tests) 159ms
+ ✓ src/screens/MaterialCoverage.test.tsx (2 tests) 247ms
+ ✓ src/workbench/useAssistantBridge.test.tsx (1 test) 43ms
+ ✓ src/screens/PreviewReview.test.tsx (4 tests) 234ms
+ ✓ src/screens/ComponentList-preview.test.tsx (1 test) 290ms
+ ✓ src/screens/DimensionCandidateReview.test.tsx (5 tests) 442ms
+ ✓ src/screens/ComponentCandidateFlow.test.tsx (2 tests) 429ms
+   ✓ 候选进入构件制作表单 > 沿用候选来源，填写并绑定后真实保存，重命名后仍编辑同一输入  377ms
+ ✓ src/project-progress.test.ts (6 tests) 32ms
+ ✓ src/output-unit-state.test.tsx (5 tests) 275ms
+ ✓ src/screens/ModelView.test.tsx (5 tests) 455ms
+ ✓ src/visual-spec.test.ts (22 tests) 14ms
+ ✓ src/screens/GeometryComponentEditor.test.tsx (13 tests) 1229ms
+ ✓ src/demo-library-loader.test.ts (6 tests) 2523ms
+   ✓ 演示项目装载 > 单个包失败不影响其余，失败逐条留下  2013ms
+   ✓ 演示项目装载 > 单个包短暂下载失败时自动重试，不要求清空已有项目  503ms
+ ✓ src/screens/TaskSetupForm.test.tsx (9 tests) 1450ms
+ ✓ src/draft-geometry-mesh.test.ts (8 tests) 13ms
+ ✓ src/failure-notice.test.ts (15 tests) 11ms
+ ✓ src/App.test.tsx (2 tests) 953ms
+   ✓ App > 建立项目后显示当前建筑和版本  952ms
+ ✓ src/qualification.test.ts (21 tests) 5ms
+ ✓ src/model-run-client.test.ts (7 tests) 13ms
+ ✓ src/assistant/assistant-core.test.ts (25 tests) 11ms
+ ✓ src/change-history.test.ts (15 tests) 5ms
+ ✓ src/label-coverage.test.ts (11 tests) 5ms
+ ✓ src/portfolio-return.test.ts (1 test) 2ms
+ ✓ src/task-requirements.test.ts (14 tests) 115ms
+ ✓ src/stage-map.test.ts (6 tests) 4ms
+ ✓ src/assistant/marquee-correction.test.ts (9 tests) 7ms
+ ✓ src/query-models.test.ts (5 tests) 4ms
+ ✓ src/exclusion-filter.test.ts (7 tests) 3ms
+ ✓ src/assistant/action-delivery.test.ts (5 tests) 5ms
+ ✓ src/production-task.test.ts (5 tests) 48ms
+ ✓ src/component-package.test.ts (1 test) 51ms
+ ✓ src/dimension-review.test.ts (14 tests) 74ms
+ ✓ src/preview-read-model.test.ts (7 tests) 71ms
+ ✓ src/material-coverage.test.ts (7 tests) 75ms
+ ✓ src/draft-geometry.test.ts (16 tests) 131ms
+ ✓ src/evidence-processing.test.ts (7 tests) 211ms
+ ✓ src/component-candidates.test.ts (12 tests) 209ms
+
+ Test Files  49 passed (49)
+      Tests  366 passed (366)
+   Start at  23:27:28
+   Duration  6.17s (transform 4.54s, setup 25.45s, collect 39.82s, tests 11.35s, environment 30.87s, prepare 6.43s)
+
+
+==================================================
+演示矩阵
+==================================================
+步骤 视图           t0b-constructi  gaodu-yuhuang-  
+一 任务卡           有 1            有 1            
+二 资料清单         有 2            有 5            
+三 实测基准         有 45           有 18           
+四 构件清单         有 1258         有 1186         
+五 三维模型         有 1            有 1            
+六 图纸与检查       有 25           有 21           
+七 交付包           有 1            有 1            
+t0b-construction-sample: 七格全满
+gaodu-yuhuang-temple-main-hall: 七格全满
+
+==================================================
+演示包一致性
+==================================================
+项目                              审计        回执        未解决问题  阻断码      待确认部位  签发        成果        限制条款    
+t0b-construction-sample           15          15          0           26          909         2026-08-24  24          41          
+gaodu-yuhuang-temple-main-hall    21          21          0           4           0           2026-08-24  20          9           
+
+演示包内部一致
+
+==================================================
+通过  文档与引用
+通过  单元与状态
+通过  测试写法
+通过  跨 Agent 适配
+通过  类型
+通过  测试
+通过  演示矩阵
+通过  演示包一致性

@@ -1,0 +1,330 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/draft-geometry.test.ts (13 tests | 1 failed | 12 skipped) 30ms
+   ↓ 待核对形体数据 > 纯预览使用草稿当前值、稳定键与候选原文，不写项目事实或几何版本
+   ↓ 待核对形体数据 > 已采用与直接输入的来源可区分，材料未知不推断且形体形式保持
+   ↓ 待核对形体数据 > 候选长度在圆柱及轮廓挤出中保留轴向、毫米坐标和原形体参数
+   ↓ 待核对形体数据 > 候选列表只包含当前项目可读可用且待核对的正长度，并保留类型未定
+   ↓ 待核对形体数据 > 无长度、无坐标或明确位置依据、规则位置均不形成预览
+   ↓ 待核对形体数据 > 候选拒绝、替代、单行驳回、不可读和已失效引用不退回手填值
+   ↓ 待核对形体数据 > 同一字段不能同时绑定两种来源，同一候选跨字段必须使用同一修正值
+   ↓ 待核对形体数据 > 修正或同名异值保存前需要说明，预览允许修正且失败不写任何事实
+   ↓ 待核对形体数据 > 同名异值来源保留冲突，缺说明不采用，说明明确后保留候选原文
+   ↓ 待核对形体数据 > 尺寸采用和构件通过同一 CommitFacts 原子写入，保持稳定身份及来源
+   ↓ 待核对形体数据 > 命令提交失败保持零写入，保存读回失败不会重复执行
+   × 待核对形体数据 > 项目版本改变时原子命令失败，不产生半份尺寸或构件 29ms
+     → promise resolved "{ head: { …(4) } }" instead of rejecting
+   ↓ 待核对形体数据 > 已保存输入 ZIP 导出后独立仓储恢复引用、稳定键、材料未知和原资料
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/draft-geometry.test.ts > 待核对形体数据 > 项目版本改变时原子命令失败，不产生半份尺寸或构件
+AssertionError: promise resolved "{ head: { …(4) } }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "head": {
++     "auditEventId": "f5617707-2546-49de-90c7-d8cb08e811c1",
++     "projectId": "eb728b9f-39c8-422a-a54b-de547e7d88f1",
++     "revisionId": "789acda0-5faf-42a6-89fe-026dbe2dd4a7",
++     "snapshot": {
++       "adoptedRecordRefs": [],
++       "buildings": [
++         {
++           "addressText": null,
++           "id": "30103edc-8568-458d-8401-b6979659b454",
++           "name": "内部测试建筑",
++           "periodText": null,
++           "projectId": "eb728b9f-39c8-422a-a54b-de547e7d88f1",
++           "status": "existing",
++         },
++       ],
++       "candidates": [
++         {
++           "contentText": "内部交互测试候选，非真实模型运行",
++           "createdAt": "2026-10-02T15:15:35.966Z",
++           "evidenceRefs": [
++             "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++           ],
++           "id": "0c5b2e6f-75fc-493f-80bb-b80e2c42799c",
++           "inputRevisionId": "22b74e29-5b23-4af2-9b0a-28bdea4fffb6",
++           "producer": {
++             "producerType": "model",
++             "runId": "e9faab83-338d-4ebd-8d54-4ab2c3c4ca5e",
++           },
++           "projectId": "eb728b9f-39c8-422a-a54b-de547e7d88f1",
++           "reviewStatus": "unreviewed",
++           "runId": "e9faab83-338d-4ebd-8d54-4ab2c3c4ca5e",
++           "structured": {
++             "dimensions": [
++               {
++                 "certainty": "certain",
++                 "evidenceRef": "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++                 "locationZh": "测试记录第 1 行",
++                 "noteZh": "内部测试数值",
++                 "partZh": "总宽",
++                 "valueMm": "6000",
++                 "valueText": "6000",
++               },
++               {
++                 "certainty": "certain",
++                 "evidenceRef": "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++                 "locationZh": "测试记录第 2 行",
++                 "noteZh": null,
++                 "partZh": "总深",
++                 "valueMm": "4200",
++                 "valueText": "4200",
++               },
++               {
++                 "certainty": "uncertain",
++                 "evidenceRef": "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++                 "locationZh": "测试记录第 3 行",
++                 "noteZh": "原资料须补充，不能按猜测采用",
++                 "partZh": "层高",
++                 "valueMm": null,
++                 "valueText": "3?00",
++               },
++             ],
++             "kind": "measurementTranscription",
++             "missingInformation": [
++               "本文件仅用于交互测试，不用于建筑制作",
++             ],
++             "summary": "内部测试：总宽、总深及不确定高度",
++           },
++           "taskType": "measurement-transcription",
++         },
++       ],
++       "dependencyEdges": [],
++       "entities": [],
++       "evidences": [
++         {
++           "assetId": "f7ce8eeb-247d-450d-b9c2-5a84be1d6936",
++           "dataStatus": "available",
++           "evidenceType": "document",
++           "id": "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++           "intendedUse": "项目资料整理与候选提取",
++           "projectId": "eb728b9f-39c8-422a-a54b-de547e7d88f1",
++           "recordedAt": "2026-10-02T15:15:35.963Z",
++           "relatedEntityRefs": [
++             "30103edc-8568-458d-8401-b6979659b454",
++           ],
++           "rightsDeclaration": null,
++           "title": "内部测试尺寸.txt",
++         },
++       ],
++       "exclusionRecords": [],
++       "facts": [
++         {
++           "acceptanceRef": {
++             "id": "7019d3ad-e6a0-43f4-8dc7-6a9d11191270",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [
++             "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++           ],
++           "field": "documentedDimension.candidate.0c5b2e6f-75fc-493f-80bb-b80e2c42799c.1",
++           "id": "3e1224cd-4d7c-43e5-b851-d37057b70680",
++           "producer": {
++             "producerType": "model",
++             "runId": "e9faab83-338d-4ebd-8d54-4ab2c3c4ca5e",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "30103edc-8568-458d-8401-b6979659b454",
++           "value": {
++             "candidateId": "0c5b2e6f-75fc-493f-80bb-b80e2c42799c",
++             "corrected": false,
++             "disposition": "adopt",
++             "kind": "dimensionCandidateReview",
++             "methodZh": "资料转写；原标注 4200；测试记录第 2 行",
++             "name": "总深",
++             "original": {
++               "certainty": "certain",
++               "evidenceRef": "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++               "locationZh": "测试记录第 2 行",
++               "noteZh": null,
++               "partZh": "总深",
++               "valueMm": "4200",
++               "valueText": "4200",
++             },
++             "reason": "",
++             "rowIndex": 1,
++             "runId": "e9faab83-338d-4ebd-8d54-4ab2c3c4ca5e",
++             "sourceKind": "document-transcription",
++             "unit": "mm",
++             "value": 4200,
++           },
++         },
++         {
++           "acceptanceRef": {
++             "id": "b3fefa7d-590e-4063-958a-3bc59e54bf2c",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [
++             "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++           ],
++           "field": "documentedDimension.candidate.0c5b2e6f-75fc-493f-80bb-b80e2c42799c.0",
++           "id": "79b4763f-78d9-49fd-9fc4-6aea6c27ed3b",
++           "producer": {
++             "producerType": "model",
++             "runId": "e9faab83-338d-4ebd-8d54-4ab2c3c4ca5e",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "30103edc-8568-458d-8401-b6979659b454",
++           "value": {
++             "candidateId": "0c5b2e6f-75fc-493f-80bb-b80e2c42799c",
++             "corrected": false,
++             "disposition": "adopt",
++             "kind": "dimensionCandidateReview",
++             "methodZh": "资料转写；原标注 6000；测试记录第 1 行",
++             "name": "总宽",
++             "original": {
++               "certainty": "certain",
++               "evidenceRef": "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++               "locationZh": "测试记录第 1 行",
++               "noteZh": "内部测试数值",
++               "partZh": "总宽",
++               "valueMm": "6000",
++               "valueText": "6000",
++             },
++             "quantityKind": "length",
++             "reason": "",
++             "rowIndex": 0,
++             "runId": "e9faab83-338d-4ebd-8d54-4ab2c3c4ca5e",
++             "sourceKind": "document-transcription",
++             "unit": "mm",
++             "value": 6000,
++           },
++         },
++         {
++           "acceptanceRef": {
++             "id": "b3fefa7d-590e-4063-958a-3bc59e54bf2c",
++             "type": "command",
++           },
++           "dataStatus": "available",
++           "evidenceRefs": [
++             "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++           ],
++           "field": "geometry.component.f468b812-3d00-43d3-ac79-92e8abc04210",
++           "id": "e6d132f4-d142-4725-8f78-ac717938b39e",
++           "producer": {
++             "actionRef": {
++               "commandId": "b3fefa7d-590e-4063-958a-3bc59e54bf2c",
++             },
++             "actorId": "9af1199c-574b-463f-a8f9-43d1c2d8bcfe",
++             "producerType": "human",
++           },
++           "reviewStatus": "confirmed",
++           "subjectRef": "30103edc-8568-458d-8401-b6979659b454",
++           "value": {
++             "componentType": "wall",
++             "dimensionBindings": [
++               {
++                 "field": "sizeX",
++                 "sourceFactRef": "79b4763f-78d9-49fd-9fc4-6aea6c27ed3b",
++               },
++             ],
++             "displayNameZh": "内部测试墙",
++             "evidenceRefs": [
++               "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++             ],
++             "materialCode": "unknown",
++             "parameters": [],
++             "parentStableKey": null,
++             "positionBasis": "human",
++             "solid": {
++               "centerMm": [
++                 3000,
++                 120,
++                 1500,
++               ],
++               "kind": "box",
++               "sizeX": "6000",
++               "sizeY": "240",
++               "sizeZ": "3000",
++             },
++             "sourceLocation": "内部资料的人工定位记录",
++             "stableKey": "f468b812-3d00-43d3-ac79-92e8abc04210",
++             "unknowns": [
++               {
++                 "affectedStableKeys": [
++                   "f468b812-3d00-43d3-ac79-92e8abc04210",
++                 ],
++                 "blocksFormalEligibility": true,
++                 "blocksProxyOutcome": false,
++                 "description": "构件材料尚未确认，需补充材料调查记录。",
++                 "reasonCode": "material-unknown",
++                 "requiredEvidence": [
++                   "材料调查记录",
++                 ],
++               },
++             ],
++           },
++         },
++       ],
++       "geometryRevisions": [],
++       "geometrySpecs": [],
++       "issues": [],
++       "measurements": [],
++       "observations": [],
++       "parseRecords": [
++         {
++           "assetId": "f7ce8eeb-247d-450d-b9c2-5a84be1d6936",
++           "createdAt": "2026-10-02T15:15:35.963Z",
++           "evidenceId": "a9ad41f5-8037-4a3b-bdee-c831cc8353d1",
++           "extractedText": "内部测试资料，不是实测记录。
++ 总宽 6000 mm
++ 总深 4200 mm
++ 层高 3?00 mm
++ ",
++           "id": "93dd2db9-2910-4f1d-9e4e-5b78b2642b0f",
++           "parser": "utf8-text",
++           "parserVersion": "1.0.0",
++           "projectId": "eb728b9f-39c8-422a-a54b-de547e7d88f1",
++           "readability": "readable",
++           "readableAs": "text",
++           "status": "parsed",
++           "warnings": [],
++         },
++       ],
++       "project": {
++         "createdAt": "2026-10-02T15:15:35.957Z",
++         "id": "eb728b9f-39c8-422a-a54b-de547e7d88f1",
++         "locationText": null,
++         "name": "单元13尺寸核对内部测试",
++         "status": "active",
++       },
++       "relations": [],
++       "reviewSignoffs": [],
++       "schemaVersion": "3.0",
++       "taskDefinitions": [],
++     },
++   },
+  }
+
+ ❯ src/draft-geometry.test.ts:183:31
+    181|       expectedRevisionId: context.head.revisionId, issuedAt: new Date(…
+    182|         [{ rowIndex: 1, disposition: "adopt", name: "总深", valueMm: "42…
+    183|     await expect(save(context)).rejects.toMatchObject({ code: "REVISIO…
+       |                               ^
+    184|     const current = (await projectRepository.getProjectHead(context.he…
+    185|     expect(current.snapshot.facts).toHaveLength(1); expect(componentIn…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 skipped (13)
+   Start at  16:15:34
+   Duration  1.54s (transform 281ms, setup 220ms, collect 993ms, tests 30ms, environment 0ms, prepare 91ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/draft-geometry.test.ts -t "项目版本改变"

@@ -1,0 +1,179 @@
+
+> test
+> vitest run && pnpm --filter @gujian/server test && pnpm --filter @gujian/workbench test
+
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档
+
+ ✓ packages/application/src/impact-service.test.ts (20 tests) 6ms
+ ✓ packages/infrastructure/src/demo-component-translation.test.ts (6 tests) 5ms
+ ✓ packages/domain/src/drawing-detail-policy.test.ts (8 tests) 7ms
+ ✓ packages/domain/src/model-candidate.test.ts (7 tests) 5ms
+ ✓ packages/infrastructure/src/timber-frame-builder/generate.test.ts (6 tests) 26ms
+ ✓ packages/domain/src/geometry-v2.test.ts (4 tests) 10ms
+ ✓ packages/domain/src/domain-contracts.test.ts (7 tests) 10ms
+ ✓ packages/domain/src/assistant-records.test.ts (3 tests) 9ms
+ ✓ packages/domain/src/drawings.test.ts (1 test) 11ms
+ ✓ packages/application/src/delivery-chain-closure.test.ts (6 tests) 4ms
+ ✓ packages/infrastructure/src/demo-library/demo-matrix.test.ts (5 tests) 3ms
+ ✓ packages/application/src/project-command-service.test.ts (11 tests) 15ms
+ ✓ packages/infrastructure/src/annotation-planner.test.ts (6 tests) 6ms
+ ✓ packages/infrastructure/src/artifact-matrix-builder.test.ts (3 tests) 8ms
+ ✓ packages/infrastructure/src/geometry-spec-builder.test.ts (2 tests) 17ms
+ ✓ packages/infrastructure/src/archetype-derivation.test.ts (8 tests) 9ms
+ ✓ packages/infrastructure/src/rule-engine.test.ts (9 tests) 20ms
+ ✓ packages/infrastructure/src/demo-library/wording.test.ts (3 tests) 2ms
+ ✓ packages/infrastructure/src/authorization.test.ts (2 tests) 3ms
+ ✓ packages/infrastructure/src/delivery-service.test.ts (2 tests) 4ms
+ ✓ packages/infrastructure/src/cad-job-client.test.ts (1 test) 15ms
+ ✓ packages/infrastructure/src/indexeddb-project-repository.test.ts (3 tests) 26ms
+ ✓ packages/infrastructure/src/vocabulary-resolver.test.ts (9 tests) 28ms
+ ✓ packages/infrastructure/src/demo-project-package-converter.test.ts (4 tests) 106ms
+ ✓ packages/infrastructure/src/workflow-service.test.ts (5 tests) 73ms
+ ✓ packages/infrastructure/src/project-package-service.test.ts (8 tests) 137ms
+ ✓ packages/infrastructure/src/construction-generator/generate.test.ts (28 tests) 581ms
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 两个演示项目的项目号不同
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > PDF 解析结果附带 OCR 可能有错的提示
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/evidence-ingestion-service.test.ts > 资料解析 > 坏文件只记失败，不抛异常打断上传
+Warning: Indexing all PDF objects
+
+ ✓ packages/infrastructure/src/evidence-ingestion-service.test.ts (5 tests) 1729ms
+   ✓ 资料解析 > 从真实 HABS 记录取出文字层并读到主体尺寸  1690ms
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+stderr | packages/infrastructure/src/demo-library/build-demo-project.test.ts > 演示项目包生成 > 生成的包能被导入解析
+Warning: UnknownErrorException: Ensure that the `standardFontDataUrl` API parameter is provided.
+
+ ✓ packages/infrastructure/src/demo-library/build-demo-project.test.ts (13 tests) 1801ms
+   ✓ 演示项目包生成 > 两个演示项目的项目号不同  1534ms
+ ✓ packages/infrastructure/src/impact-real-packages.test.ts (16 tests) 6298ms
+   ✓ 依赖边字段恒为空（验收第 14 条） > 源码里没有一处往 dependencyEdges 写非空值  5806ms
+
+ Test Files  30 passed (30)
+      Tests  211 passed (211)
+   Start at  02:00:21
+   Duration  8.09s (transform 2.66s, setup 0ms, collect 16.63s, tests 10.98s, environment 4ms, prepare 14.23s)
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/server
+
+(node:6664) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29924) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17852) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/model-tasks.test.ts (8 tests) 3ms
+ ✓ src/kimi-gateway.test.ts (4 tests) 40ms
+ ✓ src/actions/action-runtime.test.ts (10 tests) 11ms
+(node:17768) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4200) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/actions/gateway-tools.test.ts (3 tests) 6ms
+ ✓ src/actions/action-catalog.test.ts (12 tests) 8ms
+ ✓ src/actions/dispatch.test.ts (36 tests) 7ms
+ ✓ src/actions/assistant-routes.test.ts (12 tests) 14ms
+ ✓ src/cad-jobs.test.ts (2 tests) 56ms
+ ✓ src/drawing-jobs.test.ts (4 tests) 69ms
+ ✓ src/status.test.ts (5 tests) 93ms
+ ✓ src/shutdown.test.ts (2 tests) 108ms
+
+ Test Files  11 passed (11)
+      Tests  98 passed (98)
+   Start at  02:00:30
+   Duration  880ms (transform 385ms, setup 0ms, collect 3.68s, tests 415ms, environment 1ms, prepare 1.44s)
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/wording.test.ts (1 test) 15ms
+ ✓ src/no-hardcoded-project-data.test.ts (3 tests) 17ms
+ ✓ src/portfolio-return.test.ts (1 test) 2ms
+ ✓ src/qualification.test.ts (21 tests) 4ms
+ ✓ src/query-models.test.ts (5 tests) 5ms
+ ✓ src/failure-notice.test.ts (13 tests) 7ms
+ ✓ src/visual-spec.test.ts (22 tests) 17ms
+ ✓ src/stage-map.test.ts (6 tests) 3ms
+ ✓ src/assistant/assistant-ui.test.tsx (4 tests) 114ms
+ ✓ src/label-coverage.test.ts (11 tests) 4ms
+ ✓ src/change-history.test.ts (15 tests) 4ms
+ ✓ src/exclusion-filter.test.ts (7 tests) 2ms
+ ✓ src/model-run-client.test.ts (7 tests) 11ms
+ ✓ src/assistant/action-delivery.test.ts (5 tests) 3ms
+ ✓ src/assistant/marquee-correction.test.ts (9 tests) 5ms
+ ✓ src/assistant/assistant-core.test.ts (25 tests) 10ms
+ ✓ src/App.test.tsx (2 tests) 236ms
+ ✓ src/demo-library-loader.test.ts (6 tests) 2530ms
+   ✓ 演示项目装载 > 单个包失败不影响其余，失败逐条留下  2010ms
+   ✓ 演示项目装载 > 单个包短暂下载失败时自动重试，不要求清空已有项目  513ms
+
+ Test Files  18 passed (18)
+      Tests  163 passed (163)
+   Start at  02:00:32
+   Duration  16.18s (transform 1.82s, setup 103.00s, collect 10.36s, tests 2.99s, environment 133.77s, prepare 2.66s)
+
+npm notice
+npm notice New minor version of npm available! 11.8.0 -> 11.19.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+npm notice To update run: npm install -g npm@11.19.1
+npm notice

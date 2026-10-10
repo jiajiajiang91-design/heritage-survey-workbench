@@ -1,18 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
+import { checkedArtifactsMeetTask } from "../delivery-readiness";
+import { saveProductionTask } from "../workbench";
+import { commitMaterialCoverage, type CoverageEntry } from "../material-coverage";
+import type { ProductionTaskValues } from "../production-task";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import type { ProjectHead } from "@gujian/application";
-import { ArchetypeSpecSchema, type ArtifactRecord, type TaskArtifactRequirements } from "@gujian/domain";
+import { ArchetypeSpecSchema, TaskArtifactRequirementsSchema, taskOutputUnit, type ArtifactRecord } from "@gujian/domain";
 import {
   IndexedDbProjectRepository, ProjectPackageService, deriveArchetypeExpectations, openWorkbenchDatabase,
 } from "@gujian/infrastructure";
 
 import { AssistantExecutors } from "../assistant/action-executors";
+import { processStoredEvidence } from "../evidence-processing";
+import { evidenceReadability } from "../evidence-readability";
+import { commitDimensionReviews, type DimensionReviewDraft } from "../dimension-review";
 import { commitDocumentedDimensionChain } from "../document-dimension-service";
 import { describeFailure, inputError } from "../failure-notice";
-import { commitGeometryFacts } from "../geometry-fact-service";
+import { commitGeometryFacts, type GeometryFactInput } from "../geometry-fact-service";
+import { commitDraftGeometryComponent } from "../draft-geometry";
+import type { ComponentDraft, ComponentInput } from "../component-input";
 import {
-  evidenceIngestion, localActorId, deliveries, projectCommands, projectPackages, projectRepository, workflow,
+  prepareEvidenceFiles, localActorId, deliveries, projectCommands, projectPackages, projectRepository, workflow,
 } from "../workbench";
+import type { TaskSetupValues } from "../task-requirements";
 import { triggerDownload } from "./download";
 import type { Notices } from "./useNotices";
 import type { ProjectSession } from "./useProjectSession";
@@ -41,33 +51,6 @@ export interface RoundTripReceipt {
 
 type Candidate = ProjectHead["snapshot"]["candidates"][number];
 
-export interface TaskSetupValues {
-  taskName: string;
-  scope: string[];
-  regulationRefs: string[];
-  deliverables: string[];
-  artifactRequirements: TaskArtifactRequirements;
-}
-
-// 表单到任务书取值。分隔符沿用旧表单：逗号、中文逗号或换行。
-export function readTaskSetupForm(data: FormData): TaskSetupValues {
-  const split = (value: FormDataEntryValue | null) => String(value ?? "").split(/[，,\n]/).map((item) => item.trim()).filter(Boolean);
-  return {
-    taskName: String(data.get("taskName") ?? "").trim(),
-    scope: split(data.get("scope")),
-    regulationRefs: split(data.get("regulations")),
-    deliverables: split(data.get("deliverables")),
-    // 图幅与视图由后端 schema 校验，这里只做解析，不替它们把关
-    artifactRequirements: {
-      titleZh: String(data.get("drawingTitle") ?? "").trim(),
-      revisionLabel: String(data.get("drawingRevision") ?? "").trim(),
-      geometryTargetRoles: split(data.get("geometryTargetRoles")),
-      sheets: JSON.parse(String(data.get("drawingSheets") ?? "[]")),
-      views: JSON.parse(String(data.get("drawingViews") ?? "[]")),
-    } as TaskArtifactRequirements,
-  };
-}
-
 interface WriteDeps {
   session: ProjectSession;
   notices: Notices;
@@ -77,6 +60,19 @@ interface WriteDeps {
 export function useRecordWrites({ session, notices }: WriteDeps) {
   const { setError, setNotice } = notices;
   const { selected, setSelected, refresh, loadProject, confirmedTask } = session;
+  const coverageSaving = useRef(false);
+  const draftComponentSaving = useRef(false);
+  const selectedProject = useRef(selected?.projectId); selectedProject.current = selected?.projectId;
+  const saveMaterialCoverage = async (evidenceId: string, entries: CoverageEntry[]): Promise<boolean> => {
+    if (!selected || coverageSaving.current) return false;
+    coverageSaving.current = true; setError(null);
+    try {
+      const head = await commitMaterialCoverage({ head: selected, evidenceId, entries, actorId: localActorId(), commands: projectCommands, repository: projectRepository });
+      if (selectedProject.current === head.projectId) { setSelected(head); setNotice("资料覆盖已保存，可继续查看原件或生成预览。"); }
+      await refresh(); return true;
+    } catch (reason) { setError(describeFailure(reason, "资料覆盖保存失败")); return false; }
+    finally { coverageSaving.current = false; }
+  };
   const [roundTripReceipt, setRoundTripReceipt] = useState<RoundTripReceipt | null>(null);
   const assistantExecutors = useMemo(
     () => new AssistantExecutors({ commands: projectCommands, workflow, actorId: localActorId }),
@@ -86,25 +82,67 @@ export function useRecordWrites({ session, notices }: WriteDeps) {
   // 项目版本一变，上一次的恢复检验结果就不再代表当前状态
   useEffect(() => { setRoundTripReceipt(null); }, [selected?.projectId, selected?.revisionId]);
 
-  const confirmGeometryFacts = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!selected) return;
-    const data = new FormData(event.currentTarget);
+  const confirmGeometryFacts = async (values: GeometryFactInput): Promise<boolean> => {
+    if (!selected) return false;
+    setNotice(null); setError(null);
+    let saved: Awaited<ReturnType<typeof commitGeometryFacts>>;
     try {
-      const head = await commitGeometryFacts({
-        head: selected, actorId: localActorId(), repository: projectRepository, commands: projectCommands,
-        values: {
-          components: JSON.parse(String(data.get("geometryComponents") ?? "[]")),
-          interfaces: JSON.parse(String(data.get("geometryInterfaces") ?? "[]")),
-        },
+      saved = await commitGeometryFacts({
+        head: selected, actorId: localActorId(), repository: projectRepository, commands: projectCommands, values,
       });
-      setSelected(head); await refresh(); setNotice("控制尺寸已作为人工确认的尺寸写入；来源仍指向本项目资料");
-    } catch (reason) { setError(describeFailure(reason, "控制尺寸确认失败")); }
+    } catch (reason) {
+      setError(describeFailure(reason, "构件输入保存失败"));
+      return false;
+    }
+    if (saved.head) setSelected(saved.head);
+    setNotice("构件输入已保存。重新生成模型和图纸后使用新参数，旧成果保留。");
+    try {
+      if (!saved.head) throw new Error("已保存，但项目读取失败，请重新打开项目。");
+      await loadProject(selected.projectId);
+      await refresh();
+    } catch (reason) { setError(describeFailure(reason, "构件已保存，但页面刷新失败，请重新打开项目")); }
+    return true;
   };
-
+  const confirmDraftGeometryComponent = async (draft: ComponentDraft, base?: ComponentInput): Promise<boolean> => {
+    if (!selected || draftComponentSaving.current) return false;
+    draftComponentSaving.current = true; setNotice(null); setError(null);
+    try {
+      const saved = await commitDraftGeometryComponent({
+        head: selected, draft, base, actorId: localActorId(), commands: projectCommands, repository: projectRepository,
+      });
+      if (selectedProject.current === selected.projectId) {
+        if (saved.head) setSelected(saved.head);
+        setNotice("尺寸核对与构件输入已保存，可继续生成模型和图纸。");
+      }
+      try {
+        if (!saved.head) throw new Error("已保存，但项目读取失败，请重新打开项目。");
+        if (selectedProject.current === selected.projectId) await loadProject(selected.projectId);
+        await refresh();
+      } catch (reason) { setError(describeFailure(reason, "构件已保存，但页面刷新失败，请重新打开项目")); }
+      return true;
+    } catch (reason) {
+      setError(describeFailure(reason, "尺寸核对与构件输入保存失败")); return false;
+    } finally { draftComponentSaving.current = false; }
+  };
+  const [modelChecking, setModelChecking] = useState(false);
+  const modelCheckRunning = useRef(false);
+  const checkModelFiles = async () => {
+    const geometry = session.geometryRevision;
+    if (!selected || !geometry || modelCheckRunning.current) return;
+    modelCheckRunning.current = true; setModelChecking(true); setNotice(null); setError(null);
+    try {
+      const result = await deliveries.checkModelFiles(selected, localActorId(), geometry);
+      if (selectedProject.current === selected.projectId) {
+        setSelected(result.head); await loadProject(selected.projectId);
+        setNotice("模型文件与生成记录核对通过，可建立待签发成果草案。专业复核状态保留。");
+      }
+      await refresh();
+    } catch (reason) { setError(describeFailure(reason, "模型文件检查未通过")); }
+    finally { modelCheckRunning.current = false; setModelChecking(false); }
+  };
   const createProxyDelivery = async () => {
     const { geometryRevision, latestCheckRun, drawingArtifacts } = session;
-    if (!selected || !geometryRevision || !latestCheckRun || !drawingArtifacts.length) return;
+    if (!selected || !geometryRevision || !latestCheckRun || !checkedArtifactsMeetTask(confirmedTask, drawingArtifacts)) return;
     setError(null);
     try {
       const outcome = await deliveries.createProxyDraft(selected, localActorId(), geometryRevision, drawingArtifacts, latestCheckRun);
@@ -194,71 +232,59 @@ export function useRecordWrites({ session, notices }: WriteDeps) {
     }
   };
 
-  const uploadEvidenceFiles = async (files: readonly File[]) => {
-    if (!selected) return;
-    setError(null);
+  const [processingEvidenceId, setProcessingEvidenceId] = useState<string | null>(null);
+  const [uploadingEvidence, setUploadingEvidence] = useState(false);
+  const processing = useRef(false);
+  const retryEvidence = async (evidenceId: string) => {
+    if (!selected || processing.current) return;
+    processing.current = true; setProcessingEvidenceId(evidenceId); setError(null);
     try {
-      let current = selected;
-      for (const file of files) {
-        const updated = await evidenceIngestion.ingest(current, localActorId(), file);
-        current = await workflow.evaluate(updated, localActorId());
-      }
+      const saved = await processStoredEvidence({ repository: projectRepository, commands: projectCommands, head: selected, actorId: localActorId(), evidenceId });
+      const evaluated = await workflow.evaluate(saved, localActorId()); setSelected(evaluated);
+      session.setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId)); await refresh();
+      const result = evidenceReadability(evaluated.snapshot, evidenceId);
+      setNotice(result.state === "readable" ? "资料处理完成，可继续提取与核对。" : result.detail);
+    } catch (reason) { setError(describeFailure(reason, "资料处理失败")); }
+    finally { processing.current = false; setProcessingEvidenceId(null); }
+  };
+  const uploadEvidenceFiles = async (files: readonly File[], level: "required" | "recommended" | "additional" = "additional") => {
+    if (!selected || processing.current) return;
+    processing.current = true; setUploadingEvidence(true); setError(null);
+    try {
+      const prepared = await prepareEvidenceFiles(selected, files.map((file) => ({ file, level })), (head, id) => { setSelected(head); setProcessingEvidenceId(id); });
+      const current = await workflow.evaluate(prepared.head, localActorId());
       setSelected(current);
       session.setProjectRuleRuns(await projectRepository.getProjectRuleRuns(current.projectId));
       await refresh();
-      setNotice(files.length === 1
-        ? `资料“${files[0]!.name}”已保存并建立来源关系`
-        : `${files.length} 份原始资料已保存并逐份建立来源关系`);
+      setNotice(prepared.failures.length ? `资料保存与处理已完成。${prepared.failures.join("；")}` : `${files.length} 份原始资料已保存，可继续核对。`);
     } catch (reason) {
       setError(describeFailure(reason, "资料上传失败"));
-    }
+    } finally { processing.current = false; setUploadingEvidence(false); setProcessingEvidenceId(null); }
   };
 
-  // 确认后把读准的尺寸写成事实。来源标为实测转录并注明取自哪份资料，
-  // producer 为 human：数值出自模型，采信与否是人的决定。
-  const confirmTranscribedDimensions = async (candidate: Candidate) => {
-    if (!selected || candidate.structured?.kind !== "measurementTranscription") return;
-    const rows = candidate.structured.dimensions.filter((item) => item.certainty === "certain" && item.valueMm);
-    if (!rows.length) {
-      setError(inputError("这条结果里没有可直接写入的尺寸。读不准的条目需要先人工核实原图。"));
-      return;
-    }
-    setError(null);
+  const confirmTranscribedDimensions = async (candidate: Candidate, drafts: DimensionReviewDraft[]): Promise<boolean> => {
+    if (!selected) return false;
+    setNotice(null); setError(null);
+    let saved: Awaited<ReturnType<typeof commitDimensionReviews>>;
     try {
-      const at = new Date().toISOString();
-      await projectCommands.execute({
-        commandType: "CommitFacts",
-        commandId: crypto.randomUUID(),
-        projectId: selected.projectId,
-        actorId: localActorId(),
-        expectedRevisionId: selected.revisionId,
-        issuedAt: at,
-        payload: {
-          facts: rows.map((row, index) => ({
-            id: crypto.randomUUID(),
-            subjectRef: selected.snapshot.buildings[0]?.id ?? selected.projectId,
-            field: `documentedDimension.transcribed${index + 1}`,
-            value: {
-              name: row.partZh ?? "未定名尺寸",
-              value: Number(row.valueMm),
-              unit: "mm",
-              methodZh: `转写自${session.evidenceTitle(row.evidenceRef)}${row.locationZh ? ` ${row.locationZh}` : ""}标注 ${row.valueText}`,
-            },
-            producer: { producerType: "human" as const, actorId: localActorId() },
-            evidenceRefs: [row.evidenceRef],
-            reviewStatus: "confirmed" as const,
-            dataStatus: "available" as const,
-          })),
-        },
+      saved = await commitDimensionReviews({
+        head: selected, candidate, drafts, actorId: localActorId(), commands: projectCommands, repository: projectRepository,
       });
+    } catch (reason) {
+      setError(describeFailure(reason, "尺寸处置保存失败"));
+      return false;
+    }
+    if (saved.head) setSelected(saved.head);
+    setNotice(saved.savedCount ? "尺寸处置已保存，采用值保持资料转写来源。" : "所选处置此前已经保存，本次没有重复写入。");
+    try {
+      if (!saved.head) throw new Error("已保存，但项目读取失败，请重新打开项目。");
       await loadProject(selected.projectId);
       await refresh();
-      setNotice(`已写入 ${rows.length} 条尺寸，来源标为实测转录`);
     } catch (reason) {
-      setError(describeFailure(reason, "尺寸写入失败"));
+      setError(describeFailure(reason, "尺寸已保存，但页面刷新失败，请重新打开项目"));
     }
+    return true;
   };
-
   // 识别出的构件确认后写成构件记录。只写模型标为确定的那些：标了不确定的
   // 由人逐条核实，不由模型替人决定哪条能进项目。这与尺寸转写同一条口径。
   const confirmRecognizedComponents = async (candidate: Candidate) => {
@@ -290,20 +316,51 @@ export function useRecordWrites({ session, notices }: WriteDeps) {
 
   // 任务要求：第一次确认与后续换版走同一个入口。已有确认过的任务时建新版本，
   // 旧任务定义保留在审计链中。
-  const submitTaskSetup = async (values: TaskSetupValues) => {
-    if (!selected) return;
+  const submitProductionSetup = async (values: ProductionTaskValues): Promise<boolean> => {
+    if (!selected) return false;
+    setError(null); setNotice(null);
+    try { const saved = await saveProductionTask(selected, values); setSelected(saved); await loadProject(saved.projectId); await refresh(); setNotice("任务基本设置已保存。" + (taskOutputUnit(selected.snapshot) !== values.outputUnit && selected.snapshot.geometryRevisions.length ? "输出单位已变化，请按当前单位重新生成并检查成果。历史文件已保留。" : "")); return true; }
+    catch (reason) { setError(describeFailure(reason, "任务设置保存失败")); return false; }
+  };
+
+  const submitTaskSetup = async (values: TaskSetupValues): Promise<boolean> => {
+    if (!selected) return false;
+    setNotice(null);
+    setError(null);
     const replacing = confirmedTask !== null;
+    let updated: ProjectHead;
     try {
-      const updated = replacing
+      updated = replacing
         ? await workflow.replaceTaskDefinition(selected, localActorId(), values)
         : await workflow.confirmTaskSetup(selected, localActorId(), values);
-      setSelected(updated);
+    } catch (reason) {
+      // 命令可能已经提交，而紧随其后的自动检查失败。先核实已保存结果，避免重复建立任务。
+      const persisted = await projectRepository.getProjectHead(selected.projectId).catch(() => null);
+      const savedTask = persisted?.snapshot.taskDefinitions.find((task) => task.confirmedAt !== null);
+      const sameRequirements = savedTask?.artifactRequirements
+        && JSON.stringify(TaskArtifactRequirementsSchema.parse(savedTask.artifactRequirements)) === JSON.stringify(TaskArtifactRequirementsSchema.parse(values.artifactRequirements));
+      const committed = savedTask && savedTask.id !== confirmedTask?.id
+        && savedTask.name === values.taskName
+        && JSON.stringify(savedTask.scope) === JSON.stringify(values.scope)
+        && JSON.stringify(savedTask.regulationRefs) === JSON.stringify(values.regulationRefs)
+        && JSON.stringify(savedTask.deliverables) === JSON.stringify(values.deliverables)
+        && sameRequirements;
+      if (!persisted || !committed) {
+        setError(describeFailure(reason, replacing ? "任务成果要求更新失败" : "任务设置失败"));
+        return false;
+      }
+      updated = persisted;
+      setError(describeFailure(reason, "任务已保存，但后续自动检查未完成，请重新打开项目检查"));
+    }
+    setSelected(updated);
+    setNotice(replacing ? "任务要求已保存。旧任务与成果保留，新成果需重新生成。" : "任务要求已确认，可以开始制作");
+    try {
       session.setProjectRuleRuns(await projectRepository.getProjectRuleRuns(selected.projectId));
       await refresh();
-      setNotice(replacing ? "任务成果要求已建立新版本；旧任务定义保留在审计链中。" : "任务范围、规范和责任角色已一次确认");
     } catch (reason) {
-      setError(describeFailure(reason, replacing ? "任务成果要求更新失败" : "任务设置失败"));
+      setError(describeFailure(reason, "任务已保存，但列表刷新失败，请重新打开项目查看"));
     }
+    return true;
   };
 
   const decideCandidate = async (issueId: string, candidateId: string, outcome: "accepted" | "rejected", typedReason: string): Promise<boolean> => {
@@ -534,9 +591,9 @@ export function useRecordWrites({ session, notices }: WriteDeps) {
   };
 
   return {
-    assistantExecutors, roundTripReceipt,
-    confirmGeometryFacts, createProxyDelivery, recordBlockedDelivery, downloadArtifact, registerArchetype,
-    uploadEvidenceFiles, confirmTranscribedDimensions, confirmRecognizedComponents, submitTaskSetup,
+    assistantExecutors, roundTripReceipt, saveMaterialCoverage, modelChecking, checkModelFiles,
+    confirmGeometryFacts, confirmDraftGeometryComponent, createProxyDelivery, recordBlockedDelivery, downloadArtifact, registerArchetype,
+    submitProductionSetup, uploadEvidenceFiles, retryEvidence, processingEvidenceId, uploadingEvidence, confirmTranscribedDimensions, confirmRecognizedComponents, submitTaskSetup,
     decideCandidate, decideIssueOption, recordObservation, confirmDocumentedDimensionChain, verifyEmptyLibraryRoundTrip,
   };
 }

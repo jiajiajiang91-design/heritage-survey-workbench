@@ -1,3 +1,4 @@
+import { GeometryDimensionBindingSchema, resolveGeometryDimensionBindings } from "./geometry-dimension-binding.js";
 import type { ProjectHead } from "@gujian/application";
 import {
   GeometryInterfaceSchema,
@@ -6,6 +7,8 @@ import {
   type FactEnvelope,
   type ProjectDrivenGeometrySpec,
   type ProjectGeometryObject,
+  UuidSchema,
+  taskOutputUnit,
 } from "@gujian/domain";
 import { recordHash } from "./hash.js";
 import { matchesGeometryRole, resolveVocabulary } from "./vocabulary-resolver.js";
@@ -19,6 +22,8 @@ export const EvidenceGeometryComponentValueSchema = ProjectGeometryObjectSchema.
   evidenceRefs: true,
   unknownRefs: true,
 }).extend({
+  candidateSource: z.object({ candidateId: UuidSchema, rowIndex: z.number().int().min(0).max(299) }).strict().optional(),
+  dimensionBindings: z.array(GeometryDimensionBindingSchema).max(6).optional(),
   parentStableKey: z.string().min(1).max(200).nullable(),
   sourceLocation: z.string().min(1).max(500),
   evidenceRefs: z.array(z.string().min(1)).min(1).max(500),
@@ -31,6 +36,32 @@ export const EvidenceGeometryComponentValueSchema = ProjectGeometryObjectSchema.
     blocksFormalEligibility: z.boolean(),
   }).strict()).max(100),
 }).strict();
+
+export function candidateComponentKey(candidateId: string, rowIndex: number): string {
+  return `candidate:${candidateId}:${rowIndex}`;
+}
+
+export function componentCandidateProblem(snapshot: ProjectHead["snapshot"], value: z.infer<typeof EvidenceGeometryComponentValueSchema>): string | null {
+  if (!value.candidateSource) return null;
+  const { candidateId, rowIndex } = value.candidateSource;
+  const candidate = snapshot.candidates.find((item) => item.id === candidateId && item.projectId === snapshot.project.id);
+  if (!candidate || candidate.structured?.kind !== "componentRecognition") return "来源构件候选不存在或不属于本项目。";
+  if (candidate.reviewStatus === "rejected" || candidate.reviewStatus === "superseded") return "来源构件候选已驳回或被替代。";
+  const row = candidate.structured.components[rowIndex];
+  if (!row) return "来源构件条目不存在。";
+  if (value.stableKey !== candidateComponentKey(candidateId, rowIndex)) return "构件编号与候选来源不一致。";
+  if (!value.evidenceRefs.includes(row.evidenceRef) || !snapshot.evidences.some((item) => item.id === row.evidenceRef && item.dataStatus === "available")) return "来源构件的原件不可用或未引用。";
+  return null;
+}
+
+export function hasComponentInputs(head: ProjectHead): boolean {
+  return head.snapshot.facts.some((fact) => fact.field.startsWith("geometry.component."));
+}
+
+export function geometryGenerationGate(head: ProjectHead): { ready: boolean; missing: string[] } {
+  return hasComponentInputs(head) || !head.snapshot.geometrySpecs.length
+    ? geometryPrerequisites(head) : { ready: true, missing: [] };
+}
 
 export const EvidenceGeometryInterfaceValueSchema = GeometryInterfaceSchema.omit({
   id: true,
@@ -53,9 +84,9 @@ interface ParsedFact<T> {
 function geometryFacts<T>(head: ProjectHead, prefix: string, schema: z.ZodType<T>): ParsedFact<T>[] {
   const latest = new Map<string, FactEnvelope>();
   for (const fact of head.snapshot.facts) {
-    if (fact.field.startsWith(prefix) && fact.reviewStatus === "confirmed" && fact.dataStatus === "available") latest.set(fact.field, fact);
+    if (fact.field.startsWith(prefix)) latest.set(fact.field, fact);
   }
-  return [...latest.values()].map((fact) => ({ fact, value: schema.parse(fact.value) }));
+  return [...latest.values()].filter((fact) => fact.reviewStatus === "confirmed" && fact.dataStatus === "available").map((fact) => ({ fact, value: schema.parse(fact.value) }));
 }
 
 function evidenceClosure(head: ProjectHead, fact: FactEnvelope, refs: readonly string[]): void {
@@ -69,11 +100,16 @@ function evidenceClosure(head: ProjectHead, fact: FactEnvelope, refs: readonly s
 
 export function geometryPrerequisites(head: ProjectHead): { ready: boolean; missing: string[]; facts: Map<string, FactEnvelope> } {
   const task = head.snapshot.taskDefinitions.find((item) => item.confirmedAt !== null);
-  const componentFacts = geometryFacts(head, "geometry.component.", EvidenceGeometryComponentValueSchema);
+  const componentFacts = geometryFacts(head, "geometry.component.", EvidenceGeometryComponentValueSchema)
+    .filter(({ value }) => !componentCandidateProblem(head.snapshot, value));
   const facts = new Map(componentFacts.map(({ fact }) => [fact.field, fact]));
   const missing: string[] = [];
-  if (!task?.artifactRequirements) missing.push("task.artifactRequirements");
+  if (!task) missing.push("task.confirmed");
   if (!componentFacts.length) missing.push("geometry.component.*");
+  for (const { value } of componentFacts) {
+    try { resolveGeometryDimensionBindings(head, value.solid, value.dimensionBindings ?? []); }
+    catch { missing.push("geometry.dimension." + value.stableKey); }
+  }
   const availableTypes = componentFacts.map(({ value }) => value.componentType);
   const vocabulary = resolveVocabulary();
   for (const role of task?.artifactRequirements?.geometryTargetRoles ?? []) {
@@ -89,9 +125,13 @@ function priorIds(head: ProjectHead): Map<string, string> {
 }
 
 export function buildProjectGeometrySpec(head: ProjectHead, ruleRunId: string): ProjectDrivenGeometrySpec {
+  const componentFacts = geometryFacts(head, "geometry.component.", EvidenceGeometryComponentValueSchema)
+    .filter(({ value }) => !componentCandidateProblem(head.snapshot, value));
   const prerequisite = geometryPrerequisites(head);
-  if (!prerequisite.ready) throw new Error(`GEOMETRY_EVIDENCE_FACTS_MISSING:${prerequisite.missing.join(",")}`);
-  const componentFacts = geometryFacts(head, "geometry.component.", EvidenceGeometryComponentValueSchema);
+  if (!prerequisite.ready) {
+    for (const { value } of componentFacts) resolveGeometryDimensionBindings(head, value.solid, value.dimensionBindings ?? []);
+    throw new Error(`GEOMETRY_EVIDENCE_FACTS_MISSING:${prerequisite.missing.join(",")}`);
+  }
   const interfaceFacts = geometryFacts(head, "geometry.interface.", EvidenceGeometryInterfaceValueSchema);
   const previous = priorIds(head);
   const ids = new Map(componentFacts.map(({ value }) => [value.stableKey, previous.get(value.stableKey) ?? crypto.randomUUID()]));
@@ -101,6 +141,8 @@ export function buildProjectGeometrySpec(head: ProjectHead, ruleRunId: string): 
 
   const objects: ProjectGeometryObject[] = componentFacts.map(({ fact, value }) => {
     evidenceClosure(head, fact, value.evidenceRefs);
+    const bound = resolveGeometryDimensionBindings(head, value.solid, value.dimensionBindings ?? []);
+    const objectEvidenceRefs = [...new Set([...value.evidenceRefs, ...bound.evidenceRefs])];
     const parentId = value.parentStableKey === null ? null : ids.get(value.parentStableKey);
     if (value.parentStableKey !== null && !parentId) throw new Error(`GEOMETRY_PARENT_COMPONENT_MISSING:${value.stableKey}:${value.parentStableKey}`);
     const localUnknowns = value.unknowns.map((unknown) => {
@@ -127,9 +169,12 @@ export function buildProjectGeometrySpec(head: ProjectHead, ruleRunId: string): 
       componentType: value.componentType,
       displayNameZh: value.displayNameZh,
       materialCode: value.materialCode,
-      solid: value.solid,
+      solid: bound.solid,
+      ...(value.positionBasis !== undefined ? { positionBasis: value.positionBasis } : {}),
+      ...(value.conceptRef !== undefined ? { conceptRef: value.conceptRef } : {}),
       parameters: [
-        ...value.parameters,
+        ...value.parameters.filter((parameter) => !bound.parameters.some((item) => item.name === parameter.name)),
+        ...bound.parameters,
         {
           id: crypto.randomUUID(),
           name: "evidenceSourceLocation",
@@ -142,8 +187,8 @@ export function buildProjectGeometrySpec(head: ProjectHead, ruleRunId: string): 
         },
       ],
       producer,
-      factRefs: [fact.id],
-      evidenceRefs: value.evidenceRefs,
+      factRefs: [fact.id, ...bound.factRefs],
+      evidenceRefs: objectEvidenceRefs,
       unknownRefs: localUnknowns.map((item) => item.id),
     };
   });
@@ -176,6 +221,7 @@ export function buildProjectGeometrySpec(head: ProjectHead, ruleRunId: string): 
     projectRevisionId: head.revisionId,
     buildingId: head.snapshot.buildings[0]!.id,
     inputHash: "0".repeat(64),
+    outputUnit: taskOutputUnit(head.snapshot),
     coordinateSystem: { name: "项目局部坐标", axisOrder: "XYZ", upAxis: "Z", lengthUnit: "mm", origin: [0, 0, 0] },
     tolerances: { modellingMm: 0.01, interfaceMm: 0.5, tessellationMm: 0.5 },
     objects,

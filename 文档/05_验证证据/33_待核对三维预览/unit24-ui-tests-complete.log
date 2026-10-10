@@ -1,0 +1,26 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/screens/GeometryComponentEditor.test.tsx (9 tests) 429ms
+ ✓ src/draft-geometry-mesh.test.ts (8 tests) 9ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/DraftGeometryViewer.test.tsx [ src/DraftGeometryViewer.test.tsx ]
+ReferenceError: Cannot access '__vi_import_1__' before initialization
+ ❯ src/DraftGeometryViewer.test.tsx:3:16
+      1| import { cleanup, fireEvent, render, screen } from "@testing-library/r…
+      2| import { afterEach, beforeEach, describe, expect, it, vi } from "vites…
+      3| import * as THREE from "three";
+       |                ^
+      4| import { DraftGeometryViewer } from "./DraftGeometryViewer";
+      5| import type { ComponentInput } from "./component-input";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  17 passed (17)
+   Start at  16:12:26
+   Duration  3.72s (transform 328ms, setup 603ms, collect 1.11s, tests 438ms, environment 985ms, prepare 186ms)
+

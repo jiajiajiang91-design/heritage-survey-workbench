@@ -1,0 +1,74 @@
+[
+  {
+    "actualWidth": 1280,
+    "assistant": {
+      "bottom": 658.6666870117188,
+      "left": 900,
+      "right": 1280,
+      "top": 56
+    },
+    "banner": {
+      "bottom": 720.0000228881836,
+      "left": 0,
+      "right": 1280,
+      "top": 658.6666870117188
+    },
+    "body": {
+      "bottom": 658.6666870117188,
+      "left": 0,
+      "right": 1280,
+      "top": 56
+    },
+    "closeHit": true,
+    "preview": "loaded",
+    "status": "status"
+  },
+  {
+    "actualWidth": 1024,
+    "assistant": {
+      "bottom": 658.6666870117188,
+      "left": 644,
+      "right": 1024,
+      "top": 56
+    },
+    "banner": {
+      "bottom": 720.0000228881836,
+      "left": 0,
+      "right": 1024,
+      "top": 658.6666870117188
+    },
+    "body": {
+      "bottom": 658.6666870117188,
+      "left": 0,
+      "right": 1024,
+      "top": 56
+    },
+    "closeHit": true,
+    "preview": "loaded",
+    "status": "status"
+  },
+  {
+    "actualWidth": 900,
+    "assistant": {
+      "bottom": 658.6666870117188,
+      "left": 520,
+      "right": 900,
+      "top": 56
+    },
+    "banner": {
+      "bottom": 720.0000228881836,
+      "left": 0,
+      "right": 900,
+      "top": 658.6666870117188
+    },
+    "body": {
+      "bottom": 658.6666870117188,
+      "left": 0,
+      "right": 900,
+      "top": 56
+    },
+    "closeHit": true,
+    "preview": "loaded",
+    "status": "status"
+  }
+]

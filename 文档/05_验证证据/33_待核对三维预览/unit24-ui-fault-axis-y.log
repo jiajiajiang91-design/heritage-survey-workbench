@@ -1,0 +1,36 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/draft-geometry-mesh.test.ts (8 tests | 1 failed | 7 skipped) 6ms
+   ↓ 临时形体与 CAD 坐标一致 > 长方体围绕中心，毫米只换算一次并映射视口轴
+   ↓ 临时形体与 CAD 坐标一致 > 圆柱沿 x 正轴，范围与中心符合 CAD
+   ↓ 临时形体与 CAD 坐标一致 > 圆柱沿 y 正轴，范围与中心符合 CAD
+   ↓ 临时形体与 CAD 坐标一致 > 圆柱沿 z 正轴，范围与中心符合 CAD
+   ↓ 临时形体与 CAD 坐标一致 > 轮廓挤出 x 保留原点，U/V/T 方向及范围符合 CAD
+   × 临时形体与 CAD 坐标一致 > 轮廓挤出 y 保留原点，U/V/T 方向及范围符合 CAD 5ms
+     → expected 0.20000000298023224 to be close to 1.2, received difference is 0.9999999970197677, but expected 5e-7
+   ↓ 临时形体与 CAD 坐标一致 > 轮廓挤出 z 保留原点，U/V/T 方向及范围符合 CAD
+   ↓ 临时形体与 CAD 坐标一致 > 两个对象身份独立，修改参数保持原 stableKey
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/draft-geometry-mesh.test.ts > 临时形体与 CAD 坐标一致 > 轮廓挤出 y 保留原点，U/V/T 方向及范围符合 CAD
+AssertionError: expected 0.20000000298023224 to be close to 1.2, received difference is 0.9999999970197677, but expected 5e-7
+ ❯ src/draft-geometry-mesh.test.ts:19:103
+     17|   return result;
+     18| }
+     19| function close(actual: number[], expected: number[]) { actual.forEach(…
+       |                                                                                                       ^
+     20| describe("临时形体与 CAD 坐标一致", () => {
+     21|   it("长方体围绕中心，毫米只换算一次并映射视口轴", () => {
+ ❯ close src/draft-geometry-mesh.test.ts:19:63
+ ❯ src/draft-geometry-mesh.test.ts:33:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  16:22:36
+   Duration  840ms (transform 24ms, setup 223ms, collect 58ms, tests 6ms, environment 359ms, prepare 63ms)
+

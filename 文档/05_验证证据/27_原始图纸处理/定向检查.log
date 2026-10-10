@@ -1,0 +1,12 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run "src/evidence-processing.test.ts"
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/evidence-processing.test.ts (7 tests) 167ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  09:00:32
+   Duration  1.55s (transform 255ms, setup 228ms, collect 865ms, tests 167ms, environment 0ms, prepare 93ms)
+

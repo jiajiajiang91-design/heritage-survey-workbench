@@ -1,0 +1,12 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/workbench/component-writes.test.tsx (6 tests) 61ms
+ ✓ src/screens/ComponentList-preview.test.tsx (1 test) 140ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  16:29:32
+   Duration  2.08s (transform 397ms, setup 474ms, collect 2.08s, tests 201ms, environment 708ms, prepare 182ms)
+

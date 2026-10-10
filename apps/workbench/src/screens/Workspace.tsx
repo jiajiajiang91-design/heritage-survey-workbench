@@ -1,5 +1,9 @@
+import { checkedArtifactsMeetTask, isModelOnlyTask } from "../delivery-readiness";
+import { modelInputsCurrent } from "@gujian/infrastructure";
 import type { ProjectHead } from "@gujian/application";
 
+import { PreviewReview } from "./PreviewReview";
+import { usePreviewModel } from "../workbench/usePreviewModel";
 import { stages, type StageId } from "../view-registry";
 import { useDrawingPreviews, useGeometryBlob } from "../workbench/useAssetUrls";
 import type { Workbench } from "../workbench/useWorkbench";
@@ -17,7 +21,7 @@ import { ProxyDelivery } from "./ProxyDelivery";
 import { SheetStyle } from "./SheetStyle";
 import { TaskCard } from "./TaskCard";
 
-// 十一个工作区视图与两个项目级页面的接线：把 useWorkbench 的切片与回调交给各屏。
+// 十二个工作区视图与两个项目级页面的接线：把 useWorkbench 的切片与回调交给各屏。
 // 屏幕组件只接 props，不 import 组合根。
 export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: ProjectHead }) {
   const { session, nav, evidence, jobs, writes } = wb;
@@ -42,6 +46,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
     submitTaskSetup, decideCandidate, decideIssueOption, recordObservation, confirmDocumentedDimensionChain,
     verifyEmptyLibraryRoundTrip,
   } = writes;
+  const preview = usePreviewModel(selected);
   const geometryBlob = useGeometryBlob(geometryRevision);
   const drawingPreviewUrls = useDrawingPreviews(drawingArtifacts);
   const demoLimitationZh = session.projectCards.find((card) => card.projectId === selected.projectId)?.demoLimitationZh ?? null;
@@ -57,7 +62,10 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 measuredRecordCount={measuredRecordCount}
                 qualificationLabel={dashboard?.qualificationLabel ?? null}
                 demoLimitationZh={demoLimitationZh}
+                objects={geometrySpec?.objects ?? []}
+                roleOptions={[...new Set((geometrySpec?.objects ?? []).map((o) => o.componentType))].map((value) => ({ value, label: typeLabel(value) }))}
                 onSubmitTask={submitTaskSetup}
+                onSubmitProduction={writes.submitProductionSetup}
                 onEnterEvidence={() => goToView("evidence")}
               />
             )}
@@ -69,10 +77,23 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 readableDrawingCount={readableDrawingEvidenceIds.length}
                 modelRunning={modelRunning}
                 onUpload={uploadEvidenceFiles}
-                onTranscribe={() => void transcribeDrawings()}
+                selectedIds={session.selectedModelEvidenceIds}
+                onSelectionChange={session.setChosenModelEvidenceIds}
+                onRetry={writes.retryEvidence}
+                onSaveCoverage={writes.saveMaterialCoverage}
+                processingEvidenceId={writes.processingEvidenceId}
+                uploading={writes.uploadingEvidence}
+                onTranscribe={(ids) => void jobs.generatePreview(ids)}
+                onViewPreview={() => goToView("preview")}
+                onEditTask={() => goToView("tasks")}
                 onGoToIssues={() => goToView("issues")}
               />
             )}
+
+            {activeStage === "preview" && <PreviewReview snapshot={selected.snapshot} {...preview} pane={evidence}
+              onReturn={() => goToView("evidence")}
+              onReview={(row) => { evidence.setActiveEvidenceId(row.evidenceId); if (row.kind === "component") nav.setComponentCandidateSelection({ candidateId: row.candidateId, rowIndex: row.rowIndex }); else { nav.setDimensionCandidateSelection({ candidateId: row.candidateId, rowIndex: row.rowIndex }); nav.setDimensionReturnView("preview"); } goToView(row.kind === "dimension" ? "measurements" : "objects");
+              }} />}
 
             {activeStage === "measurements" && (
               <MeasurementBaseline
@@ -82,6 +103,11 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 evidenceTitle={evidenceTitle}
                 onRegisterArchetype={registerArchetype}
                 onConfirmDimensionChain={confirmDocumentedDimensionChain}
+                onReviewDimensions={confirmTranscribedDimensions}
+                selection={nav.dimensionCandidateSelection}
+                onSelectDimension={nav.setDimensionCandidateSelection}
+                returnLabel={nav.dimensionReturnView === "geometry" ? "返回三维模型" : nav.dimensionReturnView === "preview" ? "返回预览核对" : undefined}
+                onReturn={nav.dimensionReturnView ? () => goToView(nav.dimensionReturnView!) : undefined}
               />
             )}
 
@@ -96,7 +122,11 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 selectedObjectId={nav.selectedGeometryEntityId}
                 onSelectObject={setSelectedGeometryEntityId}
                 onOpenInModel={nav.openGeometryObject}
-                modelConfigured={serverStatus?.modelConfigured ?? false}
+                onSaveComponent={(value) => confirmGeometryFacts({ components: [value], interfaces: [] })}
+                onSaveDraftComponent={writes.confirmDraftGeometryComponent}
+                candidateSelection={nav.componentCandidateSelection}
+                onCandidateSelectionHandled={() => nav.setComponentCandidateSelection(null)}
+
               />
             )}
 
@@ -114,6 +144,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
             {activeStage === "issues" && (
               <IssueQueue
                 snapshot={selected.snapshot}
+                initialIssueId={nav.issueSelection}
                 openIssues={openIssues}
                 taskConfirmed={confirmedTask !== null}
                 evidenceTitle={evidenceTitle}
@@ -137,13 +168,20 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 typeLabel={typeLabel}
                 selectedObjectId={nav.selectedGeometryEntityId}
                 onSelectObject={setSelectedGeometryEntityId}
-                onConfirmGeometryFacts={confirmGeometryFacts}
+                onEditComponents={() => goToView("objects")}
+                onEditTask={() => goToView("tasks")}
+                pane={evidence}
+                onReviewDimension={(source) => { nav.setDimensionCandidateSelection(source); nav.setDimensionReturnView("geometry"); goToView("measurements"); }}
+                onEnterIssues={(issueId) => { nav.setIssueSelection(issueId); goToView("issues"); }}
               />
             )}
 
             {activeStage === "sheetStyle" && (
               <SheetStyle
                 task={confirmedTask}
+                references={{ components: (geometrySpec?.objects ?? []).map((o) => ({ value: o.stableKey, label: o.displayNameZh })), evidences: selected.snapshot.evidences.map((e) => ({ value: e.id, label: e.title })) }}
+                roleOptions={[...new Set((geometrySpec?.objects ?? []).map((o) => o.componentType))].map((value) => ({ value, label: typeLabel(value) }))}
+                onSubmitTask={submitTaskSetup}
                 previews={drawingPreviewUrls}
                 canGenerate={Boolean(geometryRevision && confirmedTask) && !drawingRunning}
                 generating={drawingRunning}
@@ -154,6 +192,7 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
 
             {activeStage === "drawings" && (
               <DrawingSet
+                outputUnitChanged={session.unitUpdate.drawings}
                 signoff={dashboard?.signoff ?? null}
                 demoLimitationZh={demoLimitationZh}
                 artifacts={drawingArtifacts}
@@ -173,6 +212,14 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
 
             {activeStage === "checks" && (
               <ChecksAndQualification
+                modelOnly={isModelOnlyTask(confirmedTask)}
+                modelNeedsUpdate={Boolean(geometryRevision && !modelInputsCurrent(selected, geometryRevision))}
+                hasModel={Boolean(geometryRevision)}
+                modelBlob={geometryBlob}
+                modelFileName={(selected.snapshot.buildings[0]?.name ?? "model") + ".glb"}
+                modelChecking={writes.modelChecking}
+                onCheckModel={() => void writes.checkModelFiles()}
+                onOpenModel={() => goToView("geometry")}
                 previews={drawingPreviewUrls}
                 drawingArtifacts={drawingArtifacts}
                 latestCheckRun={latestCheckRun}
@@ -204,18 +251,19 @@ export function WorkspaceView({ wb, selected }: { wb: Workbench; selected: Proje
                 latestCheckRun={latestCheckRun}
                 latestDelivery={latestDelivery}
                 latestBlockedDelivery={latestBlockedDelivery}
-                deliveryBlockers={deliveryBlockers}
+                deliveryBlockers={deliveryBlockers.length ? deliveryBlockers : blockerReasons}
                 signoff={dashboard?.signoff ?? null}
                 demoLimitationZh={demoLimitationZh}
                 blockerCodes={dashboard?.blockerCodes ?? []}
-                canCreate={Boolean(geometryRevision && latestCheckRun && drawingArtifacts.length && !latestDelivery)}
+                currentOutputNotice={geometryRevision && latestCheckRun && ((!modelInputsCurrent(selected, geometryRevision)) || !checkedArtifactsMeetTask(confirmedTask, drawingArtifacts)) ? latestDelivery ? "当前输入或成果要求已改变，下面显示此前草案；按当前任务更新并检查后建立新草案。旧文件仍可查看并随项目包保存。" : "当前任务尚缺对应的成果检查，请按目标完成制作并检查后建立草案。" : null}
+                canCreate={Boolean(geometryRevision && (!isModelOnlyTask(confirmedTask) || modelInputsCurrent(selected, geometryRevision)) && latestCheckRun && checkedArtifactsMeetTask(confirmedTask, drawingArtifacts) && !latestDelivery)}
                 exporting={Boolean(exportProgress)}
                 showExportTask={showExportTask}
                 exportPhase={exportProgress?.phase ?? null}
                 exportCancelling={exportProgress?.cancelling ?? false}
                 roundTripReceipt={roundTripReceipt}
                 onCreate={() => void createProxyDelivery()}
-                onRecordBlocked={() => void recordBlockedDelivery()}
+                onRecordBlocked={deliveryBlockers.length ? () => void recordBlockedDelivery() : null}
                 onExport={(type) => void downloadProject(type)}
                 onCancelExport={cancelExport}
                 onVerifyRoundTrip={() => void verifyEmptyLibraryRoundTrip()}
@@ -275,7 +323,7 @@ export function ProjectPage({ wb, selected }: { wb: Workbench; selected: Project
             onRun={() => void runModel()}
             onRefreshStatus={() => void session.refreshServerStatus()}
             onConfirmComponents={(candidate) => void confirmRecognizedComponents(candidate)}
-            onConfirmDimensions={(candidate) => void confirmTranscribedDimensions(candidate)}
+            onReviewDimensions={() => goToView("measurements")}
             back={{ label: stages.find((stage) => stage.id === returnView)?.label ?? "", onBack: () => goToView(returnView) }}
           />
         )

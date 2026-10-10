@@ -7,7 +7,7 @@ const MIN_RATIO = 30;
 const MAX_RATIO = 70;
 const clamp = (ratio: number) => Math.min(MAX_RATIO, Math.max(MIN_RATIO, ratio));
 
-export function SplitPane({ data, aside, asideLabel = "资料区", initialRatio = 50 }: { data: ReactNode; aside: ReactNode; asideLabel?: string; initialRatio?: number }) {
+export function SplitPane({ data, aside, asideLabel = "资料区", initialRatio = 50, className = "" }: { data: ReactNode; aside: ReactNode; asideLabel?: string; initialRatio?: number; className?: string }) {
   const [ratio, setRatio] = useState(clamp(initialRatio));
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,7 +35,7 @@ export function SplitPane({ data, aside, asideLabel = "资料区", initialRatio 
   };
 
   return (
-    <div className="gj-split" ref={containerRef} style={{ "--split-ratio": `${ratio}%` } as React.CSSProperties}>
+    <div className={"gj-split " + className} ref={containerRef} style={{ "--split-ratio": `${ratio}%` } as React.CSSProperties}>
       <div className="gj-split-data">{data}</div>
       <div
         className="gj-split-divider"

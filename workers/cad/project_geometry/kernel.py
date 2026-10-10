@@ -17,6 +17,7 @@ import trimesh
 from PIL import Image, ImageDraw
 
 from .contracts import canonical_bytes, geometry_spec_input_hash, sha256_bytes, validate_geometry_spec
+from workers.cad.output_units import IFC_UNIT_PREFIXES, OUTPUT_UNITS, output_unit
 
 
 REVISION_NAMESPACE = uuid.UUID("5101927e-4f9d-5fa7-a411-eafec4d17d24")
@@ -145,7 +146,7 @@ def _entity_record(item: BuiltObject, brep_sha256: str) -> dict[str, Any]:
 def _write_glb(path: Path, objects: list[BuiltObject]) -> None:
     scene = trimesh.Scene()
     for item in objects:
-        # Internal geometry and IFC are Z-up/mm. glTF is Y-up/metre.
+        # 内部几何为 Z-up 毫米，glTF 固定为 Y-up 米。
         glb_vertices = np.column_stack((item.vertices[:, 0], item.vertices[:, 2], -item.vertices[:, 1])) / 1000.0
         mesh = trimesh.Trimesh(vertices=glb_vertices, faces=item.faces, process=False)
         mesh.metadata.update({"sourceEntityId": item.record["id"], "componentType": item.record["componentType"]})
@@ -154,6 +155,8 @@ def _write_glb(path: Path, objects: list[BuiltObject]) -> None:
 
 
 def _write_ifc(path: Path, spec: dict[str, Any], objects: list[BuiltObject]) -> None:
+    unit_name = output_unit(spec)
+    divisor = OUTPUT_UNITS[unit_name]
     model = ifcopenshell.file(schema="IFC4")
     def global_id(label: str) -> str:
         return ifcopenshell.guid.compress(uuid.uuid5(REVISION_NAMESPACE, f"{spec['inputHash']}:{label}").hex)
@@ -161,9 +164,9 @@ def _write_ifc(path: Path, spec: dict[str, Any], objects: list[BuiltObject]) -> 
     axis = model.create_entity("IfcAxis2Placement3D", Location=origin)
     context = model.create_entity(
         "IfcGeometricRepresentationContext", ContextIdentifier=None, ContextType="Model",
-        CoordinateSpaceDimension=3, Precision=1e-5, WorldCoordinateSystem=axis, TrueNorth=None,
+        CoordinateSpaceDimension=3, Precision=1e-5 / divisor, WorldCoordinateSystem=axis, TrueNorth=None,
     )
-    unit = model.create_entity("IfcSIUnit", UnitType="LENGTHUNIT", Prefix="MILLI", Name="METRE")
+    unit = model.create_entity("IfcSIUnit", UnitType="LENGTHUNIT", Prefix=IFC_UNIT_PREFIXES[unit_name], Name="METRE")
     unit_assignment = model.create_entity("IfcUnitAssignment", Units=[unit])
     project = model.create_entity(
         "IfcProject", GlobalId=global_id("project"), Name="代理几何项目",
@@ -178,7 +181,7 @@ def _write_ifc(path: Path, spec: dict[str, Any], objects: list[BuiltObject]) -> 
     model.create_entity("IfcRelAggregates", GlobalId=global_id("rel:building-storey"), RelatingObject=building, RelatedObjects=[storey])
     products = []
     for item in objects:
-        coordinates = model.create_entity("IfcCartesianPointList3D", CoordList=item.vertices.tolist())
+        coordinates = model.create_entity("IfcCartesianPointList3D", CoordList=(item.vertices / divisor).tolist())
         face_set = model.create_entity(
             "IfcTriangulatedFaceSet", Coordinates=coordinates, Closed=True,
             CoordIndex=[[int(index) + 1 for index in face] for face in item.faces],

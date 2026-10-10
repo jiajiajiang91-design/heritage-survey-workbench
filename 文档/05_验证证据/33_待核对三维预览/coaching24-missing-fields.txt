@@ -1,0 +1,191 @@
+- main:
+  - generic: 建
+  - heading "古建保护成果工作台" [level=1]
+  - generic "单元24预览内部测试 / 单元24合成建筑 1:100"
+  - navigation "项目级页面":
+    - button "项目列表"
+    - button "AI 调用与用量"
+    - button "修改历史"
+  - complementary:
+    - generic: 当前任务
+    - heading "单元24预览内部测试" [level=2]
+    - heading "单元24合成建筑" [level=3]
+    - generic: 任务阶段
+    - navigation "任务进度":
+      - button "01 建立任务 已完成，已确认":
+        - generic: "01"
+        - generic: 建立任务
+        - generic: 已完成，已确认
+      - button "02 整理资料 已完成，1 份 · 7 条结果":
+        - generic: "02"
+        - generic: 整理资料
+        - generic: 已完成，1 份 · 7 条结果
+      - button "03 核对实测 未开始，2 条待核对":
+        - generic: "03"
+        - generic: 核对实测
+        - generic: 未开始，2 条待核对
+      - button "04 核对构件 当前，2 个对象 · 已生成":
+        - generic: "04"
+        - generic: 核对构件
+        - generic: 当前，2 个对象 · 已生成
+      - button "05 记录现状 未开始，无记录 · 4 项待办":
+        - generic: "05"
+        - generic: 记录现状
+        - generic: 未开始，无记录 · 4 项待办
+      - button "06 生成图纸 未开始，1 张图幅 · 未生成":
+        - generic: "06"
+        - generic: 生成图纸
+        - generic: 未开始，1 张图幅 · 未生成
+      - button "07 检查签发 未开始，未检查":
+        - generic: "07"
+        - generic: 检查签发
+        - generic: 未开始，未检查
+      - button "08 交付归档 未开始，未建立":
+        - generic: "08"
+        - generic: 交付归档
+        - generic: 未开始，未建立
+    - button "待处理 6 项需要人工确认 核对尺寸 2，需专业判断 2，缺现场资料 2":
+      - generic: 待处理
+      - strong: 6 项需要人工确认
+      - generic: 核对尺寸 2，需专业判断 2，缺现场资料 2
+  - heading "构件清单" [level=2]
+  - paragraph: 依资料补齐参数，先预览待核对形体，核对保存后生成模型。
+  - button "下一步：三维模型"
+  - navigation "工作区视图":
+    - button "构件清单"
+    - button "三维模型"
+  - generic: 构件
+  - generic: 2 个对象
+  - strong: 构件制作输入
+  - generic: 2 条
+  - paragraph: 补齐构件参数后，可用已采用尺寸或候选尺寸预览待核对形体，核对后保存构件输入。当前支持长方体、圆柱体和轮廓挤出。
+  - generic "待核对构件":
+    - button "编辑识别构件：内部墙体" [disabled]
+    - button "编辑识别构件：内部圆柱" [disabled]
+  - button "编辑输入：内部墙体" [disabled]
+  - button "编辑输入：内部圆柱" [disabled]
+  - form "构件参数":
+    - strong: 新增构件输入
+    - paragraph: 按资料填写参数，长度可引用已采用尺寸或待核对候选，位置以毫米表示。材料未提供时记录未知。
+    - generic: 构件名称 *
+    - textbox "构件名称" [active]
+    - generic: 构件名称应为 1 至 200 字。
+    - generic: 构件类型 *
+    - combobox "构件类型":
+      - option "请选择类型" [selected]
+      - option "墙体"
+      - option "柱"
+      - option "梁"
+      - option "楼板"
+      - option "屋面"
+      - option "门"
+      - option "窗"
+      - option "基础"
+      - option "洞口"
+    - generic: 构件类型应为 1 至 120 字。
+    - generic: 材料
+    - textbox "材料"
+    - generic: 所属构件
+    - combobox "所属构件":
+      - option "无所属构件" [selected]
+      - option "内部墙体"
+      - option "内部圆柱"
+    - generic: 实体形式
+    - combobox "实体形式":
+      - option "长方体" [selected]
+      - option "圆柱体"
+      - option "轮廓挤出"
+    - paragraph: 复杂曲面及其他实体形式暂不支持。长方体按项目坐标轴布置，轮廓按生成器的局部二维坐标填写，不推断缺少的尺寸。
+    - generic: X 向长度来源
+    - combobox "X 向长度来源":
+      - option "直接填写" [selected]
+      - option "墙长 · 6000 mm"
+      - option "墙厚 · 240 mm"
+      - option "未分类尺寸 · 200 mm"
+    - generic: X 向长度（mm） *
+    - textbox "X 向长度（mm）"
+    - generic: X 向长度应为大于 0 的有限毫米数值，可填写分数。
+    - generic: Y 向长度来源
+    - combobox "Y 向长度来源":
+      - option "直接填写" [selected]
+      - option "墙长 · 6000 mm"
+      - option "墙厚 · 240 mm"
+      - option "未分类尺寸 · 200 mm"
+    - generic: Y 向长度（mm） *
+    - textbox "Y 向长度（mm）"
+    - generic: Y 向长度应为大于 0 的有限毫米数值，可填写分数。
+    - generic: Z 向长度来源
+    - combobox "Z 向长度来源":
+      - option "直接填写" [selected]
+      - option "墙长 · 6000 mm"
+      - option "墙厚 · 240 mm"
+      - option "未分类尺寸 · 200 mm"
+    - generic: Z 向长度（mm） *
+    - textbox "Z 向长度（mm）"
+    - generic: Z 向长度应为大于 0 的有限毫米数值，可填写分数。
+    - strong: 实体中心（mm）
+    - generic: X 坐标 *
+    - textbox "X 坐标"
+    - generic: 请填写有限的毫米坐标，可为 0 或负数。
+    - generic: Y 坐标 *
+    - textbox "Y 坐标"
+    - generic: 请填写有限的毫米坐标，可为 0 或负数。
+    - generic: Z 坐标 *
+    - textbox "Z 坐标"
+    - generic: 请填写有限的毫米坐标，可为 0 或负数。
+    - generic: 位置依据
+    - combobox "位置依据":
+      - option "按资料人工定位" [selected]
+      - option "现场实测坐标"
+      - option "规则推定位置"
+      - option "演示位置"
+    - paragraph: 选择现场实测坐标时，引用资料应包含相应测量记录。人工确认和资料转写不能改变原有数据来源。
+    - generic: 资料位置 *
+    - textbox "资料位置"
+    - generic: 资料位置应为 1 至 500 字。
+    - group "引用资料":
+      - strong: 引用资料（必填）
+      - checkbox "内部合成图.png"
+      - text: 内部合成图.png
+      - button "预览资料"
+      - alert: 请选择至少一份本项目可用资料，移除已失效的引用。
+    - generic "待确认内容与原有参数"
+    - paragraph: 本次保存：未命名构件，X 向长度 未填；Y 向长度 未填；Z 向长度 未填 mm。保存后需重新生成模型和图纸，旧成果保留。
+    - button "预览待核对形体"
+    - button "保存构件输入"
+    - button "取消"
+    - status: 请补齐标出的参数和依据，草稿已保留，原件仍可查看。
+  - combobox "按构件类型筛选":
+    - option "全部类型（2）" [selected]
+    - option "墙体（1）"
+    - option "柱（1）"
+  - button "C-001 自动核对 内部墙体 · 墙体 · 1 条待确认":
+    - generic: C-001
+    - generic: 自动核对
+    - generic: 内部墙体 · 墙体 · 1 条待确认
+  - button "C-002 自动核对 内部圆柱 · 柱 · 1 条待确认":
+    - generic: C-002
+    - generic: 自动核对
+    - generic: 内部圆柱 · 柱 · 1 条待确认
+  - separator "调整数据区与资料区的宽度"
+  - complementary "资料区":
+    - generic: 对应资料
+    - img "内部合成图.png 原件"
+    - strong: 内部合成图.png
+    - paragraph: 项目资料整理与候选提取
+    - paragraph: 点击左侧构件，查看编号、依据的资料和说明。
+    - button "框选修正"
+    - button "在模型中查看" [disabled]
+  - complementary "AI 助手":
+    - heading "AI 助手" [level=2]
+    - generic: AI 未连接
+    - button "收起助手面板":
+    - generic: 当前任务 · 4 / 8
+    - generic: 构件清单
+    - progressbar "任务阶段进度"
+    - status:
+      - generic: 助手建议
+      - paragraph: 模型服务未连接，建议暂不可用；你仍可以用下方输入切换视图或发起操作。
+    - log
+    - textbox "输入问题或处理要求，例如：生成图纸"
+    - button "发送" [disabled]

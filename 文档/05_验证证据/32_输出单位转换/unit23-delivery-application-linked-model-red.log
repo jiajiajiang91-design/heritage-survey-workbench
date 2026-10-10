@@ -1,0 +1,60 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/application
+
+ ❯ src/project-command-service.test.ts (20 tests | 1 failed | 19 skipped) 15ms
+   ↓ ProjectCommandService > 通过唯一事务入口建立初始项目版本
+   ↓ ProjectCommandService > 相同 commandId 重试返回原回执且不重复写入
+   ↓ ProjectCommandService > 版本冲突在提交前失败
+   ↓ ProjectCommandService > 提交失败不留下项目头或命令回执
+   ↓ ProjectCommandService > 服务端权威身份覆盖客户端 actorId
+   ↓ ProjectCommandService > 未授权命令不会开启仓储事务
+   ↓ ProjectCommandService > 新增事实保留模型来源并拒绝重复事实 ID
+   ↓ ProjectCommandService > 构件记录写入后可按 id 修订，修订不存在的记录被拒
+   ↓ ProjectCommandService > 现状记录写入人工来源并拒绝无证据引用的记录
+   ↓ ProjectCommandService > 规则核对只作废本轮重新提出的问题，没提的保持未解决
+   ↓ ProjectCommandService > 复核签发记录追加进快照，几何版本不存在或重复签发被拒
+   ↓ delivery output unit commands > 任务单位改变后直接提交 proxy-ready 评估不能绕过模型和图纸单位校验
+   ↓ delivery output unit commands > 新单位图纸可以基于旧毫米几何独立交付，加入旧单位 IFC 后拒绝
+   × delivery output unit commands > 旧单位 IFC 不能通过绑定新单位图纸矩阵绕过规格校验 15ms
+     → promise resolved "{ …(6) }" instead of rejecting
+   ↓ delivery output unit commands > 已保存的 mm proxy-ready 评估不能用于当前米单位草案
+   ↓ delivery output unit commands > 已保存的 cm proxy-ready 评估不能用于当前米单位草案
+   ↓ delivery output unit commands > 按实际图纸矩阵校验，不能使用最新矩阵使旧图纸适用
+   ↓ delivery output unit commands > 单位改变不阻止旧成果技术检查和 blocked 评估保存
+   ↓ delivery output unit commands > 签发按明确几何版本校验单位，最新模型不能覆盖旧版
+   ↓ delivery output unit commands > 旧毫米记录仍可交付并保留缺省字段，历史包当前单位不同也可导入
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/project-command-service.test.ts > delivery output unit commands > 旧单位 IFC 不能通过绑定新单位图纸矩阵绕过规格校验
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "auditEventId": "10000000-0000-4000-8000-000000000002",
++   "commandId": "51b30550-a9b0-47ec-945e-e0ef18097a0b",
++   "commandType": "EvaluateDelivery",
++   "committedAt": "2026-10-01T00:00:00Z",
++   "projectId": "00000000-0000-4000-8000-000000000001",
++   "revisionId": "00000000-0000-4000-8000-000000000002",
+  }
+
+ ❯ src/project-command-service.test.ts:549:114
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 skipped (20)
+   Start at  20:33:35
+   Duration  674ms (transform 115ms, setup 0ms, collect 353ms, tests 15ms, environment 0ms, prepare 92ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\application:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/project-command-service.test.ts -t "旧单位 IFC 不能"

@@ -1,0 +1,11 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/application
+
+ ✓ src/project-command-service.test.ts (19 tests) 25ms
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  20:30:34
+   Duration  672ms (transform 116ms, setup 0ms, collect 380ms, tests 25ms, environment 0ms, prepare 101ms)
+

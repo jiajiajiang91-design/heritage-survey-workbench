@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-04T23:14:22.807Z",
+  "source": "D:/Downloads/单元24预览内部测试.gujian (1).zip",
+  "byteLength": 239438,
+  "sha256": "72fe5693a46405580c20ee785bde57f25acc3417d361ae05fb777576a30cede1",
+  "restored": {
+    "evidences": 1,
+    "geometryRevisions": 2,
+    "artifacts": 16,
+    "checkRuns": 1,
+    "deliveryDrafts": 1
+  },
+  "currentDraftArtifacts": 16,
+  "currentKinds": [
+    "ifc",
+    "glb",
+    "brepBundle",
+    "geometrySourceMap",
+    "geometryReport",
+    "geometryPreview",
+    "geometryManifest",
+    "svg",
+    "pdf",
+    "drawingSourceMap",
+    "checkReport",
+    "drawingIr",
+    "viewGeometry",
+    "dxf",
+    "png",
+    "deliveryManifest"
+  ],
+  "modelFilesValidated": 7,
+  "allArtifactBytesVerified": true,
+  "pdf": {
+    "source": "D:/Downloads/drawings.pdf",
+    "byteLength": 17693,
+    "sha256": "97e29e790d6475b4d62c99f12c1eb2ae576a22c44caffc2fbe6e82f7403749a5",
+    "matchesCurrentDraft": true
+  },
+  "signatureStatus": "unsigned",
+  "formalEligibility": false
+}

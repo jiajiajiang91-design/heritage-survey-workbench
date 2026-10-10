@@ -4,6 +4,15 @@ import { describe, expect, it } from "vitest";
 
 import { buildArtifactMatrix } from "./artifact-matrix-builder.js";
 
+it.each(["mm", "cm", "m"] as const)("图纸矩阵采用当前 %s，旧毫米几何仍可出图且纸面比例不变", (outputUnit) => {
+  const current = input(baseRequirements());
+  current.head.snapshot.taskDefinitions[0]!.productionSetup = { buildingId: current.spec.buildingId, purpose: "existingSurvey", outputUnit, targets: ["floorPlan"], projectGroup: null };
+  const result = buildArtifactMatrix(current.head, current.geometry, current.spec);
+  expect(result.outputUnit).toBe(outputUnit); expect(result.sheets[0]!.pageMm).toEqual([420, 297]);
+  expect(result.views[0]!.scaleDenominator).toBe(50); expect(result.views[0]!.viewportRectMm).toEqual([20, 30, 380, 240]);
+  expect(current.spec.outputUnit).toBeUndefined(); expect(current.spec.objects[0]!.solid).toMatchObject({ sizeX: "1000" });
+});
+
 function input(requirements: TaskArtifactRequirements): { head: ProjectHead; geometry: GeometryRevision; spec: ProjectDrivenGeometrySpec } {
   const projectId = crypto.randomUUID();
   const revisionId = crypto.randomUUID();

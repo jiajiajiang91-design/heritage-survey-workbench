@@ -134,12 +134,14 @@ describe("图纸尺寸转写的输入边界", () => {
     expect(calls).toEqual([]);
   });
 
-  it("选中的资料不是图像时不发请求", async () => {
+  it("选中的资料没有可读内容时明确报告且不发请求", async () => {
     const calls: string[] = [];
     const current = head();
+    current.snapshot.parseRecords[0]!.status = "metadataOnly";
+    current.snapshot.parseRecords[0]!.extractedText = null;
     const textEvidenceId = current.snapshot.evidences[0]!.id;
     await expect(stubClient(calls, current).runMeasurementTranscription(current, crypto.randomUUID(), [textEvidenceId], () => {}))
-      .rejects.toThrow("NO_READABLE_DRAWING_FOR_MODEL");
+      .rejects.toThrow("以下资料未参与提取：记录.txt");
     expect(calls).toEqual([]);
   });
 });

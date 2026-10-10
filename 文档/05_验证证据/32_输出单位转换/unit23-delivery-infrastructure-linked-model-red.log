@@ -1,0 +1,49 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ❯ src/delivery-service.test.ts (7 tests | 1 failed | 6 skipped) 6ms
+   ↓ delivery blocker propagation > 传播 open issue、结构化 unknown 和 blocked check，并区分仅正式资格阻断
+   ↓ delivery blocker propagation > 有复核签发记录时，正式资格阻断随记录解除，其余阻断照旧
+   ↓ delivery output units > 单位变更后旧签发不能解除旧模型的单位阻断，新单位图纸仍单独适用
+   ↓ delivery output units > 按成果引用的矩阵判断，旧图纸不会被最新矩阵或签发覆盖
+   × delivery output units > 旧单位模型关联新单位矩阵时仍按模型规格保留硬阻断 5ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   ↓ delivery output units > 旧毫米规格和矩阵保持兼容，读取不补写单位
+   ↓ delivery output units > 草案包含新单位图纸和已保存旧单位模型时先保存 blocked 评估，再拒绝生成草案
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/delivery-service.test.ts > delivery output units > 旧单位模型关联新单位矩阵时仍按模型规格保留硬阻断
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+- [
+-   ObjectContaining {
+-     "blocksProxyOutcome": true,
+-     "sourceRef": "f89d0b00-31d7-4869-a3e4-22177f68a3d7",
+-   },
+- ]
++ []
+
+ ❯ src/delivery-service.test.ts:143:76
+    141|     const linkedModel = { ...fixture.ifc, requirementMatrixId: fixture…
+    142|     const details = collectDeliveryBlockerDetails(fixture.head, fixtur…
+    143|     expect(details.filter((item) => item.code === "OUTPUT_UNIT_MISMATC…
+       |                                                                            ^
+    144|   });
+    145| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  20:33:35
+   Duration  825ms (transform 169ms, setup 0ms, collect 537ms, tests 6ms, environment 0ms, prepare 114ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\infrastructure:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/delivery-service.test.ts -t "旧单位模型关联"

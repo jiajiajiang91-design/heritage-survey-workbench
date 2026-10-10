@@ -1,3 +1,4 @@
+import { evidenceReadability } from "./evidence-readability";
 import type { ProjectHead } from "@gujian/application";
 import { estimateRunCost, formatCost, type ModelRunCost } from "./model-pricing";
 import type {
@@ -13,6 +14,7 @@ import type {
 } from "@gujian/domain";
 
 import { QUALIFICATION_CHIP_LABEL, SIGNED_CHIP_LABEL } from "./qualification";
+import { isMaterialCoverageFact, geometryOutputUnitMatches, artifactOutputUnitMatches, outputUnitUpdateState, type ArtifactRequirementMatrix } from "@gujian/domain";
 
 export type WorkbenchStage =
   | "资料整理"
@@ -107,6 +109,7 @@ export interface HumanInterventionView {
 }
 
 interface ReadModelInput {
+  readonly requirementMatrices?: readonly ArtifactRequirementMatrix[];
   readonly head: ProjectHead;
   readonly modelRuns: readonly ModelRun[];
   readonly ruleRuns: readonly RuleRun[];
@@ -117,17 +120,27 @@ interface ReadModelInput {
   readonly deliveries: readonly DeliveryDraft[];
 }
 
+export function currentUnitArtifacts(input: Pick<ReadModelInput, "head" | "artifacts" | "requirementMatrices">): ArtifactRecord[] {
+  const snapshot = input.head.snapshot;
+  const geometryRevision = snapshot.geometryRevisions.at(-1);
+  return input.artifacts.filter((artifact) => artifact.geometryRevisionId === geometryRevision?.id
+    && artifactOutputUnitMatches(snapshot, artifact, input.requirementMatrices ?? []));
+}
+
 export function buildProjectDashboardSummary(input: ReadModelInput): ProjectDashboardSummary {
   const { snapshot } = input.head;
-  const parsed = snapshot.parseRecords.filter((record) => record.status === "parsed").length;
+  const parsed = snapshot.evidences.filter((item) => evidenceReadability(snapshot, item.id).state === "readable").length;
   const evidenceTotal = snapshot.evidences.length;
   const evidenceCompleteness = evidenceTotal === 0 ? 0 : Math.round((parsed / evidenceTotal) * 100);
   const openIssues = snapshot.issues.filter((issue) => issue.status === "open");
   const geometryRevision = snapshot.geometryRevisions.at(-1) ?? null;
-  const currentArtifacts = input.artifacts.filter((artifact) => artifact.geometryRevisionId === geometryRevision?.id);
+  const currentArtifacts = currentUnitArtifacts(input);
+  const unitUpdate = outputUnitUpdateState(snapshot, input.artifacts, input.requirementMatrices ?? []);
+  const unitChanged = unitUpdate.model || unitUpdate.drawings;
   const latestEvaluation = input.evaluations.at(-1) ?? null;
-  const signoff = geometryRevision ? snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometryRevision.id) ?? null : null;
+  const signoff = geometryRevision && !unitChanged ? snapshot.reviewSignoffs.find((item) => item.geometryRevisionId === geometryRevision.id) ?? null : null;
   const blockers = new Set<string>([
+    ...(unitChanged ? ["OUTPUT_UNIT_CHANGED"] : []),
     ...openIssues.filter((issue) => issue.blocksProxyOutcome).map((issue) => issue.issueType),
     ...effectiveBlockerCodes(geometryRevision?.blockers ?? [], signoff),
     ...effectiveBlockerCodes(latestEvaluation?.blockerCodes ?? [], signoff, latestEvaluation?.blockerDetails),
@@ -136,7 +149,7 @@ export function buildProjectDashboardSummary(input: ReadModelInput): ProjectDash
     ? "资料整理"
     : openIssues.length
       ? "问题处理中"
-      : !geometryRevision
+      : !geometryRevision || !geometryOutputUnitMatches(snapshot)
         ? "模型待生成"
         : !currentArtifacts.length
           ? "图纸待生成"
@@ -158,13 +171,13 @@ export function buildProjectDashboardSummary(input: ReadModelInput): ProjectDash
 
 export function buildArtifactSetView(input: ReadModelInput): ArtifactSetView {
   const geometryRevisionId = input.head.snapshot.geometryRevisions.at(-1)?.id ?? null;
-  const currentArtifacts = input.artifacts.filter((artifact) => artifact.geometryRevisionId === geometryRevisionId);
+  const currentArtifacts = currentUnitArtifacts(input);
   const latestCheckRun = input.checks
-    .filter((check) => check.geometryRevisionId === geometryRevisionId)
+    .filter((check) => check.geometryRevisionId === geometryRevisionId && check.artifactRefs.every((ref) => currentArtifacts.some((artifact) => artifact.id === ref)))
     .sort((left, right) => left.completedAt.localeCompare(right.completedAt))
     .at(-1) ?? null;
   const latestEvaluationIds = new Set(input.evaluations
-    .filter((evaluation) => evaluation.geometryRevisionId === geometryRevisionId)
+    .filter((evaluation) => evaluation.geometryRevisionId === geometryRevisionId && evaluation.artifactRefs.every((ref) => currentArtifacts.some((artifact) => artifact.id === ref)))
     .map((evaluation) => evaluation.id));
   const latestDelivery = input.deliveries
     .filter((delivery) => delivery.geometryRevisionId === geometryRevisionId && latestEvaluationIds.has(delivery.evaluationId))
@@ -232,13 +245,13 @@ export function buildHumanInterventionView(input: Pick<ReadModelInput, "head" | 
 export function buildProvenanceGraphView(input: ReadModelInput, selectedObject: ProjectGeometryObject | null): ProvenanceGraphView {
   const { snapshot } = input.head;
   const geometryRevision = snapshot.geometryRevisions.at(-1) ?? null;
-  const objectFactRefs = selectedObject?.factRefs ?? snapshot.facts.map((fact) => fact.id);
+  const objectFactRefs = selectedObject?.factRefs ?? snapshot.facts.filter((fact) => !isMaterialCoverageFact(fact)).map((fact) => fact.id);
   const objectEvidenceRefs = selectedObject?.evidenceRefs ?? snapshot.evidences.map((evidence) => evidence.id);
   const objectUnknowns = selectedObject
     ? (snapshot.geometrySpecs.at(-1)?.unknowns ?? []).filter((unknown) => selectedObject.unknownRefs.includes(unknown.id))
     : (snapshot.geometrySpecs.at(-1)?.unknowns ?? []);
   const openIssues = snapshot.issues.filter((issue) => issue.status === "open");
-  const currentArtifacts = input.artifacts.filter((artifact) => artifact.geometryRevisionId === geometryRevision?.id);
+  const currentArtifacts = currentUnitArtifacts(input);
   const currentChecks = input.checks.filter((check) => check.geometryRevisionId === geometryRevision?.id);
   const currentDeliveries = input.deliveries.filter((delivery) => delivery.geometryRevisionId === geometryRevision?.id);
   const node = (key: ProvenanceNode["key"], label: string, refs: readonly string[], blocked = false): ProvenanceNode => ({

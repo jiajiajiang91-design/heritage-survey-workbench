@@ -10,6 +10,8 @@ from typing import Any
 
 import cadquery  # Import first: CadQuery and IfcOpenShell share OpenCascade on Windows.
 import ifcopenshell
+import ifcopenshell.util.placement
+import ifcopenshell.util.unit
 import numpy as np
 import trimesh
 from scipy.spatial import cKDTree
@@ -123,6 +125,30 @@ def verify_geometry_package(spec_value: dict[str, Any], output_dir: Path) -> dic
     ifc_ids = {str(item.Name) for item in ifc.by_type("IfcBuildingElementProxy")}
     if ifc_ids != object_ids:
         failures.append("IFC entity closure mismatch")
+    expected_unit = spec.get("outputUnit", "mm")
+    expected_prefix = {"mm": "MILLI", "cm": "CENTI", "m": None}[expected_unit]
+    projects = ifc.by_type("IfcProject")
+    length_units = [unit for project in projects if project.UnitsInContext for unit in project.UnitsInContext.Units if unit.UnitType == "LENGTHUNIT"]
+    unit_ok = len(length_units) == 1 and length_units[0].is_a("IfcSIUnit") and length_units[0].Name == "METRE" and length_units[0].Prefix == expected_prefix
+    if not unit_ok:
+        failures.append("IFC output unit declaration mismatch")
+    unit_to_mm = ifcopenshell.util.unit.calculate_unit_scale(ifc) * 1000.0
+    for product in ifc.by_type("IfcBuildingElementProxy"):
+        entity_id = str(product.Name)
+        source_mesh = brep_meshes.get(entity_id)
+        representations = product.Representation.Representations if product.Representation else []
+        face_sets = [item for representation in representations for item in representation.Items if item.is_a("IfcTriangulatedFaceSet")]
+        if source_mesh is None or len(face_sets) != 1:
+            failures.append(f"IFC mesh representation mismatch: {entity_id}")
+            continue
+        face_set = face_sets[0]
+        vertices = np.asarray(face_set.Coordinates.CoordList, dtype=np.float64)
+        placement = ifcopenshell.util.placement.get_local_placement(product.ObjectPlacement)
+        homogeneous = np.column_stack((vertices, np.ones(len(vertices))))
+        vertices_mm = (homogeneous @ placement.T)[:, :3] * unit_to_mm
+        faces = np.asarray(face_set.CoordIndex, dtype=np.int64) - 1
+        if not _mesh_coordinates_match(source_mesh[0], source_mesh[1], vertices_mm, faces):
+            failures.append(f"IFC physical mesh mismatch: {entity_id}")
     report = json.loads((output_dir / "geometry-report.json").read_text(encoding="utf-8"))
     if report.get("geometryRevisionId") != manifest.get("geometryRevisionId") or report.get("geometrySignature") != manifest.get("geometrySignature"):
         failures.append("report revision closure mismatch")
@@ -135,7 +161,7 @@ def verify_geometry_package(spec_value: dict[str, Any], output_dir: Path) -> dic
         "qualification": "generated-not-qualified", "l1Eligible": False, "formalEligibility": False,
         "geometryRevisionId": manifest.get("geometryRevisionId"), "inputHash": geometry_spec_input_hash(spec),
         "entityCount": len(object_ids), "interfaceCount": len(spec["interfaces"]),
-        "checks": 8, "failedChecks": len(failures), "failures": failures,
+        "outputUnit": expected_unit, "checks": 10, "failedChecks": len(failures), "failures": failures,
     }
 
 

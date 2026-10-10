@@ -1,0 +1,22 @@
+.sc-requirements, .sc-requirements-body { display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; }
+.sc-requirements-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.sc-requirements-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
+.sc-requirements-heading h4 { margin: 0; font: var(--font-weight-medium) var(--font-size-14)/var(--line-22) var(--font-family-ui); }
+.sc-requirements-card { border: var(--stroke-hairline) solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-surface); }
+.sc-requirements-card > summary { padding: var(--space-md); background: var(--bg-subtle); }
+.sc-requirements-card > .sc-requirements-body { padding: var(--space-md); }
+.sc-requirements summary { cursor: pointer; overflow-wrap: anywhere; font: var(--font-weight-medium) var(--font-size-13)/var(--line-22) var(--font-family-ui); }
+.sc-requirements-advanced > .sc-requirements-body { margin-top: var(--space-md); }
+.sc-requirements-group { padding: var(--space-sm); margin: 0; border: var(--stroke-hairline) solid var(--border-subtle); border-radius: var(--radius-sm); min-width: 0; }
+.sc-requirements-group legend { color: var(--text-secondary); font: var(--font-weight-medium) var(--font-size-12)/var(--line-20) var(--font-family-ui); }
+.sc-requirements-selected { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+.sc-requirements-selected li { display: flex; justify-content: space-between; align-items: start; gap: var(--space-sm); overflow-wrap: anywhere; font: var(--font-weight-regular) var(--font-size-12)/var(--line-20) var(--font-family-ui); }
+.sc-task-form-fields { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-md); min-width: 0; }
+.sc-task-form-summary { background: var(--bg-subtle); padding: var(--space-md); border-radius: var(--radius-md); font: var(--font-weight-regular) var(--font-size-13)/var(--line-22) var(--font-family-ui); }
+.sc-task-content.sc-task-content--editing { grid-template-columns: minmax(0, 1fr); flex: 0 0 auto; }
+.sc-task-content--editing .sc-task-scope { display: none; }
+.sc-sheet.sc-sheet--editing { grid-template-columns: minmax(0, 1fr); flex: 0 0 auto; align-items: start; }
+.sc-sheet--editing .sc-sheet-preview { order: 2; }
+
+
+

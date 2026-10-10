@@ -3,7 +3,8 @@ import { CadJobSchema, GeometryRevisionSchema, ProjectDrivenGeometrySpecSchema, 
 import { IndexedDbProjectRepository } from "./indexeddb-project-repository.js";
 import { recordHash, sha256Hex } from "./hash.js";
 
-import { buildProjectGeometrySpec } from "./geometry-spec-builder.js";
+import { buildProjectGeometrySpec, hasComponentInputs, componentCandidateProblem, EvidenceGeometryComponentValueSchema } from "./geometry-spec-builder.js";
+import { taskOutputUnit } from "@gujian/domain";
 
 interface SessionResponse {
   csrfToken: string;
@@ -66,8 +67,14 @@ export function rebindExistingGeometrySpec(head: ProjectHead, source: ProjectDri
   if (source.projectId !== head.projectId) throw new Error("GEOMETRY_SPEC_PROJECT_MISMATCH");
   const buildingIds = new Set(head.snapshot.buildings.map((building) => building.id));
   if (!buildingIds.has(source.buildingId)) throw new Error("GEOMETRY_SPEC_BUILDING_MISMATCH");
+  for (const object of source.objects) for (const ref of object.factRefs) {
+    const fact = head.snapshot.facts.find((item) => item.id === ref && item.field.startsWith("geometry.component."));
+    const input = fact && EvidenceGeometryComponentValueSchema.safeParse(fact.value);
+    if (input?.success && componentCandidateProblem(head.snapshot, input.data)) throw new Error("GEOMETRY_CANDIDATE_ORIGIN_UNAVAILABLE");
+  }
   const rebound = {
     ...source,
+    outputUnit: taskOutputUnit(head.snapshot),
     id: crypto.randomUUID(),
     projectRevisionId: head.revisionId,
     inputHash: "0".repeat(64),
@@ -105,6 +112,7 @@ export class CadJobClient {
     input: GeometryStartInput = { mode: "derivedFromFacts" },
   ): Promise<{ head: ProjectHead; revision: GeometryRevision; job: CadJob }> {
     if (this.#active) throw new Error("CAD_JOB_ALREADY_ACTIVE");
+    if (input.mode === "existingGeometrySpec" && hasComponentInputs(head)) input = { mode: "derivedFromFacts" };
     const ruleRunId = crypto.randomUUID();
     const ruleStarted = new Date().toISOString();
     await this.#commands.execute({

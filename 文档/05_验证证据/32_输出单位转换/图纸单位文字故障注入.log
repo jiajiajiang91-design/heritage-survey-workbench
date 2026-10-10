@@ -1,0 +1,332 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/output-unit-state.test.tsx (5 tests | 1 failed) 128ms
+   ✓ 旧规格无单位读取不改哈希，重绑新单位保留毫米对象与来源 38ms
+   ✓ 旧成果排除；旧毫米几何可按新单位出图，新文件不被历史文件永久阻断 13ms
+   ✓ 模型界面和助手实际快照说明单位待更新，历史文件不计完成 47ms
+   ✓ 图纸单位变更显示已有历史，仍可按当前单位发起出图 9ms
+   × 图纸设置显示任务当前长度单位 22ms
+     → Unable to find an element with the text: 厘米. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-sheet"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-settings sc-sheet-settings--hug"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m出图设置[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m成果图种[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m内部平面[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m出图比例[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m平面 1:100[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m图幅[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m内部-01 为 A3[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m长度输出单位[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m毫米[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m标注体系（固定设置）[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m轴网、尺寸链、标高、剖切索引、构件引线，出图时统一生成[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m版本[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0mP1[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m修改出图要求[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m生成成组图纸[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-preview"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-preview-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+            [33mtitle[39m=[32m"图面预览"[39m
+          [36m>[39m
+            [0m图面预览[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-figure sc-sheet-figure--empty"[39m
+        [36m>[39m
+          [0m生成成组图纸后，这里显示应用当前版面的实际图面。[0m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"sc-sheet-note"[39m
+        [36m>[39m
+          [0m预览为此前已生成的文件，保存设置后须重新生成才会更新。平面图为水平剖切，剖面图剖在任务要求指定的剖切位置上，都不是俯视投影；构件画法与标注规则按制图配置统一生成，暂不在此逐项选择。[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  20:49:24
+   Duration  2.44s (transform 447ms, setup 214ms, collect 1.49s, tests 128ms, environment 334ms, prepare 98ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/output-unit-state.test.tsx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/output-unit-state.test.tsx > 图纸设置显示任务当前长度单位
+TestingLibraryElementError: Unable to find an element with the text: 厘米. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-sheet"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-settings sc-sheet-settings--hug"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m出图设置[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m成果图种[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m内部平面[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m出图比例[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m平面 1:100[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m图幅[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m内部-01 为 A3[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m长度输出单位[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m毫米[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m标注体系（固定设置）[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0m轴网、尺寸链、标高、剖切索引、构件引线，出图时统一生成[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-row"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-label"[39m
+          [36m>[39m
+            [0m版本[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"sc-sheet-value"[39m
+          [36m>[39m
+            [0mP1[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m修改出图要求[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m生成成组图纸[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-preview"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-preview-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+            [33mtitle[39m=[32m"图面预览"[39m
+          [36m>[39m
+            [0m图面预览[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-figure sc-sheet-figure--empty"[39m
+        [36m>[39m
+          [0m生成成组图纸后，这里显示应用当前版面的实际图面。[0m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"sc-sheet-note"[39m
+        [36m>[39m
+          [0m预览为此前已生成的文件，保存设置后须重新生成才会更新。平面图为水平剖切，剖面图剖在任务要求指定的剖切位置上，都不是俯视投影；构件画法与标注规则按制图配置统一生成，暂不在此逐项选择。[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/output-unit-state.test.tsx:82:73
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

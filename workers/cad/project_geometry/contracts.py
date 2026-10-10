@@ -7,6 +7,8 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from workers.cad.output_units import output_unit
+
 
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 EXACT_RE = re.compile(r"^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:/(?:[1-9]\d*))?$")
@@ -69,6 +71,10 @@ def _scan_forbidden(value: Any, trail: tuple[str, ...] = ()) -> None:
 def validate_geometry_spec(value: Any) -> dict[str, Any]:
     if not isinstance(value, dict) or value.get("schemaVersion") != "2.0":
         raise ContractError("project geometry spec schemaVersion must be 2.0")
+    try:
+        output_unit(value)
+    except ValueError as error:
+        raise ContractError(str(error)) from error
     _scan_forbidden(value)
     for key in ("id", "projectId", "projectRevisionId", "buildingId"):
         _uuid(value.get(key), key)

@@ -1,0 +1,839 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/packages/infrastructure
+
+ ❯ src/artifact-matrix-builder.test.ts (6 tests | 2 failed) 11ms
+   ✓ 图纸矩阵采用当前 mm，旧毫米几何仍可出图且纸面比例不变 5ms
+   × 图纸矩阵采用当前 cm，旧毫米几何仍可出图且纸面比例不变 4ms
+     → expected 'mm' to be 'cm' // Object.is equality
+   × 图纸矩阵采用当前 m，旧毫米几何仍可出图且纸面比例不变 1ms
+     → expected 'mm' to be 'm' // Object.is equality
+   ✓ buildArtifactMatrix > 只按结构化任务中的图幅、比例、布局和目标构件生成 0ms
+   ✓ buildArtifactMatrix > 缺结构化成果矩阵时阻断 0ms
+   ✓ buildArtifactMatrix > 详图缺局部证据或与横剖重复时不生成 0ms
+ ❯ src/geometry-spec-builder.test.ts (16 tests | 2 failed) 31ms
+   ✓ 事实派生采用任务单位 mm，内部长度和来源保持毫米 13ms
+   × 事实派生采用任务单位 cm，内部长度和来源保持毫米 5ms
+     → expected 'mm' to be 'cm' // Object.is equality
+   × 事实派生采用任务单位 m，内部长度和来源保持毫米 1ms
+     → expected 'mm' to be 'm' // Object.is equality
+   ✓ evidence-bound geometry spec > 逐构件只继承其具体事实和证据，不扩散到全部资料 1ms
+   ✓ evidence-bound geometry spec > 仅有五个总尺寸时阻断，不推导墙厚、出檐和构造层 1ms
+   ✓ 构件尺寸引用 > 实际生成规格使用采用值及其资料，修订时取最新值且旧规格不变 6ms
+   ✓ 构件尺寸引用 > 最新处置为 reject 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 stale 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 missing 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 unit 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 zero 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 最新处置为 nonfinite 时停止，不退回旧值 0ms
+   ✓ 构件尺寸引用 > 圆柱与轮廓挤出使用相同的引用规则 1ms
+   ✓ 构件尺寸引用 > 圆柱与轮廓挤出使用相同的引用规则 1ms
+   ✓ 构件尺寸引用 > 不允许不匹配的长度字段、重复引用或失效资料 1ms
+   ✓ 构件尺寸引用 > 很小的长度不使用科学计数法，也不丢失原组件参数 1ms
+ ❯ src/cad-job-client.test.ts (1 test | 1 failed) 15ms
+   × existing GeometrySpec input > rebinds an imported project-owned spec while retaining stable component IDs 14ms
+     → expected 'mm' to be 'cm' // Object.is equality
+
+ Test Files  3 failed (3)
+      Tests  5 failed | 18 passed (23)
+   Start at  20:31:01
+   Duration  737ms (transform 210ms, setup 0ms, collect 1.12s, tests 57ms, environment 0ms, prepare 310ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\packages\infrastructure:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/geometry-spec-builder.test.ts src/artifact-matrix-builder.test.ts src/cad-job-client.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/artifact-matrix-builder.test.ts > 图纸矩阵采用当前 cm，旧毫米几何仍可出图且纸面比例不变
+AssertionError: expected 'mm' to be 'cm' // Object.is equality
+
+Expected: "cm"
+Received: "mm"
+
+ ❯ src/artifact-matrix-builder.test.ts:11:29
+      9|   current.head.snapshot.taskDefinitions[0]!.productionSetup = { buildi…
+     10|   const result = buildArtifactMatrix(current.head, current.geometry, c…
+     11|   expect(result.outputUnit).toBe(outputUnit); expect(result.sheets[0]!…
+       |                             ^
+     12|   expect(result.views[0]!.scaleDenominator).toBe(50); expect(result.vi…
+     13|   expect(current.spec.outputUnit).toBeUndefined(); expect(current.spec…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  src/artifact-matrix-builder.test.ts > 图纸矩阵采用当前 m，旧毫米几何仍可出图且纸面比例不变
+AssertionError: expected 'mm' to be 'm' // Object.is equality
+
+Expected: "m"
+Received: "mm"
+
+ ❯ src/artifact-matrix-builder.test.ts:11:29
+      9|   current.head.snapshot.taskDefinitions[0]!.productionSetup = { buildi…
+     10|   const result = buildArtifactMatrix(current.head, current.geometry, c…
+     11|   expect(result.outputUnit).toBe(outputUnit); expect(result.sheets[0]!…
+       |                             ^
+     12|   expect(result.views[0]!.scaleDenominator).toBe(50); expect(result.vi…
+     13|   expect(current.spec.outputUnit).toBeUndefined(); expect(current.spec…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  src/cad-job-client.test.ts > existing GeometrySpec input > rebinds an imported project-owned spec while retaining stable component IDs
+AssertionError: expected 'mm' to be 'cm' // Object.is equality
+
+Expected: "cm"
+Received: "mm"
+
+ ❯ src/cad-job-client.test.ts:43:35
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  src/geometry-spec-builder.test.ts > 事实派生采用任务单位 cm，内部长度和来源保持毫米
+AssertionError: expected 'mm' to be 'cm' // Object.is equality
+
+Expected: "cm"
+Received: "mm"
+
+ ❯ src/geometry-spec-builder.test.ts:11:29
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  src/geometry-spec-builder.test.ts > 事实派生采用任务单位 m，内部长度和来源保持毫米
+AssertionError: expected 'mm' to be 'm' // Object.is equality
+
+Expected: "m"
+Received: "mm"
+
+ ❯ src/geometry-spec-builder.test.ts:11:29
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/project-progress.test.ts (6 tests | 1 failed) 31ms
+   × 首页制作任务摘要 > 单位待更新优先显示，只有历史文件时不进入已有成果筛选 5ms
+     → expected { label: '待核对', next: '处理 1 项候选或问题' } to deeply equal { label: '输出单位待更新', …(1) }
+   ✓ 首页制作任务摘要 > 签发或已有旧文件不代表本次任务完成 0ms
+   ✓ 首页制作任务摘要 > 明确显示缺任务与缺资料 0ms
+   ✓ 首页制作任务摘要 > 待处理优先，其余按最近修改，检索不修改原数组 0ms
+   ✓ 首页制作任务摘要 > 100 条摘要按任务与项目检索，状态条件可以组合 1ms
+   ✓ 首页制作任务摘要 > 首页读取摘要时不请求照片或模型 Blob 24ms
+ ❯ src/output-unit-state.test.tsx (4 tests | 3 failed) 125ms
+   ✓ 旧规格无单位读取不改哈希，重绑新单位保留毫米对象与来源 35ms
+   × 旧成果排除；旧毫米几何可按新单位出图，新文件不被历史文件永久阻断 14ms
+     → expected [ { …(17) } ] to deeply equal []
+   × 模型界面和助手实际快照说明单位待更新，历史文件不计完成 67ms
+     → Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "编辑构件输入":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "生成模型":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "0 处待确认":
+  [36m<button[39m
+    [33maria-expanded[39m=[32m"false"[39m
+    [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "重新生成模型":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-001 · 内部墙体":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-002 · 内部圆柱":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-model"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-viewport"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-toolbar"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m透视视角[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m按构件着色[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m编辑构件输入[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-canvas"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-empty"[39m
+          [36m>[39m
+            [36m<p>[39m
+              [0m还没有三维模型。生成只使用本项目已确认的构件数据，不读取项目以外的文件；生成后可在这里查看构件并核对来源。[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m生成模型[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-legend"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m2[0m
+            [0m 个构件[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag gj-tag--accent"[39m
+          [36m>[39m
+            [0m0[0m
+            [0m 处构件连接[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-tag"[39m
+            [36m>[39m
+              [0m0[0m
+              [0m [0m
+              [0m处待确认[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m重新生成模型[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-tree"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m对象树[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-tree-rows"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m内部单位建筑[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m2[0m
+              [0m 个构件[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mwall[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mcolumn[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-001[0m
+            [0m · [0m
+            [0m内部墙体[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-002[0m
+            [0m · [0m
+            [0m内部圆柱[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m点击模型中的构件，查看编号、依据的资料和说明。[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × 图纸单位变更显示已有历史，仍可按当前单位发起出图 7ms
+     → Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "按成果目录生成":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-sheet"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-settings"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m成组图纸[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-empty"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0m当前单位尚无适用图纸。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m按成果目录生成[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-preview"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-preview-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m图面预览[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-figure sc-sheet-figure--empty"[39m
+        [36m>[39m
+          [0m出图后按张显示预览。[0m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 6 passed (10)
+   Start at  20:31:03
+   Duration  2.33s (transform 444ms, setup 452ms, collect 2.21s, tests 156ms, environment 691ms, prepare 188ms)
+
+undefined
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/output-unit-state.test.tsx src/project-progress.test.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/output-unit-state.test.tsx > 旧成果排除；旧毫米几何可按新单位出图，新文件不被历史文件永久阻断
+AssertionError: expected [ { …(17) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "assetId": "0cfedb99-5296-4adc-b778-94714d826215",
++     "blockers": [
++       "PROFESSIONAL_REVIEW_REQUIRED",
++     ],
++     "byteLength": 1,
++     "createdAt": "2026-10-01T19:31:05.321Z",
++     "fileName": "内部.svg",
++     "formalEligibility": false,
++     "geometryRevisionId": "feffc3a9-9273-477d-a8a0-964943246623",
++     "id": "3dfa89cc-67c7-44a7-9307-344d028809b6",
++     "kind": "svg",
++     "l1Eligible": false,
++     "mimeType": "image/svg+xml",
++     "projectId": "905faaf8-46d7-4fb8-a3bb-6663de4da19f",
++     "projectRevisionId": "7108f749-0441-4081-beb0-07dea7618a59",
++     "requirementMatrixId": "a848e8e1-971a-45a9-8864-5a9f96bc9500",
++     "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
++     "sourceRefs": [
++       "a848e8e1-971a-45a9-8864-5a9f96bc9500",
++     ],
++     "status": "generated-not-qualified",
++   },
++ ]
+
+ ❯ src/output-unit-state.test.tsx:39:56
+     37|   expect(buildArtifactSetView(input).currentArtifacts).toEqual([test.a…
+     38|   test.head.snapshot.taskDefinitions[0]!.productionSetup!.outputUnit =…
+     39|   expect(buildArtifactSetView(input).currentArtifacts).toEqual([]); ex…
+       |                                                        ^
+     40|   const nextMatrix = buildArtifactMatrix(test.head, test.geometry, tes…
+     41|   const nextArtifact = { ...test.artifact, id: crypto.randomUUID(), re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/output-unit-state.test.tsx > 模型界面和助手实际快照说明单位待更新，历史文件不计完成
+TestingLibraryElementError: Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "编辑构件输入":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "生成模型":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "0 处待确认":
+  [36m<button[39m
+    [33maria-expanded[39m=[32m"false"[39m
+    [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "重新生成模型":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-001 · 内部墙体":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "选择对象：C-002 · 内部圆柱":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"gj-pane-desc"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-model"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-viewport"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-toolbar"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m透视视角[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m按构件着色[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m编辑构件输入[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-canvas"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"gj-empty"[39m
+          [36m>[39m
+            [36m<p>[39m
+              [0m还没有三维模型。生成只使用本项目已确认的构件数据，不读取项目以外的文件；生成后可在这里查看构件并核对来源。[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable gj-btn--compact"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m生成模型[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-legend"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag"[39m
+          [36m>[39m
+            [0m2[0m
+            [0m 个构件[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-tag gj-tag--accent"[39m
+          [36m>[39m
+            [0m0[0m
+            [0m 处构件连接[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33mclass[39m=[32m"sc-model-legend-unknown"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-tag"[39m
+            [36m>[39m
+              [0m0[0m
+              [0m [0m
+              [0m处待确认[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m重新生成模型[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-model-tree"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-pane-title"[39m
+        [36m>[39m
+          [0m对象树[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-model-tree-rows"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m内部单位建筑[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m2[0m
+              [0m 个构件[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mwall[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sc-model-tree-row sc-model-tree-row--child"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mcolumn[0m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"gj-spacer"[39m
+            [36m/>[39m
+            [36m<small>[39m
+              [0m1[0m
+            [36m</small>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-001[0m
+            [0m · [0m
+            [0m内部墙体[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--secondary gj-btn--compact"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m选择对象：[0m
+            [0mC-002[0m
+            [0m · [0m
+            [0m内部圆柱[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"gj-pane-desc"[39m
+        [36m>[39m
+          [0m点击模型中的构件，查看编号、依据的资料和说明。[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/output-unit-state.test.tsx:52:51
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/output-unit-state.test.tsx > 图纸单位变更显示已有历史，仍可按当前单位发起出图
+TestingLibraryElementError: Unable to find an accessible element with the role "status"
+
+Here are the accessible roles:
+
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "按成果目录生成":
+  [36m<button[39m
+    [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"sc-sheet"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-settings"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-pane-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m成组图纸[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-empty"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0m当前单位尚无适用图纸。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"gj-spacer"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"gj-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"gj-btn gj-btn--primary gj-btn--loadable"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m按成果目录生成[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"sc-sheet-preview"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-preview-head"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-pane-title"[39m
+          [36m>[39m
+            [0m图面预览[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"gj-spacer"[39m
+          [36m/>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sc-sheet-figure sc-sheet-figure--empty"[39m
+        [36m>[39m
+          [0m出图后按张显示预览。[0m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/output-unit-state.test.tsx:63:17
+     61|   render(<DrawingSet artifacts={[]} previews={[]} latestCheckRun={null…
+     62|     onGenerate={generate} onCancel={vi.fn()} onDownload={vi.fn()} sign…
+     63|   expect(screen.getByRole("status")).toHaveTextContent("旧图纸已保留");
+       |                 ^
+     64|   expect(screen.getByRole("button", { name: "按成果目录生成" })).toBeEnabled(…
+     65|   expect(screen.queryByText("还没有图纸。", { exact: false })).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/project-progress.test.ts > 首页制作任务摘要 > 单位待更新优先显示，只有历史文件时不进入已有成果筛选
+AssertionError: expected { label: '待核对', next: '处理 1 项候选或问题' } to deeply equal { label: '输出单位待更新', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "label": "输出单位待更新",
+-   "next": "按当前单位重新生成并检查成果",
++   "label": "待核对",
++   "next": "处理 1 项候选或问题",
+  }
+
+ ❯ src/project-progress.test.ts:10:37
+      8|   it("单位待更新优先显示，只有历史文件时不进入已有成果筛选", () => {
+      9|     const card = projectCard({ outputUnitPending: true, artifactCount:…
+     10|     expect(productionSummary(card)).toEqual({ label: "输出单位待更新", next: …
+       |                                     ^
+     11|     expect(visibleTaskCards([card], "", "results")).toEqual([]);
+     12|     expect(visibleTaskCards([card], "", "pending")).toEqual([card]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+

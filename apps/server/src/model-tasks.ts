@@ -49,6 +49,8 @@ export const MODEL_TASKS: readonly ModelTaskDefinition[] = [
       "输出 JSON 对象，字段为：summary（一句话说明本次读了哪几份资料、共读出多少条）、",
       "dimensions（数组，每条含 valueText 图上原文、valueMm 换算毫米值或 null、partZh 对应部位或 null、",
       "evidenceRef 取自哪份资料的标识、locationZh 在资料中的位置描述或 null、certainty 取 certain 或 uncertain、noteZh 备注或 null）、",
+      "可选 quantityKind 取 length（长度）或 relativeElevation（相对标高），标高可为零或负值；无法判断类型时不填，并在 noteZh 说明。",
+      "图像输入中确实看见该标注时，可选 region 给出标注区域：x、y 为左上角，width、height 为宽高，均按整张图片归一化；区域不得越出图片。文字输入或位置不明时省略 region，不编造坐标。",
       "missingInformation（字符串数组，说明还缺哪些关键尺寸）。",
     ].join(""),
   },

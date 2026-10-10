@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import type { NormalizedRect } from "../EvidenceMarquee";
 import { EvidenceMarquee } from "../EvidenceMarquee";
 import { DATA_STATUS_LABELS, EVIDENCE_TYPE_LABELS, PARSE_STATUS_LABELS } from "../labels";
 import { Button, DataStatusTag, InfoRow, Tag } from "../ui";
@@ -27,13 +28,14 @@ export interface EvidencePaneProps {
   emptyHint: string;
   // 图下方的题注区，由各屏按自己的对象给（构件说明、稳定键等）；不给时显示资料本身的题注
   caption?: ReactNode;
+  location?: NormalizedRect | null;
   // 题注下方的信息行，不给时显示资料的来源与文件状态
   detail?: ReactNode;
   // v4 各屏的证据卡都没有切换下拉，看哪份资料由左侧列表、事实行或构件卡决定；只在没有别的入口时打开
   switcher?: boolean;
 }
 
-export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料原件", description, emptyHint, caption, detail, switcher = false }: EvidencePaneProps) {
+export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料原件", description, emptyHint, caption, detail, location, switcher = false }: EvidencePaneProps) {
   const { activeEvidenceId, setActiveEvidenceId, evidencePreview, imageSelection, setImageSelection, downloadEvidence } = pane;
   const active = evidences.find((item) => item.id === activeEvidenceId) ?? null;
   const parseStatus = active && parseStatusOf ? parseStatusOf(active.id) : null;
@@ -50,14 +52,14 @@ export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料�
       </div>
       {description && <p className="gj-pane-desc">{description}</p>}
       {/* 预览只认列表里的资料：调用方筛过的列表（如只列照片）不显示列表外的文件 */}
-      {active && evidencePreview ? (
-        evidencePreview.mimeType.startsWith("image/")
+      {active && evidencePreview && evidencePreview.evidenceId === active.id ? (
+        ["image/png", "image/jpeg", "image/webp"].includes(evidencePreview.mimeType)
           ? (
             <div className="ws-evidence-figure">
               <EvidenceMarquee
                 src={evidencePreview.url}
-                alt={`${evidencePreview.fileName} 原件`}
-                selection={imageSelection?.evidenceId === evidencePreview.evidenceId ? imageSelection.rectNormalized : null}
+                alt={`${evidencePreview.fileName} ${evidencePreview.derived ? "派生图" : "原件"}`}
+                selection={location ?? (imageSelection?.evidenceId === evidencePreview.evidenceId ? imageSelection.rectNormalized : null)}
                 onSelect={(rect) => setImageSelection(rect ? { evidenceId: evidencePreview.evidenceId, rectNormalized: rect } : null)}
               />
             </div>
@@ -78,6 +80,7 @@ export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料�
             : evidences.length ? emptyHint : "还没有资料。上传后可在此对照原件核对数据。"}
         </div>
       )}
+      {active?.id === evidencePreview?.evidenceId && evidencePreview?.derived && <p className="gj-pane-desc">最近有效 PNG 派生图 · {evidencePreview.sourceSizePixels?.join(" × ")} px · 与原图同尺寸、同坐标；下载保留原件。</p>}
       {caption ?? (active && (
         <div className="ws-evidence-caption">
           <strong>{active.title}</strong>
@@ -85,11 +88,11 @@ export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料�
         </div>
       ))}
       {detail ?? (active && (
-        <div className="gj-card gj-card--compact">
+        <details className="gj-card gj-card--compact"><summary>资料信息与下载</summary>
           <InfoRow
             label="资料类型"
             value={EVIDENCE_TYPE_LABELS[active.evidenceType] ?? active.evidenceType}
-            trailing={parseStatus ? <Tag>{PARSE_STATUS_LABELS[parseStatus] ?? parseStatus}</Tag> : undefined}
+            trailing={evidencePreview?.readableAs === "image" ? <Tag>图像可读，文字未转录</Tag> : parseStatus ? <Tag>{PARSE_STATUS_LABELS[parseStatus] ?? parseStatus}</Tag> : undefined}
           />
           <InfoRow
             label="文件状态"
@@ -99,7 +102,7 @@ export function EvidencePane({ evidences, parseStatusOf, pane, title = "资料�
           {active.dataStatus === "available" && (
             <div className="gj-actions"><Button variant="text" compact onClick={() => void downloadEvidence(active.assetId)}>下载原文件</Button></div>
           )}
-        </div>
+        </details>
       ))}
     </>
   );

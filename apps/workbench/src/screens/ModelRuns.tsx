@@ -28,7 +28,7 @@ export interface ModelRunsProps {
   onRun: () => void;
   onRefreshStatus: () => void;
   onConfirmComponents: (candidate: Candidate) => void;
-  onConfirmDimensions: (candidate: Candidate) => void;
+  onReviewDimensions: () => void;
   back: { label: string; onBack: () => void };
 }
 
@@ -54,7 +54,7 @@ function tokenLabel(total: number): string {
   return total >= 10_000 ? `约 ${(total / 10_000).toFixed(1)} 万 token` : `${total} token`;
 }
 
-export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusionCount, serverModel, modelConfigured, canRun, running, hasReadableDrawings, evidenceTitle, onRun, onRefreshStatus, onConfirmComponents, onConfirmDimensions, back }: ModelRunsProps) {
+export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusionCount, serverModel, modelConfigured, canRun, running, hasReadableDrawings, evidenceTitle, onRun, onRefreshStatus, onConfirmComponents, onReviewDimensions, back }: ModelRunsProps) {
   const byTask = new Map<string, number>();
   for (const run of runs) byTask.set(run.taskType, (byTask.get(run.taskType) ?? 0) + 1);
   const priced = costView.rows.filter((row) => row.cost).length;
@@ -130,16 +130,9 @@ export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusio
             {candidate.structured?.kind === "evidenceSummary" && candidate.structured.findings.length > 0 && (
               <ul>{candidate.structured.findings.map((item) => <li key={item}>{item}</li>)}</ul>
             )}
-            {candidate.structured?.kind === "measurementTranscription" && (["certain", "uncertain"] as const).map((certainty) => {
-              const rows = candidate.structured?.kind === "measurementTranscription" ? candidate.structured.dimensions.filter((item) => item.certainty === certainty) : [];
-              return rows.length ? (
-                <div key={certainty}>
-                  <span className="gj-text-label">{certainty === "certain" ? `读出的尺寸 ${rows.length} 条` : `需要你确认的 ${rows.length} 条`}</span>
-                  <ul>{rows.map((row) => <li key={`${row.evidenceRef}:${row.valueText}:${row.locationZh ?? ""}`}>{row.partZh ?? "部位待确认"} {row.valueText}{row.valueMm ? `（${row.valueMm} mm）` : ""} · {evidenceTitle(row.evidenceRef)}{row.locationZh ? ` · ${row.locationZh}` : ""}{row.noteZh ? ` · ${row.noteZh}` : ""}</li>)}</ul>
-                </div>
-              ) : null;
-            })}
-            {candidate.structured?.kind === "componentRecognition" && (["certain", "uncertain"] as const).map((certainty) => {
+            {candidate.structured?.kind === "measurementTranscription" && (
+              <p className="gj-note">{candidate.structured.dimensions.length} 条尺寸在实测基准页逐条核对，来源和采用状态分别显示。</p>
+            )}            {candidate.structured?.kind === "componentRecognition" && (["certain", "uncertain"] as const).map((certainty) => {
               const rows = candidate.structured?.kind === "componentRecognition" ? candidate.structured.components.filter((item) => item.certainty === certainty) : [];
               return rows.length ? (
                 <div key={certainty}>
@@ -152,8 +145,8 @@ export function ModelRuns({ runs, costView, assistantUsage, candidates, exclusio
             {candidate.reviewStatus === "unreviewed" && candidate.structured?.kind === "componentRecognition" && (
               <div className="gj-actions gj-actions--start"><Button variant="primary" compact onClick={() => onConfirmComponents(candidate)}>确认认出的构件并写入项目</Button></div>
             )}
-            {candidate.reviewStatus === "unreviewed" && candidate.structured?.kind === "measurementTranscription" && (
-              <div className="gj-actions gj-actions--start"><Button variant="primary" compact onClick={() => onConfirmDimensions(candidate)}>确认读准的尺寸并写入项目</Button></div>
+            {candidate.structured?.kind === "measurementTranscription" && (
+              <div className="gj-actions gj-actions--start"><Button variant="primary" compact onClick={onReviewDimensions}>前往核对尺寸</Button></div>
             )}
           </article>
         ))}

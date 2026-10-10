@@ -1,0 +1,8 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ tsc -b --pretty false
+src/DraftGeometryViewer.test.tsx(21,78): error TS2322: Type 'Mock<(scene: Scene<Object3DEventMap>, camera: Camera) => void>' is not assignable to type '() => void'.
+  Target signature provides too few arguments. Expected 2 or more, but got 0.
+src/DraftGeometryViewer.test.tsx(62,87): error TS2339: Property 'toBeConnected' does not exist on type 'Assertion<HTMLCanvasElement>'.
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @gujian/workbench@0.0.0 typecheck: `tsc -b --pretty false`
+Exit status 1

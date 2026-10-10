@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/screens/GeometryComponentEditor.test.tsx (11 tests | 9 skipped) 139ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 9 skipped (11)
+   Start at  16:22:20
+   Duration  2.01s (transform 319ms, setup 213ms, collect 1.11s, tests 139ms, environment 360ms, prepare 63ms)
+

@@ -1,0 +1,13048 @@
+  0
+SECTION
+  2
+HEADER
+  9
+$ACADVER
+  1
+AC1032
+  9
+$ACADMAINTVER
+ 90
+4
+  9
+$DWGCODEPAGE
+  3
+ANSI_1252
+  9
+$LASTSAVEDBY
+  1
+GUJIAN-CAD-WORKER
+  9
+$REQUIREDVERSIONS
+160
+0
+  9
+$INSBASE
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$EXTMIN
+ 10
+1e+20
+ 20
+1e+20
+ 30
+1e+20
+  9
+$EXTMAX
+ 10
+-1e+20
+ 20
+-1e+20
+ 30
+-1e+20
+  9
+$LIMMIN
+ 10
+0.0
+ 20
+0.0
+  9
+$LIMMAX
+ 10
+420.0
+ 20
+297.0
+  9
+$ORTHOMODE
+ 70
+0
+  9
+$REGENMODE
+ 70
+1
+  9
+$FILLMODE
+ 70
+1
+  9
+$QTEXTMODE
+ 70
+0
+  9
+$MIRRTEXT
+ 70
+1
+  9
+$LTSCALE
+ 40
+1.0
+  9
+$ATTMODE
+ 70
+1
+  9
+$TEXTSIZE
+ 40
+2.5
+  9
+$TRACEWID
+ 40
+1.0
+  9
+$TEXTSTYLE
+  7
+Standard
+  9
+$CLAYER
+  8
+0
+  9
+$CELTYPE
+  6
+ByLayer
+  9
+$CECOLOR
+ 62
+256
+  9
+$CELTSCALE
+ 40
+1.0
+  9
+$DISPSILH
+ 70
+0
+  9
+$DIMSCALE
+ 40
+1.0
+  9
+$DIMASZ
+ 40
+2.5
+  9
+$DIMEXO
+ 40
+0.625
+  9
+$DIMDLI
+ 40
+3.75
+  9
+$DIMRND
+ 40
+0.0
+  9
+$DIMDLE
+ 40
+0.0
+  9
+$DIMEXE
+ 40
+1.25
+  9
+$DIMTP
+ 40
+0.0
+  9
+$DIMTM
+ 40
+0.0
+  9
+$DIMTXT
+ 40
+2.5
+  9
+$DIMCEN
+ 40
+2.5
+  9
+$DIMTSZ
+ 40
+0.0
+  9
+$DIMTOL
+ 70
+0
+  9
+$DIMLIM
+ 70
+0
+  9
+$DIMTIH
+ 70
+0
+  9
+$DIMTOH
+ 70
+0
+  9
+$DIMSE1
+ 70
+0
+  9
+$DIMSE2
+ 70
+0
+  9
+$DIMTAD
+ 70
+1
+  9
+$DIMZIN
+ 70
+8
+  9
+$DIMBLK
+  1
+
+  9
+$DIMASO
+ 70
+1
+  9
+$DIMSHO
+ 70
+1
+  9
+$DIMPOST
+  1
+
+  9
+$DIMAPOST
+  1
+
+  9
+$DIMALT
+ 70
+0
+  9
+$DIMALTD
+ 70
+3
+  9
+$DIMALTF
+ 40
+0.03937007874
+  9
+$DIMLFAC
+ 40
+1.0
+  9
+$DIMTOFL
+ 70
+1
+  9
+$DIMTVP
+ 40
+0.0
+  9
+$DIMTIX
+ 70
+0
+  9
+$DIMSOXD
+ 70
+0
+  9
+$DIMSAH
+ 70
+0
+  9
+$DIMBLK1
+  1
+
+  9
+$DIMBLK2
+  1
+
+  9
+$DIMSTYLE
+  2
+ISO-25
+  9
+$DIMCLRD
+ 70
+0
+  9
+$DIMCLRE
+ 70
+0
+  9
+$DIMCLRT
+ 70
+0
+  9
+$DIMTFAC
+ 40
+1.0
+  9
+$DIMGAP
+ 40
+0.625
+  9
+$DIMJUST
+ 70
+0
+  9
+$DIMSD1
+ 70
+0
+  9
+$DIMSD2
+ 70
+0
+  9
+$DIMTOLJ
+ 70
+0
+  9
+$DIMTZIN
+ 70
+8
+  9
+$DIMALTZ
+ 70
+0
+  9
+$DIMALTTZ
+ 70
+0
+  9
+$DIMUPT
+ 70
+0
+  9
+$DIMDEC
+ 70
+2
+  9
+$DIMTDEC
+ 70
+2
+  9
+$DIMALTU
+ 70
+2
+  9
+$DIMALTTD
+ 70
+3
+  9
+$DIMTXSTY
+  7
+Standard
+  9
+$DIMAUNIT
+ 70
+0
+  9
+$DIMADEC
+ 70
+0
+  9
+$DIMALTRND
+ 40
+0.0
+  9
+$DIMAZIN
+ 70
+0
+  9
+$DIMDSEP
+ 70
+44
+  9
+$DIMATFIT
+ 70
+3
+  9
+$DIMFRAC
+ 70
+0
+  9
+$DIMLDRBLK
+  1
+
+  9
+$DIMLUNIT
+ 70
+2
+  9
+$DIMLWD
+ 70
+-2
+  9
+$DIMLWE
+ 70
+-2
+  9
+$DIMTMOVE
+ 70
+0
+  9
+$DIMFXL
+ 40
+1.0
+  9
+$DIMFXLON
+ 70
+0
+  9
+$DIMJOGANG
+ 40
+0.785398163397
+  9
+$DIMTFILL
+ 70
+0
+  9
+$DIMTFILLCLR
+ 70
+0
+  9
+$DIMARCSYM
+ 70
+0
+  9
+$DIMLTYPE
+  6
+
+  9
+$DIMLTEX1
+  6
+
+  9
+$DIMLTEX2
+  6
+
+  9
+$DIMTXTDIRECTION
+ 70
+0
+  9
+$LUNITS
+ 70
+2
+  9
+$LUPREC
+ 70
+4
+  9
+$SKETCHINC
+ 40
+1.0
+  9
+$FILLETRAD
+ 40
+10.0
+  9
+$AUNITS
+ 70
+0
+  9
+$AUPREC
+ 70
+2
+  9
+$MENU
+  1
+.
+  9
+$ELEVATION
+ 40
+0.0
+  9
+$PELEVATION
+ 40
+0.0
+  9
+$THICKNESS
+ 40
+0.0
+  9
+$LIMCHECK
+ 70
+0
+  9
+$CHAMFERA
+ 40
+0.0
+  9
+$CHAMFERB
+ 40
+0.0
+  9
+$CHAMFERC
+ 40
+0.0
+  9
+$CHAMFERD
+ 40
+0.0
+  9
+$SKPOLY
+ 70
+0
+  9
+$TDCREATE
+ 40
+2451545.0
+  9
+$TDUCREATE
+ 40
+2451545.0
+  9
+$TDUPDATE
+ 40
+2451545.0
+  9
+$TDUUPDATE
+ 40
+2451545.0
+  9
+$TDINDWG
+ 40
+0.0
+  9
+$TDUSRTIMER
+ 40
+0.0
+  9
+$USRTIMER
+ 70
+1
+  9
+$ANGBASE
+ 50
+0.0
+  9
+$ANGDIR
+ 70
+0
+  9
+$PDMODE
+ 70
+0
+  9
+$PDSIZE
+ 40
+0.0
+  9
+$PLINEWID
+ 40
+0.0
+  9
+$SPLFRAME
+ 70
+0
+  9
+$SPLINETYPE
+ 70
+6
+  9
+$SPLINESEGS
+ 70
+8
+  9
+$HANDSEED
+  5
+17B
+  9
+$SURFTAB1
+ 70
+6
+  9
+$SURFTAB2
+ 70
+6
+  9
+$SURFTYPE
+ 70
+6
+  9
+$SURFU
+ 70
+6
+  9
+$SURFV
+ 70
+6
+  9
+$UCSBASE
+  2
+
+  9
+$UCSNAME
+  2
+
+  9
+$UCSORG
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSXDIR
+ 10
+1.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSYDIR
+ 10
+0.0
+ 20
+1.0
+ 30
+0.0
+  9
+$UCSORTHOREF
+  2
+
+  9
+$UCSORTHOVIEW
+ 70
+0
+  9
+$UCSORGTOP
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSORGBOTTOM
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSORGLEFT
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSORGRIGHT
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSORGFRONT
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSORGBACK
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSBASE
+  2
+
+  9
+$PUCSNAME
+  2
+
+  9
+$PUCSORG
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSXDIR
+ 10
+1.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSYDIR
+ 10
+0.0
+ 20
+1.0
+ 30
+0.0
+  9
+$PUCSORTHOREF
+  2
+
+  9
+$PUCSORTHOVIEW
+ 70
+0
+  9
+$PUCSORGTOP
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSORGBOTTOM
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSORGLEFT
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSORGRIGHT
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSORGFRONT
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSORGBACK
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$USERI1
+ 70
+0
+  9
+$USERI2
+ 70
+0
+  9
+$USERI3
+ 70
+0
+  9
+$USERI4
+ 70
+0
+  9
+$USERI5
+ 70
+0
+  9
+$USERR1
+ 40
+0.0
+  9
+$USERR2
+ 40
+0.0
+  9
+$USERR3
+ 40
+0.0
+  9
+$USERR4
+ 40
+0.0
+  9
+$USERR5
+ 40
+0.0
+  9
+$WORLDVIEW
+ 70
+1
+  9
+$SHADEDGE
+ 70
+3
+  9
+$SHADEDIF
+ 70
+70
+  9
+$TILEMODE
+ 70
+1
+  9
+$MAXACTVP
+ 70
+64
+  9
+$PINSBASE
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PLIMCHECK
+ 70
+0
+  9
+$PEXTMIN
+ 10
+1e+20
+ 20
+1e+20
+ 30
+1e+20
+  9
+$PEXTMAX
+ 10
+-1e+20
+ 20
+-1e+20
+ 30
+-1e+20
+  9
+$PLIMMIN
+ 10
+-0.0
+ 20
+-0.0
+  9
+$PLIMMAX
+ 10
+420.0
+ 20
+297.0
+  9
+$UNITMODE
+ 70
+0
+  9
+$VISRETAIN
+ 70
+1
+  9
+$PLINEGEN
+ 70
+0
+  9
+$PSLTSCALE
+ 70
+1
+  9
+$TREEDEPTH
+ 70
+3020
+  9
+$CMLSTYLE
+  2
+Standard
+  9
+$CMLJUST
+ 70
+0
+  9
+$CMLSCALE
+ 40
+20.0
+  9
+$PROXYGRAPHICS
+ 70
+1
+  9
+$MEASUREMENT
+ 70
+1
+  9
+$CELWEIGHT
+370
+-1
+  9
+$ENDCAPS
+280
+0
+  9
+$JOINSTYLE
+280
+0
+  9
+$LWDISPLAY
+290
+0
+  9
+$INSUNITS
+ 70
+5
+  9
+$HYPERLINKBASE
+  1
+
+  9
+$STYLESHEET
+  1
+
+  9
+$XEDIT
+290
+1
+  9
+$CEPSNTYPE
+380
+0
+  9
+$PSTYLEMODE
+290
+1
+  9
+$FINGERPRINTGUID
+  2
+{00000000-0000-0000-0000-000000000000}
+  9
+$VERSIONGUID
+  2
+{00000000-0000-0000-0000-000000000000}
+  9
+$EXTNAMES
+290
+1
+  9
+$PSVPSCALE
+ 40
+0.0
+  9
+$OLESTARTUP
+290
+0
+  9
+$SORTENTS
+280
+127
+  9
+$INDEXCTL
+280
+0
+  9
+$HIDETEXT
+280
+1
+  9
+$XCLIPFRAME
+280
+1
+  9
+$HALOGAP
+280
+0
+  9
+$OBSCOLOR
+ 70
+257
+  9
+$OBSLTYPE
+280
+0
+  9
+$INTERSECTIONDISPLAY
+280
+0
+  9
+$INTERSECTIONCOLOR
+ 70
+257
+  9
+$DIMASSOC
+280
+2
+  9
+$PROJECTNAME
+  1
+
+  9
+$CAMERADISPLAY
+290
+0
+  9
+$LENSLENGTH
+ 40
+50.0
+  9
+$CAMERAHEIGHT
+ 40
+0.0
+  9
+$STEPSPERSEC
+ 40
+24.0
+  9
+$STEPSIZE
+ 40
+100.0
+  9
+$3DDWFPREC
+ 40
+2.0
+  9
+$PSOLWIDTH
+ 40
+0.005
+  9
+$PSOLHEIGHT
+ 40
+0.08
+  9
+$LOFTANG1
+ 40
+1.570796326795
+  9
+$LOFTANG2
+ 40
+1.570796326795
+  9
+$LOFTMAG1
+ 40
+0.0
+  9
+$LOFTMAG2
+ 40
+0.0
+  9
+$LOFTPARAM
+ 70
+7
+  9
+$LOFTNORMALS
+280
+1
+  9
+$LATITUDE
+ 40
+37.795
+  9
+$LONGITUDE
+ 40
+-122.394
+  9
+$NORTHDIRECTION
+ 40
+0.0
+  9
+$TIMEZONE
+ 70
+-8000
+  9
+$LIGHTGLYPHDISPLAY
+280
+1
+  9
+$TILEMODELIGHTSYNCH
+280
+1
+  9
+$CMATERIAL
+347
+20
+  9
+$SOLIDHIST
+280
+0
+  9
+$SHOWHIST
+280
+1
+  9
+$DWFFRAME
+280
+2
+  9
+$DGNFRAME
+280
+2
+  9
+$REALWORLDSCALE
+290
+1
+  9
+$INTERFERECOLOR
+ 62
+256
+  9
+$CSHADOW
+280
+0
+  9
+$SHADOWPLANELOCATION
+ 40
+0.0
+  0
+ENDSEC
+  0
+SECTION
+  2
+CLASSES
+  0
+CLASS
+  1
+ACDBDETAILVIEWSTYLE
+  2
+AcDbDetailViewStyle
+  3
+ObjectDBX Classes
+ 90
+1025
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+ACDBDICTIONARYWDFLT
+  2
+AcDbDictionaryWithDefault
+  3
+ObjectDBX Classes
+ 90
+0
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+ACDBPLACEHOLDER
+  2
+AcDbPlaceHolder
+  3
+ObjectDBX Classes
+ 90
+0
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+ACDBSECTIONVIEWSTYLE
+  2
+AcDbSectionViewStyle
+  3
+ObjectDBX Classes
+ 90
+1025
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+CELLSTYLEMAP
+  2
+AcDbCellStyleMap
+  3
+ObjectDBX Classes
+ 90
+1152
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+DICTIONARYVAR
+  2
+AcDbDictionaryVar
+  3
+ObjectDBX Classes
+ 90
+0
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+LAYOUT
+  2
+AcDbLayout
+  3
+ObjectDBX Classes
+ 90
+0
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+MATERIAL
+  2
+AcDbMaterial
+  3
+ObjectDBX Classes
+ 90
+1153
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+MENTALRAYRENDERSETTINGS
+  2
+AcDbMentalRayRenderSettings
+  3
+SCENEOE
+ 90
+1024
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+MLEADERSTYLE
+  2
+AcDbMLeaderStyle
+  3
+ACDB_MLEADERSTYLE_CLASS
+ 90
+4095
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+RASTERVARIABLES
+  2
+AcDbRasterVariables
+  3
+ISM
+ 90
+0
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+SCALE
+  2
+AcDbScale
+  3
+ObjectDBX Classes
+ 90
+1153
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+SUN
+  2
+AcDbSun
+  3
+SCENEOE
+ 90
+1153
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+TABLESTYLE
+  2
+AcDbTableStyle
+  3
+ObjectDBX Classes
+ 90
+4095
+ 91
+0
+280
+0
+281
+0
+  0
+CLASS
+  1
+VISUALSTYLE
+  2
+AcDbVisualStyle
+  3
+ObjectDBX Classes
+ 90
+4095
+ 91
+0
+280
+0
+281
+0
+  0
+ENDSEC
+  0
+SECTION
+  2
+TABLES
+  0
+TABLE
+  2
+VPORT
+  5
+8
+330
+0
+100
+AcDbSymbolTable
+ 70
+1
+  0
+VPORT
+  5
+23
+330
+8
+100
+AcDbSymbolTableRecord
+100
+AcDbViewportTableRecord
+  2
+*Active
+ 70
+0
+ 10
+0.0
+ 20
+0.0
+ 11
+1.0
+ 21
+1.0
+ 12
+0.0
+ 22
+0.0
+ 13
+0.0
+ 23
+0.0
+ 14
+0.5
+ 24
+0.5
+ 15
+0.5
+ 25
+0.5
+ 16
+0.0
+ 26
+0.0
+ 36
+1.0
+ 17
+0.0
+ 27
+0.0
+ 37
+0.0
+ 40
+1000.0
+ 41
+1.34
+ 42
+50.0
+ 43
+0.0
+ 44
+0.0
+ 50
+0.0
+ 51
+0.0
+ 71
+0
+ 72
+1000
+ 73
+1
+ 74
+3
+ 75
+0
+ 76
+0
+ 77
+0
+ 78
+0
+281
+0
+ 65
+0
+146
+0.0
+  0
+ENDTAB
+  0
+TABLE
+  2
+LTYPE
+  5
+2
+330
+0
+100
+AcDbSymbolTable
+ 70
+5
+  0
+LTYPE
+  5
+24
+330
+2
+100
+AcDbSymbolTableRecord
+100
+AcDbLinetypeTableRecord
+  2
+ByBlock
+ 70
+0
+  3
+
+ 72
+65
+ 73
+0
+ 40
+0.0
+  0
+LTYPE
+  5
+25
+330
+2
+100
+AcDbSymbolTableRecord
+100
+AcDbLinetypeTableRecord
+  2
+ByLayer
+ 70
+0
+  3
+
+ 72
+65
+ 73
+0
+ 40
+0.0
+  0
+LTYPE
+  5
+26
+330
+2
+100
+AcDbSymbolTableRecord
+100
+AcDbLinetypeTableRecord
+  2
+Continuous
+ 70
+0
+  3
+
+ 72
+65
+ 73
+0
+ 40
+0.0
+  0
+LTYPE
+  5
+30
+330
+2
+100
+AcDbSymbolTableRecord
+100
+AcDbLinetypeTableRecord
+  2
+GJ-DASHED
+ 70
+0
+  3
+Gujian hidden or pending boundary
+ 72
+65
+ 73
+2
+ 40
+1.8
+ 49
+1.2000000000000002
+ 74
+0
+ 49
+-0.6000000000000001
+ 74
+0
+  0
+LTYPE
+  5
+31
+330
+2
+100
+AcDbSymbolTableRecord
+100
+AcDbLinetypeTableRecord
+  2
+GJ-CENTER
+ 70
+0
+  3
+Gujian axis centre line
+ 72
+65
+ 73
+4
+ 40
+3.9000000000000004
+ 49
+2.4000000000000004
+ 74
+0
+ 49
+-0.6000000000000001
+ 74
+0
+ 49
+0.30000000000000004
+ 74
+0
+ 49
+-0.6000000000000001
+ 74
+0
+  0
+ENDTAB
+  0
+TABLE
+  2
+LAYER
+  5
+1
+330
+0
+100
+AcDbSymbolTable
+ 70
+12
+  0
+LAYER
+  5
+27
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+0
+ 70
+0
+ 62
+7
+  6
+Continuous
+370
+-3
+390
+13
+347
+21
+  0
+LAYER
+  5
+28
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+Defpoints
+ 70
+0
+ 62
+7
+  6
+Continuous
+290
+0
+370
+-3
+390
+13
+347
+21
+  0
+LAYER
+  5
+32
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-CUT
+ 70
+0
+ 62
+7
+  6
+Continuous
+370
+50
+390
+13
+347
+21
+  0
+LAYER
+  5
+33
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-OUTLINE
+ 70
+0
+ 62
+7
+  6
+Continuous
+370
+35
+390
+13
+347
+21
+  0
+LAYER
+  5
+34
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-PROJECTION
+ 70
+0
+ 62
+8
+  6
+Continuous
+370
+18
+390
+13
+347
+21
+  0
+LAYER
+  5
+35
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-HIDDEN
+ 70
+0
+ 62
+8
+  6
+GJ-DASHED
+370
+18
+390
+13
+347
+21
+  0
+LAYER
+  5
+36
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-AXIS
+ 70
+0
+ 62
+4
+  6
+GJ-CENTER
+370
+13
+390
+13
+347
+21
+  0
+LAYER
+  5
+37
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-DIMENSION
+ 70
+0
+ 62
+2
+  6
+Continuous
+370
+18
+390
+13
+347
+21
+  0
+LAYER
+  5
+38
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-TEXT
+ 70
+0
+ 62
+7
+  6
+Continuous
+370
+18
+390
+13
+347
+21
+  0
+LAYER
+  5
+39
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-HATCH
+ 70
+0
+ 62
+9
+  6
+Continuous
+370
+13
+390
+13
+347
+21
+  0
+LAYER
+  5
+3A
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-CONDITION
+ 70
+0
+ 62
+1
+  6
+GJ-DASHED
+370
+30
+390
+13
+347
+21
+  0
+LAYER
+  5
+3B
+330
+1
+100
+AcDbSymbolTableRecord
+100
+AcDbLayerTableRecord
+  2
+GJ-FRAME
+ 70
+0
+ 62
+7
+  6
+Continuous
+370
+35
+390
+13
+347
+21
+  0
+ENDTAB
+  0
+TABLE
+  2
+STYLE
+  5
+5
+330
+0
+100
+AcDbSymbolTable
+ 70
+2
+  0
+STYLE
+  5
+29
+330
+5
+100
+AcDbSymbolTableRecord
+100
+AcDbTextStyleTableRecord
+  2
+Standard
+ 70
+0
+ 40
+0.0
+ 41
+1.0
+ 50
+0.0
+ 71
+0
+ 42
+2.5
+  3
+txt
+  4
+
+  0
+STYLE
+  5
+3C
+330
+5
+100
+AcDbSymbolTableRecord
+100
+AcDbTextStyleTableRecord
+  2
+GJ-TEXT
+ 70
+0
+ 40
+0.0
+ 41
+1.0
+ 50
+0.0
+ 71
+0
+ 42
+2.5
+  3
+GujianSansSC-Regular.ttf
+  4
+
+1001
+ACAD
+1000
+Gujian Sans SC
+1071
+34
+  0
+ENDTAB
+  0
+TABLE
+  2
+VIEW
+  5
+7
+330
+0
+100
+AcDbSymbolTable
+ 70
+0
+  0
+ENDTAB
+  0
+TABLE
+  2
+UCS
+  5
+6
+330
+0
+100
+AcDbSymbolTable
+ 70
+0
+  0
+ENDTAB
+  0
+TABLE
+  2
+APPID
+  5
+3
+330
+0
+100
+AcDbSymbolTable
+ 70
+4
+  0
+APPID
+  5
+2A
+330
+3
+100
+AcDbSymbolTableRecord
+100
+AcDbRegAppTableRecord
+  2
+ACAD
+ 70
+0
+  0
+APPID
+  5
+2F
+330
+3
+100
+AcDbSymbolTableRecord
+100
+AcDbRegAppTableRecord
+  2
+GJ_PROV
+ 70
+0
+  0
+APPID
+  5
+179
+330
+3
+100
+AcDbSymbolTableRecord
+100
+AcDbRegAppTableRecord
+  2
+HATCHBACKGROUNDCOLOR
+ 70
+0
+  0
+APPID
+  5
+17A
+330
+3
+100
+AcDbSymbolTableRecord
+100
+AcDbRegAppTableRecord
+  2
+EZDXF
+ 70
+0
+  0
+ENDTAB
+  0
+TABLE
+  2
+DIMSTYLE
+  5
+4
+330
+0
+100
+AcDbSymbolTable
+ 70
+2
+100
+AcDbDimStyleTable
+  0
+DIMSTYLE
+105
+2B
+330
+4
+100
+AcDbSymbolTableRecord
+100
+AcDbDimStyleTableRecord
+  2
+Standard
+ 70
+0
+ 40
+1.0
+ 41
+2.5
+ 42
+0.625
+ 43
+3.75
+ 44
+1.25
+ 45
+0.0
+ 46
+0.0
+ 47
+0.0
+ 48
+0.0
+ 49
+2.5
+140
+2.5
+141
+2.5
+142
+0.0
+143
+0.03937007874
+144
+1.0
+145
+0.0
+146
+1.0
+147
+0.625
+148
+0.0
+ 69
+0
+ 70
+0
+ 71
+0
+ 72
+0
+ 73
+0
+ 74
+0
+ 75
+0
+ 76
+0
+ 77
+1
+ 78
+8
+ 79
+3
+170
+0
+171
+3
+172
+1
+173
+0
+174
+0
+175
+0
+176
+0
+177
+0
+178
+0
+179
+2
+271
+2
+272
+2
+273
+2
+274
+3
+275
+0
+276
+0
+277
+2
+278
+44
+279
+0
+280
+0
+281
+0
+282
+0
+283
+0
+284
+8
+285
+0
+286
+0
+288
+0
+289
+3
+290
+0
+371
+-2
+372
+-2
+  0
+DIMSTYLE
+105
+3D
+330
+4
+100
+AcDbSymbolTableRecord
+100
+AcDbDimStyleTableRecord
+  2
+GJ-DIM
+ 70
+0
+ 40
+1.0
+ 41
+10.0
+ 42
+0.0625
+ 43
+0.375
+ 44
+0.125
+ 45
+0.0
+ 46
+0.0
+ 47
+0.0
+ 48
+0.0
+ 49
+0.25
+140
+12.5
+141
+0.25
+142
+0.0
+143
+0.03937007874
+144
+1.0
+145
+0.0
+146
+1.0
+147
+0.0625
+148
+0.0
+ 69
+0
+ 70
+0
+ 71
+0
+ 72
+0
+ 73
+0
+ 74
+0
+ 75
+0
+ 76
+0
+ 77
+1
+ 78
+8
+ 79
+3
+170
+0
+171
+3
+172
+1
+173
+0
+174
+0
+175
+0
+176
+0
+177
+0
+178
+0
+179
+2
+271
+8
+272
+2
+273
+2
+274
+3
+275
+0
+276
+0
+277
+2
+278
+46
+279
+0
+280
+0
+281
+0
+282
+0
+283
+0
+284
+8
+285
+0
+286
+0
+288
+0
+289
+3
+290
+0
+340
+3C
+371
+-2
+372
+-2
+  0
+ENDTAB
+  0
+TABLE
+  2
+BLOCK_RECORD
+  5
+9
+330
+0
+100
+AcDbSymbolTable
+ 70
+6
+  0
+BLOCK_RECORD
+  5
+17
+330
+9
+100
+AcDbSymbolTableRecord
+100
+AcDbBlockTableRecord
+  2
+*Model_Space
+340
+1A
+ 70
+0
+280
+1
+281
+0
+  0
+BLOCK_RECORD
+  5
+1B
+330
+9
+100
+AcDbSymbolTableRecord
+100
+AcDbBlockTableRecord
+  2
+*Paper_Space
+340
+1E
+ 70
+0
+280
+1
+281
+0
+  0
+BLOCK_RECORD
+  5
+3E
+330
+9
+100
+AcDbSymbolTableRecord
+100
+AcDbBlockTableRecord
+  2
+GJ_TITLEBLOCK
+340
+0
+ 70
+0
+280
+1
+281
+0
+  0
+BLOCK_RECORD
+  5
+48
+330
+9
+100
+AcDbSymbolTableRecord
+100
+AcDbBlockTableRecord
+  2
+GJ_CONDITION_MARK
+340
+0
+ 70
+0
+280
+1
+281
+0
+  0
+BLOCK_RECORD
+  5
+153
+330
+9
+100
+AcDbSymbolTableRecord
+100
+AcDbBlockTableRecord
+  2
+*D1
+340
+0
+ 70
+0
+280
+1
+281
+0
+  0
+BLOCK_RECORD
+  5
+158
+330
+9
+100
+AcDbSymbolTableRecord
+100
+AcDbBlockTableRecord
+  2
+_CLOSEDFILLED
+340
+0
+ 70
+0
+280
+1
+281
+0
+  0
+ENDTAB
+  0
+ENDSEC
+  0
+SECTION
+  2
+BLOCKS
+  0
+BLOCK
+  5
+18
+330
+17
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockBegin
+  2
+*Model_Space
+ 70
+0
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+*Model_Space
+  1
+
+  0
+ENDBLK
+  5
+19
+330
+17
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockEnd
+  0
+BLOCK
+  5
+1C
+330
+1B
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockBegin
+  2
+*Paper_Space
+ 70
+0
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+*Paper_Space
+  1
+
+  0
+ENDBLK
+  5
+1D
+330
+1B
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockEnd
+  0
+BLOCK
+  5
+3F
+330
+3E
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockBegin
+  2
+GJ_TITLEBLOCK
+ 70
+2
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+GJ_TITLEBLOCK
+  1
+
+  0
+LWPOLYLINE
+  5
+41
+330
+3E
+100
+AcDbEntity
+  8
+GJ-FRAME
+100
+AcDbPolyline
+ 90
+5
+ 70
+0
+ 10
+0.0
+ 20
+0.0
+ 10
+221.0
+ 20
+0.0
+ 10
+221.0
+ 20
+30.0
+ 10
+0.0
+ 20
+30.0
+ 10
+0.0
+ 20
+0.0
+  0
+ATTDEF
+  5
+42
+330
+3E
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+3.0
+ 20
+22.0
+ 30
+0.0
+ 40
+4.0
+  1
+
+  7
+GJ-TEXT
+100
+AcDbAttributeDefinition
+  3
+
+  2
+PROJECT
+ 70
+0
+ 71
+1
+ 72
+0
+  0
+ATTDEF
+  5
+43
+330
+3E
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+3.0
+ 20
+14.0
+ 30
+0.0
+ 40
+4.0
+  1
+
+  7
+GJ-TEXT
+100
+AcDbAttributeDefinition
+  3
+
+  2
+TITLE
+ 70
+0
+ 71
+1
+ 72
+0
+  0
+ATTDEF
+  5
+44
+330
+3E
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+3.0
+ 20
+6.0
+ 30
+0.0
+ 40
+3.0
+  1
+
+  7
+GJ-TEXT
+100
+AcDbAttributeDefinition
+  3
+
+  2
+NUMBER
+ 70
+0
+ 71
+1
+ 72
+0
+  0
+ATTDEF
+  5
+45
+330
+3E
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+83.0
+ 20
+6.0
+ 30
+0.0
+ 40
+3.0
+  1
+
+  7
+GJ-TEXT
+100
+AcDbAttributeDefinition
+  3
+
+  2
+STATUS
+ 70
+0
+ 71
+1
+ 72
+0
+  0
+ATTDEF
+  5
+46
+330
+3E
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+145.0
+ 20
+6.0
+ 30
+0.0
+ 40
+3.0
+  1
+
+  7
+GJ-TEXT
+100
+AcDbAttributeDefinition
+  3
+
+  2
+REVISION
+ 70
+0
+ 71
+1
+ 72
+0
+  0
+ATTDEF
+  5
+47
+330
+3E
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+178.0
+ 20
+6.0
+ 30
+0.0
+ 40
+3.0
+  1
+
+  7
+GJ-TEXT
+100
+AcDbAttributeDefinition
+  3
+
+  2
+DATE
+ 70
+0
+ 71
+1
+ 72
+0
+  0
+ENDBLK
+  5
+40
+330
+3E
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockEnd
+  0
+BLOCK
+  5
+49
+330
+48
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockBegin
+  2
+GJ_CONDITION_MARK
+ 70
+0
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+GJ_CONDITION_MARK
+  1
+
+  0
+CIRCLE
+  5
+4B
+330
+48
+100
+AcDbEntity
+  8
+GJ-CONDITION
+100
+AcDbCircle
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 40
+12.0
+  0
+LINE
+  5
+4C
+330
+48
+100
+AcDbEntity
+  8
+GJ-CONDITION
+100
+AcDbLine
+ 10
+-8.5
+ 20
+-8.5
+ 30
+0.0
+ 11
+8.5
+ 21
+8.5
+ 31
+0.0
+  0
+LINE
+  5
+4D
+330
+48
+100
+AcDbEntity
+  8
+GJ-CONDITION
+100
+AcDbLine
+ 10
+-8.5
+ 20
+8.5
+ 30
+0.0
+ 11
+8.5
+ 21
+-8.5
+ 31
+0.0
+  0
+ENDBLK
+  5
+4A
+330
+48
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockEnd
+  0
+BLOCK
+  5
+154
+330
+153
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockBegin
+  2
+*D1
+ 70
+1
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+*D1
+  1
+
+  0
+LINE
+  5
+156
+330
+153
+100
+AcDbEntity
+  8
+0
+100
+AcDbLine
+ 10
+0.0
+ 20
+-0.0625
+ 30
+0.0
+ 11
+0.0
+ 21
+-80.125
+ 31
+0.0
+  0
+LINE
+  5
+157
+330
+153
+100
+AcDbEntity
+  8
+0
+100
+AcDbLine
+ 10
+705.0250000000001
+ 20
+-0.0625
+ 30
+0.0
+ 11
+705.0250000000001
+ 21
+-80.125
+ 31
+0.0
+  0
+INSERT
+  5
+15C
+330
+153
+100
+AcDbEntity
+  8
+GJ-DIMENSION
+100
+AcDbBlockReference
+  2
+_CLOSEDFILLED
+ 10
+0.0
+ 20
+-80.0
+ 30
+0.0
+ 41
+10.0
+ 42
+10.0
+ 50
+180.0
+  0
+INSERT
+  5
+15E
+330
+153
+100
+AcDbEntity
+  8
+GJ-DIMENSION
+100
+AcDbBlockReference
+  2
+_CLOSEDFILLED
+ 10
+705.0250000000001
+ 20
+-80.0
+ 30
+0.0
+ 41
+10.0
+ 42
+10.0
+  0
+LINE
+  5
+160
+330
+153
+100
+AcDbEntity
+  8
+0
+100
+AcDbLine
+ 10
+10.0
+ 20
+-80.0
+ 30
+0.0
+ 11
+315.0125000000001
+ 21
+-80.0
+ 31
+0.0
+  0
+LINE
+  5
+161
+330
+153
+100
+AcDbEntity
+  8
+0
+100
+AcDbLine
+ 10
+390.01250000000005
+ 20
+-80.0
+ 30
+0.0
+ 11
+695.0250000000001
+ 21
+-80.0
+ 31
+0.0
+  0
+MTEXT
+  5
+162
+330
+153
+100
+AcDbEntity
+  8
+GJ-DIMENSION
+100
+AcDbMText
+ 10
+352.51250000000005
+ 20
+-80.0
+ 30
+0.0
+ 40
+12.5
+ 71
+5
+  1
+705.025 cm
+  7
+GJ-TEXT
+  0
+POINT
+  5
+163
+330
+153
+100
+AcDbEntity
+  8
+Defpoints
+100
+AcDbPoint
+ 10
+0.0
+ 20
+-80.0
+ 30
+0.0
+  0
+POINT
+  5
+164
+330
+153
+100
+AcDbEntity
+  8
+Defpoints
+100
+AcDbPoint
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  0
+POINT
+  5
+165
+330
+153
+100
+AcDbEntity
+  8
+Defpoints
+100
+AcDbPoint
+ 10
+705.0250000000001
+ 20
+0.0
+ 30
+0.0
+  0
+ENDBLK
+  5
+155
+330
+153
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockEnd
+  0
+BLOCK
+  5
+159
+330
+158
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockBegin
+  2
+_CLOSEDFILLED
+ 70
+0
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+_CLOSEDFILLED
+  1
+
+  0
+SOLID
+  5
+15B
+330
+158
+100
+AcDbEntity
+  8
+0
+  6
+BYBLOCK
+ 62
+0
+100
+AcDbTrace
+ 10
+-1.0
+ 20
+0.16439898372402537
+ 30
+0.0
+ 11
+0.0
+ 21
+0.0
+ 31
+0.0
+ 12
+-1.0
+ 22
+-0.16439898372402537
+ 32
+0.0
+ 13
+-1.0
+ 23
+-0.16439898372402537
+ 33
+0.0
+  0
+ENDBLK
+  5
+15A
+330
+158
+100
+AcDbEntity
+  8
+0
+100
+AcDbBlockEnd
+  0
+ENDSEC
+  0
+SECTION
+  2
+ENTITIES
+  0
+LINE
+  5
+4E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.9007878000001
+ 20
+2.2025637000000002
+ 30
+0.0
+ 11
+676.7992444000001
+ 21
+1.769883
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e22d1a1f-da67-5e06-b99c-5109be5ea140
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+4F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.5894113
+ 20
+10.434920300000002
+ 30
+0.0
+ 11
+703.0443616000001
+ 21
+11.3223255
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8bae07ae-4a78-5b6d-99ba-18162efed5fc
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+50
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.5894113
+ 20
+29.565081
+ 30
+0.0
+ 11
+702.0908303000001
+ 21
+30.4287046
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ead6eaee-d0da-5e05-bc0c-f1378d7b3fe9
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+51
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.1364617
+ 20
+14.1048968
+ 30
+0.0
+ 11
+704.4065423000001
+ 21
+15.0648519
+ 31
+0.0
+1001
+GJ_PROV
+1000
+18c3b810-ec03-5e6d-9629-4253c9b5bb62
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+52
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.4605794
+ 20
+10.434920300000002
+ 30
+0.0
+ 11
+667.9591603000001
+ 21
+9.571296
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2ae2b081-ea2e-592c-a692-56145bb6593c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+53
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.6434484000001
+ 20
+24.9351487
+ 30
+0.0
+ 11
+665.4215283000001
+ 21
+23.9629224
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c352bb2c-f429-5a51-ae65-7b55d7434837
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+54
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+696.6998525
+ 20
+3.7612397000000004
+ 30
+0.0
+ 11
+697.4947877000001
+ 21
+4.3633703
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4b8d7aab-f567-52cc-8c1a-5e8837ba8f8e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+55
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.8759255
+ 20
+3.1994816000000004
+ 30
+0.0
+ 11
+696.6998525
+ 21
+3.7612397000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+9925c168-c16d-56e7-9701-ac8f96368cc5
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+56
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+674.1740651
+ 20
+36.8005186
+ 30
+0.0
+ 11
+673.3501382000001
+ 21
+36.238759800000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7c6c1e07-55ff-56f2-9897-215d990acfd4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+57
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.7040982000001
+ 20
+7.1442477
+ 30
+0.0
+ 11
+670.3639455000001
+ 21
+6.3965455
+ 31
+0.0
+1001
+GJ_PROV
+1000
+841b165a-9877-57e8-a35d-9fb14e3782fa
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+58
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+689.4754357000002
+ 20
+0.5014418
+ 30
+0.0
+ 11
+690.4417939
+ 21
+0.7475151000000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+caf4b018-955a-5d36-a514-fff54fd20c0a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+59
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+691.394753
+ 20
+38.958546500000004
+ 30
+0.0
+ 11
+690.4417939
+ 21
+39.2524838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a5ee3170-42f1-5870-97ce-4cb775909800
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+5A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+686.5196176000001
+ 20
+0.055924100000000004
+ 30
+0.0
+ 11
+687.511868
+ 21
+0.15521590000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a35dcaf4-5db8-5c59-8b94-e2828cdaca31
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+5B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.2587285000001
+ 20
+5.0043758
+ 30
+0.0
+ 11
+698.9897199000001
+ 21
+5.6826629
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f3b36463-1b0d-5a88-a465-9a773cbea114
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+5C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+693.2507463000001
+ 20
+38.2301182
+ 30
+0.0
+ 11
+692.3318334
+ 21
+38.6174738
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1aad0434-4def-5ee7-b78d-f1680b86ca38
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+5D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.4065423000001
+ 20
+15.0648519
+ 30
+0.0
+ 11
+704.6284623000001
+ 21
+16.0370767
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7d1f39f2-d22b-5bb2-bf9d-a19f3f0765fd
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+5E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.9135289000001
+ 20
+14.1048968
+ 30
+0.0
+ 11
+666.2311502000001
+ 21
+13.1595969
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d23f3f55-56d6-5dd1-b69b-ef23faf8d29d
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+5F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.7912622000001
+ 20
+34.995624400000004
+ 30
+0.0
+ 11
+671.0602708000001
+ 21
+34.3173385
+ 31
+0.0
+1001
+GJ_PROV
+1000
+9cbf100c-a06a-58e6-9f85-01a2cfb66106
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+60
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+697.4947877000001
+ 20
+4.3633703
+ 30
+0.0
+ 11
+698.2587285000001
+ 21
+5.0043758
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3f1b9e0e-9089-52d7-a4e5-0df949897b26
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+61
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.9591603000001
+ 20
+30.4287046
+ 30
+0.0
+ 11
+667.4605794
+ 21
+29.565081
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3cd27fff-a0c6-5841-8b7d-676327b8dc12
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+62
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+680.5746026000002
+ 20
+0.5014418
+ 30
+0.0
+ 11
+681.5520234
+ 21
+0.30384490000000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+43cc22a9-9f7b-5803-966c-c5034912b09d
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+63
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+705.0001569000001
+ 20
+20.996917800000002
+ 30
+0.0
+ 11
+704.9256272000001
+ 21
+21.9913572
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d7ff36f9-0e71-5d93-87d2-79200f83c855
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+64
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+672.5552030000001
+ 20
+4.3633703
+ 30
+0.0
+ 11
+673.3501382000001
+ 21
+3.7612397000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+dbe0d4d0-a79d-5913-a0f5-b37b8d09da07
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+65
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.2483888000002
+ 20
+22.980845000000002
+ 30
+0.0
+ 11
+665.1243634000001
+ 21
+21.9913572
+ 31
+0.0
+1001
+GJ_PROV
+1000
+172abac3-b50a-54fd-8e99-bf9a72480f89
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+66
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+694.1492028000001
+ 20
+37.7974361
+ 30
+0.0
+ 11
+693.2507463000001
+ 21
+38.2301182
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3174642f-8b97-5a82-a255-4c604547f440
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+67
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.0602708000001
+ 20
+34.3173385
+ 30
+0.0
+ 11
+670.3639455000001
+ 21
+33.6034536
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f088fe19-d685-510f-9947-48bf18816baf
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+68
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+0.0
+ 20
+23.9999995
+ 30
+0.0
+ 11
+610.0500054
+ 21
+23.9999995
+ 31
+0.0
+1001
+GJ_PROV
+1000
+54466144-4e17-5446-8839-1667257bb180
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+69
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+681.5520234
+ 20
+39.69615400000001
+ 30
+0.0
+ 11
+680.5746026000002
+ 21
+39.4985586
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cfdd0338-16bd-5bfb-a3e3-3db7a700c0fb
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+6A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+689.4754357000002
+ 20
+39.4985586
+ 30
+0.0
+ 11
+688.4979672000001
+ 21
+39.69615400000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a1a6ae92-37a7-5c32-acf1-93db27017324
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+6B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.8016019000002
+ 20
+22.980845000000002
+ 30
+0.0
+ 11
+704.6284623000001
+ 21
+23.9629224
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5bada727-f089-59d2-9b4d-b352aa8c3551
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+6C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+672.5552030000001
+ 20
+4.3633703
+ 30
+0.0
+ 11
+673.3501382000001
+ 21
+3.7612397000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7ceffc55-c820-58cd-92e5-ea2f47048840
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+6D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.024981
+ 20
+37.3205096
+ 30
+0.0
+ 11
+674.1740651
+ 21
+36.8005186
+ 31
+0.0
+1001
+GJ_PROV
+1000
+0f7d30c7-60a9-5174-b02e-591ccceb5006
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+6E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.8188405000001
+ 20
+13.1595969
+ 30
+0.0
+ 11
+704.1364617
+ 21
+14.1048968
+ 31
+0.0
+1001
+GJ_PROV
+1000
+db5c3aa3-42d8-5cbd-bf76-cef20c36b511
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+6F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 11
+0.0
+ 21
+23.9999995
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5954299b-a9fb-5b57-9ca6-c9077d81036c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+70
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+685.5236001000001
+ 20
+39.9937838
+ 30
+0.0
+ 11
+684.5263906
+ 21
+39.9937838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+99852c0f-9514-57ca-8c32-05db2b4b63d1
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+71
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.1243634000001
+ 20
+18.0086434
+ 30
+0.0
+ 11
+665.2483888000002
+ 21
+17.0191541
+ 31
+0.0
+1001
+GJ_PROV
+1000
+234b5b27-43ba-5d3e-813c-ae7f3c08ae9a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+72
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.9676404000002
+ 20
+7.9239115
+ 30
+0.0
+ 11
+701.5497632000001
+ 21
+8.7335989
+ 31
+0.0
+1001
+GJ_PROV
+1000
+414ed825-e7d0-5959-8d84-c028d536f7ee
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+73
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.4065423000001
+ 20
+24.9351487
+ 30
+0.0
+ 11
+704.1364617
+ 21
+25.8951038
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2274e722-81ae-5a5e-aaff-221f950954a3
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+74
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+697.4947877000001
+ 20
+35.636630700000005
+ 30
+0.0
+ 11
+696.6998525
+ 21
+36.238759800000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+55eb5701-4373-574a-a6a7-cea111442cd9
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+75
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+668.5002275000002
+ 20
+31.2664002
+ 30
+0.0
+ 11
+667.9591603000001
+ 21
+30.4287046
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f0116206-4e8c-54f8-a418-7ac0c58f6637
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+76
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.9591603000001
+ 20
+30.4287046
+ 30
+0.0
+ 11
+667.4605794
+ 21
+29.565081
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3039ea9c-3894-54de-98eb-3d6a74283651
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+77
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+683.5304208000001
+ 20
+0.055924100000000004
+ 30
+0.0
+ 11
+684.5263906
+ 21
+0.0062164
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cead0748-a2fc-5eaf-a6e7-1223c7e40fc5
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+78
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.0823503000001
+ 20
+32.0760876
+ 30
+0.0
+ 11
+668.5002275000002
+ 21
+31.2664002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4d9b8cc6-3f8c-571c-8dc2-e2a2d1818e64
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+79
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.9007878000001
+ 20
+37.7974361
+ 30
+0.0
+ 11
+675.024981
+ 21
+37.3205096
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2ef4fdd1-535c-59b6-bb93-0dde9bc3f30f
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+7A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.0056291000001
+ 20
+11.3223255
+ 30
+0.0
+ 11
+667.4605794
+ 21
+10.434920300000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+6e263a9a-9d8b-506d-9a6e-221784188a4e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+7B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.0443616000001
+ 20
+28.677675100000002
+ 30
+0.0
+ 11
+702.5894113
+ 21
+29.565081
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4bc3c6bd-7e88-53f8-aeb4-34a48b343c52
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+7C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+677.7181573000001
+ 20
+1.3825250000000002
+ 30
+0.0
+ 11
+678.6552854000001
+ 21
+1.0414531
+ 31
+0.0
+1001
+GJ_PROV
+1000
+37ced2c4-a2a4-50e2-ad8c-7bc846a34e9a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+7D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.0250096000001
+ 20
+37.3205096
+ 30
+0.0
+ 11
+694.1492028000001
+ 21
+37.7974361
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1887dc76-1369-56bd-b4f8-2a245e79d8a4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+7E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+674.1740651
+ 20
+3.1994816000000004
+ 30
+0.0
+ 11
+675.024981
+ 21
+2.679492
+ 31
+0.0
+1001
+GJ_PROV
+1000
+0a7965a7-8a52-5dea-99d9-8b829c20dae3
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+7F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+682.5381227000001
+ 20
+39.8447841
+ 30
+0.0
+ 11
+681.5520234
+ 21
+39.69615400000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f5d6d6d4-e316-58b8-ba45-1d8958a8e27a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+80
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+694.1492028000001
+ 20
+2.2025637000000002
+ 30
+0.0
+ 11
+695.0250096000001
+ 21
+2.679492
+ 31
+0.0
+1001
+GJ_PROV
+1000
+99f4325f-a5c4-555e-a37d-0061d63ff62e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+81
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+686.5196176000001
+ 20
+39.9440765
+ 30
+0.0
+ 11
+685.5236001000001
+ 21
+39.9937838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+17c651d1-a16b-5685-968b-4dbfcea7120e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+82
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.8188405000001
+ 20
+26.840403700000003
+ 30
+0.0
+ 11
+703.4545369000001
+ 21
+27.768695400000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8445bd1c-87e5-5d22-9ce5-e4fe77dcae0b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+83
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.3458924000001
+ 20
+7.1442477
+ 30
+0.0
+ 11
+700.9676404000002
+ 21
+7.9239115
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7bdcb594-a49e-5172-8c66-fd6e8b137b17
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+84
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.1243634000001
+ 20
+21.9913572
+ 30
+0.0
+ 11
+665.0498815000001
+ 21
+20.996917800000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+eeb0dc9e-9120-5bf6-851b-225c47f73f03
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+85
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.4605794
+ 20
+29.565081
+ 30
+0.0
+ 11
+667.0056291000001
+ 21
+28.677675100000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e0a99262-46f0-56c3-a347-f70836f82756
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+86
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.8016019000002
+ 20
+17.0191541
+ 30
+0.0
+ 11
+704.9256272000001
+ 21
+18.0086434
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7cf8a224-bd58-5e6f-8497-69097ce2c2cb
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+87
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+680.5746026000002
+ 20
+39.4985586
+ 30
+0.0
+ 11
+679.6081967
+ 21
+39.2524838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b8a771c3-1977-51ed-9cd6-c5788538a097
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+88
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.6284623000001
+ 20
+23.9629224
+ 30
+0.0
+ 11
+704.4065423000001
+ 21
+24.9351487
+ 31
+0.0
+1001
+GJ_PROV
+1000
+890468e4-3d3d-596e-879a-f8e4c690e849
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+89
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.8759255
+ 20
+3.1994816000000004
+ 30
+0.0
+ 11
+696.6998525
+ 21
+3.7612397000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f0b73293-f138-570b-95a1-825f76243d76
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+8A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.0249906
+ 20
+20.0000003
+ 30
+0.0
+ 11
+665.0498815000001
+ 21
+19.0030828
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f98e0231-17fa-516b-bf1c-30194d0017c6
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+8B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+679.6081967
+ 20
+0.7475151000000001
+ 30
+0.0
+ 11
+680.5746026000002
+ 21
+0.5014418
+ 31
+0.0
+1001
+GJ_PROV
+1000
+641c9b5f-15ca-51d5-9bcc-32d858aeed72
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+8C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.4605794
+ 20
+29.565081
+ 30
+0.0
+ 11
+667.0056291000001
+ 21
+28.677675100000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+002efdd8-c075-5a17-918e-1025b3cd8830
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+8D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+697.4947877000001
+ 20
+4.3633703
+ 30
+0.0
+ 11
+698.2587285000001
+ 21
+5.0043758
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f54edfd2-67a2-51a1-8ad6-731570ebe387
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+8E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.0443616000001
+ 20
+11.3223255
+ 30
+0.0
+ 11
+703.4545369000001
+ 21
+12.231303800000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+99238166-e60e-5c69-b4b6-5efe2f40d993
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+8F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+691.394753
+ 20
+38.958546500000004
+ 30
+0.0
+ 11
+690.4417939
+ 21
+39.2524838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+38222093-5dad-574d-ad7b-5d94f726c852
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+90
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.2483888000002
+ 20
+17.0191541
+ 30
+0.0
+ 11
+665.4215283000001
+ 21
+16.0370767
+ 31
+0.0
+1001
+GJ_PROV
+1000
+69966cda-6946-514d-917c-15703c3ba03b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+91
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+683.5304208000001
+ 20
+39.9440765
+ 30
+0.0
+ 11
+682.5381227000001
+ 21
+39.8447841
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d564d374-be4d-5bc5-b31a-f7a876b020ef
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+92
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.8759255
+ 20
+36.8005186
+ 30
+0.0
+ 11
+695.0250096000001
+ 21
+37.3205096
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f99ef9cb-7ffa-5247-ac38-893eb84acc87
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+93
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+684.5263906
+ 20
+39.9937838
+ 30
+0.0
+ 11
+683.5304208000001
+ 21
+39.9440765
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b1c95d57-5a53-5b0c-999b-787a07642c64
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+94
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.0056291000001
+ 20
+28.677675100000002
+ 30
+0.0
+ 11
+666.5954537000001
+ 21
+27.768695400000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+0da90850-7248-5e5a-b096-e001ed792464
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+95
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.9591603000001
+ 20
+9.571296
+ 30
+0.0
+ 11
+668.5002275000002
+ 21
+8.7335989
+ 31
+0.0
+1001
+GJ_PROV
+1000
+aef2d024-2f0e-5b2f-b64b-ec4e033c8701
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+96
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+610.0500054
+ 20
+0.0
+ 30
+0.0
+ 11
+610.0500054
+ 21
+23.9999995
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a3142533-fa67-5f95-9687-fab8a695b12d
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+97
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.4545369000001
+ 20
+12.231303800000001
+ 30
+0.0
+ 11
+703.8188405000001
+ 21
+13.1595969
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c7ba57e7-0bfe-553c-81cd-c92308384459
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+98
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+688.4979672000001
+ 20
+39.69615400000001
+ 30
+0.0
+ 11
+687.511868
+ 21
+39.8447841
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3074b507-b395-57b5-86b2-794d987e03f0
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+99
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+673.3501382000001
+ 20
+36.238759800000004
+ 30
+0.0
+ 11
+672.5552030000001
+ 21
+35.636630700000005
+ 31
+0.0
+1001
+GJ_PROV
+1000
+53f1f076-aa46-5b22-9fa8-7c4875048ac1
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+9A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.9256272000001
+ 20
+21.9913572
+ 30
+0.0
+ 11
+704.8016019000002
+ 21
+22.980845000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1e688cc2-83a8-51b2-96d8-ff95d961f33b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+9B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+678.6552854000001
+ 20
+38.958546500000004
+ 30
+0.0
+ 11
+677.7181573000001
+ 21
+38.6174738
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2fb939e1-eb74-570e-a9f2-d52e89d38b68
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+9C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.6434484000001
+ 20
+15.0648519
+ 30
+0.0
+ 11
+665.9135289000001
+ 21
+14.1048968
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f0af77f9-2a2c-56f2-8789-7defabb25ac3
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+9D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+677.7181573000001
+ 20
+38.6174738
+ 30
+0.0
+ 11
+676.7992444000001
+ 21
+38.2301182
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a7f3cd35-db82-53a5-b75d-e73082bc47dc
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+9E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+696.6998525
+ 20
+36.238759800000004
+ 30
+0.0
+ 11
+695.8759255
+ 21
+36.8005186
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b9574368-df4d-5937-a046-fd2774e1ef2b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+9F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.0443616000001
+ 20
+28.677675100000002
+ 30
+0.0
+ 11
+702.5894113
+ 21
+29.565081
+ 31
+0.0
+1001
+GJ_PROV
+1000
+9cb3af5b-7706-5102-8f65-6ba2a83df1c6
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A0
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.9676404000002
+ 20
+7.9239115
+ 30
+0.0
+ 11
+701.5497632000001
+ 21
+8.7335989
+ 31
+0.0
+1001
+GJ_PROV
+1000
+dca8ee61-4bdc-5af4-9bcd-e4983fd7eb88
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A1
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+696.6998525
+ 20
+36.238759800000004
+ 30
+0.0
+ 11
+695.8759255
+ 21
+36.8005186
+ 31
+0.0
+1001
+GJ_PROV
+1000
+31e30906-daf6-50c4-9553-f7e300b44e86
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A2
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+673.3501382000001
+ 20
+3.7612397000000004
+ 30
+0.0
+ 11
+674.1740651
+ 21
+3.1994816000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4ad18a03-e98f-5bcc-bdc8-3fd3fa67f466
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A3
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.8016019000002
+ 20
+22.980845000000002
+ 30
+0.0
+ 11
+704.6284623000001
+ 21
+23.9629224
+ 31
+0.0
+1001
+GJ_PROV
+1000
+190b1052-b7af-5c07-b1b9-2effce2df3d9
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A4
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+699.6860452000001
+ 20
+6.3965455
+ 30
+0.0
+ 11
+700.3458924000001
+ 21
+7.1442477
+ 31
+0.0
+1001
+GJ_PROV
+1000
+6602a6ae-e4ed-5dc7-8f00-0602659650b7
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A5
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.7040982000001
+ 20
+32.855752100000004
+ 30
+0.0
+ 11
+669.0823503000001
+ 21
+32.0760876
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d232e335-4b19-5748-b047-2f7cfbc0d767
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A6
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+682.5381227000001
+ 20
+0.15521590000000002
+ 30
+0.0
+ 11
+683.5304208000001
+ 21
+0.055924100000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5abd44cc-01f0-5274-908b-e79ca012e929
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A7
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.9135289000001
+ 20
+14.1048968
+ 30
+0.0
+ 11
+666.2311502000001
+ 21
+13.1595969
+ 31
+0.0
+1001
+GJ_PROV
+1000
+07bc3ecd-697a-5d85-80cd-5baeccd4b7e4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A8
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.3458924000001
+ 20
+32.855752100000004
+ 30
+0.0
+ 11
+699.6860452000001
+ 21
+33.6034536
+ 31
+0.0
+1001
+GJ_PROV
+1000
+986bc1b9-874f-52e7-9fa5-38db5e5b75bd
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+A9
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.8759255
+ 20
+36.8005186
+ 30
+0.0
+ 11
+695.0250096000001
+ 21
+37.3205096
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a96c7e3d-81be-5b0c-9917-ced083b29005
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+AA
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+691.394753
+ 20
+1.0414531
+ 30
+0.0
+ 11
+692.3318334
+ 21
+1.3825250000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8f9fc588-be1a-58c2-81b7-23d10dcb5abf
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+AB
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.0056291000001
+ 20
+11.3223255
+ 30
+0.0
+ 11
+667.4605794
+ 21
+10.434920300000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cfa555d5-568f-5aa0-a70f-083e41eca721
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+AC
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+699.6860452000001
+ 20
+33.6034536
+ 30
+0.0
+ 11
+698.9897199000001
+ 21
+34.3173385
+ 31
+0.0
+1001
+GJ_PROV
+1000
+0e1460fc-3b1f-5c16-9505-bcb0dee99c15
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+AD
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+679.6081967
+ 20
+0.7475151000000001
+ 30
+0.0
+ 11
+680.5746026000002
+ 21
+0.5014418
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7821ff74-9544-5efd-ae6a-d94252fe6a84
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+AE
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+668.5002275000002
+ 20
+8.7335989
+ 30
+0.0
+ 11
+669.0823503000001
+ 21
+7.9239115
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2cabbf85-1115-5dc4-a758-12770062d122
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+AF
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.1243634000001
+ 20
+21.9913572
+ 30
+0.0
+ 11
+665.0498815000001
+ 21
+20.996917800000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8ba9d36d-269f-5f0d-8ffc-80a7441d9fc9
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B0
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+701.5497632000001
+ 20
+31.2664002
+ 30
+0.0
+ 11
+700.9676404000002
+ 21
+32.0760876
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3e363657-bddd-507b-99a9-f7b42e40a9ff
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B1
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.0249906
+ 20
+20.0000003
+ 30
+0.0
+ 11
+665.0498815000001
+ 21
+19.0030828
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e43a1206-6941-56df-9bda-07dc79fe34a0
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B2
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.0602708000001
+ 20
+34.3173385
+ 30
+0.0
+ 11
+670.3639455000001
+ 21
+33.6034536
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1e7a0e8f-2dc3-53dd-901e-807c4a668d64
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B3
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+685.5236001000001
+ 20
+0.0062164
+ 30
+0.0
+ 11
+686.5196176000001
+ 21
+0.055924100000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b579358b-3afc-550f-a2a4-3bb162095f8d
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B4
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.2587285000001
+ 20
+34.995624400000004
+ 30
+0.0
+ 11
+697.4947877000001
+ 21
+35.636630700000005
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4728e8c8-be86-5696-b964-27eec855f9ef
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B5
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+687.511868
+ 20
+39.8447841
+ 30
+0.0
+ 11
+686.5196176000001
+ 21
+39.9440765
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1295c318-6f7a-5ddb-bdca-d1a65291d92c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B6
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.0498815000001
+ 20
+19.0030828
+ 30
+0.0
+ 11
+665.1243634000001
+ 21
+18.0086434
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f2c67f65-9ed5-5863-a032-b3862a1fc638
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B7
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 11
+0.0
+ 21
+23.9999995
+ 31
+0.0
+1001
+GJ_PROV
+1000
+519e3f5f-cfbc-5acf-9b24-97574bf13b1f
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B8
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+676.7992444000001
+ 20
+38.2301182
+ 30
+0.0
+ 11
+675.9007878000001
+ 21
+37.7974361
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a3af14bc-8ebe-5b73-acc5-eb973ba4b5f0
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+B9
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+689.4754357000002
+ 20
+0.5014418
+ 30
+0.0
+ 11
+690.4417939
+ 21
+0.7475151000000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d5c08a69-d73a-5524-9639-9cdf65915578
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+BA
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.2311502000001
+ 20
+26.840403700000003
+ 30
+0.0
+ 11
+665.9135289000001
+ 21
+25.8951038
+ 31
+0.0
+1001
+GJ_PROV
+1000
+da233959-d252-5c03-a6fc-54c8b9b51221
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+BB
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.0908303000001
+ 20
+9.571296
+ 30
+0.0
+ 11
+702.5894113
+ 21
+10.434920300000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b970b02c-62d3-56bf-b0d6-c7e0816e6233
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+BC
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+683.5304208000001
+ 20
+39.9440765
+ 30
+0.0
+ 11
+682.5381227000001
+ 21
+39.8447841
+ 31
+0.0
+1001
+GJ_PROV
+1000
+160b76df-7806-543f-95da-70ba631a9382
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+BD
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.024981
+ 20
+37.3205096
+ 30
+0.0
+ 11
+674.1740651
+ 21
+36.8005186
+ 31
+0.0
+1001
+GJ_PROV
+1000
+6226cbf8-fbb8-507c-a55f-3ebc42ead817
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+BE
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+678.6552854000001
+ 20
+1.0414531
+ 30
+0.0
+ 11
+679.6081967
+ 21
+0.7475151000000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+193d0108-512b-5f9d-8d35-ca2977e5a605
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+BF
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.4215283000001
+ 20
+23.9629224
+ 30
+0.0
+ 11
+665.2483888000002
+ 21
+22.980845000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+bcfe9344-7a61-5e44-98f7-8973d9e5812b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C0
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+670.3639455000001
+ 20
+6.3965455
+ 30
+0.0
+ 11
+671.0602708000001
+ 21
+5.6826629
+ 31
+0.0
+1001
+GJ_PROV
+1000
+31819633-fb4a-523b-bad0-87e818554789
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C1
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.7912622000001
+ 20
+5.0043758
+ 30
+0.0
+ 11
+672.5552030000001
+ 21
+4.3633703
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a65aea18-e39b-540c-804b-95ba3600f108
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C2
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+682.5381227000001
+ 20
+39.8447841
+ 30
+0.0
+ 11
+681.5520234
+ 21
+39.69615400000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1d954ada-c99e-5486-8420-ad5f459b605c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C3
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.6284623000001
+ 20
+16.0370767
+ 30
+0.0
+ 11
+704.8016019000002
+ 21
+17.0191541
+ 31
+0.0
+1001
+GJ_PROV
+1000
+9fd0320c-f26f-5ef4-a04d-e48ca65e74ca
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C4
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+690.4417939
+ 20
+0.7475151000000001
+ 30
+0.0
+ 11
+691.394753
+ 21
+1.0414531
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ba6ebd75-8c53-58e3-9c18-6bec24c1a8ca
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C5
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+692.3318334
+ 20
+1.3825250000000002
+ 30
+0.0
+ 11
+693.2507463000001
+ 21
+1.769883
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e5aa1700-7f9c-5d5f-ad8f-0f5130d5641a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C6
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.4545369000001
+ 20
+12.231303800000001
+ 30
+0.0
+ 11
+703.8188405000001
+ 21
+13.1595969
+ 31
+0.0
+1001
+GJ_PROV
+1000
+78ef778f-c3ec-541b-bd59-ee8a6bcc0719
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C7
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+670.3639455000001
+ 20
+33.6034536
+ 30
+0.0
+ 11
+669.7040982000001
+ 21
+32.855752100000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5cb35bae-20a3-5bfd-b209-7ed3b5d14842
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C8
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+692.3318334
+ 20
+38.6174738
+ 30
+0.0
+ 11
+691.394753
+ 21
+38.958546500000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+de4d81fe-fea3-5fce-a8bf-641927468b73
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+C9
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+610.0500054
+ 20
+0.0
+ 30
+0.0
+ 11
+610.0500054
+ 21
+23.9999995
+ 31
+0.0
+1001
+GJ_PROV
+1000
+fe49083a-f9da-571c-94d6-473952e6f64b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+CA
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+685.5236001000001
+ 20
+39.9937838
+ 30
+0.0
+ 11
+684.5263906
+ 21
+39.9937838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b2ef4d92-ce3c-5d3a-ada2-9fb6f3c6df5c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+CB
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.9256272000001
+ 20
+18.0086434
+ 30
+0.0
+ 11
+705.0001569000001
+ 21
+19.0030828
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d06af609-8300-5845-829a-ec275258dca3
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+CC
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+682.5381227000001
+ 20
+0.15521590000000002
+ 30
+0.0
+ 11
+683.5304208000001
+ 21
+0.055924100000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+350117d1-e914-58c5-9205-9b3a398b20a4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+CD
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.9135289000001
+ 20
+25.8951038
+ 30
+0.0
+ 11
+665.6434484000001
+ 21
+24.9351487
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2e30b927-048c-5f2d-93bc-1db51eb698f2
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+CE
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.9135289000001
+ 20
+25.8951038
+ 30
+0.0
+ 11
+665.6434484000001
+ 21
+24.9351487
+ 31
+0.0
+1001
+GJ_PROV
+1000
+eeedef83-0f16-58ec-876c-42baafa34adb
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+CF
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+677.7181573000001
+ 20
+1.3825250000000002
+ 30
+0.0
+ 11
+678.6552854000001
+ 21
+1.0414531
+ 31
+0.0
+1001
+GJ_PROV
+1000
+05b34a83-3bd2-52ed-82e7-6cae0bc03b5e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D0
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.0443616000001
+ 20
+11.3223255
+ 30
+0.0
+ 11
+703.4545369000001
+ 21
+12.231303800000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c0be4098-4ba4-5e82-b6e7-5bb2c843d524
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D1
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+674.1740651
+ 20
+36.8005186
+ 30
+0.0
+ 11
+673.3501382000001
+ 21
+36.238759800000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f594ce05-4fa3-52a3-b1e5-3645756e9586
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D2
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+705.0250001
+ 20
+20.0000003
+ 30
+0.0
+ 11
+705.0001569000001
+ 21
+20.996917800000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+95b9fa35-eb12-5324-99a3-e383a538c890
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D3
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+678.6552854000001
+ 20
+38.958546500000004
+ 30
+0.0
+ 11
+677.7181573000001
+ 21
+38.6174738
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3ffd392d-76e0-5141-ba28-c20d8c0eb5b0
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D4
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+705.0250001
+ 20
+20.0000003
+ 30
+0.0
+ 11
+705.0001569000001
+ 21
+19.0030828
+ 31
+0.0
+1001
+GJ_PROV
+1000
+db052792-34ce-5b57-bafb-93bedef7f423
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D5
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.5954537000001
+ 20
+27.768695400000002
+ 30
+0.0
+ 11
+666.2311502000001
+ 21
+26.840403700000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c6e19efb-6e87-5769-a022-43440e634a9e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D6
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+688.4979672000001
+ 20
+39.69615400000001
+ 30
+0.0
+ 11
+687.511868
+ 21
+39.8447841
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5f5ca5ed-1619-5fcf-a905-0324c9140769
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D7
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.9676404000002
+ 20
+32.0760876
+ 30
+0.0
+ 11
+700.3458924000001
+ 21
+32.855752100000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7ba4688c-3443-5692-94d0-3529970bf0f6
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D8
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.1364617
+ 20
+25.8951038
+ 30
+0.0
+ 11
+703.8188405000001
+ 21
+26.840403700000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ea980a5e-ec84-5a97-b512-05cfbb1e43fe
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+D9
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+670.3639455000001
+ 20
+33.6034536
+ 30
+0.0
+ 11
+669.7040982000001
+ 21
+32.855752100000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b2106b7f-9104-50ea-9a1b-4074fb4b92e9
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+DA
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.0602708000001
+ 20
+5.6826629
+ 30
+0.0
+ 11
+671.7912622000001
+ 21
+5.0043758
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e190e71e-a47f-558c-a1e1-9dd1a0ee8029
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+DB
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+681.5520234
+ 20
+39.69615400000001
+ 30
+0.0
+ 11
+680.5746026000002
+ 21
+39.4985586
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ae043ebf-7617-5d42-ad69-e48134cfb537
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+DC
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.8016019000002
+ 20
+17.0191541
+ 30
+0.0
+ 11
+704.9256272000001
+ 21
+18.0086434
+ 31
+0.0
+1001
+GJ_PROV
+1000
+74d8b9a6-0a0b-57e3-8bef-627827545cf2
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+DD
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+680.5746026000002
+ 20
+39.4985586
+ 30
+0.0
+ 11
+679.6081967
+ 21
+39.2524838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cbd48d46-b6e7-5231-b051-2fc4e270539b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+DE
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+701.5497632000001
+ 20
+8.7335989
+ 30
+0.0
+ 11
+702.0908303000001
+ 21
+9.571296
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cdf8e652-08f1-5389-b962-6b62da4b325b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+DF
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.7040982000001
+ 20
+32.855752100000004
+ 30
+0.0
+ 11
+669.0823503000001
+ 21
+32.0760876
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3ce45e19-7333-54bb-95f4-cc205373a5ba
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E0
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.6434484000001
+ 20
+15.0648519
+ 30
+0.0
+ 11
+665.9135289000001
+ 21
+14.1048968
+ 31
+0.0
+1001
+GJ_PROV
+1000
+98ac27a3-d244-5d07-bb2d-57fcdc97f6ef
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E1
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+705.0001569000001
+ 20
+20.996917800000002
+ 30
+0.0
+ 11
+704.9256272000001
+ 21
+21.9913572
+ 31
+0.0
+1001
+GJ_PROV
+1000
+df9ea9bb-9129-5579-99c7-85b0c5979e96
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E2
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+692.3318334
+ 20
+38.6174738
+ 30
+0.0
+ 11
+691.394753
+ 21
+38.958546500000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d95c2626-27d7-58df-99c9-b4b6c79e7da8
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E3
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+688.4979672000001
+ 20
+0.30384490000000003
+ 30
+0.0
+ 11
+689.4754357000002
+ 21
+0.5014418
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b182a92f-cd22-54ed-b268-b8baefb59d9d
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E4
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+683.5304208000001
+ 20
+0.055924100000000004
+ 30
+0.0
+ 11
+684.5263906
+ 21
+0.0062164
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3510195d-55eb-5ea8-a305-cc3b6742b2e8
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E5
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+687.511868
+ 20
+0.15521590000000002
+ 30
+0.0
+ 11
+688.4979672000001
+ 21
+0.30384490000000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+acb0609d-fbef-5f8c-8dc6-104a03752f25
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E6
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.9591603000001
+ 20
+9.571296
+ 30
+0.0
+ 11
+668.5002275000002
+ 21
+8.7335989
+ 31
+0.0
+1001
+GJ_PROV
+1000
+abdabc34-4c5a-57d2-99e1-f8e835da0640
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E7
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+684.5263906
+ 20
+39.9937838
+ 30
+0.0
+ 11
+683.5304208000001
+ 21
+39.9440765
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f40256db-5048-5b7c-9001-3b7e7efc6ebc
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E8
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.0908303000001
+ 20
+9.571296
+ 30
+0.0
+ 11
+702.5894113
+ 21
+10.434920300000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e3ead15a-970c-50fb-8ff9-e02872c3fcb0
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+E9
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+680.5746026000002
+ 20
+0.5014418
+ 30
+0.0
+ 11
+681.5520234
+ 21
+0.30384490000000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+0aca9d92-bb00-5999-8936-00987f6ac197
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+EA
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+699.6860452000001
+ 20
+6.3965455
+ 30
+0.0
+ 11
+700.3458924000001
+ 21
+7.1442477
+ 31
+0.0
+1001
+GJ_PROV
+1000
+02119a45-57a3-5fc0-ae47-d05df1f79e6e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+EB
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.1243634000001
+ 20
+18.0086434
+ 30
+0.0
+ 11
+665.2483888000002
+ 21
+17.0191541
+ 31
+0.0
+1001
+GJ_PROV
+1000
+87b2af89-2d82-5a0e-b9a5-49a7064d26ff
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+EC
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+672.5552030000001
+ 20
+35.636630700000005
+ 30
+0.0
+ 11
+671.7912622000001
+ 21
+34.995624400000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5f256a76-377a-58a0-a1fe-549526a230ec
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+ED
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.7912622000001
+ 20
+5.0043758
+ 30
+0.0
+ 11
+672.5552030000001
+ 21
+4.3633703
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1d5e6982-800d-5df5-9508-e5c7c29df95c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+EE
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+699.6860452000001
+ 20
+33.6034536
+ 30
+0.0
+ 11
+698.9897199000001
+ 21
+34.3173385
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cc038342-3857-5794-acd8-bc832262ea55
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+EF
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.5894113
+ 20
+29.565081
+ 30
+0.0
+ 11
+702.0908303000001
+ 21
+30.4287046
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c7c4f437-981e-59db-8989-3ce12bd20080
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F0
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+689.4754357000002
+ 20
+39.4985586
+ 30
+0.0
+ 11
+688.4979672000001
+ 21
+39.69615400000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8a313b80-063c-5ac9-9e0a-a08eb4ca38c4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F1
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.9256272000001
+ 20
+18.0086434
+ 30
+0.0
+ 11
+705.0001569000001
+ 21
+19.0030828
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2391eb61-3df4-5157-9ca8-8bf134d2b9f3
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F2
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.0908303000001
+ 20
+30.4287046
+ 30
+0.0
+ 11
+701.5497632000001
+ 21
+31.2664002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a037cda8-9532-532a-80cc-33ace8db5a07
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F3
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.0498815000001
+ 20
+20.996917800000002
+ 30
+0.0
+ 11
+665.0249906
+ 21
+20.0000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+37db512d-0855-5503-9d64-f9c18a81d767
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F4
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.0823503000001
+ 20
+7.9239115
+ 30
+0.0
+ 11
+669.7040982000001
+ 21
+7.1442477
+ 31
+0.0
+1001
+GJ_PROV
+1000
+05fe2457-a9f7-59cd-ad6f-4f029aca0df9
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F5
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.3458924000001
+ 20
+32.855752100000004
+ 30
+0.0
+ 11
+699.6860452000001
+ 21
+33.6034536
+ 31
+0.0
+1001
+GJ_PROV
+1000
+af59f9f2-ee4f-5e25-bc10-7c8303ef00e4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F6
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+684.5263906
+ 20
+0.0062164
+ 30
+0.0
+ 11
+685.5236001000001
+ 21
+0.0062164
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d9174d1e-c2b6-55e0-bc1a-f683264be489
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F7
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.5954537000001
+ 20
+27.768695400000002
+ 30
+0.0
+ 11
+666.2311502000001
+ 21
+26.840403700000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ac9ba903-5b3b-522a-b7c5-172b488d4bf1
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F8
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.5954537000001
+ 20
+12.231303800000001
+ 30
+0.0
+ 11
+667.0056291000001
+ 21
+11.3223255
+ 31
+0.0
+1001
+GJ_PROV
+1000
+27ea4c94-2f9a-5f5f-8cb4-f5b6f6f38fe1
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+F9
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+673.3501382000001
+ 20
+36.238759800000004
+ 30
+0.0
+ 11
+672.5552030000001
+ 21
+35.636630700000005
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a59c0c4e-c86f-59c7-8ea2-c5c8deff7754
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+FA
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.0498815000001
+ 20
+19.0030828
+ 30
+0.0
+ 11
+665.1243634000001
+ 21
+18.0086434
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e956420a-ae23-506b-810e-b82d5c4c9007
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+FB
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.4065423000001
+ 20
+15.0648519
+ 30
+0.0
+ 11
+704.6284623000001
+ 21
+16.0370767
+ 31
+0.0
+1001
+GJ_PROV
+1000
+015bb06a-edab-5e16-9d34-06c69dd6d449
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+FC
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+687.511868
+ 20
+39.8447841
+ 30
+0.0
+ 11
+686.5196176000001
+ 21
+39.9440765
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e5b8148a-5b6a-5994-9400-0a17af15cd44
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+FD
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.3458924000001
+ 20
+7.1442477
+ 30
+0.0
+ 11
+700.9676404000002
+ 21
+7.9239115
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a734bcf7-9e27-508a-a0b5-4a5fdda5e3b7
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+FE
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+677.7181573000001
+ 20
+38.6174738
+ 30
+0.0
+ 11
+676.7992444000001
+ 21
+38.2301182
+ 31
+0.0
+1001
+GJ_PROV
+1000
+eee11d4c-fe66-5973-91a0-008455f3de5b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+FF
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+681.5520234
+ 20
+0.30384490000000003
+ 30
+0.0
+ 11
+682.5381227000001
+ 21
+0.15521590000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+97d459c1-b02b-5ac3-9b45-017fe4d6c380
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+100
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.0250096000001
+ 20
+37.3205096
+ 30
+0.0
+ 11
+694.1492028000001
+ 21
+37.7974361
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c956a763-b595-5ed9-b9d1-69112a5a7e25
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+101
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+705.0250001
+ 20
+20.0000003
+ 30
+0.0
+ 11
+705.0001569000001
+ 21
+20.996917800000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c0c376f4-dd8e-51d8-b2de-50b5691ec0aa
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+102
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.5894113
+ 20
+10.434920300000002
+ 30
+0.0
+ 11
+703.0443616000001
+ 21
+11.3223255
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c1c4550d-24d7-535a-bd12-ae054a96d59e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+103
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+685.5236001000001
+ 20
+0.0062164
+ 30
+0.0
+ 11
+686.5196176000001
+ 21
+0.055924100000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8994b63a-90fe-51d1-b18c-025461e97c4d
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+104
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+694.1492028000001
+ 20
+37.7974361
+ 30
+0.0
+ 11
+693.2507463000001
+ 21
+38.2301182
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4ad29000-624f-555e-a5d7-8caaeae166ce
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+105
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.0498815000001
+ 20
+20.996917800000002
+ 30
+0.0
+ 11
+665.0249906
+ 21
+20.0000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8293c896-9987-5682-a249-7451d49ecc4a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+106
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+692.3318334
+ 20
+1.3825250000000002
+ 30
+0.0
+ 11
+693.2507463000001
+ 21
+1.769883
+ 31
+0.0
+1001
+GJ_PROV
+1000
+58cbf095-08b4-51fc-84e9-40d69a247513
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+107
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+687.511868
+ 20
+0.15521590000000002
+ 30
+0.0
+ 11
+688.4979672000001
+ 21
+0.30384490000000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5c36fa9a-76e0-5be6-ab2a-8855142ab41a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+108
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+701.5497632000001
+ 20
+31.2664002
+ 30
+0.0
+ 11
+700.9676404000002
+ 21
+32.0760876
+ 31
+0.0
+1001
+GJ_PROV
+1000
+26408299-7be5-5feb-84a7-38f94f6bb660
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+109
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+690.4417939
+ 20
+0.7475151000000001
+ 30
+0.0
+ 11
+691.394753
+ 21
+1.0414531
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7732f17e-1f6e-5086-8227-98a3d50118bd
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+10A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+673.3501382000001
+ 20
+3.7612397000000004
+ 30
+0.0
+ 11
+674.1740651
+ 21
+3.1994816000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+12acd412-d3c6-53f9-8441-525dff6b280b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+10B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.0056291000001
+ 20
+28.677675100000002
+ 30
+0.0
+ 11
+666.5954537000001
+ 21
+27.768695400000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+eaa64929-0bc2-50c1-85d0-e01c07bd3a0f
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+10C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+679.6081967
+ 20
+39.2524838
+ 30
+0.0
+ 11
+678.6552854000001
+ 21
+38.958546500000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7ae3906a-5c8e-5960-af45-581abed97648
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+10D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+694.1492028000001
+ 20
+2.2025637000000002
+ 30
+0.0
+ 11
+695.0250096000001
+ 21
+2.679492
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7ce1bc01-6d65-525f-9420-e75a0fc5825b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+10E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.2311502000001
+ 20
+13.1595969
+ 30
+0.0
+ 11
+666.5954537000001
+ 21
+12.231303800000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b2d10637-4124-5b74-a9e9-0e88dada9538
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+10F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.9256272000001
+ 20
+21.9913572
+ 30
+0.0
+ 11
+704.8016019000002
+ 21
+22.980845000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f4382e1d-536d-56a4-85cf-eb7cb2286fc9
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+110
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.5954537000001
+ 20
+12.231303800000001
+ 30
+0.0
+ 11
+667.0056291000001
+ 21
+11.3223255
+ 31
+0.0
+1001
+GJ_PROV
+1000
+f77ef431-7386-523b-8f77-a239c2ac90af
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+111
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+693.2507463000001
+ 20
+38.2301182
+ 30
+0.0
+ 11
+692.3318334
+ 21
+38.6174738
+ 31
+0.0
+1001
+GJ_PROV
+1000
+14ca58d5-6e13-5bbb-9c28-298f6179c72e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+112
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+668.5002275000002
+ 20
+31.2664002
+ 30
+0.0
+ 11
+667.9591603000001
+ 21
+30.4287046
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d636983b-ad3e-5d30-9b8e-e7cbe934bed6
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+113
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.4215283000001
+ 20
+16.0370767
+ 30
+0.0
+ 11
+665.6434484000001
+ 21
+15.0648519
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ae8bdf56-ae30-5129-bbbd-d598d9508bc4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+114
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.024981
+ 20
+2.679492
+ 30
+0.0
+ 11
+675.9007878000001
+ 21
+2.2025637000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ee672c0a-c0ad-5c3e-ab13-9950350e473c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+115
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+691.394753
+ 20
+1.0414531
+ 30
+0.0
+ 11
+692.3318334
+ 21
+1.3825250000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+ca2ece16-68a9-51cc-a19d-3bea17c35598
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+116
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+705.0001569000001
+ 20
+19.0030828
+ 30
+0.0
+ 11
+705.0250001
+ 21
+20.0000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+af7ec4f8-3c09-59d7-8be9-efaf1fa62501
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+117
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.6284623000001
+ 20
+16.0370767
+ 30
+0.0
+ 11
+704.8016019000002
+ 21
+17.0191541
+ 31
+0.0
+1001
+GJ_PROV
+1000
+e1e22c31-155b-5508-a669-c0fcd284f16b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+118
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.0602708000001
+ 20
+5.6826629
+ 30
+0.0
+ 11
+671.7912622000001
+ 21
+5.0043758
+ 31
+0.0
+1001
+GJ_PROV
+1000
+be4e8a13-b332-5707-91b0-88e1674174f6
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+119
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.4545369000001
+ 20
+27.768695400000002
+ 30
+0.0
+ 11
+703.0443616000001
+ 21
+28.677675100000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+59ac783d-1729-58eb-94ef-2d8e084d6cbe
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+11A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+676.7992444000001
+ 20
+1.769883
+ 30
+0.0
+ 11
+677.7181573000001
+ 21
+1.3825250000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+6f772559-cea7-5dba-8890-5035d2603a98
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+11B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.2311502000001
+ 20
+13.1595969
+ 30
+0.0
+ 11
+666.5954537000001
+ 21
+12.231303800000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4a0fcee0-026b-5bbe-b06c-fb126cd73837
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+11C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+676.7992444000001
+ 20
+38.2301182
+ 30
+0.0
+ 11
+675.9007878000001
+ 21
+37.7974361
+ 31
+0.0
+1001
+GJ_PROV
+1000
+04f9b68b-4680-567e-a996-fd68051221fe
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+11D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+700.9676404000002
+ 20
+32.0760876
+ 30
+0.0
+ 11
+700.3458924000001
+ 21
+32.855752100000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3565c516-e464-5655-a562-098fb6da2c1a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+11E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.9897199000001
+ 20
+34.3173385
+ 30
+0.0
+ 11
+698.2587285000001
+ 21
+34.995624400000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a303d8c3-f494-5416-aea4-6dc5bfab1f78
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+11F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+693.2507463000001
+ 20
+1.769883
+ 30
+0.0
+ 11
+694.1492028000001
+ 21
+2.2025637000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+bb9d9540-dcd6-56ba-99a5-56171ec96f49
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+120
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+671.7912622000001
+ 20
+34.995624400000004
+ 30
+0.0
+ 11
+671.0602708000001
+ 21
+34.3173385
+ 31
+0.0
+1001
+GJ_PROV
+1000
+78fb56a6-a52b-54a1-88b1-3c8986bededb
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+121
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+667.4605794
+ 20
+10.434920300000002
+ 30
+0.0
+ 11
+667.9591603000001
+ 21
+9.571296
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8b4da886-c8b4-5248-a136-4666034235be
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+122
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.0250096000001
+ 20
+2.679492
+ 30
+0.0
+ 11
+695.8759255
+ 21
+3.1994816000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+61a01bef-08ab-5478-a8e7-9e2825cf4935
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+123
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.1364617
+ 20
+14.1048968
+ 30
+0.0
+ 11
+704.4065423000001
+ 21
+15.0648519
+ 31
+0.0
+1001
+GJ_PROV
+1000
+58a67bdd-55f1-542a-bdfe-b04d207aebc7
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+124
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+670.3639455000001
+ 20
+6.3965455
+ 30
+0.0
+ 11
+671.0602708000001
+ 21
+5.6826629
+ 31
+0.0
+1001
+GJ_PROV
+1000
+19a1fe0e-1375-556f-801f-3a7461a39cea
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+125
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.9007878000001
+ 20
+37.7974361
+ 30
+0.0
+ 11
+675.024981
+ 21
+37.3205096
+ 31
+0.0
+1001
+GJ_PROV
+1000
+983c6ffa-e01b-550a-9127-648bc1daf6c2
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+126
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+696.6998525
+ 20
+3.7612397000000004
+ 30
+0.0
+ 11
+697.4947877000001
+ 21
+4.3633703
+ 31
+0.0
+1001
+GJ_PROV
+1000
+394ff5de-bd3a-555f-a97a-83a45700f6fc
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+127
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+679.6081967
+ 20
+39.2524838
+ 30
+0.0
+ 11
+678.6552854000001
+ 21
+38.958546500000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cd1bd902-2eb9-5596-b683-aec7c64c3903
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+128
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.0823503000001
+ 20
+32.0760876
+ 30
+0.0
+ 11
+668.5002275000002
+ 21
+31.2664002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+6d404465-685b-5033-9e41-85ad2aedf164
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+129
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+695.0250096000001
+ 20
+2.679492
+ 30
+0.0
+ 11
+695.8759255
+ 21
+3.1994816000000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1004e770-0831-59c7-be8a-c7faee20446e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+12A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+666.2311502000001
+ 20
+26.840403700000003
+ 30
+0.0
+ 11
+665.9135289000001
+ 21
+25.8951038
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c6a0efe2-3d28-5c10-acf4-b12badb9cc64
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+12B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.2483888000002
+ 20
+17.0191541
+ 30
+0.0
+ 11
+665.4215283000001
+ 21
+16.0370767
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8dd08288-732e-56f8-a0a0-2ba412bf8a4b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+12C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.9007878000001
+ 20
+2.2025637000000002
+ 30
+0.0
+ 11
+676.7992444000001
+ 21
+1.769883
+ 31
+0.0
+1001
+GJ_PROV
+1000
+6377d456-1c9f-53a7-bd96-4434a07258df
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+12D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+686.5196176000001
+ 20
+39.9440765
+ 30
+0.0
+ 11
+685.5236001000001
+ 21
+39.9937838
+ 31
+0.0
+1001
+GJ_PROV
+1000
+011e9cc3-3d4f-52aa-8d1e-64e5f9163007
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+12E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+678.6552854000001
+ 20
+1.0414531
+ 30
+0.0
+ 11
+679.6081967
+ 21
+0.7475151000000001
+ 31
+0.0
+1001
+GJ_PROV
+1000
+38d086bc-6ebf-5978-9747-3b7a20452a84
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+12F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+672.5552030000001
+ 20
+35.636630700000005
+ 30
+0.0
+ 11
+671.7912622000001
+ 21
+34.995624400000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+84c59838-1013-5094-bb1f-3bae38616c5e
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+130
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+668.5002275000002
+ 20
+8.7335989
+ 30
+0.0
+ 11
+669.0823503000001
+ 21
+7.9239115
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5ec015bd-28cf-54f8-9a3b-0cfbda72b1ef
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+131
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.8188405000001
+ 20
+13.1595969
+ 30
+0.0
+ 11
+704.1364617
+ 21
+14.1048968
+ 31
+0.0
+1001
+GJ_PROV
+1000
+4e7575f8-3c5d-552e-88bb-836cfa3606fa
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+132
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+675.024981
+ 20
+2.679492
+ 30
+0.0
+ 11
+675.9007878000001
+ 21
+2.2025637000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+a7cfc44e-cbce-5f95-81ff-b3a218b0dfc2
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+133
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.9897199000001
+ 20
+5.6826629
+ 30
+0.0
+ 11
+699.6860452000001
+ 21
+6.3965455
+ 31
+0.0
+1001
+GJ_PROV
+1000
+78e81355-671e-5d15-bcf7-05bd3bf50f51
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+134
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+684.5263906
+ 20
+0.0062164
+ 30
+0.0
+ 11
+685.5236001000001
+ 21
+0.0062164
+ 31
+0.0
+1001
+GJ_PROV
+1000
+097322dc-942c-5095-9541-52b95c8b6db7
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+135
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 11
+610.0500054
+ 21
+0.0
+ 31
+0.0
+1001
+GJ_PROV
+1000
+11e5d130-706a-5185-b2de-3f8cbd2eb2aa
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+136
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+676.7992444000001
+ 20
+1.769883
+ 30
+0.0
+ 11
+677.7181573000001
+ 21
+1.3825250000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+c91167fc-6a2a-5460-b968-a920b870bbda
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+137
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.1364617
+ 20
+25.8951038
+ 30
+0.0
+ 11
+703.8188405000001
+ 21
+26.840403700000003
+ 31
+0.0
+1001
+GJ_PROV
+1000
+263a6332-35c5-5a1d-9e33-8983dcabc3ac
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+138
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.2587285000001
+ 20
+5.0043758
+ 30
+0.0
+ 11
+698.9897199000001
+ 21
+5.6826629
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d73e12bd-adf1-55ae-891a-5dd8a27ac7cc
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+139
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+681.5520234
+ 20
+0.30384490000000003
+ 30
+0.0
+ 11
+682.5381227000001
+ 21
+0.15521590000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+3cc5a0bd-38b9-5e2b-a2c4-df9506e7046c
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+13A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.4215283000001
+ 20
+16.0370767
+ 30
+0.0
+ 11
+665.6434484000001
+ 21
+15.0648519
+ 31
+0.0
+1001
+GJ_PROV
+1000
+bd165fff-454f-51da-b258-ab48cac8f617
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+13B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+674.1740651
+ 20
+3.1994816000000004
+ 30
+0.0
+ 11
+675.024981
+ 21
+2.679492
+ 31
+0.0
+1001
+GJ_PROV
+1000
+68203e49-d7f1-5a8c-ab2a-48afb923793a
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+13C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+693.2507463000001
+ 20
+1.769883
+ 30
+0.0
+ 11
+694.1492028000001
+ 21
+2.2025637000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+744dba1a-25ca-5350-96f4-bde6136fb791
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+13D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.9897199000001
+ 20
+34.3173385
+ 30
+0.0
+ 11
+698.2587285000001
+ 21
+34.995624400000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+8efaa924-49f7-5975-b75e-67f60c8bccee
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+13E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.4545369000001
+ 20
+27.768695400000002
+ 30
+0.0
+ 11
+703.0443616000001
+ 21
+28.677675100000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+cb6f9c14-7f61-55c3-9fd2-894e43c94b19
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+13F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.6434484000001
+ 20
+24.9351487
+ 30
+0.0
+ 11
+665.4215283000001
+ 21
+23.9629224
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7f2b2086-4588-57a5-bbb0-4c78f27c6003
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+140
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.6284623000001
+ 20
+23.9629224
+ 30
+0.0
+ 11
+704.4065423000001
+ 21
+24.9351487
+ 31
+0.0
+1001
+GJ_PROV
+1000
+d6c3cf5f-72e7-5335-ab07-818ce4c081f1
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+141
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.2483888000002
+ 20
+22.980845000000002
+ 30
+0.0
+ 11
+665.1243634000001
+ 21
+21.9913572
+ 31
+0.0
+1001
+GJ_PROV
+1000
+b520ea09-c46d-5e36-b6b0-66ffa6c71b1d
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+142
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+690.4417939
+ 20
+39.2524838
+ 30
+0.0
+ 11
+689.4754357000002
+ 21
+39.4985586
+ 31
+0.0
+1001
+GJ_PROV
+1000
+94113715-70a9-5c58-8d02-f0eac2a54e74
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+143
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+665.4215283000001
+ 20
+23.9629224
+ 30
+0.0
+ 11
+665.2483888000002
+ 21
+22.980845000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+23d2fa1f-5f3a-5fee-90b3-284fcf62c893
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+144
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+690.4417939
+ 20
+39.2524838
+ 30
+0.0
+ 11
+689.4754357000002
+ 21
+39.4985586
+ 31
+0.0
+1001
+GJ_PROV
+1000
+9c0ef9cc-60b0-5fa0-9f30-017f245e5967
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+145
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+702.0908303000001
+ 20
+30.4287046
+ 30
+0.0
+ 11
+701.5497632000001
+ 21
+31.2664002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+25d17c75-dca4-5874-b159-53f2a07ef522
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+146
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+686.5196176000001
+ 20
+0.055924100000000004
+ 30
+0.0
+ 11
+687.511868
+ 21
+0.15521590000000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+595bcce1-6be3-5b0c-bf8a-ef31c27a05b8
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+147
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+701.5497632000001
+ 20
+8.7335989
+ 30
+0.0
+ 11
+702.0908303000001
+ 21
+9.571296
+ 31
+0.0
+1001
+GJ_PROV
+1000
+55ce709e-4857-5250-bb51-c56327bca1d7
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+148
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.9897199000001
+ 20
+5.6826629
+ 30
+0.0
+ 11
+699.6860452000001
+ 21
+6.3965455
+ 31
+0.0
+1001
+GJ_PROV
+1000
+0b1d5cec-98ac-5f2e-a3be-78e965f4ae0f
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+149
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.0823503000001
+ 20
+7.9239115
+ 30
+0.0
+ 11
+669.7040982000001
+ 21
+7.1442477
+ 31
+0.0
+1001
+GJ_PROV
+1000
+7053097f-8d2d-57fc-b476-597913171d21
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+14A
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+703.8188405000001
+ 20
+26.840403700000003
+ 30
+0.0
+ 11
+703.4545369000001
+ 21
+27.768695400000002
+ 31
+0.0
+1001
+GJ_PROV
+1000
+dcacef10-7f57-52d0-b241-c9869076684b
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+14B
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+0.0
+ 20
+23.9999995
+ 30
+0.0
+ 11
+610.0500054
+ 21
+23.9999995
+ 31
+0.0
+1001
+GJ_PROV
+1000
+58e2c7fa-3a89-51fc-b66d-283a1ddc97e4
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+14C
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+669.7040982000001
+ 20
+7.1442477
+ 30
+0.0
+ 11
+670.3639455000001
+ 21
+6.3965455
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2b1cf56c-3cd5-5bc3-a3ee-6bc9a15947ca
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+14D
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+704.4065423000001
+ 20
+24.9351487
+ 30
+0.0
+ 11
+704.1364617
+ 21
+25.8951038
+ 31
+0.0
+1001
+GJ_PROV
+1000
+18621f55-c9a4-50ae-876b-208c2d951558
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+14E
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+698.2587285000001
+ 20
+34.995624400000004
+ 30
+0.0
+ 11
+697.4947877000001
+ 21
+35.636630700000005
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5c957bcd-c010-516a-8944-72cb40d3bfd7
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+14F
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+697.4947877000001
+ 20
+35.636630700000005
+ 30
+0.0
+ 11
+696.6998525
+ 21
+36.238759800000004
+ 31
+0.0
+1001
+GJ_PROV
+1000
+aa5a90d2-f283-55cb-ae58-9c9b61bd4f88
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+150
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 11
+610.0500054
+ 21
+0.0
+ 31
+0.0
+1001
+GJ_PROV
+1000
+61d63436-5d68-5408-9096-c8ffb00bb161
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"59b00544-1152-4dd9-a71f-01cc787875b9","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+151
+330
+17
+100
+AcDbEntity
+  8
+GJ-OUTLINE
+100
+AcDbLine
+ 10
+688.4979672000001
+ 20
+0.30384490000000003
+ 30
+0.0
+ 11
+689.4754357000002
+ 21
+0.5014418
+ 31
+0.0
+1001
+GJ_PROV
+1000
+5b991e29-9075-5d42-a22e-48404fcd74be
+1000
+{"derivation":"occlusionProjection","geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","sourceEntityId":"410febc2-c3fd-44f3-9945-7b448b66a7e0","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+DIMENSION
+  5
+152
+330
+17
+100
+AcDbEntity
+  8
+GJ-DIMENSION
+100
+AcDbDimension
+280
+0
+  2
+*D1
+  3
+GJ-DIM
+ 10
+0.0
+ 20
+-80.0
+ 30
+0.0
+ 11
+352.51250000000005
+ 21
+-80.0
+ 31
+0.0
+ 70
+32
+ 71
+5
+  1
+<>
+100
+AcDbAlignedDimension
+ 13
+0.0
+ 23
+0.0
+ 33
+0.0
+ 14
+705.0250000000001
+ 24
+0.0
+ 34
+0.0
+ 50
+0.0
+100
+AcDbRotatedDimension
+1001
+ACAD
+1000
+DSTYLE
+1002
+{
+1070
+3
+1000
+<> cm
+1002
+}
+1001
+GJ_PROV
+1000
+e4ccf3ae-37f1-56a3-9969-5198545364c0
+1000
+{"anchorMm":[[-50.250001,0.0],[7000.0,0.0]],"kind":"overallDimension","layerKey":"dimension","paperTextHeightMm":3.0,"requirementId":"dimension:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69","sourceRefs":["44c7a5da-7df9-52f9-abef-53445e12afde"],"space":"view","text":"图形总宽 705.025 cm","valueMm":7050.25,"viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+TEXT
+  5
+166
+330
+17
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+0.0
+ 20
+-180.0
+ 30
+0.0
+ 40
+20.0
+  1
+内部平面  1:50  内部-01
+  7
+GJ-TEXT
+100
+AcDbText
+1001
+GJ_PROV
+1000
+f759d3cc-3e3e-5593-88d4-b419b3e5ddcd
+1000
+{"anchorMm":[[-50.250001,0.0]],"kind":"viewTitle","layerKey":"text","paperTextHeightMm":4.0,"requirementId":"title:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69","sourceRefs":["5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"],"space":"view","text":"内部平面  1:50  内部-01","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+MTEXT
+  5
+167
+330
+17
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbMText
+ 10
+0.0
+ 20
+69.9937838
+ 30
+0.0
+ 40
+12.5
+ 41
+317.26125004500005
+ 71
+1
+  1
+待签发成果·签发状态以项目签发记录为准\P签发前不可用于正式交付或施工。
+  7
+GJ-TEXT
+1001
+GJ_PROV
+1000
+b4f78ba9-616c-5efe-beb9-30c2d2f31ddc
+1000
+{"anchorMm":[[-50.250001,399.937838]],"kind":"qualification","layerKey":"text","paperTextHeightMm":2.5,"requirementId":"qualification:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69","sourceRefs":["44c7a5da-7df9-52f9-abef-53445e12afde"],"space":"modelSpaceOnly","text":"待签发成果·签发状态以项目签发记录为准\n签发前不可用于正式交付或施工。","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+168
+330
+17
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbLine
+ 10
+305.0250001
+ 20
+12.0
+ 30
+0.0
+ 11
+335.0250001
+ 21
+12.0
+ 31
+0.0
+1001
+GJ_PROV
+1000
+2b311375-8ef8-5ab4-8a94-3bda5eb8b3e0
+1000
+{"anchorMm":[[3000,120],[3300.0,120.0]],"kind":"componentLabel","layerKey":"text","paperTextHeightMm":3.0,"requirementId":"label:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69:0","sourceRefs":["59b00544-1152-4dd9-a71f-01cc787875b9"],"space":"view","text":"内部墙体","textAlign":"start","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+TEXT
+  5
+169
+330
+17
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+339.5250001
+ 20
+4.5
+ 30
+0.0
+ 40
+15.0
+  1
+内部墙体
+  7
+GJ-TEXT
+100
+AcDbText
+1001
+GJ_PROV
+1000
+23985950-a351-56ee-a88f-d960dd446bb4
+1000
+{"anchorMm":[[3000,120],[3300.0,120.0]],"kind":"componentLabel","layerKey":"text","paperTextHeightMm":3.0,"requirementId":"label:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69:0","sourceRefs":["59b00544-1152-4dd9-a71f-01cc787875b9"],"space":"view","text":"内部墙体","textAlign":"start","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+LINE
+  5
+16A
+330
+17
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbLine
+ 10
+685.0250001
+ 20
+20.0
+ 30
+0.0
+ 11
+655.0250001
+ 21
+20.0
+ 31
+0.0
+1001
+GJ_PROV
+1000
+1511389e-e746-5cfc-8593-aeedd9d15ab4
+1000
+{"anchorMm":[[6800,200],[6500.0,200.0]],"kind":"componentLabel","layerKey":"text","paperTextHeightMm":3.0,"requirementId":"label:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69:1","sourceRefs":["410febc2-c3fd-44f3-9945-7b448b66a7e0"],"space":"view","text":"内部圆柱","textAlign":"end","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+TEXT
+  5
+16B
+330
+17
+100
+AcDbEntity
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+650.5250001
+ 20
+12.5
+ 30
+0.0
+ 40
+15.0
+  1
+内部圆柱
+  7
+GJ-TEXT
+100
+AcDbText
+1001
+GJ_PROV
+1000
+84ac3fa5-25ed-5e5a-b1c5-3f6bc276827f
+1000
+{"anchorMm":[[6800,200],[6500.0,200.0]],"kind":"componentLabel","layerKey":"text","paperTextHeightMm":3.0,"requirementId":"label:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69:1","sourceRefs":["410febc2-c3fd-44f3-9945-7b448b66a7e0"],"space":"view","text":"内部圆柱","textAlign":"end","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+VIEWPORT
+  5
+16C
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+0
+100
+AcDbViewport
+ 10
+210.0
+ 20
+148.5
+ 30
+0.0
+ 40
+462.00000000000006
+ 41
+326.70000000000005
+ 68
+1
+ 69
+1
+ 12
+210.0
+ 22
+148.5
+ 13
+0.0
+ 23
+0.0
+ 14
+10.0
+ 24
+10.0
+ 15
+10.0
+ 25
+10.0
+ 16
+0.0
+ 26
+0.0
+ 36
+1.0
+ 17
+0.0
+ 27
+0.0
+ 37
+0.0
+ 42
+50.0
+ 43
+0.0
+ 44
+0.0
+ 45
+326.70000000000005
+ 50
+0.0
+ 51
+0.0
+ 72
+100
+ 90
+557088
+  1
+
+281
+0
+ 71
+0
+ 74
+0
+110
+0.0
+120
+0.0
+130
+0.0
+111
+1.0
+121
+0.0
+131
+0.0
+112
+0.0
+122
+1.0
+132
+0.0
+ 79
+0
+146
+0.0
+282
+0
+  0
+LWPOLYLINE
+  5
+16D
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-FRAME
+100
+AcDbPolyline
+ 90
+5
+ 70
+0
+ 10
+5.0
+ 20
+5.0
+ 10
+415.0
+ 20
+5.0
+ 10
+415.0
+ 20
+292.0
+ 10
+5.0
+ 20
+292.0
+ 10
+5.0
+ 20
+5.0
+1001
+GJ_PROV
+1000
+a0c2a148-4ba8-567c-8e01-50a434a32c2b
+1000
+{"sheetId":"5a9697da-ae6f-44a4-a910-b6c30be64a2d","systemType":"paperFrame"}
+  0
+INSERT
+  5
+16E
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-FRAME
+100
+AcDbBlockReference
+ 66
+1
+  2
+GJ_TITLEBLOCK
+ 10
+194.0
+ 20
+5.0
+ 30
+0.0
+1001
+GJ_PROV
+1000
+945b9e24-8a5e-5530-8c8d-c8abb1f64732
+1000
+{"sheetId":"5a9697da-ae6f-44a4-a910-b6c30be64a2d","systemType":"titleBlock"}
+  0
+ATTRIB
+  5
+170
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+197.0
+ 20
+27.0
+ 30
+0.0
+ 40
+4.0
+  1
+内部局部构件核对
+  7
+GJ-TEXT
+ 11
+197.0
+ 21
+27.0
+ 31
+0.0
+100
+AcDbAttribute
+  2
+PROJECT
+ 70
+0
+ 71
+1
+ 72
+0
+ 11
+197.0
+ 21
+27.0
+ 31
+0.0
+  0
+ATTRIB
+  5
+171
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+197.0
+ 20
+19.0
+ 30
+0.0
+ 40
+4.0
+  1
+内部平面
+  7
+GJ-TEXT
+ 11
+197.0
+ 21
+19.0
+ 31
+0.0
+100
+AcDbAttribute
+  2
+TITLE
+ 70
+0
+ 71
+1
+ 72
+0
+ 11
+197.0
+ 21
+19.0
+ 31
+0.0
+  0
+ATTRIB
+  5
+172
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+197.0
+ 20
+11.0
+ 30
+0.0
+ 40
+3.0
+  1
+内部-01
+  7
+GJ-TEXT
+ 11
+197.0
+ 21
+11.0
+ 31
+0.0
+100
+AcDbAttribute
+  2
+NUMBER
+ 70
+0
+ 71
+1
+ 72
+0
+ 11
+197.0
+ 21
+11.0
+ 31
+0.0
+  0
+ATTRIB
+  5
+173
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+277.0
+ 20
+11.0
+ 30
+0.0
+ 40
+3.0
+  1
+待签发成果
+  7
+GJ-TEXT
+ 11
+277.0
+ 21
+11.0
+ 31
+0.0
+100
+AcDbAttribute
+  2
+STATUS
+ 70
+0
+ 71
+1
+ 72
+0
+ 11
+277.0
+ 21
+11.0
+ 31
+0.0
+  0
+ATTRIB
+  5
+174
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+339.0
+ 20
+11.0
+ 30
+0.0
+ 40
+3.0
+  1
+P1
+  7
+GJ-TEXT
+ 11
+339.0
+ 21
+11.0
+ 31
+0.0
+100
+AcDbAttribute
+  2
+REVISION
+ 70
+0
+ 71
+1
+ 72
+0
+ 11
+339.0
+ 21
+11.0
+ 31
+0.0
+  0
+ATTRIB
+  5
+175
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-TEXT
+100
+AcDbText
+ 10
+372.0
+ 20
+11.0
+ 30
+0.0
+ 40
+3.0
+  1
+见签发记录
+  7
+GJ-TEXT
+ 11
+372.0
+ 21
+11.0
+ 31
+0.0
+100
+AcDbAttribute
+  2
+DATE
+ 70
+0
+ 71
+1
+ 72
+0
+ 11
+372.0
+ 21
+11.0
+ 31
+0.0
+  0
+SEQEND
+  5
+16F
+330
+16E
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-FRAME
+  0
+VIEWPORT
+  5
+176
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-FRAME
+100
+AcDbViewport
+ 10
+210.0
+ 20
+152.5
+ 30
+0.0
+ 40
+380.0
+ 41
+195.0
+ 68
+2
+ 69
+2
+ 12
+352.51250005
+ 22
+19.9968919
+ 13
+0.0
+ 23
+0.0
+ 14
+10.0
+ 24
+10.0
+ 15
+10.0
+ 25
+10.0
+ 16
+0.0
+ 26
+0.0
+ 36
+1.0
+ 17
+0.0
+ 27
+0.0
+ 37
+0.0
+ 42
+50.0
+ 43
+0.0
+ 44
+0.0
+ 45
+975.0
+ 50
+0.0
+ 51
+0.0
+ 72
+100
+ 90
+16384
+  1
+
+281
+0
+ 71
+0
+ 74
+0
+110
+0.0
+120
+0.0
+130
+0.0
+111
+1.0
+121
+0.0
+131
+0.0
+112
+0.0
+122
+1.0
+132
+0.0
+ 79
+0
+146
+0.0
+282
+0
+1001
+GJ_PROV
+1000
+dfd7bd01-0c55-5257-b83b-c0ca9111756b
+1000
+{"geometryRevisionId":"44c7a5da-7df9-52f9-abef-53445e12afde","locked":true,"sheetId":"5a9697da-ae6f-44a4-a910-b6c30be64a2d","viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+MTEXT
+  5
+177
+330
+1B
+100
+AcDbEntity
+ 67
+1
+  8
+GJ-TEXT
+100
+AcDbMText
+ 10
+20.0
+ 20
+49.0
+ 30
+0.0
+ 40
+4.0
+ 71
+1
+  1
+内部平面  1:50  内部-01
+  7
+GJ-TEXT
+1001
+GJ_PROV
+1000
+d11f0b1b-6031-5693-947e-cda51a9c3015
+1000
+{"requirementId":"paper-title:5786bc8a-6d7a-4a22-b5a7-0f7162a93c69","sheetId":"5a9697da-ae6f-44a4-a910-b6c30be64a2d","sourceRefs":["5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"],"viewId":"5786bc8a-6d7a-4a22-b5a7-0f7162a93c69"}
+  0
+ENDSEC
+  0
+SECTION
+  2
+OBJECTS
+  0
+DICTIONARY
+  5
+A
+330
+0
+100
+AcDbDictionary
+281
+1
+  3
+ACAD_COLOR
+350
+B
+  3
+ACAD_GROUP
+350
+C
+  3
+ACAD_LAYOUT
+350
+D
+  3
+ACAD_MATERIAL
+350
+E
+  3
+ACAD_MLEADERSTYLE
+350
+F
+  3
+ACAD_MLINESTYLE
+350
+10
+  3
+ACAD_PLOTSETTINGS
+350
+11
+  3
+ACAD_PLOTSTYLENAME
+350
+12
+  3
+ACAD_SCALELIST
+350
+14
+  3
+ACAD_TABLESTYLE
+350
+15
+  3
+ACAD_VISUALSTYLE
+350
+16
+  3
+EZDXF_META
+350
+2D
+  0
+DICTIONARY
+  5
+B
+330
+A
+100
+AcDbDictionary
+281
+1
+  0
+DICTIONARY
+  5
+C
+330
+A
+100
+AcDbDictionary
+281
+1
+  0
+DICTIONARY
+  5
+D
+330
+A
+100
+AcDbDictionary
+281
+1
+  3
+Model
+350
+1A
+  3
+内部-01
+350
+1E
+  0
+DICTIONARY
+  5
+E
+330
+A
+100
+AcDbDictionary
+281
+1
+  3
+ByBlock
+350
+1F
+  3
+ByLayer
+350
+20
+  3
+Global
+350
+21
+  0
+DICTIONARY
+  5
+F
+330
+A
+100
+AcDbDictionary
+281
+1
+  3
+Standard
+350
+2C
+  0
+DICTIONARY
+  5
+10
+330
+A
+100
+AcDbDictionary
+281
+1
+  3
+Standard
+350
+22
+  0
+DICTIONARY
+  5
+11
+330
+A
+100
+AcDbDictionary
+281
+1
+  0
+ACDBDICTIONARYWDFLT
+  5
+12
+330
+A
+100
+AcDbDictionary
+281
+1
+  3
+Normal
+350
+13
+100
+AcDbDictionaryWithDefault
+340
+13
+  0
+ACDBPLACEHOLDER
+  5
+13
+330
+12
+  0
+DICTIONARY
+  5
+14
+330
+A
+100
+AcDbDictionary
+281
+1
+  0
+DICTIONARY
+  5
+15
+330
+A
+100
+AcDbDictionary
+281
+1
+  0
+DICTIONARY
+  5
+16
+330
+A
+100
+AcDbDictionary
+281
+1
+  0
+LAYOUT
+  5
+1A
+330
+D
+100
+AcDbPlotSettings
+  1
+
+  4
+A3
+  6
+
+ 40
+7.5
+ 41
+20.0
+ 42
+7.5
+ 43
+20.0
+ 44
+420.0
+ 45
+297.0
+ 46
+0.0
+ 47
+0.0
+ 48
+0.0
+ 49
+0.0
+140
+0.0
+141
+0.0
+142
+1.0
+143
+1.0
+ 70
+1024
+ 72
+1
+ 73
+0
+ 74
+5
+  7
+
+ 75
+16
+ 76
+0
+ 77
+2
+ 78
+300
+147
+1.0
+148
+0.0
+149
+0.0
+100
+AcDbLayout
+  1
+Model
+ 70
+1
+ 71
+0
+ 10
+0.0
+ 20
+0.0
+ 11
+420.0
+ 21
+297.0
+ 12
+0.0
+ 22
+0.0
+ 32
+0.0
+ 14
+1e+20
+ 24
+1e+20
+ 34
+1e+20
+ 15
+-1e+20
+ 25
+-1e+20
+ 35
+-1e+20
+146
+0.0
+ 13
+0.0
+ 23
+0.0
+ 33
+0.0
+ 16
+1.0
+ 26
+0.0
+ 36
+0.0
+ 17
+0.0
+ 27
+1.0
+ 37
+0.0
+ 76
+1
+330
+17
+  0
+LAYOUT
+  5
+1E
+330
+D
+100
+AcDbPlotSettings
+  1
+
+  2
+None
+  4
+ISO_420x297_(420.00_x_297.00_MM)
+  6
+
+ 40
+0.0
+ 41
+0.0
+ 42
+0.0
+ 43
+0.0
+ 44
+420.0
+ 45
+297.0
+ 46
+0.0
+ 47
+0.0
+ 48
+0.0
+ 49
+0.0
+140
+0.0
+141
+0.0
+142
+1.0
+143
+1.0
+ 70
+672
+ 72
+1
+ 73
+0
+ 74
+5
+  7
+
+ 75
+16
+ 76
+0
+ 77
+2
+ 78
+300
+147
+1.0
+148
+0.0
+149
+0.0
+100
+AcDbLayout
+  1
+内部-01
+ 70
+1
+ 71
+1
+ 10
+-0.0
+ 20
+-0.0
+ 11
+420.0
+ 21
+297.0
+ 12
+0.0
+ 22
+0.0
+ 32
+0.0
+ 14
+1e+20
+ 24
+1e+20
+ 34
+1e+20
+ 15
+-1e+20
+ 25
+-1e+20
+ 35
+-1e+20
+146
+0.0
+ 13
+0.0
+ 23
+0.0
+ 33
+0.0
+ 16
+1.0
+ 26
+0.0
+ 36
+0.0
+ 17
+0.0
+ 27
+1.0
+ 37
+0.0
+ 76
+1
+330
+1B
+331
+16C
+  0
+MATERIAL
+  5
+1F
+102
+{ACAD_REACTORS
+330
+E
+102
+}
+330
+E
+100
+AcDbMaterial
+  1
+ByBlock
+  2
+
+ 70
+0
+ 40
+1.0
+ 71
+1
+ 41
+1.0
+ 91
+-1023410177
+ 42
+1.0
+ 72
+1
+  3
+
+ 73
+1
+ 74
+1
+ 75
+1
+ 44
+0.5
+ 73
+0
+ 45
+1.0
+ 46
+1.0
+ 77
+1
+  4
+
+ 78
+1
+ 79
+1
+170
+1
+ 48
+1.0
+171
+1
+  6
+
+172
+1
+173
+1
+174
+1
+140
+1.0
+141
+1.0
+175
+1
+  7
+
+176
+1
+177
+1
+178
+1
+143
+1.0
+179
+1
+  8
+
+270
+1
+271
+1
+272
+1
+145
+1.0
+146
+1.0
+273
+1
+  9
+
+274
+1
+275
+1
+276
+1
+ 42
+1.0
+ 72
+1
+  3
+
+ 73
+1
+ 74
+1
+ 75
+1
+ 94
+63
+  0
+MATERIAL
+  5
+20
+102
+{ACAD_REACTORS
+330
+E
+102
+}
+330
+E
+100
+AcDbMaterial
+  1
+ByLayer
+  2
+
+ 70
+0
+ 40
+1.0
+ 71
+1
+ 41
+1.0
+ 91
+-1023410177
+ 42
+1.0
+ 72
+1
+  3
+
+ 73
+1
+ 74
+1
+ 75
+1
+ 44
+0.5
+ 73
+0
+ 45
+1.0
+ 46
+1.0
+ 77
+1
+  4
+
+ 78
+1
+ 79
+1
+170
+1
+ 48
+1.0
+171
+1
+  6
+
+172
+1
+173
+1
+174
+1
+140
+1.0
+141
+1.0
+175
+1
+  7
+
+176
+1
+177
+1
+178
+1
+143
+1.0
+179
+1
+  8
+
+270
+1
+271
+1
+272
+1
+145
+1.0
+146
+1.0
+273
+1
+  9
+
+274
+1
+275
+1
+276
+1
+ 42
+1.0
+ 72
+1
+  3
+
+ 73
+1
+ 74
+1
+ 75
+1
+ 94
+63
+  0
+MATERIAL
+  5
+21
+102
+{ACAD_REACTORS
+330
+E
+102
+}
+330
+E
+100
+AcDbMaterial
+  1
+Global
+  2
+
+ 70
+0
+ 40
+1.0
+ 71
+1
+ 41
+1.0
+ 91
+-1023410177
+ 42
+1.0
+ 72
+1
+  3
+
+ 73
+1
+ 74
+1
+ 75
+1
+ 44
+0.5
+ 73
+0
+ 45
+1.0
+ 46
+1.0
+ 77
+1
+  4
+
+ 78
+1
+ 79
+1
+170
+1
+ 48
+1.0
+171
+1
+  6
+
+172
+1
+173
+1
+174
+1
+140
+1.0
+141
+1.0
+175
+1
+  7
+
+176
+1
+177
+1
+178
+1
+143
+1.0
+179
+1
+  8
+
+270
+1
+271
+1
+272
+1
+145
+1.0
+146
+1.0
+273
+1
+  9
+
+274
+1
+275
+1
+276
+1
+ 42
+1.0
+ 72
+1
+  3
+
+ 73
+1
+ 74
+1
+ 75
+1
+ 94
+63
+  0
+MLINESTYLE
+  5
+22
+102
+{ACAD_REACTORS
+330
+10
+102
+}
+330
+10
+100
+AcDbMlineStyle
+  2
+Standard
+ 70
+0
+  3
+
+ 62
+256
+ 51
+90.0
+ 52
+90.0
+ 71
+2
+ 49
+0.5
+ 62
+256
+  6
+BYLAYER
+ 49
+-0.5
+ 62
+256
+  6
+BYLAYER
+  0
+MLEADERSTYLE
+  5
+2C
+102
+{ACAD_REACTORS
+330
+F
+102
+}
+330
+F
+100
+AcDbMLeaderStyle
+179
+2
+170
+2
+171
+1
+172
+0
+ 90
+2
+ 40
+0.0
+ 41
+0.0
+173
+1
+ 91
+-1056964608
+ 92
+-2
+290
+1
+ 42
+2.0
+291
+1
+ 43
+8.0
+  3
+Standard
+ 44
+4.0
+300
+
+342
+29
+174
+1
+175
+1
+176
+0
+178
+1
+ 93
+-1056964608
+ 45
+4.0
+292
+0
+297
+0
+ 46
+4.0
+ 94
+-1056964608
+ 47
+1.0
+ 49
+1.0
+140
+1.0
+294
+1
+141
+0.0
+177
+0
+142
+1.0
+295
+0
+296
+0
+143
+3.75
+271
+0
+272
+9
+273
+9
+  0
+DICTIONARY
+  5
+2D
+330
+A
+100
+AcDbDictionary
+280
+1
+281
+1
+  3
+CREATED_BY_EZDXF
+350
+2E
+  3
+WRITTEN_BY_EZDXF
+350
+178
+  0
+DICTIONARYVAR
+  5
+2E
+330
+2D
+100
+DictionaryVariables
+280
+0
+  1
+0.0 @ 2000-01-01T00:00:00.000000+00:00
+  0
+DICTIONARYVAR
+  5
+178
+330
+2D
+100
+DictionaryVariables
+280
+0
+  1
+0.0 @ 2000-01-01T00:00:00.000000+00:00
+  0
+ENDSEC
+  0
+EOF

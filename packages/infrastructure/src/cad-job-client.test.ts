@@ -36,5 +36,13 @@ describe("existing GeometrySpec input", () => {
     // 服务端 geometryInputHash 会把 inputHash 置零后按 canonical JSON 重算并比对；
     // 重绑结果必须能通过该校验，否则 existingGeometrySpec 路径被 CAD_INPUT_SNAPSHOT_INVALID 拒绝
     expect(rebound.inputHash).toBe(recordHash({ ...rebound, inputHash: "0".repeat(64) }));
+    expect(ProjectDrivenGeometrySpecSchema.parse(source)).toEqual(source);
+    for (const outputUnit of ["mm", "cm", "m"] as const) {
+      const setup = { ...head, snapshot: { ...head.snapshot, taskDefinitions: [{ id: uuid(), name: "单位测试", scope: ["单栋"], regulationRefs: [], deliverables: ["模型"], responsibilities: [], automationPolicyRef: null, confirmedAt: "2026-10-01T00:00:00Z", productionSetup: { buildingId, purpose: "existingSurvey" as const, outputUnit, targets: ["model" as const], projectGroup: null } }] } };
+      const provided = rebindExistingGeometrySpec(setup, { ...source, outputUnit: "mm" });
+      expect(provided.outputUnit).toBe(outputUnit); expect(provided.objects).toEqual(source.objects);
+      expect(provided.inputHash).toBe(recordHash({ ...provided, inputHash: "0".repeat(64) }));
+      expect(source.outputUnit).toBeUndefined();
+    }
   });
 });

@@ -1,4 +1,4 @@
-import type { ProjectSnapshot } from "@gujian/domain";
+import type { ArtifactRecord, ArtifactRequirementMatrix, CheckRun, DeliveryEvaluation, GeometryRevision, ProjectDrivenGeometrySpec, ProjectSnapshot } from "@gujian/domain";
 import { describe, expect, it } from "vitest";
 
 import { CommandError } from "./errors.js";
@@ -77,6 +77,10 @@ function commitFactsCommand(revisionId: string, commandId = ids.factCommand) {
 class MemoryRepository implements ProjectRepositoryPort {
   head: ProjectHead | null = null;
   receipts = new Map<string, CommandReceipt>();
+  artifacts = new Map<string, ArtifactRecord>();
+  matrices = new Map<string, ArtifactRequirementMatrix>();
+  checks = new Map<string, CheckRun>();
+  evaluations = new Map<string, DeliveryEvaluation>();
   commitCount = 0;
   transactionCount = 0;
   failNextCommit = false;
@@ -86,15 +90,16 @@ class MemoryRepository implements ProjectRepositoryPort {
     this.transactionCount += 1;
     const startingHead = this.head;
     const startingReceipts = new Map(this.receipts);
-    const pending = { head: startingHead, receipts: startingReceipts };
+    const pending = { head: startingHead, receipts: startingReceipts, artifacts: new Map(this.artifacts), matrices: new Map(this.matrices), checks: new Map(this.checks), evaluations: new Map(this.evaluations) };
     const transaction: ProjectTransaction = {
       getCommandReceipt: async (commandId) => pending.receipts.get(commandId) ?? null,
       getProjectHead: async () => pending.head,
       getCadJob: async () => null,
-      getArtifactRequirementMatrix: async () => null,
-      getArtifact: async () => null,
-      getCheckRun: async () => null,
-      getDeliveryEvaluation: async () => null,
+      getArtifactRequirementMatrix: async (id) => pending.matrices.get(id) ?? null,
+      getAssetRecord: async () => null,
+      getArtifact: async (id) => pending.artifacts.get(id) ?? null,
+      getCheckRun: async (id) => pending.checks.get(id) ?? null,
+      getDeliveryEvaluation: async (id) => pending.evaluations.get(id) ?? null,
       commit: async (mutation) => {
         if (this.failNextCommit) {
           this.failNextCommit = false;
@@ -118,6 +123,10 @@ class MemoryRepository implements ProjectRepositoryPort {
           snapshot: mutation.snapshot,
         };
         pending.receipts.set(mutation.command.commandId, receipt);
+        for (const item of mutation.artifactsToPut ?? []) pending.artifacts.set(item.id, item);
+        for (const item of mutation.artifactRequirementMatricesToPut ?? []) pending.matrices.set(item.id, item);
+        for (const item of mutation.checkRunsToPut ?? []) pending.checks.set(item.id, item);
+        for (const item of mutation.deliveryEvaluationsToPut ?? []) pending.evaluations.set(item.id, item);
         this.lastMutation = mutation;
         return receipt;
       },
@@ -127,6 +136,7 @@ class MemoryRepository implements ProjectRepositoryPort {
     if (pending.head !== startingHead || pending.receipts.size !== startingReceipts.size) {
       this.head = pending.head;
       this.receipts = pending.receipts;
+      this.artifacts = pending.artifacts; this.matrices = pending.matrices; this.checks = pending.checks; this.evaluations = pending.evaluations;
       this.commitCount += 1;
     }
     return result;
@@ -371,7 +381,7 @@ describe("ProjectCommandService", () => {
     // 第三次重新提出同一类同一对象的问题，旧的才让位给新的
     const runThree = "00000000-0000-4000-8000-0000000000c3";
     const issueThree = "00000000-0000-4000-8000-0000000000d3";
-    await service.execute({
+    const third = await service.execute({
       commandType: "CommitRuleEvaluation",
       commandId: "00000000-0000-4000-8000-0000000000e3",
       projectId: ids.project,
@@ -387,6 +397,24 @@ describe("ProjectCommandService", () => {
     expect(afterReraise).toHaveLength(2);
     expect(afterReraise.find((item) => item.id === issueOne)?.status).toBe("superseded");
     expect(afterReraise.find((item) => item.id === issueThree)?.status).toBe("open");
+
+    const inputRunId = crypto.randomUUID(); const inputIssueId = crypto.randomUUID(); const at = "2026-08-11T00:05:00Z";
+    const inputRun = ruleRun(inputRunId, third.revisionId, [inputIssueId], at);
+    inputRun.results[0]!.ruleId = "parsed-evidence-required";
+    const fourth = await service.execute({ commandType: "CommitRuleEvaluation", commandId: crypto.randomUUID(), projectId: ids.project, actorId: ids.actor, expectedRevisionId: third.revisionId, issuedAt: at, payload: {
+      ruleRun: inputRun, issues: [{ ...issue(inputIssueId, inputRunId, "missingEvidence", [ids.building], at), sourceRef: "rule:parsed-evidence-required", description: "当前没有可读资料" }],
+    } });
+    expect(repository.head!.snapshot.issues.find((item) => item.id === issueThree)?.status).toBe("open");
+    const professionalRunId = crypto.randomUUID(); const professionalIssueId = crypto.randomUUID();
+    const professional = await service.execute({ commandType: "CommitRuleEvaluation", commandId: crypto.randomUUID(), projectId: ids.project, actorId: ids.actor, expectedRevisionId: fourth.revisionId, issuedAt: "2026-08-11T00:05:30Z", payload: {
+      ruleRun: ruleRun(professionalRunId, fourth.revisionId, [professionalIssueId], "2026-08-11T00:05:30Z"), issues: [issue(professionalIssueId, professionalRunId, "missingEvidence", [ids.building], "2026-08-11T00:05:30Z")],
+    } });
+    expect(repository.head!.snapshot.issues.find((item) => item.id === inputIssueId)?.status).toBe("open");
+    const recoveredRun = ruleRun(crypto.randomUUID(), professional.revisionId, [], "2026-08-11T00:06:00Z");
+    recoveredRun.results[0]!.ruleId = "parsed-evidence-required";
+    await service.execute({ commandType: "CommitRuleEvaluation", commandId: crypto.randomUUID(), projectId: ids.project, actorId: ids.actor, expectedRevisionId: professional.revisionId, issuedAt: "2026-08-11T00:06:00Z", payload: { ruleRun: recoveredRun, issues: [] } });
+    expect(repository.head!.snapshot.issues.find((item) => item.id === inputIssueId)?.status).toBe("superseded");
+    expect(repository.head!.snapshot.issues.find((item) => item.id === professionalIssueId)?.status).toBe("open");
   });
 
   // 实施单元 09：复核签发记录只能指向本项目已有的几何版本，同一草案只签一次
@@ -427,5 +455,155 @@ describe("ProjectCommandService", () => {
     expect(repository.head?.snapshot.reviewSignoffs[0]?.l1Eligible).toBe(true);
 
     await expect(service.execute(command("00000000-0000-4000-8000-0000000000e6", signed.revisionId, geometryId))).rejects.toMatchObject({ code: "COMMAND_INVALID" });
+  });
+});
+
+async function deliveryUnitFixture(taskUnit: "mm" | "cm" | "m" = "mm", modelUnit?: "mm" | "cm" | "m", drawingUnit?: "mm" | "cm" | "m") {
+  const context = setup();
+  await context.service.execute(createProjectCommand());
+  const revisionId = context.repository.head!.revisionId;
+  const at = "2026-10-01T00:00:00Z";
+  const spec: ProjectDrivenGeometrySpec = {
+    schemaVersion: "2.0", id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: revisionId, buildingId: ids.building,
+    inputHash: "1".repeat(64), ...(modelUnit ? { outputUnit: modelUnit } : {}),
+    coordinateSystem: { name: "local", axisOrder: "XYZ", upAxis: "Z", lengthUnit: "mm", origin: [0, 0, 0] },
+    tolerances: { modellingMm: 0.5, interfaceMm: 0.5, tessellationMm: 1 },
+    objects: [{ id: crypto.randomUUID(), stableKey: "wall", parentId: null, componentType: "wall", displayNameZh: "墙", materialCode: "documented",
+      solid: { kind: "box", sizeX: "6100.5", sizeY: "300", sizeZ: "3000", centerMm: [0, 0, 0] }, parameters: [],
+      producer: { producerType: "rule", ruleRunId: crypto.randomUUID() }, factRefs: [], evidenceRefs: [], unknownRefs: [] }],
+    interfaces: [], unknowns: [], createdAt: at,
+  };
+  const geometry: GeometryRevision = {
+    id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: revisionId, geometrySpecId: spec.id, inputHash: spec.inputHash,
+    entityClosureHash: "2".repeat(64), interfaceClosureHash: "3".repeat(64), geometrySignature: "4".repeat(64),
+    assets: (["ifc", "glb", "manifest", "sourceMap", "report", "preview"] as const).map((kind) => ({ kind, assetId: crypto.randomUUID(), sha256: "5".repeat(64), mimeType: "application/json", byteLength: 10 })),
+    status: "generated-not-qualified", l1Eligible: false, formalEligibility: false, blockers: ["PROFESSIONAL_REVIEW_REQUIRED"], createdAt: at,
+  };
+  const viewId = crypto.randomUUID(); const sheetId = crypto.randomUUID();
+  const matrix: ArtifactRequirementMatrix = {
+    schemaVersion: "1.0", id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: revisionId, geometryRevisionId: geometry.id,
+    ...(drawingUnit ? { outputUnit: drawingUnit } : {}), titleZh: "测绘图", buildingDisplayNameZh: "测试建筑", issueState: "proxy-unissued", issueDate: null, revisionLabel: "P01",
+    views: [{ id: viewId, key: "plan", displayLabelZh: "平面图", drawingRef: "P01", kind: "floorPlan", scaleDenominator: 50, sheetId, viewportRectMm: [20, 20, 350, 250],
+      direction: [0, 0, 1], right: [1, 0, 0], up: [0, 1, 0], sourceTypes: [], sourceEntityIds: [], sourceEvidenceRefs: [], detailRules: [], annotationRules: [],
+      annotationPlan: { axes: [], levels: [], labels: [], sectionMarks: [], detailIndexes: [], levelConflicts: [], northAngleDeg: null, droppedByKind: {} } }],
+    sheets: [{ id: sheetId, drawingNumber: "P01", displayLabelZh: "平面图", pageMm: [420, 297], viewIds: [viewId] }], observationCandidates: [], createdAt: at,
+  };
+  const artifact = (kind: ArtifactRecord["kind"], requirementMatrixId: string | null): ArtifactRecord => ({
+    id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: revisionId, geometryRevisionId: geometry.id, requirementMatrixId, kind, fileName: `${kind}.dat`,
+    assetId: crypto.randomUUID(), sha256: "6".repeat(64), mimeType: "application/json", byteLength: 20, status: "generated-not-qualified", l1Eligible: false, formalEligibility: false,
+    sourceRefs: [geometry.id], blockers: ["PROFESSIONAL_REVIEW_REQUIRED"], createdAt: at,
+  });
+  const ifc: ArtifactRecord = { ...artifact("ifc", null), ...geometry.assets[0]!, kind: "ifc" };
+  const drawing = artifact("dxf", matrix.id); const report = artifact("checkReport", matrix.id); const manifestArtifact = artifact("deliveryManifest", null);
+  const checkRun: CheckRun = {
+    id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: revisionId, geometryRevisionId: geometry.id, artifactRefs: [drawing.id, report.id], status: "completed",
+    results: [{ code: "HASH_CLOSURE", outcome: "passed", message: "文件检查通过。", sourceRefs: [geometry.id] }], reportAssetId: report.assetId, reportHash: report.sha256,
+    qualification: "generated-not-qualified", l1Eligible: false, formalEligibility: false, completedAt: at,
+  };
+  const evaluation: DeliveryEvaluation = {
+    id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: revisionId, geometryRevisionId: geometry.id, artifactRefs: [ifc.id, drawing.id, report.id], checkRunRefs: [checkRun.id],
+    outcome: "proxy-ready", blockerCodes: ["PROFESSIONAL_REVIEW_REQUIRED"], formalEligibility: false, evaluatedAt: at,
+  };
+  const draftPayload = {
+    draft: { id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: revisionId, geometryRevisionId: geometry.id, evaluationId: evaluation.id,
+      artifactRefs: [...evaluation.artifactRefs, manifestArtifact.id], manifestAssetId: manifestArtifact.assetId, manifestHash: manifestArtifact.sha256,
+      status: "proxy-unissued", l1Eligible: false, formalEligibility: false, signatureStatus: "unsigned", restrictions: ["待签发成果。"], createdAt: at },
+    manifestArtifact,
+    manifestAsset: { id: manifestArtifact.assetId, projectId: ids.project, fileName: "delivery-manifest.json", mimeType: manifestArtifact.mimeType,
+      byteLength: manifestArtifact.byteLength, sha256: manifestArtifact.sha256, contentStatus: "available", createdAt: at }, stagingSessionId: crypto.randomUUID(),
+  };
+  context.repository.head = { ...context.repository.head!, snapshot: { ...context.repository.head!.snapshot, geometrySpecs: [spec], geometryRevisions: [geometry],
+    taskDefinitions: [{ id: crypto.randomUUID(), name: "测绘任务", scope: ["建筑测绘"], regulationRefs: [], deliverables: ["模型", "图纸"], responsibilities: [{ role: "projectLead", actorId: ids.actor }],
+      automationPolicyRef: null, productionSetup: { buildingId: ids.building, purpose: "existingSurvey", outputUnit: taskUnit, targets: ["model", "floorPlan"], projectGroup: null }, confirmedAt: at }] } };
+  for (const item of [ifc, drawing, report]) context.repository.artifacts.set(item.id, item);
+  context.repository.matrices.set(matrix.id, matrix); context.repository.checks.set(checkRun.id, checkRun);
+  const command = (commandType: string, payload: unknown) => ({ commandType, commandId: crypto.randomUUID(), projectId: ids.project, actorId: ids.actor,
+    expectedRevisionId: context.repository.head!.revisionId, issuedAt: at, payload });
+  const changeTaskUnit = (unit: "mm" | "cm" | "m") => { context.repository.head!.snapshot.taskDefinitions[0]!.productionSetup!.outputUnit = unit; };
+  return { ...context, spec, geometry, matrix, ifc, drawing, report, checkRun, evaluation, draftPayload, at, command, changeTaskUnit };
+}
+
+describe("delivery output unit commands", () => {
+  it("任务单位改变后直接提交 proxy-ready 评估不能绕过模型和图纸单位校验", async () => {
+    const fixture = await deliveryUnitFixture();
+    fixture.changeTaskUnit("m");
+    const before = fixture.repository.commitCount;
+    await expect(fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation: fixture.evaluation }))).rejects.toMatchObject({ code: "COMMAND_INVALID", message: "delivery artifact output unit does not match current task" });
+    expect(fixture.repository.commitCount).toBe(before);
+    expect(fixture.repository.evaluations.has(fixture.evaluation.id)).toBe(false);
+  });
+
+  it("新单位图纸可以基于旧毫米几何独立交付，加入旧单位 IFC 后拒绝", async () => {
+    const fixture = await deliveryUnitFixture("m", "mm", "m");
+    await expect(fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation: fixture.evaluation }))).rejects.toMatchObject({ message: "delivery artifact output unit does not match current task" });
+    fixture.evaluation.artifactRefs = [fixture.drawing.id, fixture.report.id];
+    await fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation: fixture.evaluation }));
+    fixture.draftPayload.draft.artifactRefs = [...fixture.evaluation.artifactRefs, fixture.draftPayload.manifestArtifact.id];
+    await expect(fixture.service.execute(fixture.command("CreateDeliveryDraft", fixture.draftPayload))).resolves.toMatchObject({ commandType: "CreateDeliveryDraft" });
+  });
+
+  it("旧单位 IFC 不能通过绑定新单位图纸矩阵绕过规格校验", async () => {
+    const fixture = await deliveryUnitFixture("m", "mm", "m");
+    fixture.repository.artifacts.set(fixture.ifc.id, { ...fixture.ifc, requirementMatrixId: fixture.matrix.id });
+    fixture.repository.evaluations.set(fixture.evaluation.id, fixture.evaluation);
+    await expect(fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation: fixture.evaluation }))).rejects.toMatchObject({ message: "delivery artifact output unit does not match current task" });
+    await expect(fixture.service.execute(fixture.command("CreateDeliveryDraft", fixture.draftPayload))).rejects.toMatchObject({ message: "delivery artifact output unit does not match current task" });
+  });
+
+  it.each(["mm", "cm"] as const)("已保存的 %s proxy-ready 评估不能用于当前米单位草案", async (unit) => {
+    const fixture = await deliveryUnitFixture(unit, unit, unit);
+    await fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation: fixture.evaluation }));
+    fixture.changeTaskUnit("m");
+    const before = fixture.repository.commitCount;
+    await expect(fixture.service.execute(fixture.command("CreateDeliveryDraft", fixture.draftPayload))).rejects.toMatchObject({ code: "COMMAND_INVALID", message: "delivery artifact output unit does not match current task" });
+    expect(fixture.repository.commitCount).toBe(before);
+    expect(fixture.repository.artifacts.has(fixture.draftPayload.manifestArtifact.id)).toBe(false);
+  });
+
+  it("按实际图纸矩阵校验，不能使用最新矩阵使旧图纸适用", async () => {
+    const fixture = await deliveryUnitFixture("m", "m", "cm");
+    const latest = { ...fixture.matrix, id: crypto.randomUUID(), outputUnit: "m" as const };
+    fixture.repository.matrices.set(latest.id, latest);
+    fixture.repository.evaluations.set(fixture.evaluation.id, fixture.evaluation);
+    await expect(fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation: fixture.evaluation }))).rejects.toMatchObject({ message: "delivery artifact output unit does not match current task" });
+    await expect(fixture.service.execute(fixture.command("CreateDeliveryDraft", fixture.draftPayload))).rejects.toMatchObject({ message: "delivery artifact output unit does not match current task" });
+  });
+
+  it("单位改变不阻止旧成果技术检查和 blocked 评估保存", async () => {
+    const fixture = await deliveryUnitFixture("m");
+    const checkRun = { ...fixture.checkRun, id: crypto.randomUUID() };
+    await expect(fixture.service.execute(fixture.command("CommitCheckRun", { checkRun }))).resolves.toMatchObject({ commandType: "CommitCheckRun" });
+    const evaluation = { ...fixture.evaluation, outcome: "blocked", blockerCodes: ["OUTPUT_UNIT_MISMATCH"] };
+    await expect(fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation }))).resolves.toMatchObject({ commandType: "EvaluateDelivery" });
+  });
+
+  it("签发按明确几何版本校验单位，最新模型不能覆盖旧版", async () => {
+    const fixture = await deliveryUnitFixture("m", "mm", "m");
+    fixture.repository.head!.snapshot.geometrySpecs.push({ ...fixture.spec, id: crypto.randomUUID(), outputUnit: "m" });
+    fixture.repository.head!.snapshot.geometryRevisions.push({ ...fixture.geometry, id: crypto.randomUUID(), geometrySpecId: fixture.repository.head!.snapshot.geometrySpecs.at(-1)!.id });
+    const signoff = { id: crypto.randomUUID(), projectId: ids.project, projectRevisionId: fixture.repository.head!.revisionId, deliveryDraftId: crypto.randomUUID(), geometryRevisionId: fixture.geometry.id,
+      reviewerRole: "professionalReviewer", reviewerActorId: ids.actor, reviewedAt: fixture.at, signedAt: fixture.at, issuingEnvironment: "formal", l1Eligible: false, statementZh: "复核通过。" };
+    await expect(fixture.service.execute(fixture.command("RecordReviewSignoff", { signoff }))).rejects.toMatchObject({ code: "COMMAND_INVALID", message: "review signoff geometry output unit does not match current task" });
+    expect(fixture.repository.head!.snapshot.reviewSignoffs).toEqual([]);
+  });
+
+  it("旧毫米记录仍可交付并保留缺省字段，历史包当前单位不同也可导入", async () => {
+    const fixture = await deliveryUnitFixture();
+    const serialized = JSON.stringify([fixture.spec, fixture.matrix]);
+    await fixture.service.execute(fixture.command("EvaluateDelivery", { evaluation: fixture.evaluation }));
+    await fixture.service.execute(fixture.command("CreateDeliveryDraft", fixture.draftPayload));
+    expect(JSON.stringify([fixture.spec, fixture.matrix])).toBe(serialized);
+    expect(fixture.spec).not.toHaveProperty("outputUnit"); expect(fixture.matrix).not.toHaveProperty("outputUnit");
+    fixture.changeTaskUnit("m");
+    const imported = setup(); const eventHash = "a".repeat(64);
+    const sourceAuditEvents = [{ id: crypto.randomUUID(), projectId: ids.project, commandId: crypto.randomUUID(), actorId: ids.actor, previousEventHash: null,
+      writeSet: [], writeSetHash: "b".repeat(64), outcome: "committed", errorCode: null, eventHash, recordHash: "c".repeat(64), occurredAt: fixture.at }];
+    await expect(imported.service.execute({ ...fixture.command("ImportProjectSnapshot", {
+      snapshot: fixture.repository.head!.snapshot, sourceRevisionId: fixture.repository.head!.revisionId, sourceAuditHeadHash: eventHash, sourceAuditEvents,
+      assets: [], modelRuns: [], ruleRuns: [], decisions: [], artifactRequirementMatrices: [fixture.matrix], artifacts: [...fixture.repository.artifacts.values()],
+      checkRuns: [fixture.checkRun], deliveryEvaluations: [fixture.evaluation], deliveries: [fixture.draftPayload.draft], assetSessionId: null, packageHash: "d".repeat(64),
+    }), expectedRevisionId: null })).resolves.toMatchObject({ commandType: "ImportProjectSnapshot" });
+    expect(imported.repository.head!.snapshot.geometrySpecs[0]).not.toHaveProperty("outputUnit");
+    expect(imported.repository.evaluations.get(fixture.evaluation.id)?.outcome).toBe("proxy-ready");
   });
 });

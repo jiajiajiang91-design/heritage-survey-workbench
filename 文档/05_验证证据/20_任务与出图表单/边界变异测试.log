@@ -1,0 +1,45 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run "src/task-requirements.test.ts"
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/task-requirements.test.ts (14 tests | 1 failed) 70ms
+   ✓ 成果要求表单数据 > 真实演示包 gaodu-yuhuang-temple-main-hall 无修改往返不丢失任何字段 21ms
+   ✓ 成果要求表单数据 > 真实演示包 t0b-construction-sample 无修改往返不丢失任何字段 42ms
+   ✓ 成果要求表单数据 > 自定义方向、小数剖切与裁切、引用和稳定键完整保留 0ms
+   ✓ 成果要求表单数据 > 拒绝非法比例  1ms
+   ✓ 成果要求表单数据 > 拒绝非法比例 0 0ms
+   ✓ 成果要求表单数据 > 拒绝非法比例 -1 0ms
+   ✓ 成果要求表单数据 > 拒绝非法比例 1.5 0ms
+   ✓ 成果要求表单数据 > 拒绝非法比例 Infinity 0ms
+   ✓ 成果要求表单数据 > 拒绝非法比例 不是数字 0ms
+   × 成果要求表单数据 > 空数值不会转换成零，越出图幅必须修正 3ms
+     → expected null not to be null
+   ✓ 成果要求表单数据 > 未知图幅、非单位方向与不垂直方向均拒绝 0ms
+   ✓ 成果要求表单数据 > 详图缺少剖切、构件、资料或裁切范围不能提交 0ms
+   ✓ 成果要求表单数据 > 旧引用缺失时不静默移除 0ms
+   ✓ 成果要求表单数据 > 变化摘要区分新增、修改和移除 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/task-requirements.test.ts > 成果要求表单数据 > 空数值不会转换成零，越出图幅必须修正
+AssertionError: expected null not to be null
+ ❯ src/task-requirements.test.ts:45:51
+     43|     expect(validateRequirements(draft).value).toBeNull();
+     44|     draft.views[0]!.viewportRectMm[0] = "40";
+     45|     expect(validateRequirements(draft).value).not.toBeNull();
+       |                                                   ^
+     46|   });
+     47|   it("未知图幅、非单位方向与不垂直方向均拒绝", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  11:23:02
+   Duration  842ms (transform 85ms, setup 223ms, collect 284ms, tests 70ms, environment 0ms, prepare 115ms)
+
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @gujian/workbench@0.0.0 test: `vitest run "src/task-requirements.test.ts"`
+Exit status 1

@@ -2,17 +2,24 @@ import { useState } from "react";
 import type { ProjectHead } from "@gujian/application";
 
 import { DRAWING_KIND_LABELS } from "../labels";
+import { UNIT_LABELS } from "../production-task";
 import { Button, EmptyState, Tag } from "../ui";
+import type { TaskSetupValues, ReferenceOption, RequirementReferences } from "../task-requirements";
+import { overlapsTitleBlock, outsidePrintableArea } from "../task-requirements";
+import { TaskSetupForm } from "./TaskSetupForm";
 import { FileViewer } from "../ui/FileViewer";
 import { describePreview, pageLabel, previewLabel, type DrawingPreview } from "../workbench/useAssetUrls";
 import "./SheetStyle.css";
 
 // W08 图纸样式（66:2896）：左卡出图设置（六行标签 132 宽加取值，下边线），右卡图面预览（头 36、图 476、说明 12/20）。
-// 图种、图幅和版面来自任务要求（PRD F12、F13），这里只读显示，修改回任务卡。
+// 出图要求与任务卡共用同一表单和写入入口。
 type TaskDefinition = ProjectHead["snapshot"]["taskDefinitions"][number];
 
 export interface SheetStyleProps {
   task: TaskDefinition | null;
+  references: RequirementReferences;
+  roleOptions: ReferenceOption[];
+  onSubmitTask: (values: TaskSetupValues) => Promise<boolean>;
   previews: readonly DrawingPreview[];
   canGenerate: boolean;
   generating: boolean;
@@ -21,45 +28,59 @@ export interface SheetStyleProps {
 }
 
 
-export function SheetStyle({ task, previews, canGenerate, generating, onGenerate, onEditTask }: SheetStyleProps) {
+export function SheetStyle({ task, references, roleOptions, onSubmitTask, previews, canGenerate, generating, onGenerate, onEditTask }: SheetStyleProps) {
+  const [editing, setEditing] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
   const requirements = task?.artifactRequirements ?? null;
   const views = requirements?.views ?? [];
   const sheets = requirements?.sheets ?? [];
+  const overlapping = views.filter((view) => {
+    const sheet = sheets.find((item) => item.key === view.sheetKey);
+    return sheet && overlapsTitleBlock(view.viewportRectMm, sheet.pageMm[0]);
+  });
+  const outside = views.filter((view) => {
+    const sheet = sheets.find((item) => item.key === view.sheetKey);
+    return sheet && outsidePrintableArea(view.viewportRectMm, sheet.pageMm);
+  });
   const preview = previews[Math.min(previewIndex, Math.max(0, previews.length - 1))] ?? null;
   const kinds = [...new Set(views.map((view) => DRAWING_KIND_LABELS[view.kind] ?? view.kind))];
   const scaleByKind = kinds.map((kind) => {
     const scales = [...new Set(views.filter((view) => (DRAWING_KIND_LABELS[view.kind] ?? view.kind) === kind).map((view) => `1:${view.scaleDenominator}`))];
     return `${kind} ${scales.join("、")}`;
   });
-  const { title: previewTitle, scales: previewScales } = describePreview(preview, requirements);
+  // 预览属于已生成文件，不能使用刚修改的任务比例给旧图面标注。
+  const { title: previewTitle, scales: previewScales } = describePreview(preview, null);
 
   const rows: [string, string][] = requirements ? [
     ["成果图种", views.map((view) => view.displayLabelZh).join("、")],
     ["出图比例", scaleByKind.join("，")],
     ["图幅", sheets.map((sheet) => `${sheet.drawingNumber} 为 ${pageLabel(sheet.pageMm)}`).join("，")],
-    ["尺寸单位（非任务字段）", "毫米，全项目固定"],
-    ["标注体系（非任务字段）", "轴网、尺寸链、标高、剖切索引、构件引线，出图时统一生成"],
+    ["长度输出单位", UNIT_LABELS[task?.productionSetup?.outputUnit ?? "mm"]],
+    ["标注体系（固定设置）", "轴网、尺寸链、标高、剖切索引、构件引线，出图时统一生成"],
     ["版本", requirements.revisionLabel],
   ] : [];
 
   return (
-    <div className="sc-sheet">
+    <div className={editing ? "sc-sheet sc-sheet--editing" : "sc-sheet"}>
       <section className="sc-sheet-settings sc-sheet-settings--hug">
         <span className="gj-pane-title">出图设置</span>
-        {requirements ? rows.map(([label, value]) => (
+        {editing && task ? <TaskSetupForm task={task} requirementsOnly references={references} roleOptions={roleOptions} onCancel={() => setEditing(false)} onSubmit={async (values) => {
+          const ok = await onSubmitTask(values); if (ok) setEditing(false); return ok;
+        }} /> : requirements ? rows.map(([label, value]) => (
           <div className="sc-sheet-row" key={label}>
             <span className="sc-sheet-label">{label}</span>
             <span className="sc-sheet-value">{value || "未填写"}</span>
           </div>
         )) : (
-          <EmptyState action={<Button compact onClick={onEditTask}>去任务卡确认</Button>}>尚未确认成果要求。图幅、视图与图签在任务要求中一次确认后显示在这里。</EmptyState>
+          <EmptyState action={<Button compact onClick={() => task ? setEditing(true) : onEditTask()}>{task ? "设置出图要求" : "确认制作任务"}</Button>}>尚未设置出图要求。请在这里填写图幅、视图和图签。</EmptyState>
         )}
         <span className="gj-spacer" />
-        <div className="gj-actions">
-          <Button onClick={onEditTask}>在任务要求中修改</Button>
-          <Button variant="primary" loadable busy={generating} disabled={!canGenerate} onClick={onGenerate}>生成成组图纸</Button>
-        </div>
+        {!editing && overlapping.length > 0 && <p role="alert" className="gj-note">{overlapping.map((view) => view.displayLabelZh).join("、")}的视口与右下图签重叠。请修改出图要求，将视口 Y 调整为至少 38 mm，或移至图签左侧。</p>}
+        {!editing && outside.length > 0 && <p role="alert" className="gj-note">{outside.map((view) => view.displayLabelZh).join("、")}的视口超出可打印区域。请修改出图要求，留出左右各 10 mm、下侧 20 mm、上侧 35 mm；移动视口后需相应缩小宽高。</p>}
+        {!editing && <div className="gj-actions">
+          <Button onClick={() => task ? setEditing(true) : onEditTask()}>修改出图要求</Button>
+          <Button variant="primary" loadable busy={generating} disabled={!canGenerate || overlapping.length > 0 || outside.length > 0} onClick={onGenerate}>生成成组图纸</Button>
+        </div>}
       </section>
       <section className="sc-sheet-preview">
         <div className="sc-sheet-preview-head">
@@ -81,7 +102,7 @@ export function SheetStyle({ task, previews, canGenerate, generating, onGenerate
             ))}
           </div>
         )}
-        <p className="sc-sheet-note">平面图为水平剖切，剖面图剖在任务要求指定的剖切位置上，都不是俯视投影；构件画法与标注规则按制图配置统一生成，暂不在此逐项选择。</p>
+        {preview && <p className="sc-sheet-note">此处显示已生成的文件，修改设置后重新生成才会更新。</p>}
       </section>
     </div>
   );

@@ -1,0 +1,30 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/DraftGeometryViewer.test.tsx (4 tests | 1 failed | 3 skipped) 49ms
+   ↓ 临时形体渲染生命周期 > 点击实际网格使用stableKey，更新回调不重建渲染资源
+   × 临时形体渲染生命周期 > 换对象和卸载释放网格、边线、controls、observer及WebGL资源 17ms
+     → expected "dispose" to be called 2 times, but got 0 times
+   ↓ 临时形体渲染生命周期 > WebGL建立失败显示可恢复错误，参数与原件交互仍保留
+   ↓ 临时形体渲染生命周期 > WebGL上下文失效停止旧帧并显示原件仍可用
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/DraftGeometryViewer.test.tsx > 临时形体渲染生命周期 > 换对象和卸载释放网格、边线、controls、observer及WebGL资源
+AssertionError: expected "dispose" to be called 2 times, but got 0 times
+ ❯ src/DraftGeometryViewer.test.tsx:63:29
+     61|     view.rerender(<DraftGeometryViewer component={input("second")} onS…
+     62|     expect(state.renderers[0]!.dispose).toHaveBeenCalledOnce(); expect…
+     63|     expect(disposeGeometry).toHaveBeenCalledTimes(2); expect(disposeMa…
+       |                             ^
+     64|     view.unmount();
+     65|     expect(state.renderers[1]!.dispose).toHaveBeenCalledOnce();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Start at  16:23:16
+   Duration  856ms (transform 38ms, setup 221ms, collect 54ms, tests 49ms, environment 337ms, prepare 63ms)
+

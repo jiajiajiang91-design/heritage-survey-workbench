@@ -60,3 +60,8 @@ export const FactEnvelopeSchema = z.object({
 
 export type ProducerRef = z.infer<typeof ProducerRefSchema>;
 export type FactEnvelope = z.infer<typeof FactEnvelopeSchema>;
+
+export function isMaterialCoverageFact(fact: Pick<FactEnvelope, "field" | "value">): boolean {
+  return fact.field.startsWith("evidence.coverage.") || (fact.value !== null && typeof fact.value === "object"
+    && "kind" in fact.value && fact.value.kind === "materialCoverage");
+}

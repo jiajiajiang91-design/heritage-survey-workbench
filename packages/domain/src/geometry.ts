@@ -171,6 +171,7 @@ export const ProjectDrivenGeometrySpecSchema = z.object({
   projectRevisionId: UuidSchema,
   buildingId: UuidSchema,
   inputHash: Sha256Schema,
+  outputUnit: z.enum(["mm", "cm", "m"]).optional(),
   coordinateSystem: z.object({
     name: z.string().min(1).max(200),
     axisOrder: z.literal("XYZ"),

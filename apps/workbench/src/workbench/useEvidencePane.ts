@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { evidenceReadability } from "../evidence-readability";
 import type { NormalizedRect } from "../EvidenceMarquee";
 import { projectRepository } from "../workbench";
 import { triggerDownload } from "./download";
@@ -10,6 +11,9 @@ export interface EvidencePreview {
   url: string;
   mimeType: string;
   fileName: string;
+  readableAs?: "text" | "image" | undefined;
+  derived?: boolean;
+  sourceSizePixels?: [number, number];
 }
 
 export interface ImageSelection {
@@ -30,29 +34,30 @@ export function useEvidencePane(session: ProjectSession) {
     const evidences = selected?.snapshot.evidences ?? [];
     const available = evidences.filter((item) => item.dataStatus === "available");
     const first = available.find((item) => item.evidenceType === "photo") ?? available.find((item) => item.evidenceType === "drawing") ?? available[0] ?? null;
-    setActiveEvidenceId(first?.id ?? null);
-  }, [selected?.projectId]);
+    setActiveEvidenceId((current) => evidences.some((item) => item.id === current) ? current : first?.id ?? null);
+  }, [selected?.projectId, selected?.snapshot.evidences]);
 
   // 选中资料后读取原件生成预览地址；切换或卸载时释放
   useEffect(() => {
     setImageSelection(null);
+    setEvidencePreview(null);
     if (!activeEvidenceId) { setEvidencePreview(null); return; }
     let cancelled = false;
     let created: string | null = null;
     const evidence = selected?.snapshot.evidences.find((item) => item.id === activeEvidenceId);
     const load = async () => {
       if (!evidence) return;
-      const stored = await projectRepository.getAsset(evidence.assetId);
+      const stored = await projectRepository.getAsset(evidence.imageDerivative?.assetId ?? evidence.assetId);
       if (cancelled) return;
       created = URL.createObjectURL(stored.content);
-      setEvidencePreview({ evidenceId: evidence.id, url: created, mimeType: stored.record.mimeType, fileName: stored.record.fileName });
+      setEvidencePreview({ evidenceId: evidence.id, url: created, mimeType: stored.record.mimeType, fileName: stored.record.fileName, readableAs: evidenceReadability(selected!.snapshot, evidence.id).kind, ...(evidence.imageDerivative ? { derived: true, sourceSizePixels: evidence.imageDerivative.sourceSizePixels } : {}) });
     };
-    void load().catch(() => setEvidencePreview(null));
+    void load().catch(() => { if (!cancelled) setEvidencePreview(null); });
     return () => {
       cancelled = true;
       if (created) URL.revokeObjectURL(created);
     };
-  }, [activeEvidenceId, selected?.projectId]);
+  }, [activeEvidenceId, selected?.projectId, selected?.snapshot.evidences.find((item) => item.id === activeEvidenceId)?.imageDerivative?.assetId, selected?.snapshot.parseRecords.filter((item) => item.evidenceId === activeEvidenceId).at(-1)?.id]);
 
   const downloadEvidence = async (assetId: string) => {
     const asset = await projectRepository.getAsset(assetId);

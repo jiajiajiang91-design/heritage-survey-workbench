@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { journeyStages, projectPages, stages } from "./view-registry";
+import { journeyStages, auxiliaryViews, projectPages, stages } from "./view-registry";
 
 // 左栏的八阶段、中栏的页签行和顶栏的三个项目级页面，取值都必须与
 // 01_产品/03_界面与交互形态.md 的表 2 表 3 对得上。
@@ -40,7 +40,7 @@ const PAGE_ROWS = tableRows("**表 3：项目级页面**", ["页面"]);
 const labelOf = (id: string) => stages.find((stage) => stage.id === id)?.label;
 
 describe("阶段与视图对得上界面文档", () => {
-  it("八个阶段的名称与顺序与表 2 的阶段列一致", () => {
+  it("制作步骤的名称与顺序与表 2 的阶段列一致", () => {
     const fromDoc: string[] = [];
     for (const [stage] of VIEW_ROWS) {
       if (fromDoc[fromDoc.length - 1] !== stage) fromDoc.push(stage!);
@@ -68,9 +68,9 @@ describe("阶段与视图对得上界面文档", () => {
     expect(projectPages.map((id) => labelOf(id))).toEqual(fromDoc.filter((page) => page !== "项目列表"));
   });
 
-  it("十三个视图不多不少，工作视图归阶段，其余归项目级页面", () => {
+  it("十四个视图不多不少，工作视图归阶段，其余归项目级页面", () => {
     const inStages = journeyStages.flatMap((stage) => stage.views as readonly string[]);
-    const all = [...inStages, ...projectPages];
+    const all = [...inStages, ...auxiliaryViews, ...projectPages];
     expect(new Set(all).size).toBe(all.length);
     expect([...all].sort()).toEqual(stages.map((stage) => stage.id).slice().sort());
   });
@@ -81,14 +81,14 @@ describe("视图 id 是稳定标识", () => {
   // 改名只改 label，改 id 会让已经录好的动作失效，因此这份清单写死。
   it("十三个 id 与既有清单逐字相同", () => {
     expect(stages.map((stage) => stage.id)).toEqual([
-      "tasks", "evidence", "measurements", "objects", "conditions", "issues", "geometry",
+      "tasks", "evidence", "preview", "measurements", "objects", "conditions", "issues", "geometry",
       "sheetStyle", "drawings", "checks", "package", "candidates", "history",
     ]);
   });
 
-  it("八个阶段 id 按序编号", () => {
+  it("主流程分组保留对应的既有标识", () => {
     expect(journeyStages.map((stage) => stage.id)).toEqual(
-      ["s01", "s02", "s03", "s04", "s05", "s06", "s07", "s08"],
+      ["s01", "s02", "s04", "s06", "s07"],
     );
   });
 });

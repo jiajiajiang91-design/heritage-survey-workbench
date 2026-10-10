@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/screens/GeometryComponentEditor.test.tsx (9 tests) 448ms
+ ✓ src/DraftGeometryViewer.test.tsx (4 tests) 89ms
+ ✓ src/draft-geometry-mesh.test.ts (8 tests) 10ms
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  16:18:34
+   Duration  3.93s (transform 340ms, setup 615ms, collect 1.22s, tests 546ms, environment 993ms, prepare 190ms)
+

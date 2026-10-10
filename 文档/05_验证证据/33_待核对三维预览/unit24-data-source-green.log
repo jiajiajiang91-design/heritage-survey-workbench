@@ -1,0 +1,11 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/draft-geometry.test.ts (16 tests | 13 skipped) 36ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 13 skipped (16)
+   Start at  16:27:18
+   Duration  1.55s (transform 283ms, setup 224ms, collect 997ms, tests 36ms, environment 0ms, prepare 100ms)
+

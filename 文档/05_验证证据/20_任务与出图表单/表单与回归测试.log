@@ -1,0 +1,16 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+$ vitest run "src/screens/TaskSetupForm.test.tsx" "src/task-requirements.test.ts" "src/App.test.tsx" "src/visual-spec.test.ts"
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ✓ src/task-requirements.test.ts (14 tests) 74ms
+ ✓ src/visual-spec.test.ts (22 tests) 12ms
+ ✓ src/screens/TaskSetupForm.test.tsx (7 tests) 641ms
+ ✓ src/App.test.tsx (2 tests) 311ms
+   ✓ App > 建立项目后显示当前建筑和版本  310ms
+
+ Test Files  4 passed (4)
+      Tests  45 passed (45)
+   Start at  11:26:18
+   Duration  2.86s (transform 668ms, setup 1.01s, collect 2.80s, tests 1.04s, environment 1.18s, prepare 469ms)
+

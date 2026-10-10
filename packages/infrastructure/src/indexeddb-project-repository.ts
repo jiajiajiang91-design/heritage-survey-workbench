@@ -401,6 +401,12 @@ export class IndexedDbProjectRepository implements ProjectRepositoryPort, Projec
         if (item.projectId !== projectId) throw new Error("ARTIFACT_REQUIREMENT_MATRIX_PROJECT_MISMATCH");
         return item;
       },
+      getAssetRecord: async (assetId) => {
+        const item = await requestResult<PersistedAsset | undefined>(transaction.objectStore("assets").get(assetId));
+        if (!item || item.stagingSessionId) return null;
+        if (item.projectId !== projectId) throw new Error("ASSET_PROJECT_MISMATCH");
+        return item.record;
+      },
       getArtifact: async (artifactId) => {
         const item = await requestResult<ArtifactRecord | undefined>(transaction.objectStore("artifacts").get(artifactId));
         if (!item) return null;

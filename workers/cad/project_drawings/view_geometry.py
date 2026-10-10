@@ -18,6 +18,7 @@ from shapely.geometry import LineString, MultiPoint, Point, box
 from shapely.ops import polygonize, unary_union
 
 from .contracts import canonical_bytes, sha256_value
+from workers.cad.output_units import length_text, output_unit
 
 
 LINE_NAMESPACE = uuid.UUID("a63b0356-5f49-5f60-a192-9aa374ec3246")
@@ -758,7 +759,7 @@ def _place_labels(view: dict[str, Any], plan: dict[str, Any], bounds: list[list[
     return out, dropped
 
 
-def _plan_annotations(view: dict[str, Any], bounds: list[list[float]]) -> list[dict[str, Any]]:
+def _plan_annotations(view: dict[str, Any], bounds: list[list[float]], unit: str = "mm") -> list[dict[str, Any]]:
     plan = view.get("annotationPlan") or {}
     view_id = view["id"]
     out: list[dict[str, Any]] = []
@@ -788,7 +789,7 @@ def _plan_annotations(view: dict[str, Any], bounds: list[list[float]]) -> list[d
             key=lambda item: item["positionMm"],
         )
         for first, second in zip(family, family[1:]):
-            span = round(second["positionMm"] - first["positionMm"], 1)
+            span = second["positionMm"] - first["positionMm"]
             if span <= 0:
                 continue
             anchor = (
@@ -799,7 +800,7 @@ def _plan_annotations(view: dict[str, Any], bounds: list[list[float]]) -> list[d
                 "requirementId": f"chain:{view_id}:{first['label']}-{second['label']}",
                 "kind": "axisDimensionChain", "viewId": view_id,
                 "space": "view", "layerKey": "dimension", "paperTextHeightMm": 2.5,
-                "valueMm": span, "text": f"{span:.0f}", "along": along,
+                "valueMm": span, "text": f"{length_text(span, unit)} {unit}", "along": along,
                 "anchorMm": anchor,
                 "sourceRefs": list(first["sourceEntityIds"]) + list(second["sourceEntityIds"]),
             })
@@ -832,7 +833,7 @@ def _plan_annotations(view: dict[str, Any], bounds: list[list[float]]) -> list[d
             "requirementId": f"level:{view_id}:{level['label']}",
             "kind": "levelMark", "viewId": view_id,
             "space": "view", "layerKey": "dimension", "paperTextHeightMm": 2.5,
-            "text": f"{level['label']} {level['elevationMm'] / 1000:.3f}",
+            "text": f"{level['label']} {level['elevationMm'] / 1000:.3f} m",
             "basisZh": level["basisZh"],
             "anchorMm": [[u1, level["elevationMm"]]],
             "sourceRefs": list(level["sourceEntityIds"]),
@@ -849,6 +850,7 @@ def _plan_annotations(view: dict[str, Any], bounds: list[list[float]]) -> list[d
 
 
 def build_drawing_ir(matrix: dict[str, Any], manifest: dict[str, Any], views: list[dict[str, Any]]) -> dict[str, Any]:
+    unit = output_unit(matrix)
     view_by_id = {item["viewId"]: item for item in views}
     # 标注的唯一来源。写出器只按 kind 渲染，不再各自从视图 bounds 重新推
     # 该标什么：此前 DXF 与 SVG 各推一遍，同一张图的图名一个画在图上方、
@@ -865,7 +867,7 @@ def build_drawing_ir(matrix: dict[str, Any], manifest: dict[str, Any], views: li
             {
                 "requirementId": f"dimension:{view['id']}", "kind": "overallDimension", "viewId": view["id"],
                 "space": "view", "layerKey": "dimension", "paperTextHeightMm": 3.0,
-                "valueMm": value, "text": f"{_overall_dimension_label(view)} {value:.0f} mm",
+                "valueMm": value, "text": f"{_overall_dimension_label(view)} {length_text(value, unit)} {unit}",
                 # 尺寸的两个端点取图形下沿的左右极值
                 "anchorMm": [[bounds[0][0], bounds[0][1]], [bounds[1][0], bounds[0][1]]],
                 "sourceRefs": [manifest["geometryRevisionId"]],
@@ -887,7 +889,7 @@ def build_drawing_ir(matrix: dict[str, Any], manifest: dict[str, Any], views: li
                 "sourceRefs": [manifest["geometryRevisionId"]],
             },
         ])
-        annotations.extend(_plan_annotations(view, bounds))
+        annotations.extend(_plan_annotations(view, bounds, unit))
     for observation in matrix.get("observationCandidates", []):
         view = matrix["views"][0]
         bounds = view_by_id[view["id"]]["boundsMm"]
@@ -900,6 +902,7 @@ def build_drawing_ir(matrix: dict[str, Any], manifest: dict[str, Any], views: li
         })
     ir = {
         "schemaVersion": "1.0",
+        "outputUnit": unit,
         "status": "generated-not-qualified",
         "qualification": "proxy-unissued",
         "l1Eligible": False,

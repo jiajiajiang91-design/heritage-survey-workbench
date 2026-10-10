@@ -1,0 +1,492 @@
+[WARN] This project is configured to use 11.16.0 of pnpm. Your current pnpm is v11.21.0
+
+ RUN  v3.2.4 D:/Claude_jiajia/06_古建保护归档/apps/workbench
+
+ ❯ src/preview-read-model.test.ts (7 tests | 5 failed) 50ms
+   × 只读预览与类型规则 > 标高 0 可明确采用但不会进入构件长度引用 22ms
+     → expected null to match object { value: +0, …(1) }
+   × 只读预览与类型规则 > 标高 -120 可明确采用但不会进入构件长度引用 6ms
+     → expected null to match object { value: -120, …(1) }
+   ✓ 只读预览与类型规则 > 改变类型必须说明，旧正长度记录仍可引用 3ms
+   × 只读预览与类型规则 > 最新采用、修正和驳回改变预览与导出，候选和旧事实不变 7ms
+     → expected { …(19) } to match object { originalText: '±0.000', …(4) }
+(14 matching properties omitted from actual)
+   × 只读预览与类型规则 > 有效区域保留原坐标，越界、无区域、非图像和缺原件如实显示 3ms
+     → expected { …(19) } to match object { region: null, …(1) }
+(17 matching properties omitted from actual)
+   ✓ 只读预览与类型规则 > 生成前缺设置、空选择及不可读输入有具体原因，完整设置允许开始 5ms
+   × 只读预览与类型规则 > 整体被替代和整体驳回的候选只供查看，不显示旧采用值为当前成果 4ms
+     → expected 1 to be +0 // Object.is equality
+ ❯ src/workbench/usePreviewFlow.test.tsx (3 tests | 2 failed) 39ms
+   × 生成预览流程 > 缺少任务设置不发请求，并指出补充入口 27ms
+     → expected "runMeasurementTranscription" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st runMeasurementTranscription call:
+
+    Array [
+      Object {
+        "auditEventId": "212a649f-36c9-484a-a898-5fd1e0a7c0eb",
+        "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+        "revisionId": "4bbe7863-086c-4bc1-954f-cfc69b029b66",
+        "snapshot": Object {
+          "adoptedRecordRefs": Array [],
+          "buildings": Array [
+            Object {
+              "addressText": null,
+              "id": "0eb4f4dc-47ad-4d73-9922-79d6c225eb81",
+              "name": "内部测试建筑",
+              "periodText": null,
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "status": "existing",
+            },
+          ],
+          "candidates": Array [
+            Object {
+              "contentText": "内部交互测试候选，非真实模型运行",
+              "createdAt": "2026-10-01T08:52:04.845Z",
+              "evidenceRefs": Array [
+                "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+              ],
+              "id": "3d1825a6-4c6d-4b06-8d77-3ed3455c4638",
+              "inputRevisionId": "dffea9b1-592c-45e0-abf0-c33234ddb95b",
+              "producer": Object {
+                "producerType": "model",
+                "runId": "9c3c7733-a05a-4835-9cf7-668876f8f41a",
+              },
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "reviewStatus": "unreviewed",
+              "runId": "9c3c7733-a05a-4835-9cf7-668876f8f41a",
+              "structured": Object {
+                "dimensions": Array [
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+                    "locationZh": "测试记录第 1 行",
+                    "noteZh": "内部测试数值",
+                    "partZh": "总宽",
+                    "valueMm": "6000",
+                    "valueText": "6000",
+                  },
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+                    "locationZh": "测试记录第 2 行",
+                    "noteZh": null,
+                    "partZh": "总深",
+                    "valueMm": "4200",
+                    "valueText": "4200",
+                  },
+                  Object {
+                    "certainty": "uncertain",
+                    "evidenceRef": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+                    "locationZh": "测试记录第 3 行",
+                    "noteZh": "原资料须补充，不能按猜测采用",
+                    "partZh": "层高",
+                    "valueMm": null,
+                    "valueText": "3?00",
+                  },
+                ],
+                "kind": "measurementTranscription",
+                "missingInformation": Array [
+                  "本文件仅用于交互测试，不用于建筑制作",
+                ],
+                "summary": "内部测试：总宽、总深及不确定高度",
+              },
+              "taskType": "measurement-transcription",
+            },
+          ],
+          "dependencyEdges": Array [],
+          "entities": Array [],
+          "evidences": Array [
+            Object {
+              "assetId": "b546e180-f161-47bd-89a2-4d15f49cacde",
+              "dataStatus": "available",
+              "evidenceType": "document",
+              "id": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+              "intendedUse": "项目资料整理与候选提取",
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "recordedAt": "2026-10-01T08:52:04.840Z",
+              "relatedEntityRefs": Array [
+                "0eb4f4dc-47ad-4d73-9922-79d6c225eb81",
+              ],
+              "rightsDeclaration": null,
+              "title": "内部测试尺寸.txt",
+            },
+          ],
+          "exclusionRecords": Array [],
+          "facts": Array [],
+          "geometryRevisions": Array [],
+          "geometrySpecs": Array [],
+          "issues": Array [],
+          "measurements": Array [],
+          "observations": Array [],
+          "parseRecords": Array [
+            Object {
+              "assetId": "b546e180-f161-47bd-89a2-4d15f49cacde",
+              "createdAt": "2026-10-01T08:52:04.841Z",
+              "evidenceId": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+              "extractedText": "内部测试资料，不是实测记录。
+    总宽 6000 mm
+    总深 4200 mm
+    层高 3?00 mm
+    ",
+              "id": "ebb52f36-7421-47e2-9494-39001a79c916",
+              "parser": "utf8-text",
+              "parserVersion": "1.0.0",
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "readability": "readable",
+              "readableAs": "text",
+              "status": "parsed",
+              "warnings": Array [],
+            },
+          ],
+          "project": Object {
+            "createdAt": "2026-10-01T08:52:04.835Z",
+            "id": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+            "locationText": null,
+            "name": "单元13尺寸核对内部测试",
+            "status": "active",
+          },
+          "relations": Array [],
+          "reviewSignoffs": Array [],
+          "schemaVersion": "3.0",
+          "taskDefinitions": Array [],
+        },
+      },
+      "99f2a800-1132-474a-88ba-dfaddcd5066b",
+      Array [
+        "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+      ],
+      [Function bound dispatchSetState],
+    ]
+
+
+Number of calls: 1
+
+   × 生成预览流程 > 生成准备期间防止重复，成功后进入预览并保留旧候选 7ms
+     → expected "spy" to be called with arguments: [ 'preview' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "preview",
++   "measurements",
+  ]
+
+
+Number of calls: 1
+
+   ✓ 生成预览流程 > 失败不切页、不清空旧结果，可再次生成 4ms
+ ❯ src/screens/PreviewReview.test.tsx (4 tests | 1 failed) 121ms
+   × 预览核对页面 > 候选框保持归一化位置，选择条目关联来源，核对复用外部回调 35ms
+     → Cannot read properties of null (reading 'style')
+   ✓ 预览核对页面 > 下载输出包含实际最新值和来源，筛选不裁减导出 57ms
+   ✓ 预览核对页面 > 异步切换原件期间不把新条目框叠加到旧图片 10ms
+   ✓ 预览核对页面 > 缺元数据时给出原因且禁止导出，整体不可核对的条目保持只读 18ms
+
+ Test Files  3 failed (3)
+      Tests  8 failed | 6 passed (14)
+   Start at  09:52:03
+   Duration  1.89s (transform 657ms, setup 694ms, collect 2.76s, tests 211ms, environment 756ms, prepare 295ms)
+
+D:\Claude_jiajia\06_古建保护归档\apps\workbench:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @gujian/workbench@0.0.0 test: `vitest run "preview-read-model.test.ts" "screens/PreviewReview.test.tsx" "workbench/usePreviewFlow.test.tsx"`
+Exit status 1
+$ vitest run "preview-read-model.test.ts" "screens/PreviewReview.test.tsx" "workbench/usePreviewFlow.test.tsx"
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/preview-read-model.test.ts > 只读预览与类型规则 > 标高 0 可明确采用但不会进入构件长度引用
+AssertionError: expected null to match object { value: +0, …(1) }
+
+- Expected: 
+{
+  "quantityKind": "relativeElevation",
+  "value": 0,
+}
+
++ Received: 
+null
+
+ ❯ src/preview-read-model.test.ts:21:68
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/preview-read-model.test.ts > 只读预览与类型规则 > 标高 -120 可明确采用但不会进入构件长度引用
+AssertionError: expected null to match object { value: -120, …(1) }
+
+- Expected: 
+{
+  "quantityKind": "relativeElevation",
+  "value": -120,
+}
+
++ Received: 
+null
+
+ ❯ src/preview-read-model.test.ts:21:68
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/preview-read-model.test.ts > 只读预览与类型规则 > 最新采用、修正和驳回改变预览与导出，候选和旧事实不变
+AssertionError: expected { …(19) } to match object { originalText: '±0.000', …(4) }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "adoptedMm": -120,
++   "adoptedMm": null,
+    "candidateMm": "0",
+    "originalText": "±0.000",
+    "quantityKind": "relativeElevation",
+-   "status": "corrected",
++   "status": "pending",
+  }
+
+ ❯ src/preview-read-model.test.ts:45:17
+     43|     const corrected = (await save(first, { valueMm: "-120", reason: "内…
+     44|     const model = buildPreviewReadModel(corrected.snapshot, metadata);…
+     45|     expect(row).toMatchObject({ originalText: "±0.000", candidateMm: "…
+       |                 ^
+     46|     const csv = previewCsv(model); expect(csv).toContain('"相对标高","已修正"…
+     47|     const exported = projectPackages.parse(await projectPackages.expor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/preview-read-model.test.ts > 只读预览与类型规则 > 有效区域保留原坐标，越界、无区域、非图像和缺原件如实显示
+AssertionError: expected { …(19) } to match object { region: null, …(1) }
+(17 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "locationIssue": "当前资料不是可定位图像",
++   "locationIssue": "图上区域越界或无效",
+    "region": null,
+  }
+
+ ❯ src/preview-read-model.test.ts:59:63
+     57|     const candidate = snapshot.candidates[0]!; if (candidate.structure…
+     58|     const region = { x: .1, y: .2, width: .3, height: .1 }; candidate.…
+     59|     expect(buildPreviewReadModel(snapshot, metadata).rows[0]).toMatchO…
+       |                                                               ^
+     60|     snapshot.parseRecords[0]!.readability = "readable"; snapshot.parse…
+     61|     expect(buildPreviewReadModel(snapshot, metadata).rows[0]!.region).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/preview-read-model.test.ts > 只读预览与类型规则 > 整体被替代和整体驳回的候选只供查看，不显示旧采用值为当前成果
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/preview-read-model.test.ts:80:110
+     78|     const adopted = (await commitDimensionReviews({ ...context, drafts…
+     79|     adopted.snapshot.candidates.at(-1)!.reviewStatus = "superseded";
+     80|     expect(adoptedDimensions(adopted.snapshot)).toEqual([]); expect(cu…
+       |                                                                                                              ^
+     81|     expect(buildPreviewReadModel(adopted.snapshot, metadata).rows.at(-…
+     82|     adopted.snapshot.candidates.at(-1)!.reviewStatus = "rejected";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  src/screens/PreviewReview.test.tsx > 预览核对页面 > 候选框保持归一化位置，选择条目关联来源，核对复用外部回调
+TypeError: Cannot read properties of null (reading 'style')
+ ❯ src/screens/PreviewReview.test.tsx:22:17
+     20|   it("候选框保持归一化位置，选择条目关联来源，核对复用外部回调", async () => {
+     21|     const { props, view } = await setup(); const rect = view.container…
+     22|     expect(rect.style.left).toBe("10%"); expect(rect.style.top).toBe("…
+       |                 ^
+     23|     fireEvent.click(screen.getByRole("button", { name: "查看条目 2：总深" }));
+     24|     expect(props.pane.setActiveEvidenceId).toHaveBeenCalledWith(props.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  src/workbench/usePreviewFlow.test.tsx > 生成预览流程 > 缺少任务设置不发请求，并指出补充入口
+AssertionError: expected "runMeasurementTranscription" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st runMeasurementTranscription call:
+
+    Array [
+      Object {
+        "auditEventId": "212a649f-36c9-484a-a898-5fd1e0a7c0eb",
+        "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+        "revisionId": "4bbe7863-086c-4bc1-954f-cfc69b029b66",
+        "snapshot": Object {
+          "adoptedRecordRefs": Array [],
+          "buildings": Array [
+            Object {
+              "addressText": null,
+              "id": "0eb4f4dc-47ad-4d73-9922-79d6c225eb81",
+              "name": "内部测试建筑",
+              "periodText": null,
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "status": "existing",
+            },
+          ],
+          "candidates": Array [
+            Object {
+              "contentText": "内部交互测试候选，非真实模型运行",
+              "createdAt": "2026-10-01T08:52:04.845Z",
+              "evidenceRefs": Array [
+                "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+              ],
+              "id": "3d1825a6-4c6d-4b06-8d77-3ed3455c4638",
+              "inputRevisionId": "dffea9b1-592c-45e0-abf0-c33234ddb95b",
+              "producer": Object {
+                "producerType": "model",
+                "runId": "9c3c7733-a05a-4835-9cf7-668876f8f41a",
+              },
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "reviewStatus": "unreviewed",
+              "runId": "9c3c7733-a05a-4835-9cf7-668876f8f41a",
+              "structured": Object {
+                "dimensions": Array [
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+                    "locationZh": "测试记录第 1 行",
+                    "noteZh": "内部测试数值",
+                    "partZh": "总宽",
+                    "valueMm": "6000",
+                    "valueText": "6000",
+                  },
+                  Object {
+                    "certainty": "certain",
+                    "evidenceRef": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+                    "locationZh": "测试记录第 2 行",
+                    "noteZh": null,
+                    "partZh": "总深",
+                    "valueMm": "4200",
+                    "valueText": "4200",
+                  },
+                  Object {
+                    "certainty": "uncertain",
+                    "evidenceRef": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+                    "locationZh": "测试记录第 3 行",
+                    "noteZh": "原资料须补充，不能按猜测采用",
+                    "partZh": "层高",
+                    "valueMm": null,
+                    "valueText": "3?00",
+                  },
+                ],
+                "kind": "measurementTranscription",
+                "missingInformation": Array [
+                  "本文件仅用于交互测试，不用于建筑制作",
+                ],
+                "summary": "内部测试：总宽、总深及不确定高度",
+              },
+              "taskType": "measurement-transcription",
+            },
+          ],
+          "dependencyEdges": Array [],
+          "entities": Array [],
+          "evidences": Array [
+            Object {
+              "assetId": "b546e180-f161-47bd-89a2-4d15f49cacde",
+              "dataStatus": "available",
+              "evidenceType": "document",
+              "id": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+              "intendedUse": "项目资料整理与候选提取",
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "recordedAt": "2026-10-01T08:52:04.840Z",
+              "relatedEntityRefs": Array [
+                "0eb4f4dc-47ad-4d73-9922-79d6c225eb81",
+              ],
+              "rightsDeclaration": null,
+              "title": "内部测试尺寸.txt",
+            },
+          ],
+          "exclusionRecords": Array [],
+          "facts": Array [],
+          "geometryRevisions": Array [],
+          "geometrySpecs": Array [],
+          "issues": Array [],
+          "measurements": Array [],
+          "observations": Array [],
+          "parseRecords": Array [
+            Object {
+              "assetId": "b546e180-f161-47bd-89a2-4d15f49cacde",
+              "createdAt": "2026-10-01T08:52:04.841Z",
+              "evidenceId": "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+              "extractedText": "内部测试资料，不是实测记录。
+    总宽 6000 mm
+    总深 4200 mm
+    层高 3?00 mm
+    ",
+              "id": "ebb52f36-7421-47e2-9494-39001a79c916",
+              "parser": "utf8-text",
+              "parserVersion": "1.0.0",
+              "projectId": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+              "readability": "readable",
+              "readableAs": "text",
+              "status": "parsed",
+              "warnings": Array [],
+            },
+          ],
+          "project": Object {
+            "createdAt": "2026-10-01T08:52:04.835Z",
+            "id": "cb7ef1a4-8787-495f-a290-3f502e0f8c59",
+            "locationText": null,
+            "name": "单元13尺寸核对内部测试",
+            "status": "active",
+          },
+          "relations": Array [],
+          "reviewSignoffs": Array [],
+          "schemaVersion": "3.0",
+          "taskDefinitions": Array [],
+        },
+      },
+      "99f2a800-1132-474a-88ba-dfaddcd5066b",
+      Array [
+        "e97eba99-c46a-41b6-bbf8-0611b6d97de8",
+      ],
+      [Function bound dispatchSetState],
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/workbench/usePreviewFlow.test.tsx:23:88
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  src/workbench/usePreviewFlow.test.tsx > 生成预览流程 > 生成准备期间防止重复，成功后进入预览并保留旧候选
+AssertionError: expected "spy" to be called with arguments: [ 'preview' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "preview",
++   "measurements",
+  ]
+
+
+Number of calls: 1
+
+ ❯ src/workbench/usePreviewFlow.test.tsx:32:37
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+故意破坏退出码：1
+源码在 finally 恢复。

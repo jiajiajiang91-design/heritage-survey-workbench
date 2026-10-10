@@ -18,3 +18,5 @@
 .sc-check--limits { gap: var(--space-sm); }
 .sc-check-limit { display: flex; flex-direction: column; gap: var(--space-2xs); }
 .sc-check-limit strong { font: var(--font-weight-medium) var(--font-size-12)/var(--line-18) var(--font-family-ui); color: var(--text-primary); }
+
+.sc-checks-figure--model > div { width: 100%; height: 100%; }

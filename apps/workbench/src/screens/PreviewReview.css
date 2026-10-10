@@ -1,0 +1,6 @@
+.sc-preview-layout { align-items: start; }
+.sc-preview-layout .ws-evidence-figure { flex-shrink: 0; }
+.sc-preview-row { width: 100%; gap: var(--space-sm); }
+.sc-preview-row[aria-current="true"] { border-color: var(--border-focus); background: var(--bg-selected); }
+.sc-preview-row .gj-list-card-head { flex-wrap: wrap; }
+.sc-preview-row span { overflow-wrap: anywhere; }

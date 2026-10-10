@@ -1,0 +1,85 @@
+{
+  "project": "单元19 预览核对内部测试",
+  "unit": "mm",
+  "purpose": "预览核对清单",
+  "qualification": "采用值为资料转写，候选尚需核对",
+  "rows": [
+    {
+      "id": "fb6944bc-83f1-4bc8-815d-44bf0b5b904f:0",
+      "candidateId": "fb6944bc-83f1-4bc8-815d-44bf0b5b904f",
+      "rowIndex": 0,
+      "evidenceId": "37d490ce-c8c4-4fbd-b188-d9bdacc264f2",
+      "sourceName": "预览内部测试.png",
+      "sourceHash": "6b310ec055200e9c820b850ca3f145bb5ae81ab7970e0c1fc47a32ef4094c20e",
+      "reviewable": true,
+      "sourceAvailable": true,
+      "region": {
+        "x": 0.2,
+        "y": 0.05,
+        "width": 0.6,
+        "height": 0.12
+      },
+      "locationIssue": null,
+      "kind": "dimension",
+      "name": "内部总宽",
+      "originalText": "6000 mm",
+      "candidateMm": "6000",
+      "adoptedMm": 6000,
+      "quantityKind": "length",
+      "status": "adopted",
+      "reason": "内部交互测试数值，不是真实模型识别",
+      "locationText": "测试图上方总宽标注"
+    },
+    {
+      "id": "fb6944bc-83f1-4bc8-815d-44bf0b5b904f:1",
+      "candidateId": "fb6944bc-83f1-4bc8-815d-44bf0b5b904f",
+      "rowIndex": 1,
+      "evidenceId": "37d490ce-c8c4-4fbd-b188-d9bdacc264f2",
+      "sourceName": "预览内部测试.png",
+      "sourceHash": "6b310ec055200e9c820b850ca3f145bb5ae81ab7970e0c1fc47a32ef4094c20e",
+      "reviewable": true,
+      "sourceAvailable": true,
+      "region": {
+        "x": 0.65,
+        "y": 0.75,
+        "width": 0.3,
+        "height": 0.12
+      },
+      "locationIssue": null,
+      "kind": "dimension",
+      "name": "内部地坪标高",
+      "originalText": "±0.000 m",
+      "candidateMm": "0",
+      "adoptedMm": -120,
+      "quantityKind": "relativeElevation",
+      "status": "corrected",
+      "reason": "内部修正交互测试，不是原图或实测结论。",
+      "locationText": "测试图右下方标高"
+    },
+    {
+      "id": "fb6944bc-83f1-4bc8-815d-44bf0b5b904f:2",
+      "candidateId": "fb6944bc-83f1-4bc8-815d-44bf0b5b904f",
+      "rowIndex": 2,
+      "evidenceId": "37d490ce-c8c4-4fbd-b188-d9bdacc264f2",
+      "sourceName": "预览内部测试.png",
+      "sourceHash": "6b310ec055200e9c820b850ca3f145bb5ae81ab7970e0c1fc47a32ef4094c20e",
+      "reviewable": true,
+      "sourceAvailable": true,
+      "region": null,
+      "locationIssue": "图上区域越界或无效",
+      "kind": "dimension",
+      "name": "内部不清晰高度",
+      "originalText": "3?00 mm",
+      "candidateMm": null,
+      "adoptedMm": null,
+      "quantityKind": "length",
+      "status": "pending",
+      "reason": "内部交互测试数值，不是真实模型识别",
+      "locationText": "测试图左侧高度，文字不清晰"
+    }
+  ],
+  "missingInformation": [
+    "测试图没有完整构件几何参数",
+    "完整构件的尺寸与位置尚未齐备；标注清单不直接生成三维模型。"
+  ]
+}
